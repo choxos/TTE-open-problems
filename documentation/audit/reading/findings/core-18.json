@@ -1,0 +1,660 @@
+{
+ "batch": "core-18",
+ "papers": [
+  {
+   "id": "L0015",
+   "read": true,
+   "doi": "10.1016/j.eclinm.2025.103449",
+   "title": "Estimating cardiovascular effects of influenza vaccination in older adults: a target trial emulation using proximal causal inference.",
+   "relevance": "high",
+   "one_line": "Combines sequential target trial emulation with regression-based proximal causal inference across 50 emulated trials and 8.2 million older adults in Ningbo, and judges the unmeasured-confounding correction by whether it moves the estimate toward pooled randomized trial results.",
+   "what_was_done": "Fifty sequential trials were emulated from the Yinzhou Regional Health Care Database for residents aged 65 or older, with vaccination status assigned during a one-week enrollment window in each trial from 2020 to 2022, covering 8,181,638 person-trials of which 170,011 were vaccinated. Outcomes were major adverse cardiovascular events and acute coronary syndromes within one year. Propensity score matching left 339,976 matched individuals, and proximal causal inference with a two-stage Poisson regression was layered on top to address unmeasured confounding, using negative control exposures and outcomes. Vaccinated participants were frailer, 19.1 percent severely frail against 14.7 percent, with more comorbidities and longer medication histories, which the authors read as confounding by indication dominating the healthy vaccinee effect. Both effects are noted to operate simultaneously in influenza vaccine studies with a direction that varies across studies. Adding proximal causal inference moved the propensity-adjusted estimate toward greater protection and closer to a pooled randomized trial estimate of 0.71. Determinants of vaccination such as occupation, urbanization and economic status were unavailable, the free vaccination policy began only in 2020 so no pre-pandemic comparison was possible, and vaccine strain match against circulating strains could not be accounted for.",
+   "future_research": [
+    {
+     "gap": "The interaction between serological history and annual mismatch between vaccine and circulating strains could not be accounted for.",
+     "kind": "stated",
+     "quote": "Second, while our study provided insight into influenza vaccine effectiveness across three consecutive years and demonstrated a consistent protective effect, we could not account for the complex interplays between participants' serological history and the annual mismatches of the vaccine strains with evolving circulating strains.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Negative controls are not a supplementary check here but the estimator: proximal causal inference is run inside the emulation and its negative control exposures and outcomes are varied in sensitivity analyses. The authors state this is the first pharmacoepidemiologic study to combine the two, and the method's requirement, that the negative controls have a genuinely null relationship with exposure or outcome, is asserted rather than tested.",
+     "quote": "The PCI method requires correctly selecting negative control variables exhibiting null causal relationship with the exposure or outcome of interest.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "BEN-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The evidence that the unmeasured-confounding correction worked is that it moved the estimate toward a pooled randomized trial result. Calibrating a bias correction to a benchmark makes the benchmark the criterion, so the method carries no warrant for the questions where no trial exists, which are the questions the method exists to answer.",
+     "quote": "Incorporating the PCI approach within the target trial emulation framework further shifted the PS-adjusted treatment effect towards a greater magnitude of protection, aligning more closely with previous pooled analyses of RCTs. 52",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Two unmeasured mechanisms with opposite signs, confounding by indication and the healthy vaccinee effect, are known to act at the same time with a net direction that varies by study. The paper resolves this by inferring from observed frailty which one dominates, and the proximal correction addresses the aggregate rather than the two separately.",
+     "quote": "Remschmidt et al. have noted both confounding by indication and healthy vaccinee bias are likely to operate simultaneously in observational studies of influenza vaccine, with overall direction of the bias varying across different studies. 64",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Transportability is named as limited by three distinct mechanisms, regional vaccination policy, clinical guidelines and ethnic differences in cardiovascular susceptibility, and no accounting is attempted for any of them. The caution is stated as a warning to readers rather than as an adjustment or a bound.",
+     "quote": "Furthermore, distinct influenza vaccine utilization patterns in China—shaped by regional vaccination policies and clinical guidelines—as well as ethnic differences in cardiovascular disease susceptibility, may limit the transportability of our results. 65",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0016",
+   "read": true,
+   "doi": "10.1038/s41588-025-02229-8",
+   "title": "Incorporating genetic data improves target trial emulations and informs the use of polygenic scores in randomized controlled trial design.",
+   "relevance": "high",
+   "one_line": "Emulates four cardiometabolic trials in 425,483 FinnGen participants, finds propensity matching discards 78 percent of individuals on average and shrinks samples by up to 90 percent against the original trials, and shows polygenic scores detect imbalance without distinguishing confounders from non-confounders.",
+   "what_was_done": "Four transformative cardiometabolic randomized trials were emulated in FinnGen using the RCT-DUPLICATE framework, with genetic data added at each step. Propensity score matching discarded 78 percent of individuals on average, reducing final sample sizes by up to 90 percent relative to the original trials, though higher event rates partly offset the power loss; all four emulations succeeded and agreed with the trials. Polygenic scores were used as an orthogonal check on matching quality: imbalance in a polygenic score between arms flags a biological risk factor that claims or registry data do not capture, and in the emulated Empareg trial a type 2 diabetes score was still unbalanced within a type 2 diabetes cohort. Imbalance fell sharply after matching in every emulation. Simulation showed that adjusting or matching on a polygenic score does not control the trait it predicts, because such scores are poor trait predictors, and that a balanced score does not imply a balanced trait. Mendelian randomization was applied instead to detect likely confounders, with the caveat that a putative causal effect on treatment usually reflects prescribing behavior rather than effectiveness. Comparing polygenic score associations in the general population against emulated trial cohorts bounds what prognostic enrichment can be expected in a real trial.",
+   "future_research": [
+    {
+     "gap": "Emulating smaller trials, such as those in rare diseases, is probably out of reach at the current biobank scale of 500,000 genotyped individuals.",
+     "kind": "stated",
+     "quote": "Emulation of smaller RCTs, as, for example, trials for rare diseases, is probably not possible at the current sample size of 500,000 genotyped individuals.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Emulated trials at current biobank sizes lack power to test interaction between a polygenic score and treatment, so predictive enrichment cannot be assessed this way.",
+     "kind": "stated",
+     "quote": "A trial emulation is less valuable to understand predictive enrichment because, at the current sample size, biobank-based emulated RCTs still have limited power to test for interaction between PGS and treatment or to stratify individuals in different genetic risk bins.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A national biobank of 425,483 individuals with complete drug purchase and outcome coverage loses 78 percent of participants at the matching step and ends up to 90 percent smaller than the trials it emulates. The paper draws the conclusion that even larger biobanks are needed, which locates the constraint in the data rather than in the estimator.",
+     "quote": "During the PS matching step, on average, 78% of individuals get discarded, as we aimed to match patients as closely as possible to ensure comparability between treatment groups, thus reducing the final sample size.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Two genetic instruments are brought into the emulation workflow at defined points: polygenic scores as an orthogonal balance check after matching, and Mendelian randomization at the eligibility stage to suggest which unmeasured factors to include and after matching to probe residual confounding. The limits are stated with equal precision, and a detected imbalance does not establish that the factor is a confounder.",
+     "quote": "We show that PGS can be used to identify both measured and unmeasured factors that are unbalanced between the two arms of the trials. Some of these factors are likely confounders; others are not. PGS cannot distinguish between the two.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "LRN-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A genetic predictor is exactly the kind of flexible high-dimensional construct offered as a substitute for measuring the confounder, and both the simulations and the empirical analysis show it does not work: adjusting for the score does not control the trait, and balance in the score does not imply balance in the trait. The paper states that it is not a substitute for direct laboratory data.",
+     "quote": "PGS are generally poor predictors of traits, even those with strong genetic bases, and adjusting or matching for PGS, as shown by our simulations and complemented by our empirical analysis, is unlikely to control for the trait they are predicting.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Laboratory measurements were absent, and the paper notes that even where they exist they are collected inconsistently, which is why RCT-DUPLICATE used them only in post-matching assessment rather than as matching covariates. A variable that is essential to the adjustment is routinely relegated to a diagnostic because of how it is recorded, with no threshold at which that would stop a study.",
+     "quote": "For example, in RCT-DUPLICATE, laboratory measurements were not included as covariates in the PS matching process but instead used in postmatching assessments.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0018",
+   "read": true,
+   "doi": "10.1136/bmjopen-2024-091357",
+   "title": "Effects of azithromycin in young adults with cystic fibrosis: a protocol for emulating a published randomised controlled trial using registry data.",
+   "relevance": "high",
+   "one_line": "Publishes the protocol for emulating a published azithromycin trial in the UK and US cystic fibrosis registries across three time periods, and states in advance that neither registry records dose or adherence, so the trial's treatment strategies cannot be matched.",
+   "what_was_done": "A published randomized trial found azithromycin improved lung function in young adults with cystic fibrosis, and this protocol sets out two emulations of it, one in the UK CF Registry covering about 99 percent of the UK population and one in the US CF Registry covering about 80 percent. Inclusion and exclusion criteria, treatment and outcome definitions, follow-up and estimand are matched to the published trial as closely as the data allow, following the HARmonised Protocol Template to Enhance Reproducibility. Because the trial ran from 2001 to 2003 and azithromycin came into practice during that window, three three-year periods are used, 2003 to 2005, 2007 to 2009 and 2016 to 2018, the last ending before CFTR modulators became widespread. Within each period the first two years form a recruitment window matching the trial's two-year recruitment. Time zero is the index visit at which eligibility is met, with the outcome at 12 months, and having a follow-up visit is itself an eligibility criterion. The US analysis uses only routine stable visits, excluding hospital and home intravenous visits at which lung function may be unstable. The registries record neither dose nor adherence, and do not carry all the trial's secondary outcomes.",
+   "future_research": [
+    {
+     "gap": "Whether target trial emulation is applicable in cystic fibrosis is unresolved, with only a handful of applications in the literature.",
+     "kind": "stated",
+     "quote": "Despite the widespread use of target trial emulation across other areas of medicine, there are limited applications within the CF literature 13 14 ; thus, its applicability to CF remains unclear.",
+     "locator": "Rationale and background"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The protocol states in advance that the treatment strategies cannot be matched to the trial because dose and adherence are absent from both registries. What is emulated is therefore a different intervention from the one randomized, defined by whatever prescription record exists, and the mismatch is declared rather than bounded.",
+     "quote": "The CF registries do not contain data on treatment doses or adherence, which limits our ability to match the treatment strategies in the target trial precisely.",
+     "locator": "Strengths and limitations of this study"
+    },
+    {
+     "problem_id": "ELG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Eligibility requires that the individual has a follow-up visit roughly 12 months after the index visit, which conditions entry on future contact with the healthcare system, and the US analysis further restricts to visits classified as stable because lung function may be unstable at the others. Both conditions select on the process that generates the outcome measurement.",
+     "quote": "Follow-up visits take place approximately 12 months after the index visit, and an eligibility criterion is that individuals are required to have a follow-up visit.",
+     "locator": "Definition of time 0 and the index visit"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The three emulation windows are chosen for stated reasons, proximity to the trial after allowing uptake, features of the data, and ending before CFTR modulators entered practice. That is a documented calendar-time design rather than a convenience window, and the reasons are clinical and data-driven rather than derived from any procedure, with one window chosen because prescription start and stop dates only began to be collected in 2016.",
+     "quote": "Period 1 is close to the timing of the target trial while allowing time for the treatment to have come into use. Periods 2 and 3 were chosen based on features of the data, and ending the time frame in 2018 means that we only use data from the time before CFTR modulators became widespread in clinical practice.",
+     "locator": "Time periods"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Two data-fitness shortfalls are stated up front, missing dose and adherence and missing secondary outcomes, and neither stops the study; the protocol proceeds and will compare its result with the trial. The UK registry is cited as an exemplar patient registry in a national real-world evidence framework, so the exemplar case is one in which the required protocol data are not present.",
+     "quote": "The CF registries do not contain data for all secondary outcomes used in the target trial.",
+     "locator": "Strengths and limitations of this study"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0019",
+   "read": true,
+   "doi": "10.1093/ibd/izae131",
+   "title": "Target Trial Emulation: Improving the Quality of Observational Studies in Inflammatory Bowel Disease Using the Principles of Randomized Trials.",
+   "relevance": "medium",
+   "one_line": "Introduces target trial emulation to inflammatory bowel disease research and identifies two components of it, defining time zero and specifying the causal contrast, that the reporting standard the field already follows does not cover.",
+   "what_was_done": "Randomized trials in inflammatory bowel disease have grown in number but remain expensive, slow and sometimes ethically constrained, while observational studies filling the gaps carry substantial bias. Target trial emulation is presented as applying the design principles of an ideal randomized trial to routinely collected data, with a review of what it does and does not fix. Confounding is addressed by adjusting for all measured factors, using propensity score methods or g-methods, while accepting that unknown confounders cannot be handled and that any of this requires the data source to hold sufficient detail on those factors. Immortal time bias is explained as follow-up starting before treatment assignment, with the requirement that eligibility, assignment and follow-up coincide at time zero defined from data available at that moment and not from later treatment data. Two fallbacks are given when that is impossible: cloning, creating two copies of each individual, and sequential emulation for patients meeting eligibility at separate times. The review notes that most observational studies still lack a satisfactory discussion of confounding two decades after STROBE, that STROBE omits time zero and causal contrasts, and that reporting guidelines specific to emulation are in development.",
+   "future_research": [
+    {
+     "gap": "Reporting guidelines specific to target trial emulation do not exist yet and are being developed.",
+     "kind": "stated",
+     "quote": "Reporting guidelines are currently in development to help standardize this process. 44",
+     "locator": "Conclusions"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The reporting standard the field actually uses omits the two items that decide whether an emulation is coherent, where time zero falls and which causal contrast is being estimated. A study can comply fully with STROBE without stating either, so a reader cannot recover the assumption burden from a compliant report.",
+     "quote": "Moreover, there are some components of target trial emulation that are not included in STROBE, such as the importance of defining time zero or assessing causal contrasts.",
+     "locator": "Opportunities for Inflammatory Bowel Disease Research"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The alignment rule is stated with its data restriction, that time zero must be defined from information available at that moment and not from later treatment data, and two named constructions are given for when assignment at time zero is impossible. Neither construction fixes the grid on which time zero can fall, and the sequential option leaves the spacing of candidate entry times open.",
+     "quote": "Time zero should be defined with data available at that specific time timepoint and not guided by later treatment data.",
+     "locator": "Signal paragraph, immortal time bias"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The review recommends the framework even when used partially, with some concepts emulated, which makes the label detachable from the guarantees. A study that adopts time zero alignment alone would be described the same way as one that emulated the full protocol, and the residual confounding the review names as the biggest drawback is unchanged in either case.",
+     "quote": "This methodological strategy, even if used partially with some of the concepts emulated (eg, time zero) could improve the quality of IBD observational studies by clarifying design choices and reducing bias.",
+     "locator": "Conclusions"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Every confounding remedy listed is made conditional on the data source holding sufficient detail on the confounders, and no criterion is offered for what sufficient means or how it would be checked. The condition is stated as a caveat inside a sentence recommending the methods.",
+     "quote": "Importantly, this is only possible if the observational data source has sufficient details of these factors.",
+     "locator": "Signal paragraph, confounding"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0020",
+   "read": true,
+   "doi": "10.1186/s12874-024-02364-6",
+   "title": "Application of the estimand framework for an emulated trial using reference based multiple imputation to investigate informative censoring.",
+   "relevance": "high",
+   "one_line": "Applies the ICH E9 addendum estimand framework to an emulated trial of when to stop pneumocystis prophylaxis in HIV, and replaces the implicit censoring-at-random assumption with a clinically stated one, that patients lost to follow-up stop prophylaxis, imputed from a reference group.",
+   "what_was_done": "Two regimes for stopping antibiotic prophylaxis against pneumocystis pneumonia in people with HIV were compared in an emulated trial, with the estimand specified under the ICH E9 addendum and a while-on-treatment strategy for intercurrent events. The primary analysis used inverse probability weighting to adjust for censoring selection bias, which makes the censoring-at-random assumption implicitly, and gave a hazard ratio of 0.78 with 95 percent interval 0.69 to 0.89 favoring the regime using viral suppression as the stopping criterion. The sensitivity analysis used reference-based multiple imputation: patients lost to follow-up were assumed to stop prophylaxis at some point after their last visit and to take on the hazard of an appropriate reference group, from which new event times were multiply imputed. Under this jump to off prophylaxis approach the hazard ratio was 0.80 with interval 0.69 to 0.95. The argument for the approach is interpretability: it avoids choosing a sensitivity parameter or a weight multiplier on the log odds scale, whose clinical plausibility is hard to verify, and replaces it with an assumption about the post-censoring behavior of a clearly defined group of patients. The authors note the hazard ratio has known drawbacks as a causal measure, and that no standard software implements reference-based imputation for time-to-event data.",
+   "future_research": [
+    {
+     "gap": "Software for multiply imputing time-to-event data exists but does not implement reference-based approaches.",
+     "kind": "stated",
+     "quote": "There is standard software for multiply imputing time to event data [ 20 , 21 ], but this currently does not include RBMI approaches.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MIS-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The censoring assumption is made explicit and clinical rather than statistical: patients who stop attending are assumed to stop prophylaxis and to inherit the hazard of a named reference group. That is a statement a clinician can accept or reject, unlike a delta parameter on the log odds scale, and the paper contrasts it with weight manipulation on exactly those grounds. It handles loss to follow-up rather than the visit process that generates the covariate history.",
+     "quote": "Reference based multiple imputation, as implemented here, avoids discussion of an appropriate multiplying factor by exploring sensitivities based on the post-censoring behavior of clearly defined and understandable groups of patients.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "An emulation is written with its estimand specified under a regulatory framework, its intercurrent event strategy named, and its untestable assumption identified and probed. What the paper does not do is separate the assumptions this procedure can diagnose from those it cannot, and it closes by placing responsibility for choosing the reference hazard and its timing on the study stakeholders.",
+     "quote": "It is the responsibility of the stakeholders in a specific study to consider the appropriate hazard for each group of censored patients, and its timing.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The population-level summary is a hazard ratio whose causal interpretation the authors themselves flag as problematic, and they list absolute risk difference, a non-parametric approach and restricted mean survival time as things they could equally have reported. The reported measure is a default rather than a consequence of the specified estimand.",
+     "quote": "Whilst we have used the hazard ratio as the main population level measure of the study, this has known drawbacks in terms of its causal interpretation [ 14 ].",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The analysis combines inverse probability weighting with multiple imputation, which the authors say requires statistical expertise, and no packaged implementation exists for the imputation step. Anyone reproducing this must assemble the two stages and their variance treatment themselves.",
+     "quote": "Combining IPW and MI as demonstrated here requires a certain degree of statistical expertise, but most of the complexity concerns the definition of the target and emulated trials, and recognizing the differences between the two.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0021",
+   "read": true,
+   "doi": "10.1016/j.jclinepi.2024.111482",
+   "title": "Preferred study designs to support a comparative therapeutic strategy question in oncology: a vignette study.",
+   "relevance": "medium",
+   "one_line": "Surveys 213 oncologists with paired vignettes describing six ways of answering the same comparative effectiveness question and finds no design strongly preferred, with a European registry emulation scoring highest and a single-center randomized trial lowest.",
+   "what_was_done": "Six vignettes described studies that could answer one predefined comparative therapeutic strategy question in oncology, varying by design, randomized or observational with a trial emulation framework, number and scope of centres, outcome, sample size, probability of success and expected delay to results. Each of 213 participating oncologists, 82 percent affiliated in France, assessed five random pairwise comparisons on a preference scale. No design was strongly preferred and responses varied widely, with an interquartile range spanning most of the scale. The single-centre randomized trial had the lowest median preference in all five comparisons where it appeared and the lowest mean score. The observational study based on a European cancer registry across six countries had the highest mean score, and the multicentric national emulated trial was strongly preferred over the monocentric emulated trial. The vignettes deliberately omitted methodological detail because the survey targeted feasibility and the level of evidence attached to a design rather than risk of bias. Participants were asked what research they would undertake given feasibility and cost, not what evidence they would trust. Showing participants existing concordance evidence changed the stated answer for only 15 percent.",
+   "future_research": [
+    {
+     "gap": "The hierarchy of evidence by study design has been unchanged for four decades and needs revision now that trial emulation exists.",
+     "kind": "stated",
+     "quote": "With new frameworks such as trial emulation, the current pyramid of evidence needs to be challenged and possibly modified.",
+     "locator": "Signal paragraph, what this adds"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The study is constructed so that the design label is all the respondent has: methodological detail was left out on purpose, and preferences were still formed and were strongly ordered on centre count and data source scope. That is direct evidence that a design category carries evidentiary weight on its own, which is what the framework's name does in publication too.",
+     "quote": "describe methodological details in each vignette as this survey was not built to assess the risk of bias but was focused",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "REG-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Physicians were positively inclined toward emulated trials while the authors also read the responses as showing limited knowledge of the framework, and exposure to published concordance evidence changed only 15 percent of stated answers. Acceptance is therefore not tracking any threshold on what an emulation must demonstrate.",
+     "quote": "Indeed, only 15% of participants stated that\nthey would have answered the survey differently if they\nhad seen the evidence from Wang et al (second part of\nthe survey) [19].",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "BEN-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The observational options were ranked above a national multicentric randomized trial in mean score, while the paper notes that the role of observational evidence in comparative effectiveness remains debated because trials and non-interventional studies have been found to differ. Nothing tells a reader when accumulated concordance in other fields should raise their willingness to rely on an emulation here.",
+     "quote": "Although\nthe mean preferred score was the highest for the large European observational study, the role of observational evidence in comparative effectiveness research is still\ndebated, as various works have found differences in treatment effects when comparing results from trials and results\nfrom noninterventional studies [24,25].",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0022",
+   "read": true,
+   "doi": "10.1101/2023.05.25.23290531",
+   "title": "Advancing Efficacy Prediction for EHR-based Emulated Trials in Repurposing Heart Failure Therapies.",
+   "relevance": "medium",
+   "one_line": "Preprint version of the heart failure repurposing framework, stating the discrepancy between electronic health record data and trial standards as the obstacle and reporting the accuracy gain from adding drug-target prediction to the emulation.",
+   "what_was_done": "This is the medRxiv preprint of work later published in NPJ Digital Medicine. It sets out the same framework: identify genes associated with heart failure, predict drug targets from chemical structure, protein sequence and a biomedical knowledge graph, extract a cohort from electronic health records, and analyze efficacy. The target prediction model was evaluated on the BETA benchmark of seven tests and 344 tasks, averaging 97.7 percent area under the receiver operating curve against 88.0 percent for the best baseline, and outperforming other methods on 266 of 404 tasks. Seventeen repurposed heart failure drugs were identified manually from 266 phase 3 trials, seven with a positive effect and ten without, and evaluated in 59,102 heart failure patients at Mayo Clinic across clinical indicators, ejection fraction subtypes, background heart failure medications and sex. Adding target prediction to the emulation raised accuracy from 75.71 to 93.57 percent on the receiver operating curve and from 78.66 to 90.34 percent on precision-recall. The stated obstacle is that electronic health record data omit biomarkers and diagnostic images and record symptoms partially, so the eligibility criteria a trial specifies cannot be applied as written.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The gap between what a trial protocol requires and what a record contains is stated as intrinsic rather than as a property of a particular database: missing biomarkers, absent diagnostic images and partial symptom records. The response is to change the endpoint and add external biological information, not to assess whether the data are fit for the protocol.",
+     "quote": "Although ETs are theoretically expected to adhere to the same eligibility criteria as RCTs, within the ‘target trial framework,’ 10 to select appropriate patient groups and extract relevant data from EHR for efficacy evaluation, the discrepancies 14 , 15 between RCT standards and EHR data present a significant challenge in executing an ET effectively for predicting treatment effectiveness 18 , 19 , 20 , 21 , 22 , 23 , 24 .",
+     "locator": "Introduction"
+    },
+    {
+     "problem_id": "BEN-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The emulation is scored by whether it predicts the direction of a trial result, seven positive against ten negative, so a classification accuracy replaces any comparison of estimands. Raising that accuracy from 76 to 94 percent by adding drug-target prediction improves the classifier without changing what the emulation estimates.",
+     "quote": "Notably, the best results were increased from 75.71% to 93.57% for AUC-ROC and from 78.66% to 90.34% for PRAUC.",
+     "locator": "Introduction"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0023",
+   "read": true,
+   "doi": "10.1097/ede.0000000000001802",
+   "title": "Target Trial Emulation Using Cohort Studies: Estimating the Effect of Antihypertensive Medication Initiation on Incident Dementia.",
+   "relevance": "high",
+   "one_line": "Emulates antihypertensive initiation trials in three large cohorts, finds inconsistent dementia estimates, and detects substantial residual confounding through a positive control outcome that design-stage balance diagnostics had entirely missed.",
+   "what_was_done": "Target trials of antihypertensive medication initiation and incident dementia were emulated in the Atherosclerosis Risk in Communities study, the Cardiovascular Health Study and the Health and Retirement Study. Participants were restricted to initiators and non-initiators with overlapping propensity scores, with the cutoffs chosen by a density-based rule calibrated against a positive control outcome rather than by visual inspection or conventional percentiles, since estimates are known to be sensitive to that choice. All design decisions were made before running outcome models. Dementia estimates were inconsistent and imprecise: hazard ratios of 0.30 with interval 0.05 to 1.93, 0.66 with interval 0.27 to 1.64, and 1.09 with interval 0.75 to 1.59. More stringent propensity restriction changed little. The positive control analysis then showed antihypertensive initiation apparently increasing coronary heart disease risk in all three samples, contrary to randomized evidence, indicating substantial residual confounding. Few cohort participants met trial-like eligibility criteria, the interval between baseline and randomization visits ranged from one year to several so people who started and stopped between visits were missed, and none of the cohorts records the information clinicians used when prescribing. The authors declined to proceed to planned analyses of design variations.",
+   "future_research": [
+    {
+     "gap": "Whether cohort studies can validly emulate trials at all depends on data capture and achievable sample size and is unsettled.",
+     "kind": "stated",
+     "quote": "Whether\ncohort studies can be used to validly emulate trials will rely on the extent to which relevant\ndata influencing treatment is captured and the available sample size given the inclusion\ncriteria for the desired target trial.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Every diagnostic available at the design stage passed: covariates were balanced, propensity scores overlapped, and the design decisions were fixed before the outcome models ran. The bias was invisible until an outcome with known randomized evidence was analyzed, so a report showing the design-stage diagnostics would have conveyed a soundness the analysis did not have.",
+     "quote": "Importantly, this source\nof bias was not detected by diagnostics at the design phase, given evidence of good\nbalance on identified confounders.",
+     "locator": "Conclusion"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "A positive control outcome is used twice, first to set the propensity trimming cutoffs and then as a final validity check after all design decisions are made, and it changed the paper's conclusion. This is a negative-control-style device operating as a workflow step rather than a supplementary analysis, and its limit is stated: the residual confounding it revealed could be detected but not quantified.",
+     "quote": "Importantly, our study may have drawn different conclusions had we foregone a positive\ncontrol analysis, demonstrating the value of such analyses as a final check of the validity of\ntarget trial emulation once all design decisions have been made.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The paper replaces visual or conventional trimming cutoffs with a density-based rule that guarantees a minimum density across the supported range and lets the range vary across nested sub-trials, which is a real improvement on naming a percentile. It still describes support in terms of score densities rather than naming the patient histories that lack it, and restricting further did not change the estimates.",
+     "quote": "Using density-based cutoffs chosen using a positive control outcome\nensures a minimum density of participants across the range of propensity scores where there\nis support for positivity while allowing propensity score ranges to vary across sub-cohorts\nand maximizing sample size.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Time zero can only fall on a cohort visit, and the gap between the baseline and randomization visits ran from one year to several. Anyone who started and stopped treatment inside that gap is misclassified, and confounder measurement is separated from initiation by the same interval, so the grid is imposed by the data collection schedule rather than chosen.",
+     "quote": "In\nour target trial emulation, the time elapsed between “baseline” and “randomization” visits\nranged from 1 year to several years, meaning we certainly missed people who started and\nstopped medication between visits.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Because hypertension is asymptomatic and treatment turns on clinical judgment with indications that change over time, the prescribing information is systematically absent from cohort data. Trimming did not fix it, consistent with reports that trimming does not address confounding by indication, and no procedure combines the several assumption failures the paper identifies.",
+     "quote": "Because hypertension is largely asymptomatic,42\ntreatment is\ninfluenced in part by clinical judgment,43 and indications for treatment change with\ntime, capturing factors that influence whether hypertensive individuals receive treatment\nis especially difficult in the context of cohort data collection.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Three large well-characterized cohorts yielded so few participants meeting trial-like eligibility that the dementia estimates were uninformative, with one interval running from 0.05 to 1.93. The constraint is the intersection of eligibility criteria with cohort membership, not the total size of the cohorts.",
+     "quote": "Analyses were limited by the small number of cohort participants who met eligibility\ncriteria.",
+     "locator": "Abstract, Results"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0024",
+   "read": true,
+   "doi": "10.1200/cci.22.00140",
+   "title": "Target Trial Emulation: A Design Tool for Cancer Clinical Trials.",
+   "relevance": "high",
+   "one_line": "Runs 24 permutations of a stopped hepatocellular carcinoma trial in the National Cancer Database to test how eligibility criteria affect its survival outcome, and states that no formal standards for transparency or reproducibility in target trial emulation yet exist.",
+   "what_was_done": "A real-world explanatory trial of transarterial radioembolization for advanced unresectable hepatocellular carcinoma with portal vein invasion had stopped for poor accrual. Twenty-four permutations of that trial, varying three disease-nonspecific eligibility parameters, were emulated in the National Cancer Database with treatment and control arms matched on propensity, all showing exchangeability across eligibility criteria and other covariates. Significant treatment benefit appeared only across a narrow range of eligibility settings, so the original trial cohort was well specified, and widening eligibility would have improved accrual while damaging the outcome. The database records a date of diagnosis but no date of randomization, so diagnosis served as the baseline for time to event, which made it impossible to apply the trial's requirement that treatment start within two or three weeks of randomization; a conditional landmark analysis was substituted, chosen because guarantee time bias has been identified in time-to-event analyses of this database. Drug names are not disclosed by the database, so the emulation worked at the level of therapeutic classes. The paper notes there are no formal standards for transparency or reproducibility in emulation, that practical guides are not widely available, and that data safeguarding has received no attention.",
+   "future_research": [
+    {
+     "gap": "Sensitivity analyses for unmeasured bias exist but do not address how to select covariates optimally.",
+     "kind": "stated",
+     "quote": "Although there are methods for analyzing sensitivity to unmeasured bias, 43 these methods do not directly address the problem of optimally selecting covariates.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "SFW-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Three gaps are named together: no formal standards for transparency and reproducibility in emulation, no widely available practical guides, and no attention to safeguarding data that is often proprietary or restricted. The paper's own response is to describe its software environment, which is a statement about tooling rather than about what a study must release.",
+     "quote": "Unlike other observational study frameworks, there are not yet any formal standards to promote research transparency and reproducibility in target trial emulation.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Time zero is set to the recorded date of diagnosis because the database holds nothing closer to randomization, which destroys the trial's own treatment timing windows of two and three weeks. A conditional landmark analysis is inserted to absorb the resulting guarantee time, so the landmark exists to compensate for a time zero the data imposed.",
+     "quote": "Since the date of diagnosis was used as a surrogate for the date of random assignment, it is not possible to apply such treatment time windows to the ETT analysis.",
+     "locator": "Signal paragraph, defining primary outcomes"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The database withholds drug names, so the emulated intervention is a therapeutic class rather than the agent the trial randomized. The equivalence class is set by a data disclosure policy, and nothing establishes that members of the class are interchangeable for the outcome.",
+     "quote": "Furthermore, the NCDB does not disclose specific drug names, requiring the ETT to focus on the therapeutic drug classes.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The paper lists covariate balancing propensity scores, generalized boosted modeling and machine learning approaches as alternatives that may suit certain data or analyses better, and states its own methods may not be adequate for all studies. There is an acknowledged menu with no selection rule and no requirement to show the choice was immaterial.",
+     "quote": "However, the specific methods used in our study may not be appropriate or adequate for all studies and there are alternative ways for conducting each step of ETT design and analysis.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "ELG-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "This is eligibility treated as an object of study rather than a fixed input: 24 permutations show which criteria change the survival estimate and by how much, and cited work in lung cancer found criteria that could be relaxed without harming the hazard ratio. It measures the consequence of criteria on the estimate and does not address selection induced by healthcare-use variables inside those criteria.",
+     "quote": "The impact of patient selection on treatment outcomes can be studied using target trial emulation.",
+     "locator": "Conclusion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0025",
+   "read": true,
+   "doi": "10.1111/add.16473",
+   "title": "Target trial emulation for comparative effectiveness research with observational data: Promise and challenges for studying medications for opioid use disorder.",
+   "relevance": "high",
+   "one_line": "Works through emulating the X:BOT buprenorphine versus naltrexone trial in Massachusetts administrative data, showing a 28-day grace period introduced by the emulation that the trial did not have, and populations that exist in the trial but cannot be identified in the data.",
+   "what_was_done": "The X:BOT randomized trial compared buprenorphine-naloxone with extended-release naltrexone for opioid use disorder, and this paper attempts its emulation using the Massachusetts Public Health Data Warehouse to show what each protocol component costs in administrative data. Eligibility in the trial was determined by clinician assessment during medically managed opioid withdrawal; in the data it is determined from diagnosis codes in the 180 days before discharge from withdrawal management. Figures accompanying the paper mark which populations are observed and which are theoretical but unidentifiable in each dataset. The trial randomized at time zero with follow-up beginning immediately and no grace period; the emulation introduces a 28-day grace period for medication initiation. Because randomization cannot be emulated, only the per-protocol analogue of the trial is available. The paper argues emulation is especially useful here because the trials predate the shift to synthetic opioids in the street supply, so their estimates may not transfer to the current treatment population, and administrative data are more representative and better powered for rare outcomes such as fatal overdose. It notes that the treatment options differ not only in drug but in the whole mode of care delivery.",
+   "future_research": [
+    {
+     "gap": "Whether the difference between these treatments is the medication or the care delivery model around it is unknown.",
+     "kind": "stated",
+     "quote": "The extent to which the medications themselves versus the mode of care delivery effect outcomes remains to be seen, and target trial emulation may be helpful to untangle and understand various treatment effects.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The two strategies being compared bundle a drug with a delivery system, opioid treatment program methadone against office-based buprenorphine, so what counts as the same treatment is unresolved before any estimation begins. The paper names this as a way emulation here is harder than in other applications rather than as something the framework resolves.",
+     "quote": "Last, target trial emulation for MOUD may not be as straightforward as in other medical applications, as different MOUD options entail not only different medications, but often entirely different types of care delivery (e.g. opioid treatment program-based methadone vs office-based buprenorphine in the United States).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The emulation adds a 28-day grace period that the trial it emulates did not have, so the strategies being compared are not the strategies that were randomized. The grace period exists because initiation cannot be observed at a point in administrative data, and its length is stated as a design fact rather than derived.",
+     "quote": "Note that in the original X:BOT trial, there was no 28-day grace period for MOUD initiation, and individuals were randomly assigned to treatment at time zero after which follow-up began.",
+     "locator": "Figure 2 caption"
+    },
+    {
+     "problem_id": "ELG-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper draws the populations that exist in principle beside the ones the data can identify, and marks the difference explicitly. Trial eligibility rested on clinician assessment during withdrawal management, and the emulation substitutes 180 days of diagnosis codes, so a criterion that was assessed and not met is indistinguishable from one that was never coded.",
+     "quote": "Boxes with solid outlines indicate observed populations in each dataset. Boxes with dashed outlines indicate theoretical but unmeasured/unidentifiable populations in each dataset.",
+     "locator": "Figure 1 caption"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The paper states that only the per-protocol analogue is estimable in observational data, since there is no randomization whose effect could be reported. That quantity depends on the censoring and weighting model, and it is being compared against a trial whose headline result is an intention-to-treat effect.",
+     "quote": "Because randomization is not possible in observational studies, observational studies can only emulate the perprotocol analog of the target trial using a similar statistical analysis plan.",
+     "locator": "Signal paragraph, treatment assignment"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0026",
+   "read": true,
+   "doi": "10.1136/thorax-2023-220031",
+   "title": "Emulated trial investigating effects of multiple treatments: estimating combined effects of mucoactive nebulisers in cystic fibrosis using registry data.",
+   "relevance": "high",
+   "one_line": "Emulates a trial of adding hypertonic saline to DNase in 4,498 UK cystic fibrosis registry patients over five years, finds no effect, and reports that the registry records only whether a treatment was prescribed in the past year with no adherence or dose.",
+   "what_was_done": "DNase and hypertonic saline have each been tested alone in randomized trials but never in combination, though they are commonly prescribed together. Using UK CF Registry data from 2007 to 2018, a target trial was emulated among 4,498 people aged 6 and over prescribed DNase without hypertonic saline for two years, with inverse-probability-of-treatment weighting for confounding and five years of follow-up. In the first follow-up year 3,799 continued DNase alone, 426 added hypertonic saline, 57 switched to hypertonic saline alone and 216 were prescribed neither. No evidence emerged that adding hypertonic saline improved forced expiratory volume at one to five years or intravenous antibiotic use at one to four years, with a non-significant suggestion of benefit at lower initial lung function. Dropping DNase suggested poorer outcomes; switching to hypertonic saline suggested improved lung function, which the authors call not clinically plausible and attribute to unmeasured confounding. Treatment recording captures only whether a drug was prescribed over the past year, with no adherence or dosing regimen. Intravenous antibiotic days served as a proxy for exacerbations and include planned as well as unplanned courses. The period predates widespread CFTR modulator use.",
+   "future_research": [
+    {
+     "gap": "Whether these results hold for patients established on highly effective modulator therapy is unknown.",
+     "kind": "stated",
+     "quote": "It is unknown whether similar results would be obtained in patients established on highly effective modulator therapy.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "Whether sample size calculations are needed for observational studies of this kind is unsettled, and none was performed.",
+     "kind": "stated",
+     "quote": "We did not perform sample size calculations and there is some debate as to whether such calculations are needed in observational studies such as this. 27–29",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The treatment strategies being compared are defined by a yearly prescription flag, so continuing DNase and adding hypertonic saline are versions of treatment specified only by what appeared in the registry over twelve months. Adherence and dosing are absent, which the paper states could bias the results, and no rule bounds how much variation the flag can hide.",
+     "quote": "Recording of long-term treatments within the CF Registry captures whether the treatment has been prescribed over the past year, but there is no information on adherence to treatment or dosing regimen.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "One of the two outcomes is intravenous antibiotic days standing in for pulmonary exacerbations, and the substitution is imperfect in a specific way the paper names: the days include planned courses that are not exacerbations at all. The proxy is justified by consistency with previous work using the same registry, so the field has standardized on the substitution rather than validated it.",
+     "quote": "The information on intravenous antibiotic days included both planned and unplanned intravenous and is not a direct marker of exacerbations.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "One secondary result, that switching to hypertonic saline improves lung function, is rejected on clinical grounds and attributed to unmeasured confounding. The judgment is available only because a clinician recognized the estimate as implausible, and the paper offers no diagnostic that would have flagged it or that would apply to the primary result.",
+     "quote": "This result is not clinically plausible and may be impacted by unmeasured confounding, which we discuss further below.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The analysis window was chosen to end before CFTR modulators entered routine care, which removes confounding by modulator status and simultaneously makes the estimate one for a population that no longer exists. The paper states the transport question and proposes repeating the study rather than transporting the estimate.",
+     "quote": "However, by predating the widespread introduction of CFTR modulators, we were, however, able to address this question without potential confounding by modulator status.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0029",
+   "read": true,
+   "doi": "10.1038/s41467-023-43929-1",
+   "title": "High-throughput target trial emulation for Alzheimer's disease drug repurposing with real-world data.",
+   "relevance": "high",
+   "one_line": "Emulates hundreds of thousands of trials across thousands of drugs in two databases covering 170 million patients, shows machine learning propensity models selected by validation AUC balance covariates worse than logistic regression, and reports the same drug reversing direction between databases.",
+   "what_was_done": "Two large real-world warehouses, the regional OneFlorida electronic health records and the nationwide MarketScan claims, covering more than ten years and over 170 million patients, were used to emulate trials for thousands of medications among patients with mild cognitive impairment, seeking repurposing candidates for Alzheimer's disease. Propensity score models under inverse probability of treatment weighting were compared, including gradient boosting, multilayer perceptron and long short-term memory networks against logistic regression, with control groups built two ways per drug. The machine learning models did not outperform logistic regression on covariate balance. Selecting them by validation-set area under the curve, the standard machine learning practice, chose models with worse balancing performance on both real and simulated data and produced seriously biased hazard ratios in simulation, so a balance-based model selection strategy was proposed instead. Control group construction mattered: fluticasone gave 0.84 with interval 0.80 to 0.87 under random controls and 1.02 with interval 1.00 to 1.04 under same-class controls. Escitalopram showed reduced risk in OneFlorida and increased risk in MarketScan. Five drugs were highlighted. The analyses assumed non-informative censoring and targeted an intention-to-treat association.",
+   "future_research": [
+    {
+     "gap": "Informative censoring was assumed away and detecting and modeling it is left for future work, as are negative control tools and per-protocol analysis under time-varying exposure.",
+     "kind": "stated",
+     "quote": "In addition, we assumed non-informative censoring in our time-to-event analyses and detecting and modeling potentially informative censoring can be a future extension to our current pipeline.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "Eligibility criteria were kept deliberately concise, and designing them automatically per emulated trial is proposed rather than done.",
+     "kind": "stated",
+     "quote": "Further directions include considering the real-world safety profiles 46 as another outcome or automatically designing eligibility criteria 52 tailored for each emulated trial under our high-throughput setting.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Selecting a propensity model by predictive performance on a validation set, which is the default machine learning practice, produced models that balanced covariates worse and, in simulation, hazard ratios with serious bias. This is the prediction-versus-causal-performance gap demonstrated at scale across hundreds of thousands of emulated trials, and the paper's response is a balance-based selection rule for this specific setting rather than a general criterion.",
+     "quote": "Specifically, directly applying the cross-validation framework based on AUC on the validation set, i.e., the typical ML model selection practice, might select ML-PS models that lead to less superior balancing performance on both the real-world data (Fig.  2 ) and simulated data (Supplementary Figs.  S9a , S10a–c ), and estimated adjusted hazard ratio with serious bias issues in our simulation studies (Supplementary Figs.  S9b , S10d–i ).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "DTA-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The same protocol run on two databases returned opposite directions for escitalopram, 0.70 in the regional records against 1.56 in the national claims at two years, and the explanation offered is intrinsic heterogeneity between a regional electronic health record source and a nationwide claims source with very different patient counts. The paper's stated future direction is a federated learning framework, which would combine exactly such sources.",
+     "quote": "For example, escitalopram showed a reduced risk in the OneFlorida data (aHR 0.70, 95% CI 0.63-0.79 at 2-yr follow-up, Supplemental Table  S5 ) but increased risk in the MarketScan database (aHR 1.56, 95% CI 1.49–1.62 at 2-yr follow-up, Supplemental Table  S6 ).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Standardized mean difference is the balance criterion the whole pipeline optimizes, and the simulations show it is necessary but not sufficient for good balance or unbiased estimates. The diagnostic that drives model selection therefore does not certify the property it is selecting for, and no alternative is offered.",
+     "quote": "However, would like to suggest that a good performance of SMD is necessary but not sufficient for a good balance or less-biased estimates in light of our simulation studies.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "LRN-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Three classes of flexible model, gradient boosting, a multilayer perceptron and a recurrent network, were run at scale against logistic regression and did not balance covariates better. The paper's conclusion is that model selection matters more than model class, which relocates the problem away from estimator flexibility entirely.",
+     "quote": "In this paper, after emulating hundreds of thousands of trials from two large-scale RWD warehouses, we found that GBM-PS, MLP-PS, and LSTM-PS, which are representative ML-PS methods, did not outperform LR-PS in terms of balancing performance on training and testing combined sets.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Both the eligibility condition and the outcome are diagnosis codes, and the paper states there is a level of inaccuracy from misdiagnosis, underdiagnosis and missing clinical detail. The proposed remedy, natural language processing of clinical notes, is future work, so the analysis treats the codes as error-free throughout.",
+     "quote": "First, we identified MCI patients and AD onsets using ICD codes (Supplementary Table  S3 ) which were provided by physicians and validated 46 , 47 yet there might be a certain level of inaccuracy due to mis- and under-diagnosis or the lack of clinical details in EHRs or claims 48 .",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}
