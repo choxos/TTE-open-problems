@@ -19,13 +19,29 @@ import { fileURLToPath } from 'node:url'
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const AUDIT = join(ROOT, 'documentation/audit')
 
-export const RULE_VERSION = 'adjudicate.v1'
+export const RULE_VERSION = 'adjudicate.v2'
 
 // Auditors whose votes are counted. The refuter is excluded on purpose: it sees the others'
 // opinions, so counting it would double-count whatever it was persuaded by.
-const INDEPENDENT = ['literature', 'solved-hunter', 'codex', 'grok']
+//
+// This list must name the auditors that actually run. The sibling ITC project declares a
+// 'solved-hunter' that never casts an opinion, which leaves the corroboration guard on R1
+// permanently inert and lets R2 fire on any solitary solved vote.
+export const INDEPENDENT = ['literature', 'codex', 'grok', 'glm']
+
+// Auditors told to assume the problem is already solved and go find who solved it. Their prior
+// is inverted by construction, so a solved vote from one of them needs corroboration from an
+// auditor that was not primed that way before it can close a problem on its own.
+const INVERTED_PRIOR = ['grok']
 
 const hasLocator = (w) => w && typeof w.locator === 'string' && w.locator.trim().length > 3
+
+// Coverage is uneven: external models run out of quota mid-run, so one entry may be reached by
+// four auditors and the next by two. A bare ">= 2" therefore means "half" on one entry and "a
+// quarter" on another. Every majority test is taken over the auditors that actually returned a
+// non-abstaining vote ON THAT AXIS FOR THAT ENTRY, and the denominator is recorded in the
+// decision path so the strength of a verdict is visible rather than implied.
+export const majorityOf = (n, voters) => n >= 2 && n * 2 >= voters.length
 
 export function adjudicate(record) {
   const path = []
@@ -46,25 +62,30 @@ export function adjudicate(record) {
   const refuter = cleaned.find((o) => o.auditor === 'refuter') || null
 
   // ---- Axis A: is it still open? ----
+  const statusVoters = indep.filter((o) => o.status_vote && o.status_vote !== 'abstain')
+  const sD = statusVoters.length
   const solved = indep.filter((o) => o.status_vote === 'solved')
   const partial = indep.filter((o) => o.status_vote === 'partially-solved')
-  // The solved-hunter's prior is inverted by construction, so it needs corroboration
-  // before its vote alone can close a problem.
-  const solvedCorroborating = solved.filter((o) => o.auditor !== 'solved-hunter')
+  const notAProblem = indep.filter((o) => o.status_vote === 'not-a-problem')
+  const solvedCorroborating = solved.filter((o) => !INVERTED_PRIOR.includes(o.auditor))
 
   let status
-  if (solved.length >= 2 && solvedCorroborating.length >= 1) {
+  if (solved.length >= 2 && solvedCorroborating.length >= 1 && majorityOf(solved.length, statusVoters)) {
     status = 'solved'
-    path.push(`R1:solved-corroborated(n=${solved.length})`)
-  } else if (solved.length === 1) {
+    path.push(`R1:solved-corroborated(n=${solved.length}/${sD})`)
+  } else if (solved.length >= 1) {
+    // Either a lone solved vote, or a solved bloc that did not reach a majority of the auditors
+    // that actually voted. Both are contests, not closures.
     status = 'contested'
-    path.push('R2:solitary-substantiated-solved-claim')
+    path.push(`R2:solitary-or-minority-solved-claim(n=${solved.length}/${sD})`)
   } else if (partial.length >= 1) {
+    // Deliberately a single-vote trigger. R0 has already downgraded any partially-solved vote
+    // that arrived without a locator, so what survives here is substantiated.
     status = 'partially-solved'
-    path.push(`R3:partially-solved(n=${partial.length})`)
-  } else if (indep.filter((o) => o.status_vote === 'not-a-problem').length >= 2) {
+    path.push(`R3:partially-solved(n=${partial.length}/${sD})`)
+  } else if (majorityOf(notAProblem.length, statusVoters)) {
     status = 'not-a-problem'
-    path.push('R4:not-a-problem')
+    path.push(`R4:not-a-problem(n=${notAProblem.length}/${sD})`)
   } else {
     status = 'open'
     path.push('R5:default-open')
@@ -77,6 +98,8 @@ export function adjudicate(record) {
   const misattr = indep.filter((o) => o.support_vote === 'misattributed')
   const unver = indep.filter((o) => o.support_vote === 'unverifiable')
   const caveated = indep.filter((o) => o.support_vote === 'supported-with-caveat')
+  const supportVoters = indep.filter((o) => o.support_vote && o.support_vote !== 'abstain')
+  const pD = supportVoters.length
 
   let support
   if (misattr.length >= 1 && counters.length >= 1 && supporters.length === 0) {
@@ -85,18 +108,21 @@ export function adjudicate(record) {
   } else if (counters.length >= 1 && supporters.length >= 1) {
     support = 'contested'
     path.push('R7:counter-and-support-both-present')
-  } else if (over.length >= 2) {
+  } else if (majorityOf(over.length, supportVoters)) {
     support = 'overstated'
-    path.push(`R8:overstated-majority(n=${over.length})`)
-  } else if (over.length === 1 && over[0].weakest_true_restatement) {
-    // A lone overstatement flag that comes with a concrete weaker restatement is evidence,
-    // not merely a vote, so it is not outvoted by auditors who simply agreed with the claim.
-    // This is the case where one auditor read more carefully than the others.
+    path.push(`R8:overstated-majority(n=${over.length}/${pD})`)
+  } else if (over.length >= 1 && over.some((o) => o.weakest_true_restatement)) {
+    // An overstatement flag that comes with a concrete weaker restatement is evidence, not
+    // merely a vote, so it is not outvoted by auditors who simply agreed with the claim. This
+    // is the case where one auditor read more carefully than the others. It also catches an
+    // overstated bloc that failed the majority test above: a minority that did the reading
+    // still qualifies the claim rather than being discarded.
     support = 'supported-with-caveat'
-    path.push(`R9:substantiated-single-overstatement:${over[0].auditor}`)
-  } else if (unver.length >= 2 && supporters.length === 0 && caveated.length === 0) {
+    const flagged = over.filter((o) => o.weakest_true_restatement).map((o) => o.auditor)
+    path.push(`R9:substantiated-overstatement(n=${over.length}/${pD}):${flagged.join('+')}`)
+  } else if (majorityOf(unver.length, supportVoters) && supporters.length === 0 && caveated.length === 0) {
     support = 'unverifiable'
-    path.push('R10:no-accessible-source')
+    path.push(`R10:no-accessible-source(n=${unver.length}/${pD})`)
   } else if (caveated.length >= supporters.length && caveated.length >= 1) {
     // The most common outcome by far: the problem is real and the framing needs qualifying.
     // Treating a caveat as equivalent to plain support would erase the qualification, which

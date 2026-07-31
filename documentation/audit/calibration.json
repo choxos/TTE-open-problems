@@ -1,0 +1,80 @@
+{
+  "purpose": "Known-answer cases, verified by hand against source. Any audit configuration that fails to reproduce these verdicts is miscalibrated and its other verdicts should not be trusted. Asserted by tools/check-calibration.mjs as a lint step before the site is built.",
+  "verified_at": "2026-07-30",
+  "how_to_use": "Each fixture names a claim and the verdict a correctly calibrated audit must return for it. Ground truth is a verbatim quote from a pinned file under documentation/refs/packages/, or a resolved identifier. A fixture that stops reproducing means either the auditor is wrong or the pinned package moved; the pins below distinguish the two.",
+  "packages": {
+    "TrialEmulation": {
+      "source": "CRAN",
+      "version": "0.0.4.11",
+      "published": "2026-04-10",
+      "path": "documentation/refs/packages/cran/TrialEmulation",
+      "exports": 37
+    }
+  },
+  "fixtures": [
+    {
+      "ref": "A",
+      "type": "STALE",
+      "claim": "No R package implements the sequential (nested) target trial design with switching and censoring weights; analysts must assemble it themselves.",
+      "expected_verdict": "resolved-since-report",
+      "ground_truth": "TrialEmulation 0.0.4.11 NAMESPACE exports trial_sequence, expand_trials, set_switch_weight_model, set_censor_weight_model, calculate_weights and trial_msm.",
+      "ground_truth_file": "documentation/refs/packages/cran/TrialEmulation/NAMESPACE",
+      "why_it_is_a_fixture": "Positive control for the already-fixed detector. An audit that reports this as open is not reading the code.",
+      "observed": [
+        {
+          "auditor": "glm",
+          "date": "2026-07-30",
+          "vote": "open",
+          "confidence": 0.8,
+          "rationale_excerpt": "there is no single, dedicated R package that provides a turnkey implementation of the sequential nested target trial design with switching and censoring weights out of the box. Analysts typically must assemble the workflow themselves",
+          "correct": false,
+          "note": "Measured on the first end-to-end run, before any real batch. GLM reaches the model through an HTTP API with no filesystem access, so it cannot check a package claim against source and answers from recollection instead. Its votes on software capability carry correspondingly little weight; that lens belongs to codex, which reads the pinned tree under documentation/refs/packages/. Recorded here rather than discarded because it is the clearest available demonstration of why the auditors are given different lenses."
+        }
+      ]
+    },
+    {
+      "ref": "B",
+      "type": "NEGATIVE CONTROL",
+      "claim": "No implementation returns as-treated estimands from the predict method of a sequential trial emulation.",
+      "expected_verdict": "confirmed-open",
+      "ground_truth": "TrialEmulation R/predict.R line 44: warning(\"As-Treated estimands are not currently supported by this predict method. Results may be unexpected.\")",
+      "ground_truth_file": "documentation/refs/packages/cran/TrialEmulation/R/predict.R",
+      "why_it_is_a_fixture": "The phrase 'As-Treated estimands ... supported by this predict method' appears in the file inside a sentence that NEGATES it. A grep-level check flips this to resolved; only reading the sentence gets it right."
+    },
+    {
+      "ref": "C",
+      "type": "HALF TRUE",
+      "claim": "TrialEmulation estimates only intention-to-treat effects, so per-protocol questions need a different package.",
+      "expected_verdict": "overstated",
+      "ground_truth": "TrialEmulation DESCRIPTION: 'Using marginal structural models, it can estimate intention-to-treat and per-protocol effects in emulated trials using electronic health records.'",
+      "ground_truth_file": "documentation/refs/packages/cran/TrialEmulation/DESCRIPTION",
+      "why_it_is_a_fixture": "Most of the sentence is true, which is exactly the shape a coarse check waves through. The package does estimate intention-to-treat effects; the word 'only' is the error."
+    },
+    {
+      "ref": "D",
+      "type": "REPORTING GUIDELINE",
+      "claim": "No reporting guideline exists for target trial emulation studies.",
+      "expected_verdict": "resolved-since-report",
+      "ground_truth": "The TARGET reporting guideline for target trial emulations is published and has its own site at https://target-guideline.org. The statement and its accompanying systematic review are on disk.",
+      "ground_truth_file": "documentation/refs/guidance/TARGET_Statement.pdf",
+      "why_it_is_a_fixture": "The counterpart of the sibling project's finding that a source report proposed building a standard that already existed. Catches an auditor that does not check whether the thing being asked for has shipped."
+    },
+    {
+      "ref": "E",
+      "type": "FOUNDATIONAL",
+      "claim": "No published statement enumerates the protocol components a target trial must specify.",
+      "expected_verdict": "not-supported",
+      "ground_truth": "Hernan MA, Robins JM. Using Big Data to Emulate a Target Trial When a Randomized Trial Is Not Available. American Journal of Epidemiology 2016. doi:10.1093/aje/kwv254. Resolved against CrossRef with matching first author and title.",
+      "why_it_is_a_fixture": "Catches an auditor that cannot find the field's own founding literature. Any verdict other than not-supported means the search is not working."
+    },
+    {
+      "ref": "F",
+      "type": "PROVENANCE",
+      "claim": "Any claim whose only support is one of the seven source references that could not be resolved.",
+      "expected_verdict": "unverifiable",
+      "ground_truth": "documentation/audit/seed-citations.json marks seven of the 35 source references with \"confidence\": \"none\". They sit behind publisher pages that block automated access and no search result matched their prose context.",
+      "ground_truth_file": "documentation/audit/seed-citations.json",
+      "why_it_is_a_fixture": "An entry resting only on a reference nobody has read must not ship as confirmed open. This is the fixture that keeps the unresolved references from leaking into the catalog as though they were checked."
+    }
+  ]
+}

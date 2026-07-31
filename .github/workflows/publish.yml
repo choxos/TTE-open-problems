@@ -28,6 +28,18 @@ jobs:
         with:
           node-version: "22"
 
+      # The rule that turns auditor opinions into a published verdict. A silent
+      # change here would move verdicts on every entry at once, so it is pinned
+      # by golden cases and checked before anything is built.
+      - name: Adjudication rule tests
+        run: node tests/adjudicate.test.mjs
+
+      # Known-answer cases verified by hand. An audit configuration that cannot
+      # reproduce them is miscalibrated, and its other verdicts are not
+      # trustworthy either.
+      - name: Calibration fixtures
+        run: node tools/check-calibration.mjs
+
       # Fails in seconds on a bad verdict value or a dangling cross-link,
       # rather than after a full render.
       - name: Validate the problem registry
