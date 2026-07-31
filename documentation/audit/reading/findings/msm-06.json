@@ -1,0 +1,777 @@
+{
+ "batch": "msm-06",
+ "papers": [
+  {
+   "id": "L0160",
+   "read": true,
+   "doi": "10.1111/biom.13158",
+   "title": "Adjusting for time-varying confounders in survival analysis using structural nested cumulative survival time models.",
+   "relevance": "high",
+   "one_line": "A structural nested cumulative survival time model with three estimators applied to 2386 UK Cystic Fibrosis Registry patients gives survival probability ratios of 0.997 to 0.988 over five years with confidence intervals covering 1, and the least efficient of the three estimators produces intervals four to nine times wider on the same data.",
+   "what_was_done": "A structural nested cumulative survival time model is developed for time-varying exposures, assuming that setting exposure at time t to zero has an additive effect on the subsequent conditional hazard once all later exposures are set to zero. Three estimators are given: a generalized linear model fit, and two closed-form doubly robust g-estimators. Simulations used four visits, two time-dependent confounders, n equal to 1000 and 1000 replicates, under regular visits with and without random censoring and under irregular visits; all three estimators were approximately unbiased and bootstrap coverage was near 95 percent. The applied analysis used 2386 UK Cystic Fibrosis Registry adults observed 2008 to 2016 with up to eight annual visits, median inter-visit time 1.00 years and interquartile range 0.93 to 1.07. There were 137 deaths and 653 nonadministrative censorings including 36 transplants over 12380 person-years, with crude death rates of 0.019 per person-year while treated and 0.0075 while untreated. Estimated ratios of survival probabilities for starting DNase immediately versus delaying one year were 0.997, 0.996, 0.997, 0.994 and 0.988 at one to five years, all with bootstrap intervals covering 1. The efficiency gap between estimators of the same model was large: intervals from the GLM-based estimator were four to nine times wider than from g-estimation. Unmeasured confounding was not assessed.",
+   "future_research": [
+    {
+     "gap": "Additive-hazard structural nested models do not constrain the implied survival probabilities to be at most one, and no repair is offered.",
+     "kind": "stated",
+     "quote": "A limitation is that, like other additive hazards models, the SNCSTM does not constrain hazards to be nonnegative, and so does not exclude survival probabilities greater than one.",
+     "locator": "DISCUSSION"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Three estimators of the identical structural model were applied to the same 2386-patient registry extract and differed in precision by nearly an order of magnitude: confidence intervals from the GLM-based estimator were four to nine times wider than from g-estimation. The estimator with the weakest assumptions, method 3, is set aside on computational grounds rather than on any stated criterion. Nothing in the reporting requires an analysis to demonstrate that the estimator choice did not drive the conclusion.",
+     "quote": "The confidence intervals were between 4 and 9 times wider than those from method 2.",
+     "locator": "ANALYSIS OF CYSTIC FIBROSIS REGISTRY DATA"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Tolerance of positivity violation is presented as an advantage: individuals whose covariate history excludes them from an exposure level contribute nothing to the estimating functions. The set of excluded histories is therefore determined by the estimating equation rather than reported, and the applied analysis publishes no count of how many of the 2386 patients or 12380 person-years dropped out this way. A weight-free estimator removes the weight diagnostic without replacing it with a statement of which histories were unsupported.",
+     "quote": "Indeed, they can even be used when the so‐called experimental treatment assignment assumption is violated, that is, when some individuals are, on the basis of their time‐varying covariate information, excluded from receiving particular exposure levels.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The published estimand is a survival probability ratio over m years whose interpretation holds only if visits are exactly annual, while the observed visits are irregular with a median gap of 1.00 years and an interquartile range of 0.93 to 1.07. The time grid is inherited from the registry's visit schedule rather than chosen by any outcome-blind procedure, and no sensitivity analysis varies it. Censoring was also triggered by an 18-month gap in visits, a second time constant with no stated derivation.",
+     "quote": "is the effect on the probability of surviving at least m years after visit k if visits are exactly annual.",
+     "locator": "ANALYSIS OF CYSTIC FIBROSIS REGISTRY DATA"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Irregular visit timing enters only as a determinant of estimator efficiency, not as part of the causal structure: the GLM-based estimator becomes much less competitive under random censoring and worse still under irregular visits. The visit process also defines censoring, since patients unseen for 18 months are censored, so being observed is simultaneously the measurement mechanism and the survival criterion. No model for the visit process is specified.",
+     "quote": "This method became much less competitive, however, when there was random censoring, and even more so when visit times were irregular.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A registry covering nearly all UK cystic fibrosis patients yields 2386 analyzable adults and 137 deaths after excluding under-18 visits and anyone treated before baseline, and 653 individuals are lost to nonadministrative censoring. The null result is attributed in part to the restriction itself. Database size did not translate into information about the contrast of interest.",
+     "quote": "This lack of a significant treatment effect may be because we have focused on a subset of the population (adults not previously treated with DNase) and/or because there are unmeasured confounders.",
+     "locator": "ANALYSIS OF CYSTIC FIBROSIS REGISTRY DATA"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0162",
+   "read": true,
+   "doi": "10.1007/s10985-019-09468-y",
+   "title": "The additive hazard estimator is consistent for continuous-time marginal structural models.",
+   "relevance": "high",
+   "one_line": "Continuous-time marginal structural model weights estimated by additive hazard regression are shown to be consistent under a sufficient condition, but the estimator depends on a bandwidth parameter with four competing convergence rates from n to the one half down to n to the one tenth and no rule for choosing among them.",
+   "what_was_done": "A sufficient condition is proved under which weighted additive hazard regression remains consistent when continuous-time treatment weights are estimated rather than known, and a transformation strategy based on stochastic differential equation stability is given for converting weighted cumulative hazard estimates into parameters with a clearer causal reading. The weight estimator requires a bandwidth parameter, and four scaling strategies were compared in simulation, proportional to n to the one half, one third, one fifth and one tenth, with the fastest showing faster bias decline but higher variance and the slowest the reverse. A simulated observational study with a terminating event, a binary confounder process and treatment as a single-jump counting process compared the continuous-time weights against discrete stabilized inverse probability of treatment weights built from pooled logistic regressions over the interval zero to ten split into equidistant subintervals; the continuous-time weights better approximated the curves obtained under the true likelihood ratios. Implementation is in the R packages ahw and transform.hazards. The treatment process is restricted to a time to event; recurrent or piecewise constant exposures are described as generalizable but not developed. Weight instability under skewed treatment-time distributions is acknowledged and truncation is offered with an explicit bias cost.",
+   "future_research": [
+    {
+     "gap": "Whether the same consistency result holds when the outcome model is a weighted Cox regression is unresolved, and the marginalized Cox model imposes restrictions on the data generating mechanism that are not understood.",
+     "kind": "stated",
+     "quote": "However, using a Cox model in the hypothetical scenario after marginalisation leads to restrictions on the data generating mechanisms that are not properly understood",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Extension beyond single-jump treatment to recurrent or piecewise constant exposure is asserted rather than demonstrated.",
+     "kind": "stated",
+     "quote": "If A is allowed to have multiple jumps, the estimation procedure becomes more complex, but the same estimators (4) and (14) can be used with few modifications.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A consistency condition and a working estimator are supplied for continuous-time weights when treatment is a single-jump counting process, which removes the need to discretize the interval zero to ten into arbitrary subintervals as the discrete comparator does. What remains open is everything the registry entry names: the treatment process is restricted to one jump, dynamic regimes are not treated at all, and the observation process is assumed away rather than modeled as depending on treatment history.",
+     "quote": "We have considered the treatment process A to be a time-to-event variable, but our strategy can be generalised to handle recurrent, or piecewise constant exposures.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The continuous-time weight estimator needs a bandwidth parameter whose appropriate value depends on the unknown shape of the treatment hazard, and the four candidate rates traded bias against variance in opposite directions across sample sizes. The recommended practice is to rerun the analysis at several bandwidths and compare the weighted estimators, which is an outcome-visible comparison rather than an outcome-blind selection rule. The discrete comparator carries the same problem in a different form, since the study period was split into equidistant subintervals with no stated criterion for their number.",
+     "quote": "We can assess sensitivity concerning the choice of the bandwidth by performing an analysis for several bandwidth values, truncating weights if necessary, and comparing the resulting weighted estimators.",
+     "locator": "SIGNAL PARAGRAPHS"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Skewed treatment-time distributions are named as a source of large weights for particular subjects even when the bandwidth suits most of the sample, and the offered remedy is truncation at a threshold with an acknowledged bias cost. The diagnostic language is entirely about the weights themselves; no procedure names which treatment histories lack support, and the reported simulation output is mean weight estimates rather than a description of the unsupported region.",
+     "quote": "Such distributions can lead to instable, and possibly large weights for some subjects, even if the chosen bandwidth parameter is a good choice for most other subjects.",
+     "locator": "SIGNAL PARAGRAPHS"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Three estimation routes for the same longitudinal causal question are set side by side: discrete inverse probability weights, the new continuous-time weights, and structural nested models. The structural nested alternative is described as often more stable and efficient while requiring other parametric assumptions, so the comparison ends in a qualitative trade-off with no criterion for choosing. Continuous-time weights are recommended on the grounds that they perform better when the treatment process is continuous, a condition the analyst cannot verify from the data.",
+     "quote": "While this procedure avoids weighting, and will often be more stable and efficient, it relies on other parametric assumptions and can be harder to implement",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A transformation strategy converts weighted cumulative hazard estimates into other survival parameters, so a hazard-scale quantity need not be the reported estimand, and the noncollapsibility of the Cox model is named as the reason for preferring it. This closes the mechanical part of the mismatch. It does not touch the substantive part named in the registry entry: nothing here defines the population a per-protocol contrast refers to, and nothing addresses grace-period compatibility or adherence weighting.",
+     "quote": "Importantly, we also show that causal effect estimates on the hazard scale, e.g. weighted cumulative hazard estimates, can be transformed consistently to estimate other parameters that are easier to interpret causally.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0163",
+   "read": true,
+   "doi": "10.1002/sim.7913",
+   "title": "Using marginal structural models to adjust for treatment drop-in when developing clinical prediction models.",
+   "relevance": "high",
+   "one_line": "Across 1000 simulation replicates at seven values of the treatment effect on the covariate, every conventional strategy for building a risk model underestimated risk under no treatment, and only a marginal structural model recovered it.",
+   "what_was_done": "Clinical prediction models are recast inside a counterfactual framework so that the predicted quantity is risk under no current or future treatment, which is what a treatment-initiation decision requires and what a model fitted to treated patients does not deliver. Four strategies were compared in simulations with a binary treatment and a binary covariate recorded at two timepoints and a binary outcome: ignoring treatment, fitting on patients untreated at baseline, including baseline treatment, and a marginal structural model. The relationship between baseline treatment and the later covariate was varied through seven values from minus three to zero, standing for the cholesterol-lowering effect of statins, with 1000 replicates per value and evaluation in two independent test sets. All strategies except the marginal structural model underestimated risk in the absence of treatment across every scenario, and the statin example confirmed that ignoring post-baseline initiation materially underestimated ten-year cardiovascular risk, which would lead to under-allocation of treatment. Existing alternatives are reviewed and rejected: historical cohorts predating the treatment give models irrelevant to current practice, restricting to never-treated patients induces selection bias, censoring at initiation assumes drop-in depends only on baseline risk factors, and borrowing external effect estimates requires transferability. Residual confounding is assumed absent, only one treatment is modeled, discontinuation is not modeled, and informative observation is left unaddressed.",
+   "future_research": [
+    {
+     "gap": "Risk factors in routine records are observed at times that depend on how sick the patient is, and no method inside this framework handles that.",
+     "kind": "stated",
+     "quote": "in routinely collected observational data, risk factors may be observed at different times and are likely to be subject to informative observation and missingness",
+     "locator": "DISCUSSION"
+    },
+    {
+     "gap": "Deploying a risk model changes the care that generates the data the model was fitted to, and no account of that feedback exists.",
+     "kind": "stated",
+     "quote": "Third, we note that using a CPM is itself an intervention, suggesting that a metamodel with rapid feedback may be required to understand how the use of the CPM may be changing patient care.",
+     "locator": "DISCUSSION"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Post-baseline treatment initiation in the untreated group is precisely the mechanism the registry entry names, and its magnitude is measured here: every strategy that fails to model it underestimated risk under no treatment across seven values of the covariate effect and 1000 replicates each, and in the statin example the underestimate was large enough to change treatment allocation. The bias grows with the length of follow-up because the opportunity for drop-in accumulates, which is why ten-year risk was affected more than short-horizon risk.",
+     "quote": "Failing to account for treatment drop‐ins led to significant underprediction in risk E3 and a corresponding underallocation to treatment.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The target quantity is risk under a strategy of no current or future treatment, which is never observed for the patients who drop in, so the conventional model estimates a different quantity keyed to whatever treatment happened rather than a noisy version of the intended one. The four candidate workarounds each substitute a further different estimand: risk in a historical era, risk among the selected never-treated, or risk under an assumption that drop-in depends only on baseline factors. Validation studies compound this by all targeting the observed-care estimand.",
+     "quote": "Importantly, all published CPM validation studies, whether internal or external, focus on the model's ability to estimate E2.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The framework requires risk factors at fixed timepoints, and the simulation supplies exactly two, while routine records deliver measurements taken because a clinician judged them necessary. The paper names this directly: observation is informative because patients are measured more often when sicker, which makes the visit process part of the structure that generates both the covariate history and the treatment drop-in the weights are meant to model. No method inside the framework handles it.",
+     "quote": "Methods are needed to overcome such challenges within this framework.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "No residual confounding is assumed throughout, and the response is a recommendation that sensitivity analyses be considered advisable rather than any integrated component of the procedure. The simulation varies the treatment effect on the covariate across seven values but never varies an unmeasured confounder, and the statin application supplies no negative control or validation subsample against which the treatment-naive risk estimate could be checked.",
+     "quote": "Particularly, when using routinely collected observational data for causal inference, sensitivity analyses to explore residual confounding are advisable.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A measurement of whether the modeling choice mattered is actually supplied here: four strategies were run on identical data across seven parameter values and 1000 replicates each, and three of the four were shown to be biased for the stated target, which is the demonstration the registry entry says studies are never required to produce. The demonstration is narrow. It covers one binary treatment at two timepoints with no unmeasured confounding, no discontinuation and no interaction, so it establishes a default for this configuration only and says nothing about which longitudinal estimator to prefer elsewhere.",
+     "quote": "In all simulation scenarios, all models except the MSM underestimated the risk of outcome given absence of treatment.",
+     "locator": "Abstract"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0164",
+   "read": true,
+   "doi": "10.1186/s12939-018-0874-1",
+   "title": "The roll-out of a health insurance program and its impact on the supply of healthcare services: a new method to evaluate time-varying continuous interventions.",
+   "relevance": "medium",
+   "one_line": "A weighted local-regression procedure for time-varying continuous exposures applied to 233 Mexican sanitary jurisdictions over 2328 jurisdiction-years found the insurance roll-out raised healthcare resource density most in the jurisdictions that were already best resourced in 2001.",
+   "what_was_done": "A semiparametric procedure joins the literature on continuous fixed treatments to the literature on binary dynamic treatments, estimating mean and quantile dose-response functions by kernel-weighted local linear regression on samples reweighted by stabilized inverse probability of treatment weights. The intervention is the coverage of the Mexican Seguro Popular program, a continuous quantity defined as persons affiliated relative to the target population, and the recipients are 233 sanitary jurisdictions observed annually from 2002 to 2013, pooled into 2328 jurisdiction-year observations. Weight denominators come from pooled ordinary least squares density estimates, and the estimated weights had yearly medians and interquartile ranges close to 1. Covariate balance is checked by a time-varying balance test in which the current exposure should be uninformative about a covariate after conditioning on exposure history. Common support is assessed with Gower distances, applied sequentially so recipients too far from the rest at one stage are removed before the next stage is examined, and the paper states plainly that this changes the population of inference. Standard errors come from bootstrapping whole jurisdiction histories rather than individual jurisdiction-years. The program raised the density of physicians, nurses, offices and beds, with larger gains at the upper quantiles of the outcome distribution and for jurisdictions better resourced in 2001. No data on service quality, staff qualifications or waiting lists were available.",
+   "future_research": [
+    {
+     "gap": "Quality of the healthcare services created by the program cannot be evaluated because the administrative records measure only counts of resources.",
+     "kind": "stated",
+     "quote": "Information regarding the quality of the healthcare services, for example on the precise qualifications of the physicians and nurses, or on waiting lists, is not available",
+     "locator": "SIGNAL PARAGRAPHS"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "PRO-05",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The intervention is a decade-long insurance roll-out whose treatment value is an affiliation ratio and whose assignment unit is an administrative jurisdiction, chosen because jurisdictions operate the services rather than because they are the units to which an intervention could be assigned. There is no version of the treatment to define: a jurisdiction does not receive a dose, it accumulates affiliations through decisions made at state level. The dose-response function is estimated anyway, over an exposure that no protocol could specify.",
+     "quote": "In our analysis we focus on the 233 SJs as recipients of SP coverage, defined as the number of persons affiliated to the program relative to the size of the target population in every SJ",
+     "locator": "Common support and covariate balance tests"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Exposure histories are collapsed to their cumulative sum, so a jurisdiction that reached a coverage level early and one that reached it late are treated as the same exposure although they carry different weights and, by the paper's own argument about federal transfers, different resource consequences. What is reported is a weighted average across all histories sharing a total. No procedure defines which histories belong in that equivalence class beyond the arithmetic of the sum.",
+     "quote": "In this way we estimate a composite (weighted average) effect of all the different observed histories that have the same cumulative exposure history.",
+     "locator": "The effects of Seguro popular: mean dose-response functions"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A concrete positivity procedure is supplied rather than a weight summary: Gower distances identify recipients too far from the rest in covariate space, elimination is applied sequentially stage by stage so that support is checked at every time point, and the consequence for the estimand is stated openly. What it does not close is the naming of unsupported exposure histories: the criterion operates on recipients and covariates, not on treatment histories, and the accompanying weight report reverts to noting that yearly means sit close to 1.",
+     "quote": "It is important to note that removing the recipients outside common support from the analysis changes the population of inference, restricting it, in principle, to those recipients for which we can produce reliable answers to our causal questions.",
+     "locator": "Covariate balance and common support"
+    },
+    {
+     "problem_id": "EST-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Jurisdictions compete for a fixed state budget, so raising coverage in one changes the resources available to another, and the paper attributes its own heterogeneity finding partly to state-level allocation decisions across rural and urban areas. The dose-response function nonetheless treats each of the 233 jurisdictions as an independent recipient whose outcome depends only on its own exposure history. The estimated response at a high coverage level corresponds to a joint allocation that could not have been realized for all jurisdictions at once.",
+     "quote": "States in Mexico are faced with hard choices about the allocation and distribution of scarce resources and healthcare services.",
+     "locator": "Conclusions"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The outcome is the count of physicians, nurses, offices and beds per capita, and nothing records whether those resources function: qualifications, waiting lists and quality indicators are absent from the administrative records. A conclusion about equity in access rests on a supply variable that cannot distinguish a staffed facility from an unstaffed one. The gap is reported in a footnote-style remark rather than as a criterion that would have limited the claims.",
+     "quote": "although more recently pro gress is being made on the recording of quality indicators",
+     "locator": "SIGNAL PARAGRAPHS"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0165",
+   "read": true,
+   "doi": "10.1177/0962280218780619",
+   "title": "Marginal structural models with dose-delay joint-exposure for assessing variations to chemotherapy intensity.",
+   "relevance": "high",
+   "one_line": "A marginal structural model with a bivariate dose and delay exposure in 364 osteosarcoma patients found delaying a chemotherapy cycle by more than a week associated with a causal odds ratio of 0.564 for good histologic response, significant only under the coding that reweighted 22 patients into a pseudo-population of about 75.",
+   "what_was_done": "Preoperative chemotherapy data from the European Osteosarcoma Intergroup branch of a randomized osteosarcoma trial were analyzed with a marginal structural model whose exposure at each of two cycles is a pair of binary indicators, one for administering fewer than two courses of methotrexate and one for a delay of at least eight days. Of 457 enrolled patients, 364 remained after requiring a recorded surgery date and a recorded histologic response, 58 percent male, ages 4 to 40. The outcome was good histologic response, under 10 percent viable tumor. Confounders were four toxicity categories graded before each dose plus age and sex, and stabilized weights were built from the factorized joint exposure model. Sixteen counterfactual trajectories are defined by the two binary components over two cycles. Reducing methotrexate had a positive estimated effect on response and delaying a cycle a negative one; the delay odds ratio moved from 0.636 with p equal to 0.103 under the two-level coding to 0.564 with p equal to 0.045 under a three-level coding that also records excess methotrexate. The shift is traced to reweighting: 22 patients with excess methotrexate, balanced 10 poor against 12 good in the raw data, became 55.21 against 20.13 in the pseudo-population. The three-level coding cannot be used postoperatively because the trial design makes that exposure impossible, violating positivity. Cycles were recorded per cycle rather than per administration, so within-cycle and between-cycle delays cannot be separated.",
+   "future_research": [
+    {
+     "gap": "The delay effect needs replication in an independent dataset before it can support a change in practice.",
+     "kind": "stated",
+     "quote": "As a final remark, a validation study using another independent dataset is highly recommended to increase the overall impact of this study.",
+     "locator": "5 Conclusions"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The statistically significant delay effect rests on a pseudo-population in which 22 real patients with excess methotrexate carry a weighted mass of about 75 and a reversed outcome balance, from 10 against 12 to 55.21 against 20.13. The reported weight diagnostic is a boxplot on a log scale, which shows dispersion but not that a handful of patients dominate the contrast. No statement identifies which exposure histories lacked support, and the paper separately notes that positivity would be violated outright if the same coding were applied postoperatively.",
+     "quote": "Although there is a substantial balance between Poor and Good HRe (10 vs. 12) in the original group of patients that received extra MTX, in the pseudo-population this ratio is nearly 3:1 (55.21 vs. 20.13).",
+     "locator": "4 Results"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Chemotherapy intensity is reduced to two binary indicators, fewer than two methotrexate courses and a delay of at least eight days, so all treatment versions inside each cell are declared equivalent by fiat. The data cannot support a finer class: administrations within a cycle share the cycle start date, so a delay inside a cycle and a delay between cycles are the same observation. Whether the equivalence class is clinically defensible is not tested anywhere.",
+     "quote": "In other words, data were thus recorded per-cycle rather than per-administration, that is, it is not possible to distinguish delays that occurred within or between cycles.",
+     "locator": "SIGNAL PARAGRAPHS"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The recording granularity is named as a potential showstopper for a study of this kind, and yet the study proceeded on data that record only cycle start dates, with other settings described as recording nothing but overall cumulative exposure and severest toxicity. Fitness for purpose is asserted in prose with no threshold that would have stopped the analysis, and the assessment appears after the estimates rather than before them.",
+     "quote": "The way data were collected is a crucial detail and a potential showstopper for observational studies like the one reported here.",
+     "locator": "SIGNAL PARAGRAPHS"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Three time constants define the exposure and none has a stated derivation: a delay counts if it exceeds one week, equivalently at least eight days, and the nominal duration of the second cycle was extended to six weeks to absorb the interval before surgery. Each of these fixes which patients fall into the delayed arm, and the delay effect is the paper's headline finding. No outcome-blind procedure selected any of them and no sensitivity analysis varies them.",
+     "quote": "To compensate for the time between end of cycle 2 and surgery, the nominal duration of the second chemotherapy cycle was extended to six weeks.",
+     "locator": "3.1 Dataset description"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A randomized trial of 457 patients yields 364 for analysis, spread across 16 counterfactual trajectories, with the great majority having neither a dose reduction nor a delay. The odds ratios for methotrexate reduction are not significant and the stated remedy is a larger dataset with more patients in the off-baseline trajectories. The number of patients is not the binding constraint; the number in the exposure cells that carry the contrast is.",
+     "quote": "It would be interesting to repeat the analysis with a separate, larger dataset, where hopefully a stronger fraction of the subjects have a reduced number of courses of MTX and/or delayed cycles.",
+     "locator": "5 Conclusions"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0166",
+   "read": true,
+   "doi": "10.1186/s12874-018-0499-5",
+   "title": "Analysis of randomised trials with long-term follow-up.",
+   "relevance": "high",
+   "one_line": "A methods review of long-term randomized trials sets out separate estimators for non-adherence, treatment switching, co-intervention, loss to follow-up and truncation by death, and states that combining several of them in one analysis has barely been investigated.",
+   "what_was_done": "Five threats to long-term trial analysis are treated in turn with the estimator each one calls for. Non-adherence is handled by instrumental variable or propensity approaches to the complier average causal effect, resting on exclusion restriction and principal ignorability respectively, two assumptions described as untestable and mutually non-overlapping. Treatment switching is handled by marginal structural models with inverse probability of censoring weights, censoring control-arm participants at the switch and reweighting the remainder, or by rank-preserving structural failure time models under a constant acceleration factor. Loss to follow-up is handled by mixed longitudinal models or multiple imputation under missingness at random. Truncation by death is separated from missingness: outcomes after death are undefined rather than missing, so imputation is inadvisable and the survivor average causal effect requires a monotonicity assumption plus a guessed sensitivity parameter. Differential co-intervention is identified as the least tractable of the five because the most common co-interventions are never documented. Illustrative trials include a 20-year breast cancer follow-up and a 15-year pelvic floor exercise follow-up. No new estimator, simulation or applied estimate is produced, and the joint behavior of the methods when several threats occur together is left open.",
+   "future_research": [
+    {
+     "gap": "Applications combine at most two of the five methods, and the behavior of the combination is uninvestigated.",
+     "kind": "stated",
+     "quote": "However, we caution that there has been little investigation of methods for or consequences of combining several of these methods simultaneously.",
+     "locator": "Conclusions"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Five identification threats are each given a dedicated estimator resting on its own assumption, and the published applications combine exactly two at a time: non-compliance with loss to follow-up, switching with loss to follow-up, loss to follow-up with death. Long-term trials routinely carry all five at once, which is exactly the situation in which one-at-a-time sensitivity analysis is uninformative, and the joint case is named as unstudied.",
+     "quote": "In many trials, more than one of these issues arises.",
+     "locator": "Conclusions"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Death is distinguished from missingness on identification grounds rather than data-handling grounds: outcomes after death are undefined, not unobserved, so imputing them is not a repair. The survivor average causal effect is then reachable only under a monotonicity assumption plus a guessed value for the difference between two survivor populations, which makes the treatment of death an explicit and unverifiable identifying choice rather than a cleaning step.",
+     "quote": "But imputation of outcomes for participants who died is inadvisable because outcomes for participants who died are not missing, they are undefined.",
+     "locator": "Truncation by death and other events"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Two mechanisms drive the comparator arm toward the treated arm over a long follow-up: participants switching into the intervention, and undocumented co-intervention that is preferentially sought by those doing badly. The stated consequence is attenuation of the intention-to-treat estimate, and the attenuation grows with the length of follow-up because the opportunity for switching and co-intervention accumulates. No estimator offered here recovers the unattenuated contrast when co-intervention is unrecorded.",
+     "quote": "The issue of co-intervention, perhaps more than any other, makes it difficult to obtain robust explanatory estimates of the long-term causal effects of interventions.",
+     "locator": "Differential co-intervention"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The comparator condition in a long-term trial includes whatever co-intervention participants sought, and the most consequential components of it are never recorded: physical activity, diet, and family support. The estimand therefore becomes the effect of the assigned intervention against an unmeasured and data-defined bundle, not a noisier version of the intended contrast, and no method in the review recovers the intended one.",
+     "quote": "The most common co-interventions are probably those that are never documented: changes in physical activity (rest or exercise), dietary changes, and the care and support provided by family and friends.",
+     "locator": "Differential co-intervention"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The instrumental variable and propensity routes to the complier average causal effect are stated to rest on assumptions that cannot be tested, and the two assumption sets do not overlap, so agreement between the two estimates is offered as the only available check. Nothing in the review distinguishes assumptions a reader could interrogate from assumptions that can only be asserted, and both kinds are reported in the same register.",
+     "quote": "Both the instrumental variable and propensity score approaches make assumptions that are untestable.",
+     "locator": "SIGNAL PARAGRAPHS"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0167",
+   "read": true,
+   "doi": "10.1093/aje/kwy065",
+   "title": "Antiretroviral Therapy and Mortality in Rural South Africa: A Comparison of Causal Modeling Approaches.",
+   "relevance": "high",
+   "one_line": "Regression discontinuity and inverse-probability-weighted marginal structural models applied to the same rural South African cohort gave mortality hazard ratios of 0.66 with interval 0.35 to 1.26, 0.56 with interval 0.41 to 0.77, and 0.49 with interval 0.42 to 0.58, and the agreement is reported as a qualitative label.",
+   "what_was_done": "The effect of antiretroviral therapy on all-cause mortality was estimated in rural KwaZulu-Natal from 2007 to 2011 using two designs with different exchangeability assumptions on the same population-based cohort. The regression discontinuity design exploited the CD4 count threshold of 200 cells per microliter for treatment eligibility and produced an intention-to-treat hazard ratio of 0.66 with 95 percent confidence interval 0.35 to 1.26 and a complier average causal effect of 0.56 with interval 0.41 to 0.77. The weighted marginal structural model produced a hazard ratio of 0.49 with interval 0.42 to 0.58, corresponding to a 51 percent mortality reduction against 44 percent from the complier effect. A time-varying marginal structural model was also fitted and its estimate is conditional on baseline covariates. Mortality ascertainment was near-complete because the surveillance cohort covers the clinic catchment areas and death registration has run for over 15 years, so outcomes were observed even for patients lost from clinical care. The three estimates target different populations: the discontinuity estimate applies at or near the threshold under one of three competing generalizability readings, while the weighted estimate is an average treatment effect over the full CD4 distribution. No formal calibration of the agreement between designs is reported.",
+   "future_research": [
+    {
+     "gap": "Triangulation across designs has only been demonstrated where the underlying effect was already well established, so its value where evidence is weak is untested.",
+     "kind": "stated",
+     "quote": "In future applications, triangulation of causal inference across multiple methods may be most valuable when the preexisting evidence is weak or inconsistent.",
+     "locator": "DISCUSSION"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "BEN-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Three estimates of nominally the same effect, 0.66 with an interval covering 1, 0.56, and 0.49, are declared consistent but nonidentical, and the verdict rests on overlapping intervals rather than on any prespecified agreement metric. The designs are simultaneously acknowledged to answer subtly different causal questions, so the comparison is between estimands that were never aligned. A binary agreement label is doing the work that a calibrated comparison of estimands would have to do.",
+     "quote": "While the broad causal question of interest in the present application was the relationship between ART and mortality, each study design presented herein answered a subtly different specific causal question.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "EST-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The two designs carry incompatible external-validity claims on the same cohort: the discontinuity estimate is local to CD4 counts near 200 cells per microliter under three competing readings, one of which requires knowing the functional form of the potential outcomes, while the weighted estimate is an average over the whole CD4 distribution. Agreement between 0.56 and 0.49 is then read backwards as evidence that the local estimate transports, with no accounting that separates the sampling assumption from the exchangeability assumption.",
+     "quote": "The answer to the same research question can thus differ depending on whether it has been derived from a quasi-experiment or a nonexperiment.",
+     "locator": "SIGNAL PARAGRAPHS"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A concrete cross-check is supplied and recommended as routine: run a design whose identifying assumption differs from conditional exchangeability alongside the weighted analysis, here a threshold-based discontinuity design. That is a usable component of a validation workflow and it did detect the crude association pointing the wrong way. It supplies no negative control outcome, no proxy for the unmeasured confounder, no validation subsample, and no rule for what disagreement between designs would license, so the workflow stops at qualitative comparison.",
+     "quote": "When the data allow, approaches that have different assumptions for validity should be used routinely to strengthen confidence in causal effect estimates.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Credibility is claimed from the identity of the methods used rather than from a demonstration that their assumptions hold: the study is described as stronger than most cohort studies because it applied causal inference approaches. The key assumption is stated in the same passage to be empirically unverifiable and to rest on subject-matter judgment, so the label and the assumption burden are not connected by anything.",
+     "quote": "The use of multiple approaches for causal inference also strengthens the evidence arising from this study in comparison with most cohort studies, which do not use such approaches.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Four estimates were produced from one dataset: crude, discontinuity intention-to-treat, complier average causal effect, and two marginal structural models. They range from 0.49 to 0.66 in hazard ratio, and the differences are attributed to modeling approach and external validity without any criterion that would adjudicate between them. Nothing requires a study reporting only one of these to show that the other three would have agreed.",
+     "quote": "The differences in modeling approaches and the external validity of each method may explain the minor differences in effect estimates.",
+     "locator": "Abstract"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0168",
+   "read": true,
+   "doi": "10.1002/sim.7664",
+   "title": "Estimating long-term treatment effects in observational data: A comparison of the performance of different methods under real-world uncertainty.",
+   "relevance": "high",
+   "one_line": "Five estimators for time-dependent confounding agreed when every model was correct and diverged under each realistic departure, with weight truncation reversing which weighted analysis performed best depending on a data feature the analyst cannot observe.",
+   "what_was_done": "Weighted marginal structural models, history-adjusted marginal structural models, sequential conditional mean models, the g-computation formula and g-estimation of structural nested models were compared under five features of registry data: misspecification of the causal null, long-term effects, effect modification by time-varying covariates, misspecification of the direction of causal pathways, and censoring. Outcomes were percent predicted forced expiratory volume, continuous, and annual days of intravenous antibiotics, a skewed count. In the standard scenario with all models correct, the five methods gave near-identical results. Untruncated weights performed better in most scenarios but truncated weights performed much better when the direction of causal pathways was misspecified, and the analyst cannot tell which case applies. G-estimation and history-adjusted models, the two that can estimate effect modification, showed noticeable bias at five years when interaction terms were omitted. The g-computation formula produced consistently smaller standard errors, including under misspecification, so tight intervals can surround an incorrect estimate. For the count outcome, noncollapsibility made marginal and conditional estimates from different methods difficult to compare, and g-estimation was restricted to a gamma model rather than the zero-inflated negative binomial used elsewhere. In the UK Cystic Fibrosis Registry application, treatment reduced intravenous antibiotic days only above roughly 21 days in the previous year, while almost 80 percent of patients had fewer than 21. No unmeasured confounding was assumed throughout.",
+   "future_research": [
+    {
+     "gap": "Unmeasured confounding is assumed away by all five methods and is not examined anywhere in the comparison.",
+     "kind": "stated",
+     "quote": "The issue of unmeasured confounding has not been considered in this paper, because it is an assumption of all the considered methods that there is no unmeasured confounding",
+     "locator": "DISCUSSION"
+    },
+    {
+     "gap": "Five years is the longest horizon studied although the treatments in question are used for far longer.",
+     "kind": "stated",
+     "quote": "Many treatments for CF would actually be used for more than 5 years",
+     "locator": "DISCUSSION"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The ranking of weighted analyses reverses across scenarios: untruncated weights won in most settings and truncated weights won decisively when the direction of causal pathways was misspecified. Since the analyst cannot determine which scenario the real data occupy, the truncation decision cannot be made on evidence, and the recommendation that follows is to avoid weighting altogether when pathway direction is uncertain. Five methods that coincide under correct specification separate under every realistic departure, and none is defensible as a default.",
+     "quote": "In a real scenario, we would not know which scenario we are in; it would therefore be difficult to know when weights should be truncated or not.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Truncation is the operative response to extreme weights and there is no definition of extreme, so the threshold that decides which histories are downweighted out of the analysis is left to the analyst. History-adjusted marginal structural models are separately noted to suffer unstable weights. Nothing in the comparison reports which covariate histories generated the large weights, only that the weights were large.",
+     "quote": "It may be sensible to only truncate when there are “extreme” weights, but there is no clear definition of how large a weight must be before it is “extreme.”",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The g-computation formula returned standard errors that stayed small under misspecification, so the interval width carries no information about whether the model was adequate. A reader of a single g-computation analysis sees a tight interval and has no artifact that distinguishes a well-specified fit from a badly specified one. Diagnosable failures and undiagnosable ones arrive in the same output.",
+     "quote": "However, in cases where there is misspecification, the SE remains small, and with real data, it is unlikely that all the assumptions necessary for g-computation formula would be completely correct, which could result in tight confidence intervals around an incorrect effect estimate.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "LRN-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Effect modification by prior intravenous antibiotic days was detected, and the subgroup in which treatment reduces antibiotic days is the one with more than about 21 days in the previous year. Almost 80 percent of the registry population sits below that threshold, so the beneficial subgroup is defined precisely where the data are thinnest. The population-average estimate concealed this, and the subgroup estimate that reveals it rests on the sparsest region of the covariate distribution.",
+     "quote": "In our data, almost 80% of people had fewer than 21 IV days, meaning treatment would only be beneficial in reducing IV days in a small subset of people if these results are reliable.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "PRO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "For the count outcome the five methods do not all target the same quantity: some deliver marginal effects and some conditional, and noncollapsibility makes the resulting numbers incomparable whenever a treatment effect exists. G-estimation was additionally forced onto a gamma model rather than the zero-inflated negative binomial used by the others, yielding one rate ratio against two. A reader comparing published estimates cannot separate a change of target from a difference in estimation.",
+     "quote": "Furthermore, with the count outcome, the issue of non‐collapsibility makes comparison between methods delivering marginal and conditional effects difficult.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Five data features were varied one at a time to probe estimator behavior, and unmeasured confounding was excluded from the design altogether because every method assumes it away. In the registry application the paper identifies a plausible unmeasured confounder, prophylactic prescribing of intravenous antibiotics, that would violate that assumption simultaneously with the pathway-direction uncertainty already under study. No analysis varies two violated assumptions together.",
+     "quote": "It is plausible that people who are more likely to be prescribed treatment are also more likely to be prescribed IVs and it may not be possible to account for this confounding with the available data in the Registry.",
+     "locator": "DISCUSSION"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0169",
+   "read": true,
+   "doi": "10.1186/s13063-017-2381-x",
+   "title": "Application of causal inference methods in the analyses of randomised controlled trials: a systematic review.",
+   "relevance": "high",
+   "one_line": "A systematic search of 2773 records found only 25 randomized trials whose data were reanalyzed with causal methods to answer non-randomized questions, and the review states that it did not assess whether any of them examined the assumptions those methods require.",
+   "what_was_done": "A search across five databases from 1986 to September 2014 retrieved 2773 unique records, screened 1032, examined 114 in full text and included 25 studies after deduplication. Eleven estimated the effect of concomitant medication, seven treatment dosing or duration, five sequential treatments and two treatment timing, across HIV with seven studies, cancer six, cardiovascular disease five, mental disorders four, paediatrics two and transfusion medicine one. Weighted marginal structural models dominated. In the largest example, a reanalysis of an atrial fibrillation megatrial, weighting raised the hazard ratio for stroke with concomitant aspirin from 1.18 with interval 0.94 to 1.49 up to 1.46 with interval 1.15 to 1.85, and for major bleeding from 1.41 with interval 1.21 to 1.66 up to 1.65 with interval 1.40 to 1.94. Two analyses of the same cluster-randomized breastfeeding trial reached different conclusions about the duration beyond which further breastfeeding stops helping, one using weighting and one using g-estimation of structural nested models. Timing questions were rare because a protocol-specified failure threshold removes the variation needed to compare switching rules. Lack of power for non-randomized effects is identified as a practical limit with little methodological work behind it, and no quality assessment of assumptions or sensitivity analyses was performed.",
+   "future_research": [
+    {
+     "gap": "Power for causal analyses embedded in trials has almost no methodological literature, so analysts cannot justify these analyses at the planning stage.",
+     "kind": "stated",
+     "quote": "There is little methodological work examining power for causal analyses, and as such researchers may be unable to justify their use when developing analysis plans.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Inconclusive causal reanalyses may go unpublished, so the observed frequency of these analyses understates how often they are attempted.",
+     "kind": "stated",
+     "quote": "As such, this review may actually underestimate how often causal methods are being applied in RCT settings",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Across the whole published corpus of 25 causal reanalyses of trial data, the review states plainly that it did not check whether any study discussed or conducted sensitivity analyses for the assumptions its method requires. Method identity was treated as sufficient evidence of appropriateness. There is no artifact in this literature that would let a reader see which assumptions were interrogated and which were merely asserted.",
+     "quote": "For example, we did not examine whether the authors discussed (or conducted) sensitivity analyses to investigate whether or not necessary assumptions needed for valid causal inference were met.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Two of the 25 studies analyzed the same cluster-randomized breastfeeding trial for the same question and disagreed: weighting put peak 12-month weight at two months of exclusive breastfeeding with decline thereafter, while g-estimation of structural nested models put continued benefit out to nine months. The discrepancy is attributed in part to differential handling of missing data. Where two methods were compared within one study, as in the atorvastatin reanalysis, they agreed, so the field has no rule that predicts which case it is in.",
+     "quote": "In contrast, using SNMs it was found that continuing to 9 months would increase weight and length, but that additional breastfeeding beyond 9 months would not increase 12-month weight or length further.",
+     "locator": "Treatment dosing"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Only two of 25 studies could address treatment timing, and the stated reason is structural: when a protocol fixes the threshold at which treatment is declared to have failed, the observed treatment strategies carry no variation at other thresholds, so the dynamic regimes of interest have no support in the data. This is a positivity failure identified by design reasoning rather than by any weight diagnostic, and no study reported it as such.",
+     "quote": "However, if the threshold for “failure” of treatment is clearly specified in the protocol, there may not be enough variation in the observed treatment strategies to examine questions of treatment timing.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Trials sized for the randomized comparison leave too little information for the non-randomized contrasts extracted from them, and the review reports that many of the 25 studies returned inconclusive results for that reason. Only one exception is named, a cotrimoxazole analysis with strong evidence in the first 72 weeks after starting antiretroviral therapy. The effective sample for the secondary causal question is far smaller than the enrolled trial.",
+     "quote": "In addition, lack of power in such analyses may often lead to inconclusive results, as is the case in many of the studies presented in this review.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "PRO-02",
+     "effect": "supports-open",
+     "confidence": "low",
+     "evidence": "Causal reanalyses of trial data are secondary analyses whose questions are chosen after the trial has been conducted and its data seen, and the review notes that inconclusive ones may not reach publication. The visible corpus of 25 studies is therefore a selected set of protocols, and no registration of the rejected non-randomized questions exists to reconstruct the selection.",
+     "quote": "However, overall, the lack of conclusive findings in many applications may result in scepticism of the benefits of causal methods, and in publication bias.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0170",
+   "read": true,
+   "doi": "10.1093/aje/kwx311",
+   "title": "Analysis of Longitudinal Studies With Repeated Outcome Measures: Adjusting for Time-Dependent Confounding Using Conventional Methods.",
+   "relevance": "high",
+   "one_line": "Sequential conditional mean models fitted by generalized estimating equations estimate total effects of a time-varying exposure without weighting, and a bootstrap test for long-term direct effects rejected in 99.7 percent of replicates when the effect was present and 5.2 percent when it was absent.",
+   "what_was_done": "Sequential conditional mean models are set out as a way to estimate the total effect of a time-varying exposure on a later outcome by conditioning on prior exposures, prior outcomes and time-varying covariates, fitted with generalized estimating equations and optionally adjusted for the propensity score to buy double robustness. Simulations used 200 individuals observed at 5 visits, with a second scenario removing the direct effect of the previous exposure, and 1000 replicates. Four sequential model specifications and two marginal structural models were compared: specifications that omitted either prior exposure or prior outcome were biased, and only the fully adjusted specification was unbiased under any working correlation matrix, while an unstructured working correlation introduced generalized estimating equation bias in the weighted analyses. Stabilized weights improved precision over unstabilized weights but empirical standard deviations remained larger than under the conditional models, and truncating the smallest and largest 1, 5, 10 and 20 percent of weights bought precision at the cost of bias that was small under one marginal model and large under the other. A bootstrap test for long-term direct effects gave a mean estimate of 7.253 with standard deviation 1.854 and rejection in 99.7 percent of replicates in the first scenario, and 0.012 with standard deviation 1.102 and rejection in 5.2 percent in the null scenario. Simulations included no time-varying covariates and no survival outcome.",
+   "future_research": [
+    {
+     "gap": "Extension of both approaches to short-term exposure effects on survival with Cox regression using covariates measured at scheduled visits is not carried out.",
+     "kind": "stated",
+     "quote": "This is an area for further work.",
+     "locator": "SIGNAL PARAGRAPHS"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "On identical simulated data, whether an estimate is biased depends on the working correlation matrix, on whether weights are stabilized, and on how much of the weight distribution is truncated. Truncating the extreme 1 to 20 percent of weights improved precision at a bias cost that was small under a correctly specified marginal model and large under a misspecified one, and the analyst cannot tell which case applies. No default survives across specifications, and no requirement exists that a study show the choice did not drive the answer.",
+     "quote": "Precision was improved under truncation but comes at a cost of bias, which is small using MSM 2 but quite large using MSM 1.",
+     "locator": "Comparison of results from SCMMs and IPW estimation of MSMs"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Positivity is named as a requirement for both exposed and unexposed individuals at every confounder level, but every reported diagnostic concerns the weight distribution: empirical standard deviations, stabilization, and truncation at fixed percentiles of the weights. Truncating the smallest and largest 1, 5, 10 and 20 percent discards precisely the histories that carry the positivity problem while reporting nothing about which covariate levels those were.",
+     "quote": "In practice, bias can also occur due to lack of positivity, which requires both exposed and unexposed individuals at every level of the confounders",
+     "locator": "Comparison of results from SCMMs and IPW estimation of MSMs"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A concrete diagnosable assumption is supplied with calibration: the bootstrap test for long-term direct effects rejected in 99.7 percent of replicates when such effects existed and 5.2 percent when they did not, so an investigator can be told whether the simple analysis suffices. That covers one assumption. Nothing here separates it from the undiagnosable ones on which every estimate still rests, and no unmeasured confounding sensitivity analysis is reported alongside.",
+     "quote": "In scenario 2, the mean estimate of δ Y was 0.012 (standard deviation, 1.102), and 5.2% of the 95% confidence intervals for δ Y excluded 0, demonstrating approximately correct type I errors.",
+     "locator": "Results from the test for long-term direct effects"
+    },
+    {
+     "problem_id": "PRO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The two estimation routes target different quantities: the conditional short-term effect given exposure, covariate and outcome history versus the marginal effect. They coincide only in linear models without interactions, so under any nonlinear outcome model the choice of estimator silently changes the estimand rather than only the precision. Reported output is a single coefficient in both cases, with no decomposition that would let a reader separate a change of target from estimation error.",
+     "quote": "SCMMs estimate conditional effects, whereas MSMs are typically used to estimate marginal effects. In linear models without interactions, the conditional and unconditional effects coincide but are otherwise different.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "low",
+     "evidence": "The entire framework is built on repeated measures at scheduled visits, with 5 visits per person in the main simulation and 10 in a supplementary one, and the visit process itself carries no model. Efficiency of the weighted approach relative to the conditional approach degrades as the number of visits rises, so the observation schedule changes the answer through precision while never entering the causal structure. Extension to survival outcomes using covariates measured at scheduled visits is deferred.",
+     "quote": "SCMMs and IPW estimation of MSMs can also be used to study short-term exposure effects in a survival analysis setting using Cox regression, using exposures and covariates measured at scheduled visits",
+     "locator": "SIGNAL PARAGRAPHS"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0171",
+   "read": true,
+   "doi": "10.1016/j.jclinepi.2017.11.021",
+   "title": "Electronic medical records can be used to emulate target trials of sustained treatment strategies.",
+   "relevance": "high",
+   "one_line": "Three target trials emulated from UK primary care records across 126 monthly baselines gave intention-to-treat mortality hazard ratios of 0.90, 0.88 and 0.91 and per-protocol ratios of 0.74, 0.55 and 1.13, with per-protocol estimates for one trial ranging from 0.78 to 1.05 across dose-response functional forms.",
+   "what_was_done": "Three target trials in secondary prevention after coronary heart disease were emulated in The Health Improvement Network, covering more than 500 UK practices from 2000 to 2010, in patients aged 55 to 84. Each trial was emulated as a sequence of 126 monthly trials from January 2000 to June 2010, with individuals enrolled in every monthly trial for which they were eligible, giving 310641 monthly trials in the main analysis. For statins versus no treatment there were 1.2 million person-years, 229 deaths among initiators over a mean 58 months and 1950 deaths among non-initiators over a mean 48 months; the intention-to-treat hazard ratio was 0.90 with interval 0.84 to 0.97 and the survival difference 1.2 percent with interval 0.5 to 2.1 at five years. Per-protocol estimates were 0.74 with interval 0.64 to 0.85 by censoring at non-adherence and 0.87 with interval 0.73 to 1.03 under a dose-response model. The joint statin plus antihypertensive trial gave 0.88 with interval 0.73 to 1.06 and per-protocol 0.55 with interval 0.35 to 0.87; the atorvastatin versus simvastatin trial gave 0.91 with interval 0.77 to 1.06 and per-protocol 1.13 with interval 0.88 to 1.45. Across dose-response functional forms the five-year per-protocol ratios ranged 0.81 to 0.92, 0.78 to 1.05 and 1.13 to 1.31. Stabilized weights had mean 1.10 with 99th percentile 2.86 and were truncated at that percentile. Restricting each patient to a single monthly trial left the point estimate unchanged but raised the standard error of the log hazard ratio from 0.038 to 0.073.",
+   "future_research": [
+    {
+     "gap": "Per-protocol estimates depend on the dose-response specification and no principled choice exists.",
+     "kind": "stated",
+     "quote": "Further research into dose-response modeling for per-protocol effects is warranted",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "SEQ-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Each eligible individual is enrolled in every one of 126 monthly trials for which they qualify, producing 310641 monthly trials from a far smaller number of people. Restricting to one enrollment per person left the intention-to-treat estimate unchanged but nearly doubled the standard error of the log hazard ratio, from 0.038 to 0.073, so the reported precision is bought entirely by repeated participation. The variance is handled by a robust sandwich described as conservative, with no accounting for calendar-time confounding across the ten years of baselines.",
+     "quote": "That is, there are substantial gains in efficiency when we allow patients to enroll in more than one trial, even when using a robust variance.",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "SFW-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Two different variance procedures are used within one analysis for computational reasons: 500 nonparametric bootstrap samples for survival differences and dose-response per-protocol hazard ratios, and a robust variance for everything else, with the resulting intervals labeled conservative. A method that is correct after sequence expansion is available but not affordable at this scale, and the fallback yields intervals whose coverage is asserted rather than shown.",
+     "quote": "For all other hazard ratios, we used robust variances to calculate conservative",
+     "locator": "Methods"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The per-protocol five-year hazard ratio for the joint treatment trial ranged from 0.78 to 1.05 across dose-response functional forms, crossing the null, and the head-to-head trial ranged from 1.13 to 1.31. Within one trial the two per-protocol procedures also disagreed, 0.74 by censoring against 0.87 by dose-response modeling. The censoring approach is described as inefficient but assumption-light and the dose-response approach as efficient but biased under misspecification, with no criterion for choosing between them.",
+     "quote": "Under a variety of functional forms, the mortality hazard ratios for five years of treatment ranged from 0.81 to 0.92 for target trial (i), from 0.78 to 1.05 for target trial (ii), and from 1.13 to 1.31 for target trial (iii).",
+     "locator": "SIGNAL PARAGRAPHS"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A clinically meaningful per-protocol effect requires distinguishing discontinuation mandated by toxicity, which is protocol-adherent, from discontinuation that is not, and the reason for stopping is absent from the records. Every deviation from the baseline drug was therefore counted as non-adherence, so the estimand shifted from the intended per-protocol contrast to a data-defined one keyed to prescription records. The five-year adherence figures, 58 percent for atorvastatin and 54 percent for simvastatin initiators, show how much of the follow-up this recoding governs.",
+     "quote": "Unfortunately, as we did not have data on the reasons to change treatment, our per-protocol effect estimates considered all deviations from the baseline treatment as non-adherence.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "ELG-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Eligibility required complete recording of every potential confounder in the previous two years, a criterion with no counterpart in the target trial protocol, and its effect was measurable: dropping the requirement moved the intention-to-treat hazard ratio in a less protective direction. Patients whose confounders were simply never written down are treated identically to patients who fail the clinical criteria, and the sensitivity analysis shows this is not a neutral bookkeeping step.",
+     "quote": "First, we repeated the analyses without the requirement for data on all baseline covariates, which showed that the exclusion of these individuals made our estimates of intention-to-treat hazard ratio more conservative.",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The joint treatment arm is defined by a two-month window for starting the second drug after the first, a grace period chosen with no stated derivation and no sensitivity analysis over its width, while the single-treatment arms use a one-month window set by the monthly trial grid. The monthly grid itself is an analyst choice that determines both the number of baselines, 126, and the number of monthly trials, 310641. Both time constants are fixed before any outcome-blind procedure could be said to have selected them.",
+     "quote": "eligible individuals who initiated any statin during the baseline month and any antihypertensive therapy within 2 months (or vice versa) were assigned to the treatment arm",
+     "locator": "Emulating the target trials"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0182",
+   "read": true,
+   "doi": "10.1093/aje/kww109",
+   "title": "Does Fetal Growth Restriction Cause Later Obesity? Pitfalls in Analyzing Causal Mediators as Confounders.",
+   "relevance": "medium",
+   "one_line": "In 1247 small-for-gestational-age and 11560 appropriate-for-gestational-age Belarusian children followed to age 11.5 years, adjusting for concurrent weight or body mass index reversed the sign of the association between restricted fetal growth and adiposity.",
+   "what_was_done": "Three analytic approaches were run on one cohort drawn from a cluster-randomized breastfeeding promotion trial that enrolled 17046 healthy singleton infants born in 1996 and 1997, comparing 1247 children born small for gestational age with 11560 born appropriate for gestational age at the 11.5-year follow-up. Small for gestational age was defined as birth weight below the tenth percentile for gestational age and sex using a Canadian reference because no Belarusian reference exists. Outcomes were percent body fat by bioelectrical impedance, fat mass index, triceps and subscapular skinfolds, their sum and their ratio; all were lower in the restricted-growth group except the subscapular to triceps ratio, which was higher. Adjusting only for baseline covariates, maternal and paternal height and body mass index, region, urban or rural residence and maternal education, gave negative associations throughout. Adding concurrent height attenuated them and adding concurrent weight or body mass index reversed them to positive. Marginal structural models with stabilized weights for exposure and mediator, truncated at the first and ninety-ninth percentiles, estimated controlled direct effects: with height as mediator these matched the total effect, with body mass index they were null, and with weight they reproduced the regression bias because weight does not separate lean from fat mass. The mediator-outcome no-confounding assumption is untestable and is violated in the weight analysis.",
+   "future_research": [
+    {
+     "gap": "Weighting removes the exposure-mediator association but not confounding of the mediator-outcome relation, and no procedure here detects or repairs that.",
+     "kind": "stated",
+     "quote": "Even the MSM modeling approach, however, assumes no uncontrolled confounding of the mediator-outcome association.",
+     "locator": "DISCUSSION"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Three analyses of one dataset with one baseline covariate set produced negative, positive and null conclusions about the same exposure-outcome relation, differing only in how a concurrent anthropometric variable was handled. The sign of the published effect is therefore a property of the analytic choice, and nothing in the reporting of any one of them would reveal to a reader that the other two exist. The choice is defensible here on causal-ordering grounds, but no requirement forced the demonstration.",
+     "quote": "Our findings demonstrate that different statistical approaches to analysis of anthropometric measurements affected by SGA birth and obtained concurrently with the adiposity outcomes can yield opposite results and causal inferences.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The weighted analysis with weight as mediator breaks the exposure-mediator association by construction and is still wrong, because a second violation operates simultaneously: at a fixed weight, height and body mass index are inversely related, so lean mass and fat mass confound the mediator-outcome relation. Fixing one assumption while the other holds leaves the estimate as biased as the naive regression it was meant to replace, which is exactly the failure mode of one-at-a-time sensitivity analysis.",
+     "quote": "Although the MSM with weight as mediator ensures no association between weight and SGA in the pseudo-population, it is not immune to confounding by the inverse association between height and BMI at a given weight",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The exposure is a binary phenotype constructed by thresholding birth weight at the tenth percentile of a reference population from a different country, since none exists for the population studied, and it then enters every analysis as if it were error-free. Any misclassification from the reference mismatch is invisible in the reported contrasts between 1247 and 11560 children, and no validation of the phenotype against gestational assessment or a local reference is attempted.",
+     "quote": "no such reference is available for Belarus",
+     "locator": "METHODS"
+    },
+    {
+     "problem_id": "PRO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The controlled direct effect estimated by weighting and the independent effect sought by regression adjustment are different targets, and the paper argues that neither corresponds to a question anyone can state in nutritional terms. There is no decomposition that separates this mismatch between the scientific target and the estimated quantity from the estimation error reported in the intervals, so a reader sees a coefficient without knowing which of the two is driving it.",
+     "quote": "In a nutritional or biological context, it is not clear what such “independent” effects denote.",
+     "locator": "DISCUSSION"
+    },
+    {
+     "problem_id": "LRN-03",
+     "effect": "supports-open",
+     "confidence": "low",
+     "evidence": "This measures the damage that a post-exposure variable does when it enters an adjustment set: concurrent height, weight and body mass index are consequences of restricted fetal growth, and admitting them as if they were confounders reversed the direction of every adiposity estimate. Where such variables are recognizable by their measurement date they can be excluded, as here. The registry entry concerns the case where post-treatment information is carried in implicitly and cannot be identified by inspection, and nothing in this analysis offers a way to detect it.",
+     "quote": "Similarly, adjusting for an effect of exposure in an observational study will systematically bias the estimate of its effect on outcomes that occur",
+     "locator": "DISCUSSION"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}

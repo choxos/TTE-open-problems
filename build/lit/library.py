@@ -239,6 +239,49 @@ def content_hash(it):
         return hashlib.md5(fh.read()).hexdigest()
 
 
+# JATS article-type values that mark a notice about a paper rather than a paper.
+CORRECTION_TYPES = {"correction", "retraction", "expression-of-concern"}
+ARTICLE_TYPE = re.compile(rb'<article[^>]*\barticle-type="([^"]+)"')
+
+
+def is_correction(it):
+    """True when the entry's own JATS declares it a notice about another article.
+
+    PubMed gives a published erratum the same title as the article it corrects,
+    so title matching cannot separate the two. The deposited XML can: it carries
+    `article-type="correction"` where the paper carries `article-type=
+    "research-article"`. Entries with no XML are never treated as notices,
+    because a PDF gives no equivalent declaration and guessing from length would
+    demote short papers.
+    """
+    name = it.get("xml")
+    if not name:
+        return False
+    p = name if os.sep in name else os.path.join(it["path"], name)
+    full = p if os.path.isabs(p) else os.path.join(ROOT, p)
+    if not os.path.exists(full):
+        return False
+    with open(full, "rb") as fh:
+        head = fh.read(4000)
+    m = ARTICLE_TYPE.search(head)
+    return bool(m) and m.group(1).decode("ascii", "replace") in CORRECTION_TYPES
+
+
+def swap(prior, it):
+    """Make `prior` describe `it`'s copy, keeping the catalog id and alternates.
+
+    `prior` is already in the catalog and in the lookup tables, so the winning
+    copy has to move into that object rather than replace it.
+    """
+    keep = {k: prior[k] for k in ("id", "also_at") if k in prior}
+    loser = dict(prior)
+    prior.clear()
+    prior.update(it)
+    prior.update(keep)
+    it.clear()
+    it.update(loser)
+
+
 def main():
     items = systematic_entries() + manual_entries()
     by_doi, by_title, by_hash, catalog = {}, {}, {}, []
@@ -249,8 +292,12 @@ def main():
         prior = ((by_doi.get(d) if d else None) or (by_title.get(t) if t else None)
                  or (by_hash.get(h) if h else None))
         if prior is not None:
-            # The systematic record wins: it carries real PubMed metadata. The
-            # hand-collected copy is kept as an alternate path, not a new entry.
+            # PubMed gives a published erratum the same title as the article it
+            # corrects, so title matching alone lets a two-page notice swallow the
+            # paper and take its place in the catalog. When the incumbent is the
+            # notice and the challenger is not, the challenger is the paper.
+            if is_correction(prior) and not is_correction(it):
+                swap(prior, it)
             prior.setdefault("also_at", []).append(it.get("pdf") or it["path"])
             dupes += 1
             continue

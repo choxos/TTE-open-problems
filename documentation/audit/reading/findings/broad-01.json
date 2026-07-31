@@ -1,0 +1,903 @@
+{
+ "batch": "broad-01",
+ "papers": [
+  {
+   "id": "L0465",
+   "read": true,
+   "doi": "10.1038/s44401-026-00082-3",
+   "title": "From \"negative\" trial to positive clinical impact: mitigating eligibility criteria-induced temporal selection bias in emulated clinical trials.",
+   "relevance": "high",
+   "one_line": "An EHR emulation of WARCEF first attributed a shift in the warfarin versus aspirin mortality hazard ratio from 1.025 (0.614-1.709) before July 2014 to 2.181 (1.676-2.839) after it to trial dissemination, then traced the shift to a single eligibility criterion, a documented Modified Rankin Score, whose removal eliminated the effect.",
+   "what_was_done": "The WARCEF trial was emulated in Mayo Clinic Platform EHR data comparing warfarin with aspirin in heart failure with reduced ejection fraction, stratified at the trial completion date of July 2014. Before the cutoff the cohort held 37 225 aspirin and 2022 warfarin patients; after it, 26 192 aspirin and 1080 warfarin. Intention-to-treat hazard ratios were 1.025 (95% CI 0.6144-1.709, p = 0.9255) before and 2.181 (1.676-2.839, p < 0.001) after; the combined-period estimate was 1.863 (1.497-2.318). Requiring a documented Modified Rankin Score produced a flat survival curve for roughly the first 1600 days because the earliest observed death fell in 2017; only 0.02% of patients were outside the eligible range, so the criterion acted almost entirely as a documentation filter. Cutoff years were scanned from before 2013 to after 2015; with the score included, 2014 looked like a transition point, and with it excluded, every cutoff year produced non-significant estimates before and significant estimates after. Adjustment was by propensity score with a complete-case Cox model, and reclassifying ACE inhibitor use from inclusion criterion to confounder flipped the hazard ratio from below 1 to above 1.",
+   "future_research": [
+    {
+     "gap": "No principled framework exists for deciding whether a real-world variable enters an emulation as an eligibility criterion or as a confounder, and the choice flips the direction of the estimate.",
+     "kind": "stated",
+     "quote": "there is a pressing need for a principled framework, perhaps incorporating probabilistic modelling or data-driven selection criteria, to guide variable inclusion and classification",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Missing covariate values were dropped rather than imputed, leaving selection bias unaddressed.",
+     "kind": "stated",
+     "quote": "The Cox proportional hazards models uses a default complete-case approach, and observations with missing covariate values were excluded from the adjusted analysis",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "ELG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The Modified Rankin Score requirement excluded only 0.02% of patients on clinical grounds but selected on whether a functional assessment had been recorded, which is a healthcare-use variable. Conditioning on it delayed effective cohort entry so that no death was observed before 2017, produced an artificial plateau in the survival curves and manufactured an apparent doubling of the hazard ratio across a calendar boundary. The bias arises from documentation behavior, not from the clinical content of the criterion.",
+     "quote": "In our study, the requirement for a documented Modified Rankin Score exemplified this mechanism, producing an artificial early plateau in survival curves that resolved once the criterion was removed.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The calendar boundary that defines the two emulated cohorts was chosen by scanning cutoff years and observing where estimates became significant, then justified by the pattern of those estimates. With the Modified Rankin Score criterion removed, the same scan showed every cutoff year separating non-significant from significant results, which demonstrates that the grid selection carried the finding rather than any external timing argument.",
+     "quote": "The consistency of this pattern across multiple cutoff years supports the use of 2014 as a practical boundary in analyses that include the Modified Rankin Score.",
+     "locator": "Results, Detailed results"
+    },
+    {
+     "problem_id": "PRO-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The eligibility set was revised after the estimates were seen: the Modified Rankin Score criterion was dropped once its effect on the survival curve was noticed, and the headline conclusion moved from trial dissemination to eligibility-induced selection. Inference is then reported conditional on the surviving protocol, with hazard ratios of 1.025 and 2.181 quoted at conventional precision, as if the protocol had been fixed in advance.",
+     "quote": "We excluded the Modified Rankin Score criterion because the proportion of patients outside the eligible range was very small (0.02%), and thus unlikely to materially influence the results.",
+     "locator": "Results, Detailed results"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Whether ACE inhibitor use entered as an inclusion criterion or as a covariate reversed the sign of the reported effect, from a hazard ratio below 1 to one above 1, in the same cohort. No default is defensible here, and nothing required the analysis to report that the choice mattered; the reversal surfaced only because the study happened to run both specifications.",
+     "quote": "For instance, defining ACE inhibitor use as a strict inclusion criterion resulted in a HR below 1, suggesting a protective effect, whereas treating it as a confounder produced an HR above 1, implying potential harm.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Covariate missingness in the EHR is produced by the same visit and assessment process that generated the Modified Rankin Score problem, yet it is handled by dropping records from the adjusted model. The study identifies documentation timing as the driver of its central result and still treats missing covariate values as a data-cleaning matter to be resolved by exclusion, with imputation named only as future work.",
+     "quote": "The Cox proportional hazards models uses a default complete-case approach, and observations with missing covariate values were excluded from the adjusted analysis",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The code availability statement repeats the data availability statement verbatim and names no code, no repository and no phenotype logic, while the analysis turns on operational details such as how a documented Modified Rankin Score is detected and which variables were classified as confounders. Since the reported conclusion reversed on exactly those details, the emulation cannot be checked by anyone outside the platform.",
+     "quote": "Any data beyond what is reported in the manuscript, including but not limited to the raw EHR data, cannot be shared or released",
+     "locator": "Code availability"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0469",
+   "read": true,
+   "doi": "10.57264/cer-2025-0026",
+   "title": "Considerations for emulations of randomized controlled trials using real-world data: learnings from an emulation of MONALEESA-2.",
+   "relevance": "high",
+   "one_line": "An attempted emulation of MONALEESA-2 in linked US claims and EHR data reduced 132,406 initiators to 3912 patients, of whom 106 received ribociclib plus letrozole, and returned a crude mortality hazard ratio of 3.07 (95% CI 1.89-5.01) against the trial's 0.76 (0.63-0.93).",
+   "what_was_done": "Post-menopausal women with recurrent or metastatic breast cancer were identified in Optum Market Clarity between March 2017 and September 2023. Applying the trial entry criteria cut 132,406 initiators to 3912, with 106 on ribociclib plus letrozole and 3806 on letrozole; the recurrent or metastatic and post-menopausal criteria alone removed about 70%. Overall survival was compared with Cox models using inverse probability of treatment weighting and 1:1 propensity score matching over age, race, ethnicity, region, ECOG, progesterone receptor status, Elixhauser score, ECG evidence, opioid claims and prior antineoplastic treatment, with missing categories handled by a missing indicator. ECOG was recorded within three months of initiation for only 10% of ribociclib patients. The crude hazard ratio was 3.07 (95% CI 1.89-5.01) and every adjusted and post hoc estimate remained above 1. Observed absolute probability of death was 7% against 54% and 66% in the two trial arms. Metastatic disease was defined by two claims-based algorithms, ECOG eligibility was operationalized as no evidence of ECOG above 1, and post hoc analyses added two historical letrozole comparator cohorts, a metastatic subgroup and a 60-day landmark. A French registry emulation of the same trial, with ECOG on nearly half the patients and physician-certified death, reported 0.55 (0.39-0.79).",
+   "future_research": [
+    {
+     "gap": "The effect of relaxing the restrictive trial criteria could not be tested because the criteria that removed the most patients could not be varied.",
+     "kind": "stated",
+     "quote": "We were unable to emulate the trial findings; all HRs in this analysis were >1.",
+     "locator": "Abstract, Results"
+    },
+    {
+     "gap": "Missingness in key variables cannot be assessed before a commercial dataset is purchased, so data fitness is judged from metadata.",
+     "kind": "stated",
+     "quote": "This was the case in this analysis and therefore, the level of missingness for key variables was not understood until this data source was already selected.",
+     "locator": "Discussion, Data source limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "ELG-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The trial required performance status at or below 1, and this was implemented as absence of evidence of a worse value in a database where only 10% of ribociclib patients had any ECOG recorded near initiation. Nine out of ten included patients therefore satisfy the criterion by never having been assessed, and since ECOG is a strong predictor of survival, the eligible set is defined by documentation rather than by function in an analysis whose estimate ran opposite to the trial.",
+     "quote": "Operationalized as no evidence of ECOG >1.",
+     "locator": "Figure 3 footnote"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A database holding 132,406 initiators of the drugs of interest produced 106 exposed patients after trial criteria, a reduction of more than three orders of magnitude, and the exclusions that drove it were prior systemic therapy, cardiac history and prohibited medications rather than the clinical question. The 60-day landmark analysis left 97 exposed patients. At that size the propensity model could not balance prior treatment, comorbidity score or metastatic diagnosis, which is why the analysis failed.",
+     "quote": "The final patient sample consisted of 3912 patients: 106 ribociclib plus letrozole patients and 3806 letrozole patients.",
+     "locator": "Results, Impact of inclusion/exclusion criteria"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The data source was selected from vendor metadata, and the level of missingness in ECOG and biomarkers only became visible after purchase, at which point 10% ECOG capture and incomplete death capture were unfixable. No threshold existed that would have stopped the study: it ran to completion, reported hazard ratios above 1 throughout, and the fitness problem is documented as a lesson rather than as a gate.",
+     "quote": "This was the case in this analysis and therefore, the level of missingness for key variables was not understood until this data source was already selected.",
+     "locator": "Discussion, Data source limitations"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Advanced disease, the central eligibility concept, was reconstructed from two claims-based algorithms built on counts and spacing of diagnosis codes, mastectomy and radiation, because staging was unavailable. Those algorithms enter as error-free binary criteria; the prior systemic therapy exclusion built the same way is acknowledged to have removed trial-eligible patients, and the resulting population difference is offered as an explanation for a hazard ratio in the opposite direction from the trial.",
+     "quote": "Given the complexities of identifying adjuvant therapy in this RWD source, our exclusion likely removed patients who would have been trial-eligible.",
+     "locator": "Discussion, Data source limitations"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "ECOG, biomarker and progesterone receptor status enter the propensity model through a missing indicator, so the adjustment set contains a variable that encodes whether a patient was assessed rather than the patient's condition. Whether an oncology patient has a recorded performance status is driven by visit type and practice setting, exactly the process that also drives treatment choice, and treating it as a category leaves that structure unmodeled.",
+     "quote": "For categorical variables with missing values, missing was considered a level of the variable (i.e., a missing indicator was created).",
+     "locator": "Materials & methods, Statistical analysis"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The observed absolute probability of death was 7% where the trial arms reported 54% and 66%, which means most deaths never entered the dataset and were absorbed as censoring at the end of observability. Incomplete death capture is thus not a measurement nuisance but an identifying assumption, that censoring is independent of mortality, that is known to be false here and is never stated as an assumption or varied.",
+     "quote": "In this analysis, we observed an absolute probability of death of 7%, which was much lower than expected based on the trial (absolute probability of death of 54% in the ribociclib arm and 66% in the placebo group).",
+     "locator": "Discussion, Data source limitations"
+    },
+    {
+     "problem_id": "PRO-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "After the first estimates came out in the wrong direction, the protocol grew two historical comparator cohorts defined by drug approval dates, a metastatic subgroup and a 60-day landmark. Each is a different target trial, all were reported together, and every one returned a hazard ratio above 1, so the final inference is conditioned on a protocol set that was assembled in response to the results.",
+     "quote": "Following the initial findings, several post hoc analyses were undertaken to explore and contextualize the results.",
+     "locator": "Materials & methods, Post hoc analyses"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0470",
+   "read": true,
+   "doi": "10.1136/bmjdrc-2025-005672",
+   "title": "Enhancing evidence-based care using trial emulation in electronic health records: real-world effects of empagliflozin in people with type 2 diabetes.",
+   "relevance": "high",
+   "one_line": "An EMPA-REG emulation in UK primary care found 83.2% of 13 239 empagliflozin initiators would not have met the trial eligibility criteria, and reported an adjusted mortality hazard ratio of 0.76 (95% CI 0.69-0.83) extended from the benchmarked eligible stratum to the ineligible majority.",
+   "what_was_done": "A new-user active-comparator design in the UK THIN database compared 13 239 empagliflozin initiators with 49 264 DPP4 inhibitor initiators between January 2014 and December 2022, with 200 646 person-years and 7140 deaths. Only 12 970 of 62 503 people (20.8%) met the EMPA-REG criteria; 43 672 (70.0%) failed on absence of established cardiovascular disease and 14 953 (23.9%) on baseline HbA1c. The adjusted Cox hazard ratio for all-cause mortality was 0.76 (95% CI 0.69-0.83), the three-year risk difference was -0.02 (-0.03 to -0.01) and the number needed to treat 47 (30 to 66). Cause-specific mortality was unavailable, so the trial primary endpoint of three-point MACE was replaced by all-cause mortality, a trial secondary endpoint. BMI, LDL, HDL, eGFR, HbA1c, systolic blood pressure, ethnicity and smoking were missing and imputed by chained equations into five datasets. Eligibility was assessed against laboratory windows of 180 days for HbA1c and 540 days for other measures, and people with no value in the window were classified as eligible. The only bias analysis was an E-value of 1.98 (1.70 to 2.27).",
+   "future_research": [
+    {
+     "gap": "Safety outcomes in the broader real-world population were not estimated.",
+     "kind": "stated",
+     "quote": "This trial emulation did not assess safety outcomes, an important area for future research.",
+     "locator": "Strengths and limitations of this study"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "ELG-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Eligibility hinged on laboratory values that are missing for a large share of primary care patients, and the rule adopted was to treat absence as satisfaction. Since 23.9% of the cohort was declared ineligible on a recorded HbA1c outside range, the eligible stratum used for benchmarking mixes people who truly met the criterion with people who were never tested, and the 83.2%/16.8% split that carries the study's main claim is a function of that convention.",
+     "quote": "People were defined as RCT eligible if these values were missing or not measured within the predefined window before cohort entry date.",
+     "locator": "Methods, RCT eligibility status for empagliflozin users"
+    },
+    {
+     "problem_id": "BEN-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Agreement with EMPA-REG is established in the 16.8% eligible stratum and then used as a warrant for the estimate in the 83.2% who were ineligible, a population that is younger, more often female, with higher HbA1c and lower comorbidity burden. No argument connects the observed agreement in one stratum to the credibility of confounding control in the other; the interaction test only shows the confidence intervals overlap, which is a statement about precision rather than about transported validity.",
+     "quote": "We were able to successfully benchmark the results of our real-world analysis to the published results of the RCT, giving us confidence that our analysis is appropriately handling confounding.",
+     "locator": "Strengths and limitations of this study"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Residual confounding is dismissed by citing the design label and the fact of replication rather than by any diagnostic tied to the unmeasured factor named, frailty. The E-value of 1.98 quantifies only what a single binary confounder would need to do, and the argument that such a confounder is implausible rests on the emulation framework itself being taken as evidence about the assumption burden.",
+     "quote": "we do not believe that the presence of unmeasured confounding would be so substantial as to alter the conclusions of this study because of our rigorous modeling strategy, close replication of the existing RCT findings, and supportive quantitative bias assessment",
+     "locator": "Strengths and limitations of this study"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The trial primary endpoint, a composite of cardiovascular death, non-fatal myocardial infarction and non-fatal stroke, was not observable, so the emulation estimated all-cause mortality instead. This is not a noisy version of the intended endpoint: it is a different estimand whose event count, 7140 deaths, is driven by causes the trial endpoint excluded, and the benchmark comparison is then made against a trial secondary outcome rather than against the question the trial was designed to answer.",
+     "quote": "However, cause-specific mortality data were not available in the THIN database.",
+     "locator": "Methods, Outcomes"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Whether a laboratory value exists within a 180-day or 540-day window is determined by the visit and testing process, which is itself driven by disease severity and by the prescribing decision under study. That process is handled as a nuisance to be imputed by chained equations across eight variables, and simultaneously as an eligibility rule, so the same unmodeled mechanism sets both the adjustment set and the trial-eligible stratum.",
+     "quote": "If values were not recorded, or not available within the eligible window for the covariate in question, the value was defined as missing.",
+     "locator": "Methods, Confounders"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The single sensitivity analysis reported is an E-value for one binary unmeasured confounder. Three other assumptions are violated at the same time in this analysis: eligibility is misclassified whenever a laboratory value is unrecorded, the estimand was switched from MACE to all-cause mortality, and eight covariates are imputed. None of these enters the bias analysis, and no procedure combines them.",
+     "quote": "This suggests that an unmeasured confounder would need to be strongly associated with both treatment and outcome (risk ratio ≥1.98) to fully explain the observed association.",
+     "locator": "Results, Trial emulation sensitivity analysis"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0471",
+   "read": true,
+   "doi": "10.1212/wnl.0000000000213783",
+   "title": "Association of Medication Use and 8-Year Mortality Risk in Patients With Parkinson Disease: Drug-Wide Trial Emulation.",
+   "relevance": "high",
+   "one_line": "A drug-wide screen emulated 219 target trials in 14,289 Norwegian patients with Parkinson disease and reported 23 drugs associated with lower 8-year mortality, with covariates balanced in only 193 of the 219 trials.",
+   "what_was_done": "Norwegian registry data from 2004 to 2020 were used to emulate one target trial per drug for every medication dispensed to at least 100 people with Parkinson disease, giving 219 trials over 131,760 drug initiations in 14,289 patients with a mean age at diagnosis of 72 years, 59% male; 41% died and median survival after diagnosis was 8 years. Parkinson disease was identified from prescriptions alone, either four or more MAO-B inhibitor fills or four or more levodopa fills plus a reimbursement code, an algorithm with positive predictive value 0.86 and sensitivity 0.87 against two or more G20 codes. The comparator for each target drug was initiation of any drug in the same ATC level 1 anatomical main group, with level 3 subgroups excluded, and control initiations capped at a random 10,000. Stabilized inverse probability of treatment weighting over 30 covariates preceded a pooled logistic model of 8-year risk of death with 500 bootstrap replicates. Balance at a standardized mean difference below 0.1 was achieved in 193 of 219 trials; 23 drugs met a nominal p below 0.05 with at least 90% of covariates balanced, and Benjamini-Yekutieli corrected p values were also reported. Tightening the comparator to ATC level 2 changed risk differences for several drugs and removed the mometasone association. Per-protocol effects could not be estimated.",
+   "future_research": [
+    {
+     "gap": "Discontinuation and inpatient or nursing home medication use are unrecorded, so only the initiation effect can be estimated.",
+     "kind": "stated",
+     "quote": "Owing to lack of information on factors that predict treatment discontinuation and on medication use during hospitalizations and stays in nursing homes, we could not estimate per-protocol effects.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The comparator class is an administrative coding level, any drug in the same ATC anatomical main group, which places a proton pump inhibitor alongside every other alimentary tract and metabolism drug. The class is not clinically defensible and the results depend on it: moving to ATC level 2 raised risk differences for tadalafil, the antibacterials, zopiclone, melatonin, mianserin and the cough medicines, lowered them for losartan and two opioid analgesics, and eliminated the mometasone finding entirely.",
+     "quote": "To mitigate confounding by indication, 11 we mimicked an active-comparator design by assigning to the control group individuals prescribed any drug within the same anatomical main group (ATC level 1) as the target drug.",
+     "locator": "Methods, Intervention and Outcomes"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Every one of the 219 estimates is an 8-year risk of death under initiation, for exposures that include a course of phenoxymethylpenicillin or azithromycin lasting days. Discontinuation and comparator-arm treatment are unobserved, so nothing describes how much of the 8-year contrast is carried by person-time in which the two arms are receiving the same care, and the per-protocol contrast that would answer this could not be computed.",
+     "quote": "Owing to lack of information on factors that predict treatment discontinuation and on medication use during hospitalizations and stays in nursing homes, we could not estimate per-protocol effects.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Eligibility rests on a prescription-based disease definition with positive predictive value 0.86 and sensitivity 0.87, measured against a code-based reference that is itself imperfect. The 14% of included patients who do not have the disease and the 13% who are missed enter the 219 trials as an error-free binary criterion, with no correction and no propagation into the 500-replicate bootstrap intervals, in a screen whose whole output is a ranked list of nominal significance.",
+     "quote": "The positive predictive value of our classification criteria was 0.86 and the sensitivity was 0.87 when compared with a requirement of ≥2 G20 codes in NPR.",
+     "locator": "Methods, Inclusion Criteria"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A national registry covering 4.5 million people yields 14,289 eligible patients spread across 219 emulated trials, and confounder balance failed in 26 of them. The sensitivity analysis with the tighter ATC level 2 comparator could not be run at all for the reflux drugs, atorvastatin, levothyroxine and the four NSAIDs because the sample was insufficient, so the design most likely to control confounding is the one the effective sample cannot support.",
+     "quote": "Potential confounders were balanced in 193 of the 219 trials in the main analysis",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A negative control population is built into the workflow: each of the 23 candidate drugs was re-tested in a 10% sample of Norwegians aged 65 and over, and the contrast was used to argue that mianserin has a disease-specific effect while tadalafil may reflect healthier users. This is a usable, reportable control, and it is not the integrated workflow the entry describes: there are no negative control outcomes, no proxy variables and no validation subsample, and the general population comparison is itself acknowledged to require covariates the registry does not hold.",
+     "quote": "Finally, to explore whether drugs associated with reduced mortality in the PD population were also associated with mortality risk in the general population, we tested these drugs in a random sample of 10% of the Norwegian population aged 65 or older",
+     "locator": "Methods, Statistical Methods"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Results from all 219 emulated trials are posted in a public repository rather than only the 23 that reached nominal significance, which removes the selective reporting that a screen of this size invites, and multiplicity-corrected p values accompany the nominal ones. The rest of the entry stands: the phenotype logic that defines Parkinson disease, the weight diagnostics behind the 26 unbalanced trials and the analysis code are not identified as available, and individual-level data require a new ethics application.",
+     "quote": "Full results from all analyses are available at",
+     "locator": "Data Availability"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0472",
+   "read": true,
+   "doi": "10.1093/aje/kwaf044",
+   "title": "Caution in handling switchers in pharmacoepidemiologic studies estimating treatment effects: the example of dipeptidyl peptidase-4 inhibitors and inflammatory bowel disease.",
+   "relevance": "high",
+   "one_line": "Re-running one published CPRD question under two follow-up rules moved the adjusted hazard ratio for DPP4i and inflammatory bowel disease from 1.12 (0.83-1.50) under an active-comparator new-user design to 1.76 (0.84-3.68) under a time-varying-exposure design with asymmetrical switching, using the same data, covariates and outcome definition.",
+   "what_was_done": "Three active-comparator new-user cohorts were built in CPRD GOLD for 2007 to 2022: DPP4i versus sulfonylureas (43 204 vs 86 411), versus thiazolidinediones (67 288 vs 22 474) and versus SGLT2 inhibitors (54 253 vs 30 993), with a 12-month washout, two prescriptions required for exposure and a 180-day induction period. Propensity-score weighted hazard ratios were 1.12 (95% CI 0.83-1.50), 1.15 (0.66-2.01) and 1.43 (0.83-2.48) over median follow-up of 2.2 to 6.1 years. The same population was then re-analyzed under a time-varying-exposure design in which comparator patients who switched to DPP4i were censored in the comparator arm and their subsequent person-time reassigned to DPP4i; hazard ratios rose to 1.06 (0.80-1.41), 1.76 (0.84-3.68) and 1.62 (0.91-2.90). For the thiazolidinedione comparison the reassignment moved 23 incident events and 27 932 person-years from comparator to exposed, raising the DPP4i rate from 45.0 to 48.2 per 100 000 person-years and lowering the comparator rate from 41.8 to 32.6. Post-hoc propensity-score trimming in the as-treated SGLT2i analysis moved the estimate from 2.11 (1.12-3.98) to 1.55 (0.77-3.10). Restricting follow-up to three years removed most of the divergence because switching had not yet occurred.",
+   "future_research": [
+    {
+     "gap": "Censoring comparator person-time at switching requires non-informative censoring, which is expected to fail and is not corrected in the designs compared.",
+     "kind": "stated",
+     "quote": "requires the assumption of non-informative censoring",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "The effect of trimming on the published discordant estimate cannot be established from the available report.",
+     "kind": "stated",
+     "quote": "We can only speculate on how this would have affected the results of their study.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "PRO-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Holding data source, covariate set, exposure definition and outcome definition fixed and varying only the follow-up rule isolates one term of the error decomposition: the protocol compromise contributed a shift from 1.15 (0.66-2.01) to 1.76 (0.84-3.68) for the thiazolidinedione comparison, traceable to 23 events and 27 932 person-years being reassigned across arms. What remains undecomposed is everything else: residual confounding, comparator mapping loss and estimation error are still bundled, and the exercise required a second full analysis rather than a reported diagnostic.",
+     "quote": "By contrasting the results from the ACNU and TVE designs using the same covariates, exposure (including comparator choice), and outcome definitions",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Switching out of the comparator arm accumulated with time: 20 281 of 86 411 sulfonylurea initiators (32%) switched to DPP4i, and the divergence between the two designs disappeared once follow-up was capped at three years because switching had not yet happened. Nothing in either design reports how much of the contrast at a given horizon is carried by patients who have converged onto the other treatment, and the median follow-up ran from 2.2 to 6.1 years.",
+     "quote": "When we restricted follow-up to three years, lower aHRs in the TVE design for DPP4i vs TZD and DPP4i vs SGLT2i likely occurred because follow-up ended before switching",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Positivity is handled by a post-hoc trimming step whose effect is large: the as-treated SGLT2i estimate fell from 2.11 (1.12-3.98) to 1.55 (0.77-3.10), crossing the null. The diagnostic reported is the trimming rule and its effect on the point estimate, not a description of which diabetes treatment histories had no support in the opposing arm, so a reader cannot tell which patients the retained estimate applies to.",
+     "quote": "likely due to excluding individuals who violated positivity assumptions",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The published discordant estimate of 1.8 used a comparator class pooling metformin, sulfonylureas, meglitinides, thiazolidinediones, acarbose, GLP1 receptor agonists and SGLT2 inhibitors. Splitting that class into three second-line comparators produced 1.12, 1.15 and 1.43, and the elevated time-varying estimates were concentrated in the thiazolidinedione and SGLT2i comparisons because those drugs have different discontinuation profiles. The equivalence class was chosen by drug-class convention, and no procedure exists to decide which versions belong together.",
+     "quote": "Prior studies show that using therapeutically equivalent drugs as active comparators will reduce bias",
+     "locator": "Methods, Exposure assessment"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Two analyses of the same UK database reached opposite conclusions about DPP4i and inflammatory bowel disease, 1.8 versus estimates near the null, and the reconciliation required an entirely new study rather than a sensitivity analysis either original was required to report. The regression-based approach in the earlier study is judged unable to handle a positivity problem it never diagnosed.",
+     "quote": "which a Cox regression approach likely could not address",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0473",
+   "read": true,
+   "doi": "10.1002/cpt.70310",
+   "title": "Systematic Evaluation of Data and Trial Fitness for Oncology Trial Emulation: Empirical Findings from the CARE Initiative.",
+   "relevance": "high",
+   "one_line": "A multistakeholder feasibility screen of 54 oncology RCT and real-world data combinations found 10 potentially feasible, 9 taken to detailed assessment and only 3 advanced to protocol development, using one-to-five element ratings for which interrater agreement was never calculated.",
+   "what_was_done": "Twenty-three oncology RCTs completed between 2015 and 2020 that led to an FDA approval and used an active comparator were screened against six US electronic healthcare data sources: ConcertAI, COTA, Loopback, Tempus, TriNetX and XCures. Screen 1 tested whether indication and treatments were identifiable; Screen 2 required at least 1.5 times the number of patients in each RCT arm. Of 54 candidate RCT and data source combinations, 44 fell out at those two screens, including every combination in Data Sources 5 and 6. Nine entered a modified SPIFD2 detailed assessment in which each design element was labeled essential or supplemental and rated one to five for availability, completeness and validity. Three assessments in Data Source 1 received the lowest overall rating of 2, driven by absent performance status and progression measures. Data Source 4 rated 5 for the ASCEND trial and 4 for KEYNOTE-189 in the same dataset. Three emulations survived to protocol development. Completeness was computable only where a variable has a value for every patient, such as performance status, and was undefined for non-cancer conditions where absence and unknown are indistinguishable. Two RCT criteria, RECIST-measurable disease and willingness to provide a tumor sample, were declared inherently infeasible in advance because requiring them would rule out all emulations.",
+   "future_research": [
+    {
+     "gap": "Variables needed for crossover and time-varying confounding were never assessed, so they remain an unexcluded explanation for any RCT and emulation disagreement.",
+     "kind": "stated",
+     "quote": "Additionally, variables required to address complex real‐world analytic considerations, such as substantial treatment arm crossover and time‐varying confounding, were outside the scope of the present data feasibility assessment",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Only six US datasets were assessed, so the fitness patterns reported may not hold for other US or global sources.",
+     "kind": "stated",
+     "quote": "Further work is needed to understand the strengths and limitations of other US and global RWD sources for oncology RCT emulation.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "DTA-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "A stepwise procedure with two quantitative gates is supplied: indication and treatment must be identifiable, and each arm needs at least 1.5 times the RCT arm size. Those gates stopped studies, eliminating 44 of 54 combinations and later 6 of 9 detailed assessments. Everything past those counts stays narrative: elements are scored one to five by team consensus, no cutoff on that scale decides feasibility, interrater agreement was never computed, and readers are warned not to treat rating differences as meaningful. The part of data fitness that concerns quality rather than sample size still has no threshold that would stop a study.",
+     "quote": "Additionally, ratings of how well individual data elements could be operationalized involved a degree of subjectivity, particularly in cases where completeness could not be ascertained, and we did not evaluate agreement metrics, which may have influenced overall feasibility ratings.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "ELG-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Completeness could be defined only for variables that must have a value for every patient, such as performance status. For the comorbidity and prior-condition criteria that carry most oncology trial exclusions, a missing value and a genuinely absent condition are the same record, so the denominator needed to quantify the problem does not exist. The assessment names this and stops, which is why exclusion criteria were downgraded to supplemental rather than measured.",
+     "quote": "Conversely, missingness could not be determined for the presence of other, non‐cancer medical conditions since missing values could indicate the absence of a condition or unknown status.",
+     "locator": "Methods, Feasibility assessment"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Two trial eligibility components, RECIST-measurable disease and consent to provide a tumor sample, were ruled unobservable before any assessment began, because enforcing them would have eliminated every candidate emulation. The consequence is that all three surviving emulations estimate an effect in a population defined by what the data can express rather than by the trial protocol, and the substitution is recorded as not applicable rather than as an estimand change.",
+     "quote": "we a priori identified RCT elements that were inherently infeasible to emulate in RWD",
+     "locator": "Methods, Feasibility assessment"
+    },
+    {
+     "problem_id": "DTA-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Fitness was found to depend on curation rather than on structure: the best-performing sources were those that built standardized oncology measures from structured and unstructured records, and the same dataset rated 5 for one trial and 4 for another. Validity was scored from curation status or an external validation of the algorithm, which means the assessment records where a variable came from and cannot establish that performance status or progression carries the same meaning as the protocol-specified trial assessment.",
+     "quote": "Validity was assessed based on variable curation status or external validation of variable or algorithm.",
+     "locator": "Methods, Feasibility assessment"
+    },
+    {
+     "problem_id": "BEN-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A data source that is fit for emulating a trial and a data source that is fit for answering the underlying clinical question are shown to be different objects, because mirroring the trial imports eligibility restrictions chosen for patient protection rather than for validity. Ten of 54 combinations passed the emulation screen; nothing follows from that about which sources would support the new questions the emulations are meant to license.",
+     "quote": "This highlights an important distinction: because the goal of RCT emulation studies is to mirror the RCT as closely as possible, design choices may not be optimal for producing real-world evidence of comparative effectiveness.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Selection of the final three emulations was made by Steering Committee consensus on anonymized ratings, so the rule separating an adequate emulation from an inadequate one is a committee vote rather than a stated threshold, in a project run with FDA-adjacent stakeholders and industry sponsors. The report explicitly warns against reading the resulting scores as a ranking.",
+     "quote": "However, small differences in element and overall ratings between data sources should not be overinterpreted as indicating superiority of a given data source.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0476",
+   "read": true,
+   "doi": "10.1101/2025.03.19.25324271",
+   "title": "From 'Negative' Trial to Positive Clinical Impact: Emulating WARCEF While Accounting for Selection Bias in Trial Timing.",
+   "relevance": "medium",
+   "one_line": "A preprint emulation of WARCEF in Mayo Clinic Platform data reported warfarin hazard ratios of 1.3961 (0.696-2.802) before July 2014 and 2.039 (1.412-2.945) after, and attributed the shift to trial dissemination changing prescribing.",
+   "what_was_done": "Warfarin and aspirin were compared for mortality in heart failure with reduced ejection fraction using EHR data, with cohorts split at the WARCEF completion date of July 2014. Intention-to-treat cohorts held 4579 aspirin and 93 warfarin patients before the cutoff and 13,599 aspirin and 493 warfarin patients after; per-protocol cohorts held 4314 and 86 before and 3373 and 99 after. Intention-to-treat hazard ratios were 1.3961 (95% CI 0.696-2.802, p = 0.3477) before and 2.039 (1.412-2.945, p < 0.001) after; per-protocol hazard ratios were 1.1572 (0.559-2.397, p = 0.6945) and 3.940 (1.376-11.286, p = 0.0107). Per-protocol membership required taking the medication for at least six years or dying before the final medication date. The temporal cutoff was the official trial completion date, acknowledged as possibly not the point at which practice changed. Reclassifying ACE inhibitor use from inclusion criterion to confounder reversed the direction of the hazard ratio. The peer-reviewed version of the same emulation, published as a separate record, reports pre-2014 cohorts of 37,225 aspirin and 2022 warfarin patients and attributes the same temporal pattern to a single eligibility criterion rather than to trial dissemination.",
+   "future_research": [
+    {
+     "gap": "The transition point at which a published trial changes practice is unknown and was proxied by the trial completion date.",
+     "kind": "stated",
+     "quote": "Third, we used the trial’s official completion date as the temporal cutoff for cohort separation. However, this may not accurately capture the true timing of the trial’s influence on clinical practice",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Evidence comes from one trial in one health system, with a negative primary outcome.",
+     "kind": "stated",
+     "quote": "First, our analysis is restricted to a single clinical trial, and specifically to a trial with a negative primary outcome.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "PRO-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Two records of the same emulation exist. This one reports 93 warfarin patients before the cutoff, both intention-to-treat and per-protocol analyses, and concludes that trial dissemination altered treatment effects; the peer-reviewed version reports 2022 warfarin patients before the cutoff, drops the per-protocol analysis, and concludes an eligibility criterion produced the pattern. Nothing in either document reconciles the cohorts or records why the alternative was abandoned, so the discarded protocol survives only because the preprint was left online.",
+     "quote": "For the ITT analysis, the cohort size before 2014 consisted of 4,579 patients on Aspirin and 93 on Warfarin, while after 2014, the cohort included 13,599 patients on Aspirin and 493 on Warfarin.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "PRO-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The cutoff that defines the two emulated trials is the quantity under study, and it was set by the trial completion date and then defended by the results it produced. The stated causal claim, that dissemination changed prescribing and therefore effects, is read off a contrast between 1.3961 and 2.039 that the same group later attributed to a documentation-driven eligibility criterion, which is what happens when the target trial is fixed after the estimates are in view.",
+     "quote": "These changes suggest that the WARCEF results and subsequent guideline updates influenced prescribing patterns and patient selection, thereby altering the observed treatment effects.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The per-protocol hazard ratio of 3.940 (1.376-11.286) comes from a cohort restricted to patients who took the drug for at least six years or died before their last dispensing. Membership is decided by the future, so the contrast is between survivors of a six-year adherence filter in one arm and the same in the other, with no weighting to recover the adherence-adjusted effect. The number is reported as a per-protocol effect with a conventional confidence interval built on 99 exposed patients.",
+     "quote": "In our case, the ITT analysis includes all patients regardless of the duration of medication use, whereas the PP analysis includes only those who took the medication for at least six years or died before their final medication date, following the WARCEF protocol standards.",
+     "locator": "Methods"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The single time-grid choice that generates the entire finding, the July 2014 boundary, has no outcome-blind justification. It is taken from an administrative date, its correspondence to the moment practice changed is acknowledged as unverified, and the alternative offered is a data-driven definition of the transition point, which would place the grid choice downstream of the estimates it produces.",
+     "quote": "Third, we used the trial’s official completion date as the temporal cutoff for cohort separation. However, this may not accurately capture the true timing of the trial’s influence on clinical practice",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The same cohort yields a protective or a harmful hazard ratio depending on whether ACE inhibitor use is coded as an inclusion criterion or as a covariate, and the choice is settled by consulting clinicians rather than by any stated rule. Both specifications are defensible under current practice, and no requirement forced either to be shown alongside the headline estimate.",
+     "quote": "For instance, defining ACE inhibitor use as a strict inclusion criterion resulted in a HR below 1, suggesting a protective effect, whereas treating it as a confounder produced an HR above 1, implying potential harm.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Feasibility of the platform to emulate trials is stated as a result, and the causal reading of a hazard ratio that moved from 1.3961 to 2.039 rests on that framing rather than on any diagnostic. The subsequent reanalysis by the same group shows the assumption burden was not what the emulation label implied: a single eligibility criterion, not confounding by indication or dissemination, produced the pattern.",
+     "quote": "This study demonstrates the feasibility of using RWD from the Mayo Clinic Platform to emulate RCTs and assess treatment effects in patients with HFrEF.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0477",
+   "read": true,
+   "doi": "10.1002/cpt.3621",
+   "title": "A Benchmark, Expand, and Calibration (BenchExCal) Trial Emulation Approach for Using Real-World Evidence to Support Indication Expansions: Design and Process for a Planned Empirical Evaluation.",
+   "relevance": "high",
+   "one_line": "BenchExCal turns the divergence between a completed trial and its database emulation into a scaled Bayesian prior for the divergence of a second emulation supporting an expanded indication, and gates the second stage on passing at least one binary agreement metric in the first.",
+   "what_was_done": "An FDA-funded design paper proposes a two-stage procedure. Stage 1 emulates a completed RCT for an existing indication; the divergence is defined as the difference in log hazard ratio between the database estimate and the trial estimate. That divergence is rescaled to the stage 2 setting by the ratio of estimated variances and used as the mean of a normal prior for the stage 2 divergence, with variance built from the pooled stage 1 variance times the same variance ratio; the adjusted stage 2 estimator is then normal with mean equal to the database estimate plus the scaled divergence. Tipping-point analyses vary the prior across the 5th, 25th, 50th, 75th and 95th levels of the divergence confidence interval. Evaluation is planned through simulations seeded from the 32 RCT and database pairs of RCT-DUPLICATE, which reported a correlation of 0.93, plus five empirical examples selected from 152 direct oral anticoagulant and 419 diabetes trials on clinicaltrials.gov. Concordance uses the three RCT-DUPLICATE metrics: statistical significance agreement, estimate agreement and standardized difference agreement with absolute Z below 1.96. Protocols are pre-registered after outcome-blind data checks on power and covariate balance, and no design changes are executed without a registered amendment. Primary analyses assume no effect measure modification on the relative scale.",
+   "future_research": [
+    {
+     "gap": "The similarity of divergence across the two stages is assumed rather than testable, and no metric defines how close two clinical contexts must be.",
+     "kind": "stated",
+     "quote": "The BenchExCal approach assumes that the net effect of the design differences and bias is similar for the stage 1 completed RCT‐database pair and the stage 2 hypothetical RCT‐database pair.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Reweighting an emulation to the trial population can be misleading when the same risk factor is measured differently in the two data sources.",
+     "kind": "stated",
+     "quote": "Transportability methods performed on data with differentially measured factors may provide misleading assurance of similarity in distributions of risk factors.",
+     "locator": "Methods, Considerations on effect measure modification"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "BEN-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is an explicit rule for carrying a replication result to a new question: the stage 1 divergence in log hazard ratio is rescaled by the square root of the variance ratio between the two database studies and becomes the prior mean for the stage 2 divergence, and tipping-point analyses locate the divergence that would flip a regulatory decision. What it does not supply is the theory: the whole construction rests on an assumed equality of net divergence across stages whose plausibility is described only as depending on how close the clinical contexts are, with no measure of closeness and no way to check the assumption without running the second trial.",
+     "quote": "The BenchExCal approach assumes that the net effect of the design differences and bias is similar for the stage 1 completed RCT‐database pair and the stage 2 hypothetical RCT‐database pair.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "BEN-02",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Replication stops being a label and becomes a signed, scaled quantity on the log hazard ratio scale, which is exactly the calibrated comparison the entry asks for, and the design paper says outright that binary metrics cannot capture what matters. The binary labels are nonetheless retained as the gate: passing at least one of the three RCT-DUPLICATE metrics decides whether the second stage runs at all, so the same simplistic classification still controls the consequential decision.",
+     "quote": "if we do not meet at least one of the binary agreement metrics described above in the first‐stage emulation of a trial, then we will determine that we do not have sufficient confidence in the design and measurement setup for that clinical scenario and will not proceed to the second stage emulation",
+     "locator": "Methods, Concordance metrics"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Rather than perturbing one assumption at a time, BenchExCal folds design emulation differences, systematic bias and chance into a single divergence parameter and propagates its full distribution, which does move the field past one-at-a-time bias analysis. The cost is that the lumped parameter cannot be attributed: if stage 1 divergence came mostly from measurement error and stage 2 divergence comes mostly from residual confounding, the calibration is wrong in a way the procedure cannot detect.",
+     "quote": "Second, it will often not be possible to empirically disentangle the effects of design differences, biases, and chance, which means that the priors in BenchExCal will be based on divergences stemming from multiple factors",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "PRO-02",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The protocol is fixed before outcomes are seen, with a stated prohibition on examining outcomes stratified by exposure during the design and data-check phase, and registration occurs after those checks. That removes the most direct route by which a target trial gets selected on its results. It does not remove the earlier selection: five pairs were chosen from 571 screened trials through team discussion of what could be learned, and the outcome-blind checks themselves iterate design until the stage 1 divergence is acceptable, so the trial that gets emulated is still chosen conditional on the data.",
+     "quote": "At no point during this process will outcomes be evaluated stratified by exposure status.",
+     "locator": "Methods, Transparent and reproducible approach"
+    },
+    {
+     "problem_id": "PRO-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Two mechanisms record what was rejected: any post-result design change requires a documented amendment before execution, and any trial set dropped at the data-check stage has its reason recorded. This covers the discarded alternatives that the entry says vanish. It stops short of the full problem because the record is internal to one project's process, the amendment trail sits alongside a clinicaltrials.gov registration that shows the final protocol, and nothing requires the earlier stage 1 design iterations to be published.",
+     "quote": "we will document the reason for dropping the set and consider developing protocols and data checks for another set",
+     "locator": "Methods, Trial selection"
+    },
+    {
+     "problem_id": "REG-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The procedure supplies the shape of a regulatory threshold, a gate on binary agreement in stage 1 plus a tipping point at which the stage 2 conclusion would change, and it requires an assessment of power at least equal to the trial and of covariate balance by standardized difference and c-statistic. It supplies no number: the decision-changing threshold is explicitly left to be negotiated with the decision-making organization case by case, so adequacy of emulation and acceptable residual confounding remain undefined.",
+     "quote": "Therefore, decision‐changing thresholds must be defined in conjunction with the relevant decision‐making organization and aligned with the specific context being considered.",
+     "locator": "Methods, Calibration step"
+    },
+    {
+     "problem_id": "EST-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Transporting the stage 1 result to the stage 2 population is handled by assuming away effect measure modification on the relative scale in the primary analyses, with alignment of only age and sex offered as a sensitivity analysis. The paper also notes that reweighting between a trial and a database is unreliable when risk factors are measured with different sensitivity and specificity in the two sources, so the sampling assumptions are stacked on top of the confounding assumptions with no accounting of their combined effect.",
+     "quote": "In our primary analyses, we assume that there is no effect measure modification on the relative scale.",
+     "locator": "Methods, Considerations on effect measure modification"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0478",
+   "read": true,
+   "doi": "10.1186/s12889-025-22526-5",
+   "title": "An application of the augmented synthetic control method within a target trial framework: the case of the soda tax policy in California.",
+   "relevance": "high",
+   "one_line": "A target trial framing of four Californian soda taxes estimated a three-year change in adult obesity prevalence of -1.4 percentage points (95% CI -9.2 to 5.7), with the city-level interval running from -34.9 to 21.1 in Berkeley.",
+   "what_was_done": "Four cities that adopted a 1-cent-per-ounce sugar-sweetened beverage tax, Berkeley from January 2015, Albany from April 2017, Oakland from July 2017 and San Francisco from January 2018, were compared with 121 Californian control cities more than 12 miles away using the augmented synthetic control method with ridge regularization. The outcome was adult obesity prevalence from AskCHIS Neighborhood Edition, a model-based small-area estimate available only in 2012, 2014, 2016, 2018 and 2020; intervening years and missing covariates were filled by univariate time-series imputation. Adjustment covered sex, age, employment, education, race and ethnicity, marital status, poverty, median household income, population size and public transport use. Follow-up was fixed at three years because San Francisco had the shortest post-policy series. Three-year effects were -5.5 percentage points (95% CI -34.9 to 21.1) in Berkeley, -1.7 (-11.3 to 6.8) in Albany, -1.0 (-6.5 to 4.3) in Oakland and 2.6 (-11.0 to 16.8) in San Francisco, with an overall estimate of -1.4 (-9.2 to 5.7). Pre-treatment fit was reported as good with an identical predicted mean squared error of 1.47 across model specifications. Pass-through of the tax was about 60% in Oakland, and San Francisco carried concurrent warning-label, toy-incentive and campus sales-ban policies.",
+   "future_research": [
+    {
+     "gap": "Precision is limited by a short pre-treatment series, so longer horizons are needed before the policy effect can be estimated usefully.",
+     "kind": "stated",
+     "quote": "Third, our estimates lacked precision, and this lack of precision stems from the small sample size related to the shorter available pre- treatment periods, underpowering our analyses.",
+     "locator": "Limitations"
+    },
+    {
+     "gap": "Policy timing and location are not random and the residual unmeasured confounding is unquantified.",
+     "kind": "stated",
+     "quote": "In other words, the timing and the location of the policy are not random likely due to the presence of unmeasured confounding.",
+     "locator": "Limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "PRO-05",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The treatment strategy is written as a city adopting a 1-cent-per-ounce tax, but the intervention that reaches a person is the price change, and pass-through was about 60% in Oakland. Two cities receiving the same nominal tax therefore deliver different treatment versions, and the assignment unit is a city while the outcome is measured on individuals whose shopping crosses city lines. Neither the version nor the unit is pinned down by the protocol, and the estimate of -1.4 percentage points averages across whatever mixture occurred.",
+     "quote": "The intervention would consist of randomly assigning some cites to the intervention arm (they will adopt a 1-cent-per-ounce SSB tax.) while the control will continue with the status quo.",
+     "locator": "Methods, Study design"
+    },
+    {
+     "problem_id": "EST-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Interference is handled by a geographic rule, excluding control cities within 12 miles, chosen from a single prior study of shopping travel distance. The rule is not a diagnostic: it neither measures residual spillover nor bounds it, and shoppers who cross the boundary and residents who work in a taxed city remain misclassified. With a point estimate of -1.4 percentage points and an interval of -9.2 to 5.7, any spillover of the size the rule is meant to prevent would be invisible.",
+     "quote": "As such, we limited control cities to those that were beyond 12 miles from SSB tax cities given the possibility of spillover effects.",
+     "locator": "Methods, Eligibility criteria and exposures"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The time grid is set entirely by data availability, with obesity prevalence observed only in even years from 2012 to 2020, and the follow-up horizon is set to three years by the shortest treated series. Neither choice is derived from the policy mechanism, and a one-year washout after passage rather than after implementation is presented as a sensitivity analysis, which shows the grid was a decision rather than a given.",
+     "quote": "These cities will be followed for 3 years (since this is the smallest number of years an individual city has been followed, e.g. San Francisco in our case; this will ensure the results are comparable across treated cities).",
+     "locator": "Methods, Study design"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Half of the annual outcome series does not exist and is filled by univariate time-series imputation, then treated as observed data in the pre-treatment fit that defines the synthetic control weights. The reported predicted mean squared error of 1.47 is therefore partly a fit to interpolated points, and the uncertainty of the interpolation does not enter intervals that already run from -34.9 to 21.1 percentage points in Berkeley.",
+     "quote": "Therefore, we imputed missing values using univariate time series imputation that employs time dependencies for other years",
+     "locator": "Methods, Imputation"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Three assumptions are known to fail at once: the common shock assumption is violated in San Francisco by concurrent warning-label and sales-ban policies, control cities adopted their own beverage policies in the same period, and the timing of adoption is non-random. Each is discussed in prose and none enters a bias analysis, so the reported interval of -9.2 to 5.7 percentage points reflects sampling variation only.",
+     "quote": "Second, our study makes the common shock assumption, that is, we assumed that other events which occurred at the time of or after the policy would affect SSB tax cities and control cities equally. This assumption was violated in some cities, such as San Francisco.",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The outcome is not measured; it is a small-area model prediction of obesity prevalence produced from survey data for each city, and it enters the analysis as if it were an observed quantity. No component of its prediction error propagates into the synthetic control weights or into the reported confidence intervals, and the pre-treatment fit statistic that justifies the counterfactual is computed on those predictions.",
+     "quote": "AskCHIS NE provides city-level model-based estimates of key health behaviors and conditions including city-level obesity prevalence",
+     "locator": "Methods, Data sources"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0480",
+   "read": true,
+   "doi": "10.1097/hep.0000000000001174",
+   "title": "Hepatic real-world outcomes with obeticholic acid in primary biliary cholangitis (HEROES): A trial emulation study design.",
+   "relevance": "high",
+   "one_line": "A sequence-of-trials emulation in linked US claims, laboratory, transplant and death data reported a hazard ratio of 0.37 (95% CI 0.14-0.75) for obeticholic acid on hepatic decompensation, transplant or death, resting on 8 events in the treated arm and 31.8 weighted events among 405.4 weighted control indexes.",
+   "what_was_done": "Patients with compensated primary biliary cholangitis and intolerance or inadequate response to ursodeoxycholic acid were identified in the Komodo Healthcare Map, linked to LabCorp and Quest laboratory data, the transplant registry and death records by Datavant tokens with about 98.6% linkage precision. From 143,197 patients with a coded diagnosis, 4535 controls and 432 obeticholic acid initiators survived the POISE-based exclusions. Each qualifying visit for an untreated patient contributed a control index, giving 12,399 control indexes; standardized morbidity ratio weighting collapsed these to 405.4 weighted indexes against 403 treated indexes. The primary analysis targeted a per-protocol estimand by censoring at crossover and 90 days after discontinuation, a window prespecified by nine hepatologists. There were 31.8 weighted control events (23.0 decompensations, 7.2 deaths, 1.6 transplants) and 8 treated events, giving a hazard ratio of 0.37 (95% CI 0.14-0.75). Two intention-to-treat variants gave 0.59 (0.34-0.995) and 0.644 (0.38-1.05); inverse probability of censoring weighting gave 0.52 (0.12-0.82). Inference used a grouped bootstrap with 1000 replicates. The ALP entry threshold was lowered from 1.67 times the upper limit of normal to the upper limit of normal because about 40% of real-world initiators fell below the trial threshold. Median follow-up was 17.5 months for weighted controls and 9.3 months for treated patients, and 390 patients were dropped listwise from the propensity model.",
+   "future_research": [
+    {
+     "gap": "Claims-based ascertainment leaves covariates, treatments and outcomes possibly missing or mismeasured, with no correction applied.",
+     "kind": "stated",
+     "quote": "Potential for errors exists in coding and omissions when using administrative claims-based data, resulting in possibly missing and mismeasured covariates, treatments, and outcomes.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The trial entry threshold of alkaline phosphatase above 1.67 times the upper limit of normal was replaced by any value above the upper limit of normal, because about 40% of real-world initiators sat below the trial threshold. The emulated population is therefore defined by prescribing behavior rather than by the protocol, and the resulting hazard ratio of 0.37 is compared against the POISE extension estimate of 0.42 as though the two addressed the same population.",
+     "quote": "One important modification was to reduce the ALP inclusion criteria to >ULN, versus >1.67× ULN in POISE. This was done because ~40% of patients initiating OCA in the US Komodo Healthcare Map database had ALP levels <1.67× ULN.",
+     "locator": "Methods, Data sources and participants"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A claims database covering 330 million people yields 432 treated patients, and weighting compresses 12,399 control indexes to 405.4. The primary estimate rests on 8 treated events and 31.8 weighted control events, which is why the transplant component could not be estimated at all and the male subgroup of 34 patients moved in the opposite direction. Database size did nothing for the quantity that determines precision.",
+     "quote": "For the primary analysis, there were 31.8 events (23.0 hepatic decompensations, 7.2 deaths, and 1.6 liver transplants) among 405.4 weighted indexes (7.9%) for controls.",
+     "locator": "Results, Primary efficacy endpoint"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The declared estimand is the effect under sustained adherence, and it is estimated by censoring at crossover and 90 days after discontinuation under treatment weights alone; censoring weights appear only as a sensitivity analysis, which moves the estimate from 0.37 to 0.52. The headline number is a hazard ratio over a period in which treated patients were followed a median of 9.3 months and controls 17.5 months, so it is a contrast among those compatible with the discontinuation window rather than the stated per-protocol effect.",
+     "quote": "Our primary analysis targeted a per-protocol (or “as-treated”) estimand; in other words, the effect if patients were randomized and remained adherent to treatment.",
+     "locator": "Methods, Study design"
+    },
+    {
+     "problem_id": "SEQ-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Repeated participation is acknowledged as the price of the precision gain, and the correlation it induces is handled by a grouped bootstrap. What remains uncontrolled is the calendar-time side: control indexes accrue at every qualifying visit from 2016 to 2021 while a patient contributes at most one treated index, and calendar time enters the propensity model only as a binary indicator for before or after 2020. With treated follow-up of 9.3 months against 17.5 months for controls, the index-generating process and calendar period are entangled in a way the variance correction does not touch.",
+     "quote": "By allowing patients to contribute multiple indexes to the analytic data set, we increased the precision of estimated treatment effects, which can be crucial in rare disease studies but must address within-subject correlation in the statistical analysis.",
+     "locator": "Methods, Study design"
+    },
+    {
+     "problem_id": "SFW-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A defensible variance procedure is supplied and used: a nonparametric bootstrap grouped on patients, 1000 replicates, with intervals taken as bootstrap percentiles and p values from the same distribution. It works because the cohort is 4535 controls and 432 treated patients. Nothing here provides the scalable default the entry asks for: there is no analytic variance for the weighted, sequence-expanded estimator, and the same procedure on a cohort orders of magnitude larger, or with cloning as well as sequence expansion, is not addressed.",
+     "quote": "Inference for the HR was conducted using a nonparametric grouped bootstrap with 1000 replicates that addressed the within-patient correlation of outcomes induced by the study design.",
+     "locator": "Methods, Statistical analysis"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The grace period is chosen outcome-blind and on stated grounds: 90 days after discontinuation, prespecified in the protocol by nine hepatologists from the 24-hour half-life, hepatic recirculation and reduced clearance under obstruction. That is the procedure the entry says is missing, at least for this component. It is not complete: no sensitivity analysis varies the window, the eligibility grid still follows healthcare encounters rather than a defined schedule, and the treated arm is censored on a rule that has no counterpart in the control arm.",
+     "quote": "Patients in the OCA arm were also censored 90 days after the treatment discontinuation date. The 90-day period was prespecified in the protocol by a panel of 9 expert hepatologists",
+     "locator": "Methods, Study design"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The bias analysis varies one hypothetical unmeasured confounder and concludes that only a confounder present in at least half the population could shift the estimate. Several other assumptions are in play simultaneously: record linkage across health plans is about 98.6% precise with a collision sensitivity analysis run separately, 390 patients were dropped listwise from the propensity model, and informative censoring was assessed in a different sensitivity analysis that moved the estimate from 0.37 to 0.52. Nothing combines them.",
+     "quote": "It showed that only an unmeasured confounder prevalent in at least half of the population and strongly associated with both exposure and outcomes would have the potential to shift the HR toward the null.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0481",
+   "read": true,
+   "doi": "10.1093/jac/dkaf033",
+   "title": "Estimating the herd effects of antimicrobial prevention interventions on ventilator-associated pneumonia within ICU populations: a cluster randomized trial emulation using data from Cochrane reviews.",
+   "relevance": "high",
+   "one_line": "Re-arraying 182 randomized trials from 13 Cochrane reviews as a three-tier cluster randomized trial gave indirect effects on ventilator-associated pneumonia of 2.17 (95% CI 1.56-3.03) for antibiotic and 1.38 (1.0-1.91) for antiseptic decontamination, against direct effects of 0.77 (0.55-1.09) and 0.97 (0.71-1.33).",
+   "what_was_done": "Control and intervention groups from 72 randomized concurrent controlled trials of antibiotic (Tier 3) and antiseptic (Tier 2) decontamination and 109 trials of non-decontamination interventions (Tier 1, the benchmark) were extracted from 13 Cochrane reviews and rearranged so that each component group became a cluster in a simulated three-tier cluster randomized trial. Benchmark ventilator-associated pneumonia incidences from non-decontamination trials were 23.3 per 100 patients (95% CI 20.6-26.1, n = 111) in control groups and 19.2 (16.8-21.8, n = 112) in intervention groups. Control group incidence in decontamination trials ran 5% to 15% above the benchmark, with a median of 45.9 per 100 patients for antibiotic-based trials against 12 to 30 elsewhere. Meta-regression of logit-transformed incidence, with Tier 1 controls as reference, gave direct effects of 0.77 (0.55-1.09) for antibiotic and 0.97 (0.71-1.33) for antiseptic interventions and indirect effects of 2.17 (1.56-3.03) and 1.38 (1.0-1.91). Findings were robust to adjustment for proportion ventilated, quality score and group mean length of stay. A prospective cluster trial able to test the same assumption would need more than 9000 patients in more than 100 ICUs for 80% power against a 2% absolute difference.",
+   "future_research": [
+    {
+     "gap": "Publication bias and unmeasured confounding across trial groups have not been ruled out as explanations for the elevated control group incidences.",
+     "kind": "stated",
+     "quote": "The possibility of publication bias or unmeasured confounder bias remains to be excluded.",
+     "locator": "Limitations"
+    },
+    {
+     "gap": "Incidence proportions rather than time-at-risk adjusted rates had to be used because the reviews report nothing else.",
+     "kind": "stated",
+     "quote": "The VAP incidence proportion as abstracted in each Cochrane review is used as the measure of VAP occurrence. Other metrics, such as VAP rates adjusted for time at risk, would have been preferable but were not available.",
+     "locator": "Limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "EST-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "An estimator for interference is supplied and applied: with an external benchmark tier, the effect on non-recipients becomes identifiable, and it is large, an odds ratio of 2.17 (1.56-3.03) for antibiotic decontamination, larger in magnitude than the direct effect of 0.77 (0.55-1.09) it contaminates. What it does not close is the emulation case: the procedure needs three tiers of externally benchmarked trials, and it offers nothing for an observational emulation in a single database, where no benchmark tier exists and cloned individuals still carry an unexamined no-interference assumption.",
+     "quote": "The new finding arising here is that VAP prevention as a direct effect is not evident for either antiseptic- or antibiotic-based decontamination interventions.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Risk-of-bias scoring was applied to all 182 studies and never touched the assumption that turned out to matter most. The reported quality scores separate randomization and blinding, which are diagnosable within a trial, from no interference, which is not, and present them as one judgment. The consequence is a literature in which reductions of about 50% were accepted as direct effects while an indirect effect of 2.17 sat undetected.",
+     "quote": "Although the study quality varied, it should be noted that whether SUTVA is a justifiable assumption is never assessed in scoring study quality.",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "External benchmark data function here as a negative control: the 109 non-decontamination trials supply the incidence that decontamination trial control groups should have shown, and the gap between 23.3 per 100 and a median of 45.9 per 100 is what makes the assumption testable at all. The procedure is stated in general terms, that testing this assumption requires external benchmark incidence for the endpoint. It is not a workflow: it requires a large external literature on the same endpoint, and no analogous benchmark construction is offered for a database emulation.",
+     "quote": "Although the validity of causal inference from an RCCT crucially depends on SUTVA, testing SUTVA requires reference to external benchmark incidence data for the endpoint of interest.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "PRO-05",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Decontamination is delivered to patients but acts through the ICU environment, so the assignment unit is ambiguous and the same data support either reading. Read as individually randomized trials the interventions look effective; read as clusters the direct effect vanishes and the population effect reverses. The net effect computed under the individual-level reading has to be labeled notional because it presupposes the assumption the analysis rejects.",
+     "quote": "The net effect is labelled as ‘notional’ as it assumes SUTVA is tenable.",
+     "locator": "Materials and methods, Triangulation of effect estimates"
+    },
+    {
+     "problem_id": "REG-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "National prevention programmes adopted decontamination on summary effects of about 50% drawn from Cochrane reviews, and no threshold on assumption checking stood between that evidence and the guidelines. The design that could settle the question prospectively needs more than 9000 patients in more than 100 ICUs, and is described as ethically infeasible given the possibility of population harm, so the adequacy question stays open by default.",
+     "quote": "In power calculation estimates, such a CRT would require >9000 patients in >100 ICUs for >80% power to detect a 2% absolute risk reduction or increase as an indirect effect of antibiotic-based decontamination.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0482",
+   "read": true,
+   "doi": "10.1038/s41591-024-03352-5",
+   "title": "Evaluating generalizability of oncology trial results to real-world patients using machine learning-based trial emulations.",
+   "relevance": "high",
+   "one_line": "Emulating 11 landmark oncology trials in Flatiron Health data and stratifying by machine-learned prognostic phenotype showed hazard ratios attenuated by an average of 35% against the trials, with high-risk phenotypes falling below the trial confidence interval in every emulation.",
+   "what_was_done": "Cancer-specific gradient-boosted survival models were trained on Flatiron Health records for advanced non-small cell lung, metastatic breast, prostate and colorectal cancer, then used to sort patients meeting key eligibility criteria into risk tertiles. Eleven phase 3 trials were emulated, with cohorts from 1200 to 30,000 patients and an average of 4000. Inverse probability of treatment weighting was applied within each phenotype, with absolute standardized mean differences after adjustment typically below 20% against a stated threshold of 0.2. Against three binary agreement criteria, nine of eleven emulations produced a hazard ratio significantly favoring treatment and five of eleven fell inside the trial confidence interval with a standardized difference below 1.96; hazard ratios were attenuated by an average of 35% and the between-arm median survival difference was 3.0 months shorter than in the trials. Median survival benefit ran 2.3 months short for low-risk, 4.2 for medium-risk and 5.7 for high-risk phenotypes, and high-risk treatment-arm median survival averaged 62% below the trial value and fell outside the trial interval in every emulation. More than 90% of low-risk but only about 60% of high-risk patients met the strict eligibility criteria. ECOG and laboratory values were missing for 30% to 50% of patients and filled by median imputation, chosen because chained equations raised the time-dependent AUC by 0.01. A semi-synthetic simulation showed relative bias below 4% and 94% to 96% coverage when positivity and no unmeasured confounding held, with bias and under-coverage growing as sample size increased once either was violated.",
+   "future_research": [
+    {
+     "gap": "The prognostic models were never validated outside the source database, so phenotype assignment elsewhere is unverified.",
+     "kind": "stated",
+     "quote": "First, our models lacked validation on an external dataset, potentially limiting phenotyping accuracy for patients outside the Flatiron Health database.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Competing risks could not be handled because cause of death was unavailable.",
+     "kind": "stated",
+     "quote": "We could not account for competing risks due to lack of cause-of-death data",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "BEN-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The three binary criteria classify nine of eleven emulations as statistically concordant and five of eleven as interval-concordant, while the same estimates carry a systematic 35% attenuation of the hazard ratio and a between-arm median survival difference 3.0 months shorter than the trials. A label that says nine of eleven agree and a number that says every estimate is pulled toward the null by a third are both derived from the same output; only the label is reported as the replication result.",
+     "quote": "Five of the eleven emulated trials had HRs within the 95% CI of the RCT estimates, with a standardized difference within 1.96. Compared with the RCT results, emulated trial HRs were attenuated by an average of 35%.",
+     "locator": "Results, Trial emulation stratified by phenotype"
+    },
+    {
+     "problem_id": "BEN-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Emulation quality is established on the full strict-criteria cohort and then 33 phenotype-specific estimates are reported from the same machinery, including for high-risk patients whose treatment-arm median survival lies outside the trial interval in every emulation and averages 62% below it. The demonstrated agreement is with the trial population; the estimates that matter clinically are for a stratum where agreement was never demonstrated and cannot be, since no trial reported that stratum.",
+     "quote": "The difference in mOS between arms was, on average, 3.0 months shorter in the emulated trials than in the RCTs.",
+     "locator": "Results, Trial emulation stratified by phenotype"
+    },
+    {
+     "problem_id": "LRN-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The subgroup carrying the study's conclusion, the high-risk phenotype, is also the one where overlap is worst: only about 60% of these patients met strict eligibility criteria against more than 90% of low-risk patients, and the study names preferential post-publication use of new agents in high-risk groups as a positivity threat. Estimates for that stratum are nonetheless reported at full precision and pushed to a public web tool for individual decision support.",
+     "quote": "As phenotype risk increased, fewer patients met the strict eligibility criteria: more than 90% of low-risk phenotype patients met strict criteria compared with approximately 60% of high-risk phenotype patients",
+     "locator": "Results, Sensitivity analysis"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A semi-synthetic simulation quantifies what positivity failure costs: bias and confidence interval under-coverage that grow with sample size, so a larger database makes the problem worse rather than better. That is more than a weight summary and it is a real contribution. It stops short of the entry: in the actual emulations the only overlap reporting is that standardized mean differences fell below 0.2 after weighting, and no patient history is named as unsupported, so the simulation shows the consequence without locating the region where it occurs.",
+     "quote": "The simulations additionally showed that larger sample sizes in cases 2, 3 and 4 worsened coverage, suggesting that assumption violations are amplified in larger datasets.",
+     "locator": "Results, Semi-synthetic data simulation"
+    },
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The imputation strategy for ECOG and laboratory values, missing in 30% to 50% of patients, was chosen by comparing time-dependent AUC: chained equations gained 0.01 over median imputation, so median imputation was kept for convenience. The criterion is predictive discrimination in the prognostic model, not bias in the treatment effect, and the imputed variables also enter the propensity model, so a choice validated on prediction propagates directly into the causal estimate.",
+     "quote": "Given the similar performance, median imputation was chosen for its ease of use.",
+     "locator": "Results, Sensitivity analysis"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Crossover from control to treatment was permitted in all eleven emulations, including two trials that forbade it, and is named as a likely cause of the attenuated effects. The comparator arm converges onto the intervention over follow-up, the estimates are median survival and restricted mean survival time computed over horizons about a year beyond trial median survival, and no analysis reports how the contrast changes with the horizon over which convergence accumulates.",
+     "quote": "Finally, crossover from the control to the treatment arm was allowed in all emulated trials, which may have attenuated the observed overall survival treatment effect",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The simulation varies positivity and unmeasured confounding one at a time across four cases, while the emulations themselves violate several assumptions simultaneously: crossover contrary to trial protocol, 30% to 50% missingness handled by median imputation, absent cause-of-death data and post-publication channeling of new agents into high-risk patients. No analysis combines them, so the reported bias figures describe conditions the emulations do not satisfy.",
+     "quote": "Another concern is the potential violation of the positivity assumption in the emulated trials, specifically due to the preferential use of paradigm-shifting treatments after RCT publication in high-risk groups",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}

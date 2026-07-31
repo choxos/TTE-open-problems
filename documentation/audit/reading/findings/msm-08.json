@@ -1,0 +1,815 @@
+{
+ "batch": "msm-08",
+ "papers": [
+  {
+   "id": "L0185",
+   "read": true,
+   "doi": "10.1093/aje/kwv083",
+   "title": "The Impact of Different CD4 Cell-Count Monitoring and Switching Strategies on Mortality in HIV-Infected African Adults on Antiretroviral Therapy: An Application of Dynamic Marginal Structural Models.",
+   "relevance": "high",
+   "one_line": "Dynamic marginal structural models applied to 2,946 DART trial participants estimated 240-week survival of 0.96 under 12-weekly CD4 monitoring versus 0.92 under none, but only 92 of the 916 participants who became eligible to switch actually switched inside the three-interval grace period.",
+   "what_was_done": "Randomized groups from the DART trial in Uganda and Zimbabwe were pooled and analyzed as an observational cohort using dynamic marginal structural models with inverse probability weighting. After 48 consecutive weeks of first-line ART, 2,946 individuals contributed 11,351 person-years, 625 switches to second-line therapy and 179 deaths, with 190 (6%) lost to follow-up. Strategies were defined by switching at a first CD4 count below thresholds from 10 to 100 cells per cubic millimeter or at a non-Candida WHO stage 4 event with CD4 below 250. A grace period of three 4-week intervals was permitted, and participants were artificially censored when their data became incompatible with a strategy. Monitoring frequency was emulated by declaring CD4 counts observed or unobserved on a schedule, which requires that the test itself has no biological effect on survival. Weights combining switching, substudy and loss-to-follow-up components were truncated at 10, and only the current CD4 count was splined in order to limit positivity problems. Estimated 240-week survival was 0.96 (95% CI 0.94, 0.97) with 12-weekly testing, 0.96 (0.95, 0.97) with 24-weekly, 0.95 (0.93, 0.96) with a single 48-week count and 0.92 (0.91, 0.94) with none. Of those becoming eligible, 72 of 448 (16%) laboratory-monitored and 20 of 468 (4%) clinically monitored participants switched within the grace period.",
+   "future_research": [
+    {
+     "gap": "Confirmatory CD4 counts, which clinicians actually used, could not be written into any strategy",
+     "kind": "stated",
+     "quote": "Since confirmatory CD4 counts were only available at selected times and in a subset of patients in our study, they could not sensibly be incorporated into a strategy.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Grace periods that vary by triggering event and overlapping eligibility windows are unhandled",
+     "kind": "stated",
+     "quote": "This is complicated by the fact that patients may be eligible to switch for more than 1 event within overlapping intervals",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A single grace period of three 4-week intervals was applied to every triggering event, and the clinically correct choice is acknowledged to differ by event because a tuberculosis diagnosis delays a switch for drug-interaction reasons. No outcome-blind procedure selected the three intervals, and the alternative was rejected on tractability rather than on any stated rule.",
+     "quote": "Secondly, allowing different grace periods for different clinical events would have been more appropriate clinically, because clinicians often delay a switch to second-line ART following a tuberculosis diagnosis",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Of the 916 participants who became eligible to switch under the CD4 or WHO 4 criterion, only 92 switched inside the grace period and the rest were artificially censored from the strategy. A trial cohort of 2,946 with 179 deaths therefore supports the headline survival contrasts on a small compatible subset, and the 4% compliance in the clinically monitored group carries the estimates for less frequent monitoring.",
+     "quote": "72 out of 448 (16%) LCM participants switched during the grace period as compared with 20 of 468 (4%) CDM participants",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Positivity is managed by two modeling devices, truncating the combined weights at 10 and splining only the single most important confounder, rather than by naming which covariate histories had no realistic chance of switching or of remaining unswitched. Sensitivity analysis with untruncated weights is reported to increase the estimated monitoring benefit, so the truncation is doing work on the answer.",
+     "quote": "Only the most important predictor (current CD4 count) was modeled using a cubic spline to reduce positivity problems.",
+     "locator": "Methods"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Clinicians in practice requested a confirmatory CD4 count before switching, so the strategy actually followed was not the strategy estimated. Because confirmatory counts existed only at selected times in a subset, the protocol component was dropped, and the resulting estimand is a data-defined strategy that switches on a single count rather than a noisy version of clinical practice.",
+     "quote": "Firstly, clinicians often requested a second CD4 cell count rather than switch for a single low CD4 count.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The measurement schedule is promoted from nuisance to intervention: survival is estimated under monitoring frequencies from 12-weekly to a single count by declaring counts observed or unobserved, giving 0.96 versus 0.92 at 240 weeks. Weights are still computed from all measured counts, so confounding control uses information the emulated strategy does not see. What is not closed is that the schedule remains a fixed regular grid; per-person and irregular visit processes are not represented.",
+     "quote": "We further estimated survival for CD4-count monitoring frequencies ranging from every 12 weeks (12-weekly) to a single CD4 measurement.",
+     "locator": "Introduction"
+    },
+    {
+     "problem_id": "GMT-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A concrete identification route is supplied for regimes indexed by the observation process, resting on the assumption that performing the CD4 test has no effect on survival except through its result. It operates on a discrete 4-week interval grid with a fixed monitoring frequency per strategy. Continuous-time switching and observation schedules that respond to patient state are outside what the construction covers.",
+     "quote": "The same methodology can be utilized, provided that the CD4 test itself (as opposed to the result) has no biological effect on survival",
+     "locator": "Introduction"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0186",
+   "read": true,
+   "doi": "10.1093/biostatistics/kxv025",
+   "title": "Identifying a set that contains the best dynamic treatment regimes.",
+   "relevance": "medium",
+   "one_line": "Multiple comparisons with the best applied to SMART data returns a set guaranteed to contain the optimal embedded regime, and the size of that set depends on the estimator: an augmented inverse probability weighted fit cut standard errors by up to 60% relative to inverse probability weighting and shrank the reported set.",
+   "what_was_done": "A method was derived that reports a set of embedded dynamic treatment regimes containing the true best regime with at least a stated probability, replacing all-pairs comparisons whose power degrades as the number of embedded regimes grows. Mean outcomes under each regime were estimated from a marginal structural model fit by inverse probability weighting and by an augmented estimator, with the correlation structure of the regime-specific estimators derived rather than assumed, since the method of Hsu requires a known correlation structure and SMART data do not supply one. Simulations with 1,000 datasets at sizes 100, 200, 300 and 400 gave biases at or below 0.015 for both estimators, with the augmented estimator reducing standard errors by up to 60%; under deliberate misspecification of the working regression the augmented estimator stayed unbiased while some standard errors increased. The expected set size fell to one faster under the augmented estimator as the gap between the best and inferior regimes grew, and the probability of including an inferior regime was proved to decay exponentially in that gap. The EXTEND trial, a 24-week two-stage SMART in alcohol-dependent patients with eight embedded regimes defined by combinations of non-response criterion and rescue or maintenance tactic, was analyzed with Penn Alcohol Craving Scale score as the outcome.",
+   "future_research": [
+    {
+     "gap": "No sample size procedure exists that bounds the cardinality of the reported set of best regimes",
+     "kind": "stated",
+     "quote": "One important extension of this work would be to devise a method that can be used to plan SMART sample sizes such that the constructed set of best includes at most m DTRs, for a fixed difference between the best and the worst DTRs, with a given probability.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "SFW-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Each participant contributes to every embedded regime compatible with the observed treatment path, so the regime-specific estimators are correlated by construction and the correlation is not known in advance. A derivation of that correlation structure is supplied and used to build the simultaneous inference. What is not closed is the general case: the derivation leans on known randomization probabilities at both stages, which an observational sequential emulation does not have.",
+     "quote": "In SMART, the correlation structure of estimators is not known a priori.",
+     "locator": "Introduction"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The estimator choice is shown to change the reported conclusion, not merely its precision: the augmented estimator cut standard errors by up to 60% at n between 100 and 400 and produced a strictly smaller set of candidate best regimes at every sample size while holding the Type I error rate. This is a worked measurement that the choice mattered. It does not extend to observational settings where the treatment mechanism must be estimated rather than known.",
+     "quote": "Our results show that AIPW reduces the standard error by up to 60% compared with IPW",
+     "locator": "Simulation study"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Eight embedded regimes were compared in a 24-week trial, and each regime is estimated only from the participants whose observed path is consistent with it, so the operative sample per regime is a fraction of the enrolled total. The stated reason a single best regime cannot be named is that this fraction is too small, which is the same effective-sample collapse that eligibility and weighting produce in database emulations.",
+     "quote": "However, this is often not possible due to a small sample size.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "PRO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "SMARTs are powered to detect a stage-1 or stage-2 treatment effect or a difference between two named regimes, while the question actually asked at analysis is which of eight embedded regimes is best. The mismatch between the design target and the analysis target is acknowledged but not decomposed or costed, so a wide reported set cannot be attributed to design choice rather than estimation noise.",
+     "quote": "Currently most SMART designs are sized such that an investigator can detect either a given stage-1 or stage-2 treatment effect or a given difference between two DTRs with a given probability.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0187",
+   "read": true,
+   "doi": "10.1093/biostatistics/kxv028",
+   "title": "Double robust and efficient estimation of a prognostic model for events in the presence of dependent censoring.",
+   "relevance": "high",
+   "one_line": "Four estimators of the same marginal logistic prognostic model in 1,025 HIV-positive patients with 104 events agreed on point estimates but the sandwich and bootstrap intervals for the doubly robust versions disagreed sharply, for example an age odds ratio of 1.81 with a sandwich interval of (1.44, 2.27) and a bootstrap interval of (0.92, 2.46).",
+   "what_was_done": "Sequentially augmented regression and a targeted maximum likelihood estimator, the latter fit both parametrically and with Super Learner, were derived for the coefficients of a marginal logistic model under monotone missing-at-random censoring, and compared with inverse probability of censoring weighting. Data came from four AIDS Clinical Trials Group trials: 1,036 patients virologically suppressed one year after ART initiation, 11 excluded for a recent event, leaving 1,025 followed for up to four further years, divided into 28-day periods with CD4 and HIV RNA carried forward. Censoring was defined as loss to follow-up or an ART interruption longer than 21 days, so the target was a prognostic model under the counterfactual in which everyone stayed on ART. A total of 104 events occurred and 318 patients were event-free, in follow-up and on treatment at five years. Inverse weights never exceeded 15. The four methods gave nearly identical odds ratios, for example CD8 activation 1.16 under IPCW and 1.11 under TMLE with Super Learner, but sandwich and non-parametric bootstrap intervals diverged for the augmented methods, with the SAR age odds ratio interval widening from (1.44, 2.27) to (0.92, 2.46) across 2,000 bootstrap resamples. Quantile plots showed the bootstrap distributions for SAR and TMLE were not Gaussian. Event sparsity forced the final period regression to be pooled across time.",
+   "future_research": [
+    {
+     "gap": "Standard errors from asymptotic linearity may be invalid at realistic sample sizes",
+     "kind": "stated",
+     "quote": "Due to the reliance on the asymptotic linearity of the estimators, the standard error estimates may be invalid for smaller sample sizes.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "SFW-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "With 1,025 patients and 104 events, two accepted variance estimators for the same longitudinal doubly robust estimate produced intervals that led to opposite conclusions: SAR gave a significant CD8 activation odds ratio of 1.15 (1.00, 1.32) by sandwich and a non-significant (0.86, 1.38) by bootstrap, and the age interval widened from (1.44, 2.27) to (0.92, 2.46). No default is identified as correct, and the bootstrap distributions were not even Gaussian.",
+     "quote": "the discord between the confidence intervals obtained using sandwich estimation versus non-parametric bootstrap for SAR and TMLE points to an instability in variance estimation",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Four estimators were run on the same data and returned four different inferential verdicts about CD8 activation. The choice among them was settled by an argument about which nuisance library was more inclusive, not by any preregistered criterion or any measurement of how much the choice mattered.",
+     "quote": "we are inclined to believe those results, which confirm, in this case, the original IPCW results",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The censoring variable is defined by the absence of a laboratory measurement over six months, so the visit process is what determines who is treated as observed. Measurements were planned every 16 weeks but the analysis grid was 28 days, and values were carried forward across the gap. The visit process is thereby absorbed into a nuisance model rather than modeled as part of the causal structure that generated the data.",
+     "quote": "Loss to follow-up was defined by the absence of an HIV RNA measurement over six consecutive months.",
+     "locator": "Case study"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A 28-day grid was imposed on a measurement schedule of at least every 16 weeks, with carry-forward filling the difference, and no outcome-blind rule justifies that choice. The grid was then found too fine for the final period regression, which had to be pooled across all time points because 104 events could not support a single-period model.",
+     "quote": "The data were divided into 28-day periods, and CD4 cell counts and HIV RNA levels were carried forward through these periods when unavailable.",
+     "locator": "Case study"
+    },
+    {
+     "problem_id": "LRN-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Super Learner buys robustness to the functional form of the nuisance models and nothing else. The identifying condition remains a missing-at-random assumption on a censoring process driven partly by unrecorded clinical decisions to interrupt ART, and no amount of flexibility in estimating the censoring probabilities makes that condition checkable.",
+     "quote": "Intuitively, this untestable assumption means that “decisions” to exit the study only depend on the past information available to the analyst.",
+     "locator": "Methods"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0188",
+   "read": true,
+   "doi": "10.1007/s40801-015-0025-6",
+   "title": "Severe COPD Exacerbation Risk and Long-Acting Bronchodilator Treatments: Comparison of Three Observational Data Analysis Methods.",
+   "relevance": "high",
+   "one_line": "The same claims cohort of 5,475 COPD patients produced hazard ratios of 1.24 by intention to treat, 1.00 as protocol and 1.11 by marginal structural model for the same comparison, with 53.5% of patients off all study therapy by six months.",
+   "what_was_done": "Patients aged 40 and over initiating a long-acting muscarinic antagonist, an inhaled corticosteroid plus long-acting beta-agonist combination, or triple therapy were followed for two years in managed care claims. Of 5,475 patients meeting inclusion criteria, 484 (9%) started triple therapy and 4,991 (91%) started single long-acting therapy. By six months 53.5% had discontinued all study therapy; among triple therapy initiators 47% remained on triple therapy and 35% had discontinued both components, while among single-therapy initiators 41% persisted and 55% discontinued. Three analyses of severe exacerbation risk were run on the same data: intention to treat gave a hazard ratio of 1.24 (95% CI 1.00 to 1.53) for triple therapy, as-protocol censoring at discontinuation gave 1.00 (0.73 to 1.36), and a marginal structural model with stabilized treatment and censoring weights gave 1.11 (0.68 to 1.81). The intention-to-treat analysis counted 855 severe exacerbations (15.6%) and the as-protocol analysis 411 (7.5%). Mean stabilized weights were approximately 1.0 in all seven periods with no extreme values. Exacerbations were identified from claims without chart review, and reasons for discontinuation were not observable.",
+   "future_research": [
+    {
+     "gap": "Time-modified effects of the time-varying confounders in the censoring models are unexplained",
+     "kind": "stated",
+     "quote": "This is an aspect that bears further investigation in future research studies of COPD treatments and should be considered in other chronic disease treatment studies.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "A binary treatment probability model cannot represent the real set of therapy options",
+     "kind": "stated",
+     "quote": "a multinomial treatment probability model that would allow for more than two treatment choices and that included no long-acting treatment as an option may provide additional information",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "With 53.5% of the cohort off all study therapy by six months and asymmetric switching, the intention-to-treat analogue is attenuated by construction over a two-year horizon, and no correction is offered beyond running a different analysis. The observed spread from 1.24 to 1.00 across the two horizonless analyses is the size of the problem in this cohort.",
+     "quote": "When treatment switching is prevalent, differences in treatment effectiveness in ITT analyses will tend toward the null",
+     "locator": "Introduction"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Three estimands are reported on one scale and then compared numerically as if they measured the same quantity, with the marginal structural model estimate described as sitting between the other two. The intention-to-treat analogue, the censor-at-discontinuation analogue and the weighted sustained-use contrast answer different questions, and 1.24, 1.00 and 1.11 are not three attempts at one number.",
+     "quote": "In our study, the MSM risk estimate was midway between the AP estimate of 1.00 and the ITT estimate of 1.24.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The reported positivity check is that stabilized weight means were near 1.0 with no extreme values across all seven periods. That summary is compatible with the marginal structural model interval spanning 0.68 to 1.81, nearly twice the width of the intention-to-treat interval, and it identifies no patient history for which one of the three therapies was effectively unavailable.",
+     "quote": "Mean weight values were approximately 1.0 for all periods in this analysis and ranges did not contain extreme values",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Three distinct regimens were collapsed into a binary contrast of triple therapy versus either single long-acting therapy, and no long-acting treatment was excluded as an option even though 53.5% of the cohort occupied that state by six months. The grouping is a modeling convenience, not a defended clinical equivalence class.",
+     "quote": "Individuals were allowed to switch treatment groups and were censored at (1) 24 months, (2) loss to follow-up, or (3) discontinuation of use of any of the index treatments",
+     "locator": "Methods"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Both the outcome and the principal time-varying confounder are claims-derived exacerbation phenotypes entered as error-free events, with no chart validation and no propagation of misclassification into the 1.11 estimate or its interval. Moderate exacerbations drive the weights and severe exacerbations are the outcome, so the same phenotype error enters twice.",
+     "quote": "Finally, there may be misclassification due to the exacerbation measures used for severe and moderate exacerbations.",
+     "locator": "Limitations of the Study"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A cohort of 5,475 patients yielded 855 outcome events under intention to treat but only 411 once the protocol was enforced by censoring at discontinuation, and the weighted analysis carried the widest interval of the three. Half the informative events disappear when adherence to the strategy is required.",
+     "quote": "In the ITT analysis, 855 (15.6 % of 5475 subjects) had a severe exacerbation event in the first 2 years, and in the AP analysis, 411 did (7.5 % of 5475 subjects).",
+     "locator": "Results"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0189",
+   "read": true,
+   "doi": "10.1093/aje/kwu485",
+   "title": "Controlling Time-Dependent Confounding by Health Status and Frailty: Restriction Versus Statistical Adjustment.",
+   "relevance": "high",
+   "one_line": "A Cox marginal structural model of influenza vaccine effectiveness in hemodialysis patients passed every weight diagnostic yet returned a preinfluenza-period hazard ratio of 0.43 where 1.00 was the truth, and only cohort restriction moved it toward the null.",
+   "what_was_done": "Yearly cohorts of adults with end-stage renal disease from the United States Renal Data System linked to a commercial dialysis provider, ranging from 40,620 patients in 2005 to 46,281 in 2007 with vaccination coverage of 65% to 74%, were analyzed with a Cox marginal structural model of all-cause mortality using stabilized inverse-probability-of-treatment weights over three influenza seasons. The preinfluenza period served as a negative control period in which the true hazard ratio is 1.00. Stabilized weights had a median of 1.00 in every year, none were extreme, and the weights balanced vaccinated and unvaccinated observations on baseline and time-dependent covariates, yet the basic marginal structural model returned a preinfluenza hazard ratio of 0.43 (95% CI: 0.39, 0.47) in 2005. Adding an expanded block of baseline covariates left the preinfluenza estimate at 0.43, and changing the time-dependent covariate window from 7 days to 4 or 10 days left it at 0.45. Requiring survival to 12 weeks moved the preinfluenza estimate from 0.43 to 0.66, and progressive restriction gave a within-season vaccine effectiveness of 9% (hazard ratio 0.91, 95% CI: 0.72, 1.15). Restriction cost so much sample that some models with 12-week survival plus time-dependent variable restrictions would not converge. Frailty was proxied by ICD-9-CM codes and healthcare-use variables such as skilled nursing facility use, mobility aids and oxygen use; no functional status instrument was available.",
+   "future_research": [
+    {
+     "gap": "No a priori rule reproduces the bias reduction that survival-based restriction achieved",
+     "kind": "stated",
+     "quote": "Unfortunately, survival requirements cannot be applied a priori to distinguish healthier patients from sicker patients.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Most preventive interventions have no negative control period as clean as the preinfluenza window",
+     "kind": "stated",
+     "quote": "Although other preventive health",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Every weight-based diagnostic passed: stabilized weights had a median of 1.00 in all three seasons, none was extreme, and covariate balance was achieved on both baseline and time-dependent variables. The negative control period nevertheless returned a hazard ratio of 0.43 rather than 1.00, so the weight summary carried no information about which patient histories were unsupported or which comparisons were driven by extrapolation.",
+     "quote": "all years had a median of 1.00, and none of the weights was considered extreme",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A negative control period is supplied and it is the only device that revealed the residual bias, since weights, balance and covariate expansion all looked satisfactory. The preinfluenza hazard ratio of 0.43 against a truth of 1.00 quantified the bias directly, and restriction was scored by how far that number moved toward the null. What is not closed is generality: the device depends on a seasonal exposure with a clean pre-exposure window, and no workflow slot exists for proxies or validation data in emulations lacking one.",
+     "quote": "one major advantage of using an inﬂuenza vaccine effectiveness study is the availability of the preinﬂuenza period as a negative control",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Frailty entered the analysis as a set of binary claims-derived indicators, a comorbidity being counted present on a single diagnosis code. Adding these indicators moved the preinfluenza hazard ratio from 0.43 to 0.43, that is, not at all. The error in the phenotype was never propagated into the estimate or its interval.",
+     "quote": "It is likely that ICD-9-CM codes cannot be used to identify frailty accurately and are not strongly associated with vaccination",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Cohorts of over 40,000 patients per season shrank under restriction to the point that the final preinfluenza model would not fit, and the within-season estimate carried an interval from 0.72 to 1.15 on a hazard ratio scale. The nominal database size was never the operative sample.",
+     "quote": "in some scenarios the reduced sample size prevented us from ﬁtting the ﬁnal model of preinﬂuenza vaccine effectiveness",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The least biased estimate, 9% effectiveness, applies to a population defined by survival to 12 weeks plus baseline and time-dependent covariate restrictions. No accounting is offered for moving that number to the population a decision maker cares about, and the restricted population cannot even be named in clinical terms.",
+     "quote": "it would be difﬁcult to ﬁnd a simple, meaningful description for the population to whom our best estimate of vaccine effectiveness applies",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The data source was chosen because it linked registry claims to clinically rich dialysis provider records, which is the standard narrative argument for fitness. That linkage removed essentially none of the healthy-user bias, and no threshold existed that would have stopped the study before the negative control period exposed the failure.",
+     "quote": "Using a linked data set with clinical covariates and accounting for time-dependent confounding achieved little reduction in confounding due to the healthy-user bias",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0190",
+   "read": true,
+   "doi": "10.1371/journal.pone.0111325",
+   "title": "Assessment of patient-specific surgery effect based on weighted estimation and propensity scoring in the re-analysis of the sciatica trial.",
+   "relevance": "medium",
+   "one_line": "Re-analysis of the 142-patient wait-and-see arm of a sciatica trial gave a weighted surgery effect of -2.10 on the RMDQ (95% CI -4.21, 0.07) against a conventional regression estimate of -1.47 (-2.72, -0.14), with stratum-specific effects running from +1.75 to -7.93 across propensity strata.",
+   "what_was_done": "The original trial randomized 283 patients to a wait-and-see policy (n = 142) or early microdiscectomy (n = 141), with nine follow-up visits over two years and four pain and function scores. Only the wait-and-see arm was re-analyzed, because positivity fails structurally in the early surgery arm; 56 of the 142 control-arm patients (40%) took surgery during follow-up, 15 within two months and 37 between two months and one year. A pooled logistic propensity model used baseline scores, changes from baseline and lagged changes at each visit, plus an indicator for the protocol-scheduled surgery offer at six months. Patients opting for surgery had significantly worse baseline RMDQ, Likert and VAS leg pain and significantly smaller reductions from baseline. Inverse probability weighted regression gave a median RMDQ surgery effect of -2.10 (95% CI -4.21, 0.07) against -1.47 (-2.72, -0.14) from conventional regression on the same confounders. After stepwise removal of predictors from the propensity model the weighted estimate became -2.52 (-4.77, -0.16) and the conventional estimate -1.31 (-2.48, -0.09). Six propensity strata cut at the 15th, 25th, 50th, 75th and 85th percentiles gave effects from +1.75 to -7.93, averaging -1.74. A propensity-by-treatment interaction term was estimated at -29.23 (-99.85, -8.80) from 10,000 bootstrap replicates.",
+   "future_research": [
+    {
+     "gap": "No validation of these patient-specific effect estimates against new data has been attempted",
+     "kind": "stated",
+     "quote": "The current paper does not address the issue of validation of research findings presented here.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Trials do not record the indicators that would allow a secondary per-patient treatment analysis",
+     "kind": "stated",
+     "quote": "It would be helpful - even for randomized trials generally - where treatment decision may depend on prior information to record such information as accurately as possible in order to facilitate such secondary analysis as we have described in this paper",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "LRN-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Six propensity strata were carved out of 142 patients, of whom 56 had surgery, and the reported effect ranges from an RMDQ increase of 1.75 in the lowest stratum to a decrease of 7.93 in the highest. The clinically actionable claim, that high-propensity patients benefit and low-propensity patients are harmed, rests exactly on the tails where the strata are thinnest and overlap is worst; the interaction interval runs from -99.85 to -8.80.",
+     "quote": "the effect estimates actually changing sign from an increase in mean RMDQ score of 1.75 for patients at smallest propensity",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Three estimators applied to the same 142 patients disagree on whether surgery has an effect at all: weighted regression gives -2.10 with an interval crossing zero, conventional regression on the same confounders gives -1.47 excluding zero, and regression additionally adjusting for the propensity score gives -1.67 excluding zero. No criterion is offered for preferring one, and the divergence is not treated as a finding.",
+     "quote": "The median surgery effect estimate from inverse probability weighted regression analysis was −2.10 (95% CI −4.21, 0.07) for the RMDQ as compared to the median classical regression-based estimate of −1.47 (−2.72, −0.14)",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "PRO-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The propensity specification was revised after the first weighted estimate was seen, dropping predictors in four stages, and the weighted effect moved from -2.10 with an interval crossing zero to -2.52 with an interval excluding it. Inference is then reported conditional on the surviving specification, with the rejected one described only in prose.",
+     "quote": "We therefore decided to remove predictors in a stepwise fashion from the propensity score model.",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Rather than summarizing a weight distribution, the analysis names the exact histories with no support and removes them: in the early surgery arm nobody can remain untreated post-baseline, so half the randomized trial is discarded before any weighting. That is a positivity diagnostic stated in terms of patient histories. It stops at the arm level and says nothing about which of the 142 retained patients lacked a realistic counterpart.",
+     "quote": "Propensity-based methods require the so-called “positivity requirement” which states that patients must have positive probability to receive treatment - or remain free of treatment - post-baseline, which is clearly violated for the early surgery arm of the trial.",
+     "locator": "Methods"
+    },
+    {
+     "problem_id": "EST-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The trial excluded patients in reasonable condition and those with predominantly back rather than leg pain, so the propensity distribution estimated here does not exist in routine care, yet the conclusion offered is a screening rule for future patients. No accounting attaches sampling assumptions to the confounding assumptions when the estimate is carried to a guideline population.",
+     "quote": "This results in a lack of contrast with care-as-usual and therefore one has to be careful with generalizing our results to guidelines.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0191",
+   "read": true,
+   "doi": "10.1097/ede.0000000000000043",
+   "title": "Optimal CD4 count for initiating HIV treatment: impact of CD4 observation frequency and grace periods, and performance of dynamic marginal structural models.",
+   "relevance": "high",
+   "one_line": "Simulating 31,000,000 persons across 31 treatment-initiation regimens showed the optimal CD4 threshold moves from 350 under monthly measurement to 490 under annual measurement, so the answer a dynamic marginal structural model returns is a property of the observation schedule.",
+   "what_was_done": "Regimens of the form initiate treatment within a grace period after an observed CD4 count first falls below x, for x from 200 to 500 in steps of 10, were compared in simulated trials of 31,000,000 persons randomized at CD4 500 to 550, with natural history and treatment response calibrated to CASCADE estimates. Optimal regimens were those maximizing 10-year AIDS-free survival by Kaplan-Meier. Decreasing measurement frequency from monthly to 3, 6 and 12 months moved the optimal threshold from 350 (survival 0.8657) to 410 (0.8650), 460 (0.8634) and 490 (0.8564). Holding x at 350 under annual measurement dropped survival to 0.8304. Extending the grace period from 1 to 3 months under 3-monthly measurement left the optimum at 410 and 6 months raised it to 460. Performance was then assessed in 1,000 simulated observational studies of 3,000 persons with CD4-dependent initiation, using non-stabilized weights truncated at 20. Mean estimated optima under pooled logistic regression were 402 (SE 76), 424 (66) and 430 (63) for 1, 3 and 6-month grace periods, with 24%, 15% and 14% of estimates yielding more than 0.5% lower AIDS-free survival than the true optimum, and roughly 25% of pooled logistic runs hitting the upper boundary of 500. Simulations at n = 100,000 showed no bias.",
+   "future_research": [
+    {
+     "gap": "The effect of observation frequencies that vary within and between persons is unexplored",
+     "kind": "stated",
+     "quote": "Furthermore, it is likely that observation frequencies will vary within and between persons and cohorts; the impact of such variation warrants further exploration",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Requiring a confirmatory measurement to reduce measurement-error censoring is not implementable",
+     "kind": "stated",
+     "quote": "However, if CD4 counts are not consistently confirmed in an observational study (as is typically the case), then enforcing this in analysis is unlikely to be beneficial and may leave only unrepresentative participants uncensored.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The optimal regimen is 350 under monthly measurement and 490 under annual measurement, a 140-cell difference produced entirely by the observation schedule with the underlying biology held fixed. A dynamic regime defined on an observed biomarker is therefore not one estimand measured with more or less precision; it is a different estimand for each schedule, and no identification result reconciles them.",
+     "quote": "We have demonstrated via a simulation based on HIV infection that frequency of observation has a major impact on the optimal regimen for treatment initiation.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The sensitivity of the answer to the grid is quantified rather than assumed: thresholds 350, 410, 460, 490 across monthly through annual measurement, and a survival cost of 0.8657 versus 0.8304 from applying the wrong threshold. A usable default follows, that the grace period should be about the length of the observation interval, since 3-month grace periods gave the smallest mean square error at 3-monthly measurement. What is not closed is any outcome-blind rule for choosing the grid itself; the recommendation is read off one calibrated disease model and the grace period was still selected after seeing survival.",
+     "quote": "it is essential for future studies using causal analysis methods to report their observation frequency",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The measurement process is not a nuisance to be imputed here; it determines who is ever identified as eligible to initiate, and measurement error interacts with it asymmetrically because regimes are defined by counts falling below a threshold. A spuriously low count seen on a monthly schedule triggers initiation that an annual schedule would never see, which is why the optimal threshold shifts.",
+     "quote": "Measurement error also has a larger impact on observation frequency than it does on grace period.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "At n = 3,000 with 3-monthly measurement the estimated optimal threshold had a standard error of 63 to 76 cells and about a quarter of runs returned the boundary value of 500, while the same estimator was unbiased at n = 100,000. The cohort that looks large enough to answer a when-to-start question is not, once artificial censoring against 31 regimens has removed the incompatible person-time.",
+     "quote": "Dynamic marginal structural models lack precision at moderate sample sizes.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The variable that defines the regime carries both measurement error and Brownian fluctuation, and the consequence is not attenuation but wholesale artificial censoring: records with observed initiation at counts above the nadir are censored from every regime even with a 6-month grace period. The error is never propagated into the reported optimum.",
+     "quote": "Large measurement error and random fluctuation are inherent challenges in the application of these methods, causing large proportions of records with observed treatment initiation to be artificially censored from all regimens",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Positivity is handled by truncating non-stabilized weights at 20, chosen because stabilized weights are non-trivial to compute under uniform initiation across a grace period. Nothing in the reporting identifies which covariate histories had negligible probability of remaining compatible with a given threshold, which is precisely the mechanism that produces the boundary estimates at x = 500.",
+     "quote": "We therefore used nonstabilized weights, truncated at 20.",
+     "locator": "Methods"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0192",
+   "read": true,
+   "doi": "10.1136/oemed-2013-101362",
+   "title": "Work related asthma. A causal analysis controlling the healthy worker effect.",
+   "relevance": "medium",
+   "one_line": "Applying a marginal structural model to lifetime occupational histories of 1,284 EGEA participants moved the odds ratio for known asthmagens from 0.99 to 1.26 and for irritants from 0.82 to 1.56 (1.02 to 2.40), attributing the null standard estimates to the healthy worker effect.",
+   "what_was_done": "Participants aged 17 to 79 (48% men) from the 2003 to 2007 follow-up of the EGEA case-control study had age at asthma onset, lifetime periods with and without attacks, and occupational history collected retrospectively, with job history reconstructed into 5-year intervals and exposure assigned by a job-exposure matrix. Thirty-one percent had ever been exposed to occupational asthmagens; 38% had asthma ever, with attacks reported in 52% of time periods. Standard analysis gave odds ratios of 0.99 (95% CI 0.72 to 1.36) for known asthmagens and 0.82 (0.56 to 1.20) for irritants or low-level chemicals and allergens. A marginal structural model weighting for the disease-driven job selection process gave 1.26 (0.90 to 1.76) and 1.56 (1.02 to 2.40). The exposure categories come from a matrix designed in 2000 from a 1993 list of 150 substances, and the irritant category pools cooks, cleaners, mechanics, waiters and drivers. The design is a case-control study with children and adults recruited in chest clinics, analyzed as a cohort on a non-representative sample. A survivor effect was observed but the hire effect reported in an earlier prospective analysis of the same population was not reproduced. Weight distributions were reported as having a mean near one and moderate range.",
+   "future_research": [
+    {
+     "gap": "Marginal structural models fail for the occupational cohort form of the healthy worker effect",
+     "kind": "stated",
+     "quote": "It has been shown that in such situation, MSMs are not appropriate.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Whether the selection process varies by birth cohort cannot be separated from clinical characteristics",
+     "kind": "stated",
+     "quote": "Cohorts of larger size and more homogenous in age would be needed to study such hypotheses.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Exposure is a three-level construct produced by a job-exposure matrix built in 2000 from a 1993 substance list, and the category that carries the significant result of 1.56 pools cooks, cleaners, mechanics, waiters and drivers as one treatment. No procedure defends that grouping as a clinically meaningful equivalence class, and the same matrix had previously classified those jobs as low risk.",
+     "quote": "This category of exposure regroups several various jobs, including cooks, cleaners, mechanics, waiters, drivers, etc.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Positivity is argued in terms of a named history rather than a weight summary: in occupational cohort settings every unemployed person-period is unexposed by definition, so that stratum has no treated counterpart and weighting cannot repair it. The applicability of the method is then decided on whether such a stratum exists, which here it does not because not all asthmatics move to unexposed jobs. The check is qualitative and covers one variable, so it does not generalize to a covariate history of any size.",
+     "quote": "This is because for one level of the confounder (unemployment) all subjects are by definition unexposed",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A weight distribution with a mean near one and a moderate range is offered as evidence that the exposure models are not biased. That statistic speaks to model stability, not to the no-unmeasured-confounding assumption on which the move from 0.82 to 1.56 depends, and the two are reported side by side without distinguishing what is diagnosable from what is not.",
+     "quote": "The weight distribution (mean close to one, moderate range) was not indicative of bias in the exposure models.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Both the time-varying outcome, presence of asthma attacks in each 5-year interval, and the time-varying exposure, job held in each interval, are recalled across a lifetime spanning 1945 to 2000 and entered as error-free binary variables. Asthma severity was unavailable for most of that history, which is offered as the reason the hire effect was not detected, so the phenotype error is known to be consequential and is still not propagated.",
+     "quote": "Age at asthma onset, periods with/without attacks over lifetime and occupational history were recorded retrospectively.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A case-control study recruiting children and adults through chest clinics was analyzed as a cohort on an acknowledged non-representative sample, with the design described as atypical for the method being applied. Nothing in that assessment functions as a threshold; the fitness discussion appears after the estimates and does not stop the analysis.",
+     "quote": "Though this study design is atypical for the application of a MSM, we analyzed the data as a cohort study based on a non-representative sample",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Residual confounding, exposure misclassification from the job-exposure matrix and lifetime recall error are all live in the same analysis, yet no sensitivity analysis is run for any of them, let alone jointly. The defense offered for the unmeasured confounding assumption is that the usual confounders from the literature were included.",
+     "quote": "Although this possibility can never be ruled out, we have included the confounders usually used in the literature to study the relationships",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0193",
+   "read": true,
+   "doi": "10.1093/biomet/ass013",
+   "title": "Improved double-robust estimation in missing data and causal inference models.",
+   "relevance": "medium",
+   "one_line": "A new class of doubly robust estimators for regression and marginal structural mean model parameters is derived that solves outcome regression estimating equations while retaining efficiency gains, and the paper catalogs which of eight properties each competing doubly robust estimator fails.",
+   "what_was_done": "Estimators are derived for the parameters of regression models with incomplete cross-sectional or longitudinal data and for marginal structural mean models with point exposure. Eight properties are enumerated, and every prior proposal is placed against them: the standard doubly robust estimator satisfies Properties 4 and 5 only, the Bang and Robins estimator and targeted maximum likelihood estimators satisfy 4 to 6, the one-step corrected estimator of van der Laan and Robins satisfies 5 and 8, and the Tan estimators satisfy 4, 5 and 8. The construction rests on the observation that fitting increasingly larger models for the missingness or treatment probabilities improves the efficiency with which the full-data parameters are estimated. Monte Carlo studies with 1,000 replications at n = 1000 and n = 200 for continuous and binary outcomes matched the asymptotic predictions, with all doubly robust estimators slightly biased for binary outcomes; the relative ranking of the new estimator and the Cao estimator reversed between tables, and at n = 200 with binary outcome the standard doubly robust estimator produced probability estimates below zero in 27 to 56 of 1,000 replications and the Cao estimator in 49 to 94. Whether an estimator can satisfy the enhanced efficiency property for all smooth functionals rather than a finite list is stated as unresolved. The extension to longitudinal marginal structural and structural nested mean models with time-dependent confounders is deferred.",
+   "future_research": [
+    {
+     "gap": "Enhanced efficiency for all smooth functionals of a multidimensional parameter is unresolved",
+     "kind": "stated",
+     "quote": "Whether or not this can be accomplished remains an open question.",
+     "locator": "Section 2"
+    },
+    {
+     "gap": "The longitudinal marginal structural model version of the construction is not delivered",
+     "kind": "stated",
+     "quote": "This extension will be reported elsewhere.",
+     "locator": "Concluding remarks"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The property table is a direct statement that no doubly robust estimator dominates: every existing proposal fails a different subset of Properties 4 to 8. The simulations then show the ranking is not even stable within one class, with the Cao estimator ahead in one table and behind in the other, and the relative performance conceded to depend on the data generating mechanism. Nothing in this makes any single choice defensible as a default.",
+     "quote": "It is not surprising and, indeed predicted by asymptotic theory, that their relative performance would vary with the data generating mechanism.",
+     "locator": "Simulation study"
+    },
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The central mechanism is that deliberately enlarging the model for the treatment or missingness probabilities improves the efficiency of the causal parameter estimate. A model selection rule that optimizes prediction of treatment would move in the opposite direction, since the enlarged propensity model is not the one that predicts treatment best out of sample. Nuisance model selection by predictive performance is therefore not aligned with the causal objective.",
+     "quote": "efficient estimation of parameters of increasingly larger models for the missingness or treatment probabilities improves the efficiency with which the parameters of models for the full or counterfactual data are estimated",
+     "locator": "Concluding remarks"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Highly variable estimated probabilities are identified as a cause of substantial bias and large variance even when the missingness model is correctly specified. The remedy pursued is a better estimator rather than a statement of which covariate histories carry near-zero probability, and the symptom that motivates the entire construction, estimates falling outside the parameter space in up to 94 of 1,000 replications at n = 200, is a positivity failure reported as an estimator defect.",
+     "quote": "if the estimated missingness probabilities are highly variable and/or the outcome regression model is misspecified",
+     "locator": "Section 2"
+    },
+    {
+     "problem_id": "LRN-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Double robustness is a guarantee about model specification and nothing else: consistency holds if either the treatment mechanism model or the counterfactual distribution model is right, conditional on missing at random or no unmeasured confounders holding in the first place. Sophistication in the estimator buys efficiency under an identifying assumption that the estimator cannot check and does not weaken.",
+     "quote": "In a causal inference model, an estimator is double-robust if it is consistent when either a model for the treatment assignment mechanism or a model for the counterfactual data distribution is correctly specified.",
+     "locator": "Introduction"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0194",
+   "read": true,
+   "doi": "10.1093/aje/kws213",
+   "title": "Invited commentary: structural equation models and epidemiologic analysis.",
+   "relevance": "medium",
+   "one_line": "A methodological commentary argues that structural equation models deliver more effect estimates than marginal structural models only by making assumptions about every variable on the diagram, and that sensitivity analysis becomes unimplementable once each estimate depends on the whole model.",
+   "what_was_done": "Structural equation models are placed against regression analysis, causal diagrams, causal mediation analysis and marginal structural models. Two properties carried over from the causal diagram literature are identified as routinely neglected in applied structural equation modeling: every absent arrow is a substantive assumption, and every common cause of two variables on the graph must itself appear on the graph. A published application is used as the illustration, with missing arrows enumerated from gender, race, education and occupation to sleep and to psychological distress, and plausible unmeasured common causes named such as number of children affecting both working hours and sleep, and exercise affecting both sleep and injury. Structural equation models are said to be usable for time-varying exposures in some but not all settings where marginal structural models apply, and to make assumptions about more variables when they are, because marginal structural models target a specific set of effects and assume only what identifies those. A complete characterization of which effects are identified when unmeasured variables appear in a linear structural equation model is stated to be an open problem. Cross-sectional application adds unresolvable directionality, with bidirectional influence plausible for the arrows most central to the research question. The recommendation is that these models be restricted to exploratory and hypothesis-generating use.",
+   "future_research": [
+    {
+     "gap": "Which effects are identified in a linear model containing unmeasured variables is unresolved",
+     "kind": "stated",
+     "quote": "even for linear systems, a complete characterization of which effects are identiﬁed when there are unmeasured variables in the SEM is in fact still an open problem",
+     "locator": "Relation to causal diagrams"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The stated failure mode is that a fitted model reports coefficients while its assumption burden goes unstated: every absent arrow is a substantive claim, every common cause must be on the graph, and applications specify the arrows the investigators believe in without commenting on the ones they have deleted. Nothing in the output distinguishes a claim that could be checked from one that cannot.",
+     "quote": "Many of these assumptions have often been ignored and not carefully evaluated when SEMs have been used in practice.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Sensitivity analysis for unmeasured confounding is described as straightforward for a single exposure and outcome and unclear how to implement once each estimate depends on the entire model structure. That is the precise obstacle to varying several violated assumptions together: the machinery exists only in the one-assumption-at-a-time case.",
+     "quote": "With an SEM, however, in which each effect estimate essentially depends on the entire structure of the model, it becomes less clear how such techniques can be implemented.",
+     "locator": "Relation to causal diagrams"
+    },
+    {
+     "problem_id": "LRN-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A richer model returns direct, indirect, total and path-specific effects across a whole diagram, and the argument made is that this yield is bought entirely with assumptions rather than with information in the data. Elaborating the model does not identify anything the simpler analysis could not identify; it only widens the set of conditions that must hold.",
+     "quote": "SEMs allow for the estimation of more effects than do MSMs, but they also make more assumptions than MSMs.",
+     "locator": "Relation to MSMs"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The distinction drawn between the two method families is entirely about assumption burden, not about the label: a marginal structural model assumes only what identifies the effects it targets, while a structural equation model assumes linearity, distributional form and no confounding for every relation on the diagram. Naming the method therefore carries no information about how much is being assumed, which is why applications are advised to be treated as tentative.",
+     "quote": "MSMs target a particular set of effects of interest and make only the assumptions needed to identify and estimate those effects.",
+     "locator": "Relation to MSMs"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0195",
+   "read": true,
+   "doi": "10.1186/1471-2288-12-119",
+   "title": "Comparing marginal structural models to standard methods for estimating treatment effects of antihypertensive combination therapy.",
+   "relevance": "high",
+   "one_line": "In 22,576 INVEST patients with 2,269 cardiovascular events, a marginal structural Cox model gave a hazard ratio of 0.81 (0.71 to 0.92) for aggressive antihypertensive treatment where a standard Cox model gave 0.96 (0.87 to 1.07).",
+   "what_was_done": "Post-hoc analysis of the INternational VErapamil-Trandolapril STudy discarded the randomized assignment and defined exposure time-dependently as three or more concomitant antihypertensive medications versus two or fewer. Over 60,939 person-years, 2,269 of 22,576 patients (10.1%) had a first serious cardiovascular event, defined as non-fatal myocardial infarction, non-fatal stroke or all-cause death. A standard Cox model with time-varying exposure and baseline covariates fixed gave a hazard ratio of 0.96 (95% CI 0.87 to 1.07); a marginal structural Cox model adding stabilized inverse probability of treatment and censoring weights for systolic blood pressure at each visit gave 0.81 (0.71 to 0.92). The gap widened as the aggressive threshold was raised, but two of three exposure specifications did not reach significance. Protocol visits were every six weeks for six months then every six months, up to 14 visits, and missed visits were filled by carrying values forward; patients not returning were censored at the last visit. The pooled logistic implementation assumes equally spaced observations, which INVEST does not satisfy, and requires that aggressive treatment once started continues to censoring, which the data also do not satisfy. Only systolic blood pressure was adjusted as a time-dependent confounder; diastolic pressure and heart rate were not.",
+   "future_research": [
+    {
+     "gap": "Adjustment for more than one time-dependent confounder was not attempted",
+     "kind": "stated",
+     "quote": "More complex modeling of multiple time-dependent confounding factors is an active area for future research in this field.",
+     "locator": "Limitations"
+    },
+    {
+     "gap": "The reported bias magnitude does not transfer to a time-varying covariate comparator",
+     "kind": "stated",
+     "quote": "One should therefore be cautious in generalizing the estimates of bias provided in this paper to scenarios involving Cox models with time-dependent covariates.",
+     "locator": "Limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The exposure is a count of concomitant antihypertensive drugs dichotomized at three, so verapamil plus trandolapril plus a diuretic and any other triple combination are the same treatment, at any dose. The resulting 0.81 is explicitly an average over whichever combinations happened to be used, and no procedure defends that pooling as a clinically meaningful class.",
+     "quote": "This definition does not distinguish between specific drugs and/or drug classes nor does it take dosing of each specific drug into account.",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The estimator assumes equal spacing between observations while the study ran six-week intervals for the first five visits and six-month intervals thereafter, a factor of four discrepancy applied to 22,576 patients over 60,939 person-years. The grid was inherited from the trial protocol rather than selected, and the mismatch is recorded as a limitation with no correction and no quantification of its effect on 0.81.",
+     "quote": "the pooled logistic regression model that was used to estimate the MSCM assumes that observations are equally spaced, which was not the case in the INVEST where the initial five visits occurred in six week intervals while the remaining visits occurred in six month intervals",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Systolic blood pressure is simultaneously the time-dependent confounder that the weights adjust for and a variable observed only when a patient attends. Missed visits were filled by carrying the last value forward, which is conceded to misclassify both exposure and confounder, and the visit process itself never enters the causal structure even though attendance in a hypertension trial is plainly related to control status.",
+     "quote": "If patients did not return for one or multiple protocol visits, values for study variables (e.g., systolic blood pressure, antihypertensive drug use) were carried forward from the last available visit.",
+     "locator": "Methods"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The whole result is a comparison of two estimators, 0.81 versus 0.96, and the comparator is chosen because it is the more widely used one rather than the more defensible one. The fairer comparator, a Cox model with time-varying covariates, is acknowledged and not run, so the reported bias magnitude cannot be attributed to time-dependent confounding as opposed to estimator choice.",
+     "quote": "the alternative approach (a comparison to a standard Cox model that allows both exposure and covariates to change over time)",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A hazard ratio of 0.81 is reported for a static contrast between treating everyone aggressively and treating no one aggressively, under an assumption that aggressive treatment once begun never stops, while the clinical practice being described adjusts therapy continuously to blood pressure targets. The number and the question do not match, and only the estimand mismatch is flagged, not the effect measure.",
+     "quote": "while our analysis makes inferences about a static treatment comparison",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Systolic blood pressure enters the weight models as a three-level categorization of a measurement acknowledged to carry error even under standardized instructions, and the error is asserted to reduce precision rather than bias without any analysis supporting that direction. The same measurement defines who counts as controlled and therefore drives every weight.",
+     "quote": "measurement error is inherently problematic in studies of hypertension",
+     "locator": "Limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0197",
+   "read": true,
+   "doi": "10.1177/1740774511402526",
+   "title": "How to use marginal structural models in randomized trials to estimate the natural direct and indirect effects of therapies mediated by causal intermediates.",
+   "relevance": "medium",
+   "one_line": "Marginal structural models decomposed the CASE-J trial effect into an average natural direct effect of -1.14% (bootstrap CI -3.12 to 0.84) and indirect effect of 1.05% (-0.33 to 2.43) for cardiovascular events, on an identifying condition that cannot be checked with any data.",
+   "what_was_done": "CASE-J randomized 4,728 high-risk hypertensive patients aged 20 to 84 to candesartan or amlodipine with response-dependent dose titration, blinded endpoint assessment, follow-up of at least three years and a 97.1% follow-up rate; the primary hazard ratio was 1.01 (95% CI 0.79 to 1.28). Of the 4,703 in the intention-to-treat population, 150 never had a systolic blood pressure measurement before censoring or an event and were dropped, leaving 4,553 analyzed; the dropped patients had higher baseline systolic and diastolic pressures. Two marginal structural models estimated the average natural direct and indirect effects through achieved systolic blood pressure, measured every six months for up to eight visits. Systolic pressure was 1.9 mmHg higher in the candesartan arm. For cardiovascular events the average natural direct effect was -1.14% (95% bootstrap CI -3.12 to 0.84) and the indirect effect 1.05% (-0.33 to 2.43), against a total risk difference of -0.10 (-1.44 to 1.25). For cerebrovascular events the direct effect was 0.23% (-1.04 to 1.50) and the indirect effect 0.25% (-0.61 to 1.11), against a total of 0.48 (-0.39 to 1.35). Identification requires conditional independence between two potential outcomes that can never be jointly observed. No sensitivity analysis for unmeasured confounding was run, although one is cited as available.",
+   "future_research": [
+    {
+     "gap": "The cross-world condition required for natural effects cannot be verified from data",
+     "kind": "stated",
+     "quote": "It is impossible to check whether this condition is satisfied with the available data.",
+     "locator": "Abstract"
+    },
+    {
+     "gap": "Bounds on direct and indirect effects are available but were not used",
+     "kind": "stated",
+     "quote": "Another approach using bounds might be utilized more fully at the time of evaluating the direct or indirect effects, even though the ranges of bounds are generally wide",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The decomposition rests on a condition involving two potential outcomes that cannot both be observed in any individual, so no data can ever bear on it, and this is reported in the same register as the estimates and their bootstrap intervals. Nothing separates that undiagnosable condition from the checkable ones such as covariate balance, which randomization here does supply.",
+     "quote": "It is impossible to check whether this condition is satisfied with the available data.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The analysis population is defined by whether a measurement of the mediator was obtained before censoring or an event, which removed 150 patients who differed systematically by having higher baseline blood pressure. The measurement process is treated as a data availability matter rather than as part of the structure that generated the mediator history the decomposition depends on.",
+     "quote": "150 patients never underwent systolic blood pressure measurements before they were censored or experienced cardiovascular events during follow-up",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "With 4,553 patients, 3.2 years of mean follow-up and 97.1% follow-up completeness, both components of the decomposition cross zero on a risk-difference scale, the direct effect spanning -3.12 to 0.84 and the indirect effect -0.33 to 2.43. The direct and indirect estimates point in opposite directions, which is precisely the situation the decomposition exists to resolve, and the trial that was large enough for the total effect is not large enough for the parts.",
+     "quote": "Although the 95% CIs are wide and no strong effects are seen in this analysis, we can suggest that there are some small blood pressure-independent effects from candesartan on cardiovascular and cardiac events but not cerebrovascular events.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Unmeasured confounding of the mediator-outcome relation, model misspecification and the unverifiable cross-world condition are all live at once, and the response is to cite a sensitivity formula for a single presumed confounder without running it. A formula that takes one named confounder whose influence can be presumed does not cover several assumptions failing together.",
+     "quote": "This simple formula is especially useful when the specific confounder is not measured, and its influence on the results can be presumed.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The intermediate being intervened on is a continuous physiological measurement, and fixing it to a single value such as 140 mmHg is conceded to be uninterpretable for patients whose pressure can be controlled below it. Natural effects are adopted to sidestep that problem rather than to solve it, so no procedure exists for defining defensible versions of an intervention on achieved blood pressure.",
+     "quote": "Secondly, when the intermediate variable is continuous and since it is well known that the lower the systolic blood pressure the better",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}

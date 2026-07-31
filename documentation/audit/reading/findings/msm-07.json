@@ -1,0 +1,814 @@
+{
+ "batch": "msm-07",
+ "papers": [
+  {
+   "id": "L0172",
+   "read": true,
+   "doi": "10.1002/pds.4372",
+   "title": "Methods for time-varying exposure related problems in pharmacoepidemiology: An overview.",
+   "relevance": "high",
+   "one_line": "A critical review of four time-varying exposure problems in pharmacoepidemiology concludes that the estimators which handle treatment-confounder feedback are not adopted because implementations are missing, and that because methods disagree materially, several should be run and compared.",
+   "what_was_done": "Four problems are separated and the methods used for each are catalogued: construction of treatment episodes from prescription records, time-varying confounders that are also intermediates, cumulative exposure and latency, and treatment switching. For treatment episodes the review records that registers rarely hold dose or duration, so exposure has to be reconstructed from purchase dates and quantities, and that the choices made about gaps and overlaps change the estimated treatment duration and therefore the drug-outcome result; one cited comparison allowed gaps from 0 to 180 days or as a percentage of usage days from 0% to 150%, and another added overlapping days to the end of the next prescription rather than discarding them. The defined daily dose assumption is described as a standard that buys comparability at the price of misclassification when one defined daily dose per day is not what was prescribed. For time-varying confounding, methods without any adjustment, models with time-varying covariates and propensity score methods are stated to be biased when the confounder is also an intermediate, while marginal structural models and structural nested failure time models are unbiased only under no unmeasured confounding, sequential positivity, correct weight model specification and stable unit treatment values. For cumulative exposure the weighted cumulative dose model and fractional polynomials are described, with the limitation that time-varying confounders that are also intermediates cannot enter them as covariates. For treatment switching, excluding switchers, censoring switchers and time-varying covariate models are all stated to be biased, leaving inverse probability of censoring weighting and structural nested models. No new estimates are produced; the recommendation is to apply several methods and compare, and to treat the gap length as a sensitivity parameter.",
+   "future_research": [
+    {
+     "gap": "The estimators that identify the effect under treatment-confounder feedback are not applied in practice, and the reason given is the absence of implementations.",
+     "kind": "stated",
+     "quote": "The need of more user‐friendly statistical packages for the most advanced and complex methods calls for further research in this field to make a more extended use of appropriate methods.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Constructing exposure episodes from dispensing records has no settled procedure and is named as a research area in its own right.",
+     "kind": "stated",
+     "quote": "Construction of treatment episodes and models accounting for cumulative exposure and latency are research areas with a wide perspective for further investigations.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Turning dispensing records into an exposure requires deciding what counts as continuous treatment, and the review states plainly that no common guidance exists, with the consequence that two studies of the same drug and the same outcome cannot be compared. The concrete choices at issue are whether overlapping days extend the next episode or are discarded, and whether one defined daily dose per day is assumed when the prescribed dose is unknown; each of these defines a different class of treatment versions as the same treatment, and the class boundary is set by convenience rather than by any clinical argument.",
+     "quote": "However, there is still a lack of more homogeneous guidelines on how to construct treatment episodes, which could facilitate, among other things, the international comparison of drug effectiveness and safety studies.",
+     "locator": "Methods for construction of treatment episodes"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The permissible gap between two dispensings is the grace period of a pharmacoepidemiologic exposure definition, and the rule offered for setting it is that it should suit the nature of the treatment, a few days for short-term therapy and longer for long-term therapy, with a sensitivity analysis afterward. The cited comparison spans gaps from 0 to 180 days, so the parameter is wide open and its value is fixed by judgment on the same data that will produce the estimate. No outcome-blind procedure is proposed for choosing it, and the recommended sensitivity analysis reports how much the effect estimate moved, which is an outcome-dependent criterion.",
+     "quote": "the length of the allowed gap should be chosen considering the nature of the treatment under study",
+     "locator": "Methods accounting for overlaps and gaps between drug prescriptions"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The stated remedy for estimator choice is to run several methods and compare, offered precisely because different methods give substantially different treatment effects. No criterion is supplied for deciding which answer to believe when they disagree, and the review simultaneously records that the simpler methods, which it classifies as biased under treatment-confounder feedback, are the ones most commonly used. A default is therefore established by practice rather than defended, and comparison across methods is a recommendation rather than a reporting requirement.",
+     "quote": "Because different methods can lead to substantial differences in the treatment effect estimates, the application of several methods and comparison of the results is recommended.",
+     "locator": "Abstract, Conclusions"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "An analysis anchored on baseline exposure alone is described as assuming that each subject keeps the assigned treatment through follow-up, an assumption that fails in observational data where switching and discontinuation accumulate. The treatment switching section states that unadjusted regression, exclusion of switchers and censoring of switchers all misstate the effect because the switching mechanism is unmodeled. The direction is left qualitative: nothing quantifies how the baseline-anchored contrast decays as the arms converge with follow-up length.",
+     "quote": "the ITT approach, which only considers baseline exposure and does not adjust for the time dependency of the confounders is not a proper estimation method for longitudinal studies, because it does not guarantee the comparability over time of the groups of interest",
+     "locator": "Methods for time-varying confounders, Methods without any adjustment strategy"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Whether the advanced estimators can be used at all is made to depend on data quality and completeness, stated as a single sentence with no measurement attached. The specific deficits are named earlier, that registers usually lack the dose and the duration and give no indication of the intended indication, yet no threshold on missing dose information or on gap length is proposed at which a study should not proceed. Data fitness is therefore an argument made in prose after the study is designed.",
+     "quote": "The applicability of such advanced methods depends strongly on the quality and the completeness of the data.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [
+    {
+     "proposed_title": "Estimator choice for time-varying treatments is set by which methods have usable implementations",
+     "category": "SFW",
+     "statement": "The estimator applied to a time-varying treatment is chosen from the methods that have a working implementation in the analyst's software, not from the methods that identify the target estimand. Reviews of practice attribute the continued dominance of estimators known to be biased under treatment-confounder feedback to the absence of packages for the alternatives, so software availability, not identification, decides what gets estimated.",
+     "why_open": "The claim is made explicitly and repeatedly across this batch and is never treated as a solved problem. This review states that methodological complexity and the limited availability of implementation packages are why the advanced methods are underused, and that consequently methods with no adjustment strategy and models with time-varying covariates are what is most commonly applied. The same constraint appears as a mechanism elsewhere in the batch: a nephrology tutorial reports that no standard software for Cox regression handles time-updated weights, so a discrete failure time model is substituted, and rates the programming burden of a marginal structural model as tedious against easy for the Cox alternatives; a measurement error paper reports that one of its two proposed corrections cannot be recommended because no package supports two-stage estimation, and recommends the other on that ground. No procedure exists for recording, in a published emulation, that the estimator was selected under this constraint, and no registry entry makes availability a reportable determinant of the analysis.",
+     "quote": "One of the reasons for this underuse of the methods could be the methodological complexity and the limited availability of implementation packages in commonly used statistical software.",
+     "checked_against_index": "GMT-04 says no estimator is defensible as a default and no study must show its choice mattered; that is about justification after a choice is made, whereas this is about the choice set being restricted before any justification is attempted, which GMT-04 does not name. SFW-01 is specifically about variance estimation after cloning and sequence expansion having no scalable correct default, a narrower object than point estimation of the effect itself. SFW-03 concerns non-availability of an individual study's code, phenotype logic and weight diagnostics to readers, the opposite direction: here the code the analyst needed never existed for anyone."
+    }
+   ],
+   "registry_errata": []
+  },
+  {
+   "id": "L0173",
+   "read": true,
+   "doi": "10.1186/s12874-017-0449-7",
+   "title": "The alarming problems of confounding equivalence using logistic regression models in the perspective of causal diagrams.",
+   "relevance": "medium",
+   "one_line": "Theory and simulation on four causal diagrams with 1,000 simulated subjects show that adjustment sets which are provably confounding-equivalent give different biases under logistic regression and identical unbiased estimates under an inverse probability weighted marginal structural model, with the discrepancy between the two equal to the non-collapsibility of the odds ratio.",
+   "what_was_done": "Four causal diagrams covering the two conditions for confounding equivalence, identical Markov boundaries or joint G-admissibility, were used to test whether sets that are equivalent by graph criteria are equivalent in what they deliver. All variables were binary with log-linear effects of parents on children, and 1,000 subjects were simulated per replication while the effect parameters were varied one at a time. The true causal effect was computed by the do-calculus and compared with estimates from logistic regression models and from inverse probability weighted marginal structural models on the same adjustment sets. Under logistic regression, sets equivalent by identical Markov boundaries produced different biases; among G-admissible sets, adjusting for all confounders and adjusting for the parents of the outcome gave approximately equal bias while adjusting for the parents of the exposure did not, and every strategy was biased, with the parents of the exposure closest to the truth. Under the weighted marginal structural model every equivalent set gave the same, unbiased estimate, and adjusting for the parents of the outcome gave the smallest standard error in all scenarios. Varying the effect of the confounder on the outcome made the logistic regression bias grow linearly for two of the three sets while the weighted estimates stayed flat. The gap between the two model families was identified as the non-collapsibility of the odds ratio in numerical terms. Unmeasured confounding, positivity and continuous covariates were outside the design.",
+   "future_research": [
+    {
+     "gap": "Which adjustment strategy is optimal is left dependent on the estimator, with no general rule beyond the two model families studied.",
+     "kind": "stated",
+     "quote": "Thus, for adjusting confounders set, we recommend IPW-based-MSM rather than logistic regression model.",
+     "locator": "Conclusions"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Holding the causal diagram, the data and the adjustment set fixed, switching from logistic regression to inverse probability weighting changes the estimate by an amount equal to the non-collapsibility of the odds ratio, and changes which adjustment set is best: the parents of the exposure minimize bias under logistic regression while the parents of the outcome maximize precision under weighting. The estimator is therefore not a downstream implementation detail but a determinant of the reported number and of the design decision that precedes it, and no reporting convention requires a study to show what the other family would have produced.",
+     "quote": "All adjustment strategies through logistic regression were biased for causal effect estimation, while IPW-based-MSM could always obtain unbiased estimation when the adjusted set satisfied G-admissibility.",
+     "locator": "Abstract, Conclusions"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The quantity the do-calculus defines is marginal, while the coefficient a logistic regression reports is conditional on whatever was adjusted for, and the simulations show the two differ by the non-collapsibility effect even with no confounding present. Both are nonetheless reported as the effect of the exposure on the outcome and compared directly across adjustment sets. The label on the number does not record which of the two estimands produced it, and the discrepancy varies with the adjustment set because the sets contain different variables.",
+     "quote": "The discrepancy between the marginal OR and the conditional OR even in the absence of confounders is acknowledged as the non-collapsibility of the OR",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "LRN-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The conclusion drawn from the simulations is a blanket recommendation to use weighting rather than logistic regression for adjusting a confounder set. What the simulations actually establish is a collapsibility and estimand property under a known diagram in which every confounder is measured and binary; nothing in them addresses whether the adjustment set is the right one. Presented as a recommendation about how to adjust for confounders, it invites the estimator to be read as the fix for a question that is settled before estimation begins.",
+     "quote": "Thus, IPW-based-MSM was recommended to adjust for confounders set.",
+     "locator": "Abstract, Conclusions"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Every scenario varies one structural coefficient at a time inside a diagram assumed known and complete, with all variables binary, no unmeasured confounder and no positivity failure. The unbiasedness attributed to the weighted estimator is therefore conditional on all remaining assumptions holding exactly, and the study offers no scenario in which the adjustment set is misspecified while a confounder is also unmeasured, which is the ordinary situation. The result is a sensitivity surface in one direction presented as a general property.",
+     "quote": "Both theoretical proofs and simulation studies were performed to verify whether conditioning on different confounding equivalence sets had the same bias-reducing potential",
+     "locator": "Abstract, Methods"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0174",
+   "read": true,
+   "doi": "10.1186/s12874-017-0434-1",
+   "title": "Performance of the marginal structural cox model for estimating individual and joined effects of treatments given in combination.",
+   "relevance": "high",
+   "one_line": "A simulation and an application in 72,355 HIV-infected patients with 130 anal cancers show that a weighted Cox marginal structural model for two concurrent treatments is unbiased only when the treatment interaction term is in the model, and that omitting it or using a time-dependent Cox model changes which treatments look harmful.",
+   "what_was_done": "Longitudinal data were simulated for a cohort receiving two treatments with one time-dependent confounder standing for CD4 count, under three confounding structures and five sub-cases each, with the outcome depending only on current treatment status and an interaction term representing an adverse event caused by the two treatments together but by neither alone. Weighted analysis was unbiased for both individual effects and the interaction in all three structures, while the unweighted time-dependent Cox model was biased for the individual effects under strong confounding and for the interaction under all three; the weighted estimator was itself biased in sub-cases 1B and 1E when the interaction was dropped from the outcome model. The application used the FHDH-ANRS CO4 cohort of 72,355 treatment-naive patients contributing 531,823 person-years, of which 9,972 were protease inhibitors alone, 237,323 other antiretrovirals alone and 130,428 both together, with 130 anal cancers overall at 24 per 100,000 person-years and 90 per 100,000 for protease inhibitors alone. CD4 count predicted both treatments, with odds ratios of 2.77 for protease inhibitors and 5.63 for other antiretrovirals comparing counts below 200 to counts above 500, and both treatments raised subsequent CD4, confirming feedback. Stabilized weights were truncated at the 1st and 99th percentiles, after which they had mean 1.10 and standard error 0.37. The weighted model with interaction found a raised anal cancer risk only for isolated protease inhibitor therapy, with an interaction coefficient of minus 1.43; the weighted model without interaction found nothing significant; the time-dependent Cox model found every treatment variable associated with risk. Cumulative exposure duration, more than two treatment classes, missing data and unmeasured confounding were not examined.",
+   "future_research": [
+    {
+     "gap": "The simulated setting has one time-dependent confounder and a hazard depending only on current treatment, which is too simple for real combination therapy.",
+     "kind": "stated",
+     "quote": "Further studies are needed to consider more complex simulated settings with multiple time-dependent confounders and complex hazard functions (cumulative treatment).",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Scaling the weighting to realistic polypharmacy is unsolved because every interaction among treatments enters the weight model.",
+     "kind": "stated",
+     "quote": "Applying this framework to a real situation with more than two treatments could make calculations of stabilized weights more complex as one has to consider multiple and complex interactions between all treatments.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Three specifications of the same weighted analysis on the same 72,355 patients give three different clinical conclusions: with the interaction term, isolated protease inhibitor therapy raises anal cancer risk; without it, nothing does; under the unweighted time-dependent Cox model, every treatment variable does. The simulation shows the omission is not a matter of taste, since weighted estimates were biased in sub-cases 1B and 1E when the interaction was left out. Yet the specification is a modeling decision inside a single named estimator, and nothing requires a study to report the alternatives it did not present.",
+     "quote": "the Cox-MSM did not perform accurately when an interaction term was not considered in the model",
+     "locator": "Discussion, summary"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Every antiretroviral other than a protease inhibitor was collapsed into one exposure category regardless of drug class, so nucleoside analogues and non-nucleoside agents are declared the same treatment version for the purposes of the contrast. The consequence is visible in the results, since the interaction coefficient of minus 1.43 between protease inhibitors and this composite category is what carries the finding that risk is confined to protease inhibitor monotherapy. No clinical argument is offered for the grouping beyond illustration, and the effect attributed to the composite has no interpretable treatment behind it.",
+     "quote": "For illustration purposes, all ARVs other than PIs were grouped in a single category irrespective of drug class.",
+     "locator": "Application to exploring the risk of anal cancer"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Weights were truncated at the 1st and 99th percentiles and then positivity was declared satisfied on the ground that no extreme weights remained after truncation, which is circular: trimming removes the observations whose histories were least supported and the diagnostic then reports their absence. The reported mean of 1.10 and standard error of 0.37 describe the trimmed distribution, and no statement identifies which treatment histories in a cohort with only 9,972 person-years of protease inhibitor monotherapy had no comparable counterpart.",
+     "quote": "we did not observe departures from positivity assumption after truncation of weights as the latter is based on a lack of extreme weights",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A database of 72,355 patients and 531,823 person-years supports the headline finding on 130 anal cancers in total, and the exposure category that drives it, protease inhibitors without other antiretrovirals, covers 9,972 person-years, under 2% of follow-up. The contrast of interest therefore rests on a handful of events inside a stratum defined by an unusual treatment pattern, before any weighting is applied, which is why the interaction term is estimable in principle but fragile in practice.",
+     "quote": "The cohort experienced 9972 person-years (PY) of PIs only, 237,323 PY of other ARV and 130,428 PY of PIs and other ARVs, given simultaneously.",
+     "locator": "Application to exploring the risk of anal cancer"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The weighted model reports a marginal hazard ratio and the time-dependent Cox model reports a conditional one, and the two are placed side by side in the same table and read as agreeing because they fall in the same range of values. The limitation section concedes that this comparison is not straightforward under a non-collapsible measure and that no numerical experiment was run to see how far the marginal and conditional parameters differ. A single label, hazard ratio, is therefore carrying two different estimands in one results table.",
+     "quote": "comparing the Cox-MSM parameter estimate to any conditional treatment effect estimate is not straightforward when non-collapsible measures, such as hazard ratio or odds ratio, are employed",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0175",
+   "read": true,
+   "doi": "10.1016/j.jhin.2017.11.011",
+   "title": "Intensive care unit (ICU)-acquired bacteraemia and ICU mortality and discharge: addressing time-varying confounding using appropriate methodology.",
+   "relevance": "medium",
+   "one_line": "Three analyses of one ICU cohort of 3,159 admissions put the effect of ICU-acquired bacteraemia on daily mortality at cause-specific hazard ratios of 1.29 (marginal structural model), 1.28 (baseline-only Cox) and 1.08 (Cox conditioning on time-varying covariates), with nothing in the reporting requiring the spread to be explained.",
+   "what_was_done": "Electronic ICU records from two general wards at Guy's and St Thomas' hospitals covering 2002 to 2006 supplied 2,914 patients contributing 3,159 admissions with a stay longer than two days; 671 admissions (21.2%) had a first positive blood culture more than two days after admission, 218 involving Gram-negatives and 493 Gram-positives, with median onset at day 8. Daily APACHE II score, antibiotics, mechanical ventilation, central lines and renal replacement therapy were the time-varying covariates, and ICU death and ICU discharge were handled as competing events through cause-specific hazards. A marginal structural model fitted by weighted Cox regression with stabilized inverse probability weights gave a cause-specific hazard ratio of 1.29 (95% CI 1.02 to 1.63) for ICU mortality and 0.54 (0.47 to 0.62) for discharge; the weights had median 0.99, mean 1.01, interquartile range 0.14, standard deviation 0.31, minimum 0.26 and maximum 4.49. A conventional Cox model adjusting only for baseline covariates gave 1.28 (1.04 to 1.57) and 0.51 (0.45 to 0.58), while a conventional Cox model conditioning on the same time-varying covariates gave 1.08 (0.88 to 1.32) and 0.68 (0.60 to 0.77). Translated to cumulative incidence, preventing every ICU-acquired bacteraemia was projected to move 60-day ICU mortality from 20.3% to 18.6%, about 8% of ICU deaths. Gram-negative episodes carried a stronger mortality association (1.66; 1.21 to 2.28) than Gram-positive episodes (1.15; 0.84 to 1.58), and coagulase-negative staphylococci, the largest Gram-positive group at 370 isolates, gave 1.00 (0.74 to 1.37). Exposure was blood culture positivity with no validation of which cultures were true infections, unmeasured deterioration before onset was acknowledged but not quantified, and the analysis window stops in 2006 because later records were judged unusable.",
+   "future_research": [
+    {
+     "gap": "Weight distributions are usually not reported, so readers cannot judge whether a weighted estimate rests on a handful of subjects.",
+     "kind": "stated",
+     "quote": "In that regard, it is a pity that researchers often fail to report the distribution of the estimated weights including maximum and minimum values.",
+     "locator": "Discussion, Strengths and limitations"
+    },
+    {
+     "gap": "Organism-specific effects could not be separated because the subgroup estimates were too imprecise.",
+     "kind": "stated",
+     "quote": "Unfortunately, in our study, a separate estimate for enterococci resulted in very wide confidence intervals prohibiting a meaningful comparison.",
+     "locator": "Discussion, Strengths and limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "One cohort and one exposure produced cause-specific mortality hazard ratios of 1.29 under the weighted marginal structural model, 1.28 under a baseline-only Cox model and 1.08 under a Cox model conditioning on the time-varying covariates; the discharge estimates spread from 0.51 to 0.68 the same way. The reasoning offered for preferring one number over the others is structural rather than empirical, and the closeness of the baseline-only estimate to the weighted estimate is described as something that cannot be assumed in advance. Nothing in the reporting format obliges a study to run the alternatives at all, so a study reporting only the 1.08 and a study reporting only the 1.29 would look equally complete.",
+     "quote": "this should not be assumed to always be the case without testing",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Positivity is addressed entirely by summary statistics of the weight distribution: median 0.99, mean 1.01, minimum 0.26 and maximum 4.49, followed by the conclusion that no concern arises. No patient history is named as unsupported, and the daily probability of acquiring bacteraemia is set to 1 from onset onward, so the histories that carry the contrast are never separated from those that could not have gone either way.",
+     "quote": "The estimated weights in our study are not considered extreme weights.",
+     "locator": "Discussion, Strengths and limitations"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The exposure is a binary blood culture result treated as error-free, yet coagulase-negative staphylococci account for 370 of the isolates and are acknowledged as frequently contaminants rather than infections. The stratified estimate for that group is 1.00 (0.74 to 1.37) against 1.66 (1.21 to 2.28) for Gram-negatives, a gap consistent with misclassification, and no sensitivity analysis converts the suspicion into a bias estimate.",
+     "quote": "Some of the samples classified as bacteraemia may have actually been contaminated blood samples.",
+     "locator": "Discussion, Strengths and limitations"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Residual confounding by deterioration before onset is raised as the main threat, and the only evidence brought to bear on its direction is a comparison with a different study of enterococcal bacteraemia that adjusted for SOFA score and found more moderate estimates. No negative control outcome, no proxy for unmeasured severity and no validation subsample enters the analysis, so the conclusion that the effect may have been overestimated carries no magnitude.",
+     "quote": "these techniques remain vulnerable to unmeasured confounding",
+     "locator": "Discussion, Strengths and limitations"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Death and discharge are modeled as competing events with separate cause-specific hazards rather than one being censored at the other, and the results are carried through to a cumulative incidence contrast of 20.3% against 18.6% at 60 days, which is more than data cleaning. What is not closed is the status of discharge itself: patients leaving the ICU alive stop contributing, and no assumption is stated about their subsequent death risk, so the 60-day figure conditions on a post-baseline event without naming the condition under which it identifies anything.",
+     "quote": "one of the first studies assessing the effects of ICU-acquired bacteraemia while addressing simultaneously the time-varying nature of this type of exposure, potential time-varying confounding and competing risks",
+     "locator": "Discussion, Strengths and limitations"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Six years of data were used because later years were judged unusable, a decision recorded in one sentence with no stated criterion, no measure of what was missing and no threshold that would have stopped the study. The consequence is then argued in the opposite direction, that resistance has risen since and the current impact may be higher, which is a narrative repair of a fitness problem rather than a measurement of it.",
+     "quote": "Due to data limitations in records from recent years, we necessarily had to restrict our analysis to the years 2002–2006.",
+     "locator": "Discussion, Strengths and limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0176",
+   "read": true,
+   "doi": "10.18637/jss.v081.i02",
+   "title": "simcausal R Package: Conducting Transparent and Reproducible Simulation Studies of Causal Effect Estimation with Complex Longitudinal Data.",
+   "relevance": "high",
+   "one_line": "An R package specifies longitudinal data-generating processes as non-parametric structural equations and evaluates the true causal parameter from counterfactual data, reproducing a published propensity model misspecification study in which including instruments in the treatment model moved the bias for the first-period coefficient from minus 0.179 to 1.397 at n = 300.",
+   "what_was_done": "The package expresses a data-generating distribution as a system of structural equations over time-indexed nodes, with any R sampling distribution permitted for a node given its parents, and then simulates counterfactual data under user-specified interventions that may be static, dynamic, deterministic or stochastic and may act on treatment, on right-censoring events or on clinical monitoring events. Causal target parameters including treatment-specific means, average treatment effects and coefficients of a working marginal structural model are evaluated on the counterfactual data, so the truth is a functional of the counterfactual distribution rather than of any fitted model. Two published simulation studies were reproduced. In the replication of the propensity model misspecification study, scenario 3 at n = 300 gives bias times ten of minus 0.179 for the first-period coefficient when only confounders enter the treatment model, 1.397 when instruments are added, 1.304 when instruments and risk factors are added, and 2.742 under the misspecified model, against 3.146 originally reported for the misspecified case; for the second-period coefficient the misspecified model gives 5.542 against 5.591 originally. Mean squared error moves the same way, from 1.238 with confounders only to 3.966 with instruments added at n = 300. A multiple time point example simulates sixteen intervals with a survival outcome and dynamic regimes, and a graphical component draws the directed acyclic graph of the observed or post-intervention distribution. Positivity appears once, as an application others have used simulation for, and no diagnostic for it is provided.",
+   "future_research": [
+    {
+     "gap": "The causal parameters the package can evaluate do not yet include several standard ones.",
+     "kind": "stated",
+     "quote": "Among such possible improvements is the evaluation of additional causal parameters, e.g., the average treatment effect on the treated",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Whether a simulated data-generating process resembles the real one is left to the user's judgment.",
+     "kind": "stated",
+     "quote": "Indeed, simulations are of most value when there is some hope that they are capable of capturing the complexities one might expect to see in real-world data-generating processes.",
+     "locator": "Introduction, motivation"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The reproduced misspecification study is a direct demonstration that a treatment model selected for predictive quality is worse causally: adding instruments, which predict treatment well and the outcome not at all, moves bias times ten from minus 0.179 to 1.397 for the first period and from 0.157 to 2.014 for the second at n = 300, and roughly triples mean squared error. Because the true coefficient is known by construction, nuisance model choice can be scored on causal error rather than on fit. What is not closed is the real-data case: the scoring depends on knowing the truth, and no criterion is offered for selecting a longitudinal nuisance model when the counterfactual distribution is unavailable.",
+     "quote": "the gold standard defined in this manner provides an objective measure of bias that does not depend on the modeling assumptions of a specific statistical method",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A shared model-free gold standard makes competing estimators comparable on the same simulated distribution, which is the machinery a defensible default would need; the vignette is reported to compare targeted minimum loss based estimation against inverse probability weighting for a risk difference between two dynamic regimes on exactly this basis. What it does not close is the step from simulation to practice: nothing obliges a published emulation to demonstrate that its estimator choice mattered, and a simulated data-generating process that favors one estimator can be written as easily as one that favors another.",
+     "quote": "one may use simcausal to simulate data from a large variety of data-generating distributions and conduct a simulation study comparing the properties of different statistical procedures",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The generative object here is a structural equation system whose value is judged by whether the causal parameter it defines is recovered, not by how closely its output distribution resembles a real dataset, and the target is fixed as the same functional of the counterfactual distribution regardless of how the equations are parameterized. That is the evaluation standard causal work needs. What remains open is the other half: realism is left as a hope about capturing real-world complexity, with no measure attached, so a simulation study can be internally valid and still say nothing about the data-generating process it was meant to stand in for.",
+     "quote": "the causal parameter is always the same functional of the counterfactual data distribution, regardless of the user-selected parameterization of the SEM",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Monitoring events are first-class nodes: the observed data can be generated under random clinical monitoring and interventions may set the occurrence or non-occurrence of a monitoring event, so the visit process is part of the structural model rather than a gap to be filled in. This makes the consequences of a visit process that depends on prior treatment and prior covariates measurable in simulation. It does not supply an identification result or an estimator for real records, where the monitoring intensity is itself unknown and confounded.",
+     "quote": "the interventions may represent exposures to treatment regimens, the occurrence or non-occurrence of right-censoring events, or of clinical monitoring events",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The whole data-generating process, the interventions and the target parameter are expressed as declarative code, and the two replications are shipped as supplementary scripts that reproduce the published tables, which is the standard of disclosure emulations are asked for. The reach is limited to simulation: it makes a methods study auditable but supplies nothing for an applied emulation's phenotype logic, weight diagnostics or rejected protocol versions, which are the artifacts a reader of an applied study cannot obtain.",
+     "quote": "careful attention should be paid to the structure and clarity of the simulation code itself",
+     "locator": "Introduction, motivation"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0177",
+   "read": true,
+   "doi": "10.1002/pds.4336",
+   "title": "Making fair comparisons in pregnancy medication safety studies: An overview of advanced methods for confounding control.",
+   "relevance": "medium",
+   "one_line": "A methods overview for pregnancy medication safety describes positivity assessment for marginal structural models as inspecting weights for extreme values and progressively truncating them, and reports that these methods have seen slow uptake in the field.",
+   "what_was_done": "Five families of confounding control are set out for a field where randomization is unavailable because pregnant women are routinely excluded from trials: propensity scores and other summary scores, marginal structural models with inverse probability of treatment weights, propensity score calibration using an external validation sample, sibling comparison designs, and instrumental variables. Each family is given an assumptions block and a strengths and limitations block, with no estimates produced and no reanalysis performed. The double bind that motivates marginal structural models is stated concretely for antidepressants: depression severity is a confounder at one time and a mediator at another, since earlier antidepressant use predicts later depressive symptoms which predict later use, so standard adjustment is biased in either direction. Positivity, exchangeability and consistency are named as the identifying conditions, and the diagnostic offered for positivity is inspection of the weight distribution for extreme values plus progressive truncation to see whether those weights are influential. Propensity score calibration is presented as the route to adjust for confounders measured only in an external sample, resting on an untestable surrogacy assumption whenever the outcome is absent from the validation study. Sibling designs are noted to control shared confounding while amplifying bias from unshared confounders and from measurement error, and the worked instrumental variable example used provider preference, calendar time and geography as instruments that turned out weakly associated with treatment. Exposure and outcome misclassification and selection bias are explicitly placed outside scope, and triangulation across methods is offered as the reassurance mechanism.",
+   "future_research": [
+    {
+     "gap": "The methods that address time-varying confounding remain largely unused in the pregnancy medication safety literature.",
+     "kind": "stated",
+     "quote": "With few exceptions, these methods have seen slow uptake in the pregnancy medication literature.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Newer estimators have not entered the field at all.",
+     "kind": "stated",
+     "quote": "New techniques are being developed all the time, and many of these, such as g‐estimation",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The recommended check on positivity is to look at the inverse probability of treatment weights for extreme values and then truncate them progressively to see whether the estimate moves. That procedure describes the weight distribution and tests the sensitivity of a number to trimming; it never identifies which exposure histories in a pregnancy cohort had no comparable unexposed counterpart, which is the quantity the assumption is about. The same passage concedes the conditions are not formally testable, so the weight inspection stands in for a diagnostic rather than supplementing one.",
+     "quote": "assessment of the positivity assumption may include evaluation of the inverse probability of treatment weight for extreme weights and progressive truncation of the weights to determine whether extreme weights are highly influential",
+     "locator": "Marginal structural models, Assumptions"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Propensity score calibration is a concrete route for folding an external validation sample into a confounding adjustment, and a triptan safety example is cited in which a cross-sectional study supplied migraine severity and type. What it does not close is verification: surrogacy cannot be checked when the validation sample lacks the outcome, calibration is stated to fail when unmeasured confounding is strong, and negative controls appear only as one of several methods whose agreement is described as reassuring, with no rule for what disagreement implies.",
+     "quote": "If the outcome is not measured in the validation study, the surrogacy assumption is not testable.",
+     "locator": "Methods for incomplete confounder data, Assumptions"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Each method is assessed against the single assumption it is designed to relax: marginal structural models against treatment-confounder feedback, calibration against unmeasured confounders present in a validation sample, sibling designs against shared familial confounding. Sensitivity analysis is then recommended as an array of assumptions about bias direction and magnitude, without any construction that varies confounding, misclassification and selection together, and the sibling design is noted to worsen measurement error bias while fixing confounding, which is precisely a case where two violated assumptions interact.",
+     "quote": "sources of bias should be acknowledged and discussed and preferably quantified by performing sensitivity analysis of estimates under an array of assumptions about possible bias directions and magnitudes",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Exposure and outcome misclassification are named and then placed outside the scope of the confounding discussion, while the same overview notes that propensity score methods can produce apparent effect modification or residual confounding in cohorts where exposure is misclassified. The medication exposures at issue are dispensing records and the outcomes are diagnoses, both defined as binary variables in the analyses being described, so the interaction between phenotype error and the weighting machinery is acknowledged and left unhandled.",
+     "quote": "other sources of bias such as exposure and/or outcome misclassification",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "No estimator is ranked. The closing advice is that agreement between standard regression, propensity scores, sibling controls and negative paternal controls is reassuring, and that regression-adjusted and marginal structural model estimates can differ substantially, which is stated as a reason to run several rather than a criterion for choosing. Disagreement among the families is given no interpretation, so a study reporting one estimate and a study reporting five are equally defensible under the guidance offered.",
+     "quote": "it is reassuring when multiple methods, e.g. standard regression, PS methods, sibling controls, and negative paternal controls all produce similar estimates",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0178",
+   "read": true,
+   "doi": "10.2215/cjn.00650117",
+   "title": "Statistical Methods for Modeling Time-Updated Exposures in Cohort Studies of Chronic Kidney Disease.",
+   "relevance": "high",
+   "one_line": "A tutorial using 3,939 CRIC participants shows that baseline-exposure Cox, time-updated Cox and a marginal structural model answer different questions and give ESRD hazard ratios of 1.48 against 3.30 for the highest blood pressure category, and that a saturated marginal structural model would need 65,536 exposure histories.",
+   "what_was_done": "The Chronic Renal Insufficiency Cohort enrolled 3,939 individuals at seven US centers between 2003 and 2008, with annual visits updating systolic blood pressure, eGFR, urine protein-to-creatinine ratio, diabetes status, antihypertensive classes and other covariates, and ESRD as the endpoint; 80% of participants were hypertensive at baseline. Three analyses are compared on the same data. The Cox model with baseline exposure gives hazard ratios of 1.06 (0.82 to 1.37), 1.46 (1.14 to 1.89) and 1.48 (1.18 to 1.85) for systolic blood pressure of 120 to 129, 130 to 139 and 140 or above against below 120. The marginal structural model, fitted with stabilized inverse probability of treatment and censoring weights and adjusting for baseline covariates to reduce weight variability, gives 0.92 (0.54 to 1.57), 2.25 (1.41 to 3.60) and 3.30 (2.21 to 4.94) for the same categories sustained at every time point. The Cox model with time-updated covariates is described as inappropriate here and its results are not reported. The saturated version of the marginal structural model is shown to be impossible: four exposure levels over eight time points define 65,536 exposure histories, so the exposure history has to be summarized, by the last value or by an average, before anything can be estimated. Weight construction is set out step by step, including that no standard Cox software accepts time-updated weights, which forces a discrete failure time model, and the comparison table rates programming as easy, easy and tedious across the three approaches.",
+   "future_research": [
+    {
+     "gap": "Positivity violations leave the marginal structural model unusable and the alternatives are harder to implement.",
+     "kind": "stated",
+     "quote": "Other methods, e.g., structural nested models (10,11), can be used but are more difficult to implement in practice.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Uptake depends on clinicians understanding the estimand, which is treated as a training problem rather than a reporting one.",
+     "kind": "stated",
+     "quote": "First, it takes some time for the clinical audience to understand the approach and the interpretation of the estimates.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "For the highest blood pressure category the baseline-exposure model gives 1.48 (1.18 to 1.85) and the marginal structural model gives 3.30 (2.21 to 4.94) in the same cohort, and the guidance offered is that the two answer different questions so their scales cannot be meaningfully compared and only the direction is comparable. That reframes a factor of two in a published hazard ratio as a difference of question rather than a discrepancy to be adjudicated, and leaves the choice of question, and therefore of number, to the analyst with no obligation to show what the alternatives would have given.",
+     "quote": "The comparison on the scale of the effects is not meaningful and the direction of the effects might be the only aspect that can be compared.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Four exposure levels across eight annual visits define 65,536 possible exposure histories in a cohort of 3,939 people, so the saturated contrast is not estimable by more than an order of magnitude even before censoring, weighting or eligibility. The large enrollment number is therefore not the sample size for the question being asked, and the gap is closed by redefining the estimand rather than by reporting how many participants actually followed each history.",
+     "quote": "Needless to say, we did not have enough observations to estimate 65,535 parameters.",
+     "locator": "Signal paragraphs, saturated MSM"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Because the saturated model is impossible, the exposure history must be compressed, and the options given are the value at the last time point, the average over follow-up, or dummy variables averaged over time. Each choice declares a different set of eight-year blood pressure trajectories to be the same exposure, and the reported contrast of 3.30 is defined against the group at the lowest category at all time points. No rule is offered for which compression is clinically defensible, so the equivalence classes that define the exposure are chosen for estimability.",
+     "quote": "When the saturated MSM is not possible, it is important to summarize the exposure history.",
+     "locator": "Signal paragraphs, summarizing exposure history"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Positivity appears as a listed assumption and as a gate: the marginal structural model cannot be used when it is violated. No diagnostic is given for detecting the violation, and the only weight-related action described is truncation when finalizing weights plus adjusting for baseline covariates because it reduced weight variability. With 65,536 possible histories and 3,939 participants, the histories with no support are the normal case rather than the exception, and nothing in the workflow names them.",
+     "quote": "In addition, MSMs cannot be used when the positivity assumption is violated.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The extension from a cohort with annual protocol visits to electronic health record data where people are seen at variable intervals is stated to be the same in principle, so the irregular visit process is treated as a change in the spacing of rows rather than as a mechanism that depends on the patient's condition and on prior treatment. In this application the exposure itself, systolic blood pressure, is only defined when a visit occurs, so who is measured and when is part of the exposure definition, and the censoring weights are aimed at study dropout rather than at the measurement process.",
+     "quote": "MSM can also be used to analyze health record data where people are seen at variable intervals. The implementation is the same as in the cohort studies in principle.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0179",
+   "read": true,
+   "doi": "10.1016/j.conctc.2016.10.005",
+   "title": "Application of the Marginal Structural Model to Account for Suboptimal Adherence in a Randomized Controlled Trial.",
+   "relevance": "high",
+   "one_line": "A marginal structural model applied inside the CALERIE calorie restriction trial predicts the effect at a 15.5% weight loss target that no participant group reached, mean weight loss peaking at 11.5%, and deepens the estimated resting metabolic rate drop from 48.2 kcal/d under intention to treat to 57.7 kcal/d at full adherence.",
+   "what_was_done": "CALERIE randomized healthy non-obese adults 2 to 1 to 25% calorie restriction or ad libitum control for 24 months; 218 participants started, 143 in the restriction arm and 75 controls. Adherence was monitored by percent weight loss against a prescribed profile of 11% at month 6 and 15.5% at months 12, 18 and 24, and the observed means in the restriction arm were 9.9%, 11.5%, 11.4% and 10.4% at those visits, so the targeted profile was never reached on average. Twenty-six participants discontinued the intervention. Weights for the marginal structural model came from two ancillary models fitted by stepwise selection: a linear regression for observed percent weight loss with adjusted R-squared of 0.71, and a logistic regression for early discontinuation; the resulting stabilized weights had whiskers below 2.0 and a maximum of 6.9 for a participant who withdrew after month 6. The outcome model was a weighted generalized estimating equation with identity link, with linear and quadratic terms in percent weight loss centered at the target and added only for the restriction arm, since adherence was undefined for controls, whose weights were fixed at 1.0; the unstructured covariance matrix failed to converge and was replaced by compound symmetry with a robust variance estimator. Intention to treat gave adjusted resting metabolic rate decreases of 48.2 plus or minus 9.2 kcal/d at month 12 and 38.2 plus or minus 11.3 at month 24; the weighted model at the targeted profile gave 57.7 plus or minus 13.8 and 58.6 plus or minus 15.0. Core temperature was unresponsive, with the linear and quadratic weight loss terms at p = 0.30 and 0.70. Uncertainty from estimating the weights was not propagated into the standard errors.",
+   "future_research": [
+    {
+     "gap": "The sampling variability of the estimated weights is not reflected in the reported standard errors and no method for doing so was applied.",
+     "kind": "stated",
+     "quote": "It would be worthwhile developing techniques to reflect this uncertainty using, for example, bootstrapping procedures.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Assurance that all predictors of adherence and withdrawal were collected rests on literature review and expert opinion.",
+     "kind": "stated",
+     "quote": "Nevertheless, one can never be certain that all such predictors have been identified.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The estimand is the effect at a weight loss profile of 15.5% that the restriction arm never reached, with observed means of 9.9% to 11.5% across visits, so the region carrying the reported 57.7 kcal/d is the sparse tail of the observed adherence distribution. Positivity is addressed only through the weight distribution, reported as whiskers below 2.0 with a maximum of 6.9, and the extrapolation to the target is carried by a quadratic term that was itself only marginally significant at p = 0.07. No statement identifies how many participants were near the target profile at any visit.",
+     "quote": "despite the considerable degree of weight loss realized among the CR participants, it fell well short of the %WL profile targeted for this study",
+     "locator": "Adherence to the CR intervention"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The protocol component that cannot be observed is adherence at the prescribed level, and the response is not a noisier version of the intended contrast but a new one: the effect at a targeted weight loss profile, defined by a fitted quadratic in observed weight loss centered on a value nobody sustained, and estimated only in the restriction arm because adherence is undefined for controls, whose weights are fixed at 1.0. The credibility of that estimand is made to depend on whether the counterfactual could be realized at all, and it is conceded that introducing 25% restriction into practice was never the aim.",
+     "quote": "the credibility of the MSM analysis is critically dependent on the degree to which the counterfactual condition can actually be realized",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The weights come from two fitted ancillary models and are then treated as fixed constants in the weighted generalized estimating equation, so the reported standard errors of 13.8 and 15.0 kcal/d omit the uncertainty in estimating them. The robust variance estimator was adopted for a different reason, that the unstructured covariance matrix would not converge. The omission is described as consistent with other applications of the model, which places the gap in the field rather than in one analysis, and the remedy is named as worth developing rather than applied.",
+     "quote": "the weights are estimated from the ancillary regression models and there is sampling variability associated with the derived values",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Both nuisance models were built by stepwise selection, and the quality reported for the weight loss model is an adjusted R-squared of 0.71, described as accounting for a considerable amount of variation. Predictive fit is the only criterion given, and the modeling advice that follows is about which variables to force in and how to construct interaction terms, with no assessment of whether the selected model balances the confounders that matter for the estimate. The predictors surfaced by the selection, including binge eating subscale scores and percent calories from carbohydrates, are then read as candidate adherence markers for future trials.",
+     "quote": "stepwise linear regression was used to model the observed percent weight loss, while stepwise logistic regression model was applied to model early discontinuation from the intervention",
+     "locator": "Abstract, Methods"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Satisfying no unmeasured confounding is described as an anticipatory data collection problem, solved by literature review and expert opinion among the clinical investigators before the trial, with the admission that certainty is unattainable. Nothing downstream tests it: no negative control outcome, no proxy for unmeasured motivation and no validation subsample appears, even though the confounder in question is adherence behavior inside a trial where the two ancillary models were the only instruments for it.",
+     "quote": "To satisfy the assumption of no unmeasured confounders, the study must anticipate and collect all the data predictive of these measures.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0180",
+   "read": true,
+   "doi": "10.1017/s026646231600026x",
+   "title": "TREATMENT SWITCHING: STATISTICAL AND DECISION-MAKING CHALLENGES AND APPROACHES.",
+   "relevance": "high",
+   "one_line": "A workshop report on adjusting randomized trials for treatment switching records that regulators will not accept adjustment analyses on their own except where switching is low or external evidence supports them, and proposes a list of assumption investigations rather than any threshold.",
+   "what_was_done": "Three adjustment methods for switching from control to experimental treatment inside a randomized trial are described step by step for a non-statistical audience, alongside the views expressed by regulators, payers and other stakeholders at the 2014 Adelaide International Workshop. Marginal structural models with inverse probability of censoring weights censor switchers at the point of switch and reweight similar non-switchers, requiring baseline and time-dependent data on every prognostic factor that also influences switching. Two-stage adjustment defines a secondary baseline, usually disease progression, estimates the treatment effect in switchers against non-switchers adjusted for characteristics measured at that point, and shrinks the observed survival times; it requires no unmeasured confounders at the secondary baseline only, and becomes biased as the lag between secondary baseline and switch grows. Rank preserving structural failure time models use g-estimation under a common treatment effect assumption, which is noted to be implausible when benefit depends on when treatment is received, and whose relaxed versions have proven unsuccessful. Simple exclusion or censoring of switchers is described as prone to selection bias and to be avoided. The stated failure mode of the intention to treat analysis is underestimation of benefits and possible harms. Reported practice is that regulators accept adjustment analyses only in restricted circumstances, that many payers do not use them and all have reservations, and that some payers respond by using intention to treat alone or discarding the trial. The good practice proposals are to supplement intention to treat with adjustment, to match method assumptions to the switching mechanism, to apply every method deemed appropriate and compare, and to consider external data; no threshold on switching proportion, cell size or event count is given, only that these details be presented.",
+   "future_research": [
+    {
+     "gap": "There is no formal procedure for assessing whether the pivotal assumptions of the adjustment methods hold.",
+     "kind": "stated",
+     "quote": "Areas of particular value are likely to address formal methods for assessing the validity of the key assumptions made by the adjustment methods",
+     "locator": "Further research"
+    },
+    {
+     "gap": "How to bring external trial or observational evidence in to estimate survival without switching is unsettled.",
+     "kind": "stated",
+     "quote": "methods for integrating evidence from external trials or observational studies to estimate what survival would have been in the absence of switching",
+     "locator": "Further research"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Acceptability is reported as a matter of degree with no stated cut point: regulators are said to be unlikely to accept an adjustment analysis on its own except where switching is low or external evidence is substantial, and neither low nor substantial is quantified. Payers are described as divided, some ignoring adjustment analyses entirely and either using intention to treat despite its known inadequacies or discarding the trial. The proposed remedy is to present details on switching proportion, stratum sizes and event counts so reviewers can assess the scope for bias, which relocates the threshold to the reviewer rather than supplying one.",
+     "quote": "regulators are unlikely to consider adjustment analyses sufficiently convincing on their own for licensing purposes except in particular situations such as when trials have a low degree of switching",
+     "locator": "The view of decision makers"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "When control patients cross to the experimental treatment the arms converge and the randomized comparison stops measuring the contrast of interest, which is stated as a systematic underestimate of benefit and of possible harm rather than as noise. The mechanism is dated to the point of switch, typically disease progression, so the distortion accumulates with follow-up length as more of the control arm crosses over. No account is given of how the bias scales with switching proportion or with the timing of the switch beyond the qualitative statement that a high switching proportion makes adjustment methods error-prone.",
+     "quote": "A standard ITT analysis is highly likely to produce a biased estimate of the comparative treatment effect in the presence of switching",
+     "locator": "Conclusions"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The recommendation is to apply every method deemed potentially appropriate and to take agreement among them as grounds for confidence, with no rule for the case where they disagree, which is the case the methods were built for. The three methods rest on different pivotal assumptions, no unmeasured confounders for two of them and a common treatment effect for the third, and their behavior differs with sample size, with the rank preserving model reported as least sensitive to small numbers. Method selection is therefore a judgment about which assumption is least implausible, made case by case.",
+     "quote": "The sensitivity of results should be tested through application of all methods deemed to be potentially appropriate",
+     "locator": "Proposals for good practice"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A concrete list of assumption investigations is proposed as a reporting expectation: check what prognostic characteristics other trials measured that this one did not, analyze the time from secondary baseline to switch since a long lag makes two-stage adjustment biased, test the common treatment effect by comparing effect estimates in switchers against randomized experimental patients, and report switching proportions with stratum-level cell and event counts. The undiagnosable assumptions are separated honestly, since both no unmeasured confounders and a common treatment effect are stated to be untestable. What is missing is the mapping from those investigations to a verdict.",
+     "quote": "It is impossible to test this assumption fully, but information can be obtained from other trials in similar disease areas to determine whether any likely prognostic characteristics were not measured in the pivotal trial.",
+     "locator": "The view of decision makers"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The failure mode of the weighting method is located in the data rather than in the weights: error rises when the switching proportion is very high, when the stratum defined by a combination of covariates is small, or when few events fall in that stratum, and specific patients may take very high weights when few control patients did not switch. The recommendation is to present each of these counts. That is closer to naming which histories are unsupported than a weight summary, but it stops at reporting the inputs, with no rule tying a stratum size or a switching proportion to a conclusion about support.",
+     "quote": "Details on each of these should be presented to allow reviewers to assess the scope for bias.",
+     "locator": "The view of decision makers"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Each pivotal assumption is investigated on its own: unmeasured confounding through comparison with other trials, the two-stage lag through a time-to-switch analysis, the common treatment effect through a separate comparison of switcher and randomized effects. The joint case is precisely what the discussion implies is common, since a trial with high switching also tends to have few unswitched controls, small strata and few events, so the confounding, positivity and effect homogeneity problems arrive together. Nothing in the proposed practice varies them together or reports a combined bound.",
+     "quote": "trial characteristics and the treatment switching mechanism should be considered alongside the pivotal assumptions associated with each of the statistical adjustment methods",
+     "locator": "Proposals for good practice"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0181",
+   "read": true,
+   "doi": "10.1093/aje/kwv329",
+   "title": "Mediation Analysis for Health Disparities Research.",
+   "relevance": "high",
+   "one_line": "Six estimators applied to 900,726 Pennsylvania births put the racial disparity in infant mortality that would remain if everyone breastfed at anywhere between minus 0.87 and 3.08 deaths per 1,000 births, so the proportion of the disparity explained by breastfeeding ranges from 8% to 126% depending only on the estimator.",
+   "what_was_done": "Birth records for 900,726 Pennsylvania births were used to ask how much of the racial disparity in infant mortality would remain if every woman breastfed before discharge. The observed disparity is 3.36 more infant deaths per 1,000 births among non-Hispanic black women (95% CI 2.78 to 3.93). Seventeen mediator-outcome confounders were adjusted for, including birth weight, gestational age at birth, their interaction, Apgar score, parity, smoking before and during pregnancy, parental education and ages, marital status and prenatal visit counts. The counterfactual disparity measure was estimated six ways. The difference method gives minus 0.87 (minus 1.39 to minus 0.35) and the generalized product method minus 0.85 (minus 1.39 to minus 0.30), both implying the disparity would reverse, with proportions explained of 126% and 125%. Inverse probability weighted marginal structural models give 2.24 (1.41 to 3.07) at 33%, the structural transformation method 3.08 (2.51 to 3.66) at 8%, doubly robust g-estimation of a structural nested mean model 2.33 (1.68 to 2.97) at 31%, and doubly robust targeted minimum loss-based estimation 2.45 (2.20 to 2.71) at 27%. The mechanism is identified: birth weight and gestational age are strong determinants of infant mortality that are also strongly associated with race, so the standard methods condition on mediator-outcome confounders affected by the exposure and block part of the association they are meant to measure. The exposure is race, whose causal status is acknowledged as unresolved and whose representation on the causal diagram is described as an incorrect usage maintained throughout. Missing data were handled by complete case analysis and post-discharge breastfeeding was unmeasured.",
+   "future_research": [
+    {
+     "gap": "The causal status of a non-manipulable exposure such as race is left unresolved while the estimand is defined as if it were an exposure.",
+     "kind": "stated",
+     "quote": "accounting for the uncertain causal status of race (designated X) in Figure 1 is beyond the scope of this article, and thus we maintain this incorrect usage throughout",
+     "locator": "Counterfactual disparity measures: definition"
+    },
+    {
+     "gap": "Choosing between the singly robust estimators requires knowing which nuisance model can be specified more confidently, which is usually not knowable.",
+     "kind": "stated",
+     "quote": "Often, however, the trade-offs between modeling either the exposure or the outcome will be difficult to gauge.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "On one dataset of 900,726 births with one adjustment set, the six estimators give counterfactual disparities of minus 0.87, minus 0.85, 2.24, 3.08, 2.33 and 2.45 per 1,000 births, that is proportions explained of 126%, 125%, 33%, 8%, 31% and 27%. The two doubly robust estimators disagree with the singly robust ones and with each other, and the argument for preferring them is a post hoc inference that the exposure model is driving their consistency, read off from where the intervals fall. A study reporting any single one of these numbers would look complete.",
+     "quote": "doubly robust methods suggested a reduction in the disparity to 2.45 (95% conﬁdence interval: 2.20, 2.71) more infant deaths per 1,000 births among non-Hispanic black women",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "PRO-05",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The exposure is race and the mediator is breastfeeding before hospital discharge, neither of which has defined treatment versions or an assignment unit; placing race on a causal diagram is described as an incorrect usage that is nonetheless maintained. The estimand is then rescued by definition, as a measure that carries disparity-related but not necessarily causal information and only becomes a controlled direct effect when the exposure is free of consistency violations. Every number in the results table inherits that unresolved status while being reported as deaths per 1,000 births.",
+     "quote": "it is based on the fact that the statistical association between race and the outcome carries relevant disparity-related (but not necessarily causal) information",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "PRO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The spread from minus 0.87 to 3.08 deaths per 1,000 births has at least three sources mixed together: a target that is not a well-defined intervention, an identification failure when mediator-outcome confounders are affected by the exposure, and estimation error differing between singly and doubly robust estimators. Only the second is diagnosed, by tracing the sign reversal to conditioning on birth weight and gestational age. Nothing separates how much of the remaining disagreement among the four more general estimators is estimand mismatch and how much is finite-sample estimation.",
+     "quote": "This accounts for most of the elimination of the racial disparity in our example.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "LRN-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The subgroup whose disparity is being estimated is defined by race, and the weighting approach that is meant to fix the analysis is the one whose stability depends on the predicted probabilities of the observed exposure and mediator not being small. Those probabilities are smallest precisely in the strata of mediator-outcome confounders where few women in one racial group breastfed, that is where the disparity of interest is concentrated. The weighted estimate is correspondingly the least precise of the four general methods, at 1.41 to 3.07 against 2.20 to 2.71 for targeted minimum loss-based estimation.",
+     "quote": "Problems may be encountered if the predicted probabilities of the observed exposure or mediator are small.",
+     "locator": "Counterfactual disparity measures: estimation"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "low",
+     "evidence": "Missing values were handled by dropping incomplete records from a file of 900,726 births, acknowledged as a possible source of bias and then set aside as tangential. Breastfeeding after discharge was not recorded at all, so the mediator is fixed at one point defined by an administrative event, hospital discharge, rather than by the exposure process it stands for. Both are treated as data limitations rather than as parts of the structure that determines what the estimated disparity means.",
+     "quote": "we used a complete case analysis to deal with missing data, which may have biased our results",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0183",
+   "read": true,
+   "doi": "10.1093/aje/kww068",
+   "title": "Correcting for Measurement Error in Time-Varying Covariates in Marginal Structural Models.",
+   "relevance": "high",
+   "one_line": "Simulation-extrapolation corrections for a mismeasured time-varying confounder in a marginal structural model cut median bias by 99% and 88% at moderate error where naive coverage fell to 0%, but introduce bias when treatment actually responds to the mismeasured value rather than the true one.",
+   "what_was_done": "Two adaptations of simulation-extrapolation were compared for measurement error in a continuous time-varying confounder used to build inverse probability weights: direct correction, which targets the outcome model coefficient while using naive weights, and indirect correction, which corrects the exposure model coefficients and then refits the outcome model with corrected weights. Three hundred datasets were simulated per parameter combination, with 200 simulation-extrapolation replicates, quadratic extrapolation and 1,000 bootstrap replicates for intervals. The single-interval design crossed sample sizes of 100, 500 and 1,000, error standard deviations of 0.25, 0.75 and 1.25, and confounder-exposure association strengths of 0.25, 0.50 and 0.75 across 27 scenarios. Naive bias grew systematically with error: a threefold increase in the error standard deviation produced a sevenfold increase in bias at n = 1,000. At an error standard deviation of 0.75 the indirect and direct corrections reduced median bias by 99% and 88%; at higher error the reductions were 68% and 59%, at the cost of standard deviations 50% and 28% larger, with mean squared errors still lower than naive. In the two-interval design under high error and strong confounding, bias fell by 71% and 56% in the first interval and 41% and 33% in the second, while coverage was 0% for the naive model against 78% and 53% for the corrections. The critical reversal is that when exposure was generated from the mismeasured covariate, both corrections introduced bias and the naive model was unbiased with the lowest mean squared error. The case study used 258 people treated for hepatitis C from a cohort of over 1,400, with visits roughly every six months, correcting error in gamma-glutamyltransferase; the coefficient for sustained virological response moved from minus 0.26 (95% CI minus 0.40 to minus 0.11) to minus 0.19 (minus 0.38 to minus 0.01) and minus 0.17 (minus 0.36 to 0.01), that is from a 45% to a 32% decrease in median APRI, with the interval crossing zero after indirect correction.",
+   "future_research": [
+    {
+     "gap": "Only two intervals and one mismeasured covariate were feasible, while applications have many of both.",
+     "kind": "stated",
+     "quote": "Due mostly to computational burden, the scenarios we examined were limited to a simplified 2interval setting.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "The correction requires the measurement error variance to be known or estimable.",
+     "kind": "stated",
+     "quote": "practical application of the SIMEX procedure requires that the measurement error variance is known or can be estimated relatively well",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MER-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "A concrete correction is supplied and its payoff quantified: at high error with strong confounding, two-interval coverage was 0% for the uncorrected weighted model against 78% for indirect correction, and median bias fell by up to 99% at moderate error. Indirect correction is implementable in existing packages, unlike direct correction. What is left open is the class of variables covered: the machinery is for a continuous covariate with a known error variance, entered through the weight model, and says nothing about a binary phenotype defined by codes, where the error is misclassification and no variance parameter exists.",
+     "quote": "The simulations demonstrate that measurement errors in time-dependent covariates may induce substantial bias in MSM estimators of causal effects of time-varying exposures",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Whether to correct at all depends on an untestable structural question, whether treatment responded to the true covariate value or to the value the clinician saw, and the two answers point in opposite directions: with exposure generated from the mismeasured covariate, correction introduced bias and the naive weighted model was unbiased with the lowest mean squared error. In the case study the choice decides the conclusion, since the uncorrected interval excludes zero at minus 0.40 to minus 0.11 while the indirect correction gives minus 0.36 to 0.01. No diagnostic distinguishes the two data-generating structures.",
+     "quote": "Our secondary simulations conﬁrmed that ignoring measurement error was a reasonable choice if treatment assignment depended on the error-prone covariate; in this case, correcting for error introduced bias.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The number of intervals in the case study was reduced from two to one after collinearity showed up in modeling subsequent sustained virological response measures, that is after inspecting the fitted analysis rather than by a rule fixed in advance. Since the estimand of a marginal structural model is a contrast of exposure histories over the chosen grid, collapsing the grid changes what is being estimated, and the change was made for a data-driven reason on the same dataset that produced the reported coefficient.",
+     "quote": "We initially intended to conduct a 2-interval study but chose to consider a single time interval after identifying collinearity when modeling subsequent SVR measures.",
+     "locator": "Case study"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The sensitivity analysis varies one thing, the ratio of assumed to true measurement error variance across 0.25 to 1.75, and reports that corrected estimates stay less biased than naive even at 50% misspecification. Everything else is held at its assumed value: no unmeasured confounding, correct model specification, no positivity failure, and error in a single covariate. Since the same design shows that the sign of the correction's benefit flips with the exposure-generating structure, the assumptions plainly interact, and no scenario perturbs two at once.",
+     "quote": "sensitivity analyses demonstrated that a small degree of variance misspeciﬁcation (<25%) did not markedly bias our corrected estimates",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "An ongoing cohort of over 1,400 coinfected individuals yields 258 for the analysis, those treated for hepatitis C with at least one visit after therapy, and the design was then cut to a single interval, so the reported coefficient rests on one contrast within that subset. The resulting interval after indirect correction, minus 0.36 to 0.01, spans no effect, which is the practical face of the reduction: the correction is affordable in bias but not in precision at this size, with standard deviations up to 50% larger than naive.",
+     "quote": "We analyzed data from a subset of 258 individuals treated for HCV, for whom at least 1 visit occurred after completing therapy",
+     "locator": "Case study"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0184",
+   "read": true,
+   "doi": "10.6000/1929-6029.2016.05.01.4",
+   "title": "An Empirical Method of Detecting Time-Dependent Confounding: An Observational Study of Next Day Delirium in a Medical ICU.",
+   "relevance": "medium",
+   "one_line": "A 0 to 10 plausibility score built from longitudinal plots, cross-correlation and longitudinal regression flagged fentanyl and intubation as the pair with strong time-dependent confounding among 93 ICU patients, and intubation was the only exposure whose association with next-day delirium moved when the marginal structural model was fitted.",
+   "what_was_done": "A cohort of 309 patients aged 60 and over admitted to the medical intensive care unit at Yale-New Haven Hospital between September 2002 and September 2004 supplied shift-level medication dosing from medical records; the analysis subgroup was the 93 patients who received at least one dose of haloperidol, followed to death or their first eight days. Three concurrent time-varying treatments were considered, daily dose of fentanyl, daily dose of haloperidol and intubation, with next-day diagnosis of delirium as the outcome. A plausibility score running from 0 to 10 was constructed for each of the three treatment pairs from longitudinal plots, measures of correlation and longitudinal regression, giving low plausibility for haloperidol with intubation, moderate for fentanyl with haloperidol and high for fentanyl with intubation. Unweighted and inverse probability weighted models of next-day delirium were then compared, both containing all three treatments and an interaction between cumulative haloperidol dose and intubation. The associations for fentanyl and for haloperidol among non-intubated patients did not change between the two models, with the previously published haloperidol odds ratio of 1.05 (credible interval 1.02 to 1.09); intubation's association rose in the weighted model, both as a main effect and in the intubated subgroup taking haloperidol. The proposed decision rule is that strong empirical evidence for any pair, or moderate empirical evidence together with theoretical grounds, justifies the weighted model. The rule is calibrated by the movement between the two fitted models rather than against a known truth, and the causal vocabulary is deliberately refused.",
+   "future_research": [
+    {
+     "gap": "There is no way to measure the bias the score is meant to predict, so the score can only be checked against the movement of the estimates it is supposed to justify.",
+     "kind": "stated",
+     "quote": "The major challenge in evaluating the utility of these scores is that any bias due to time-dependent confounding cannot be directly measured, but is often inferred from theoretical factors.",
+     "locator": "Results"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "An explicit, prespecifiable criterion is offered for a decision that is normally made by assertion: whether to fit the weighted model at all, based on an ordinal score computed from the exposure and covariate trajectories before the outcome models are compared. Applied to three treatment pairs it produced low, moderate and high, and the estimates moved only for the pair scored high. What it does not close is calibration. The score's validity is judged by whether the weighted and unweighted coefficients differ, which is the comparison the score was meant to spare the analyst, and no threshold is anchored to a known bias.",
+     "quote": "we propose and demonstrate a simple plausibility score based on descriptive and exploratory statistics that may be used to justify the added complexity of fitting a marginal structural model",
+     "locator": "Conclusion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "One structural assumption, treatment-confounder feedback, is turned into a reported number on a 0 to 10 scale for each pair of exposures, so a reader sees a graded claim rather than a binary assertion that the method was applicable. The separation from the undiagnosable assumptions is made explicitly, since no unmeasured confounders is assumed rather than scored, and the latent respiratory factor that motivates the whole example is deleted from the diagram by that assumption. The result is a dashboard covering one row.",
+     "quote": "we constructed a plausibility score from 0 – 10 where higher values indicate higher plausibility of time-dependent confounding of the association between a time-varying explanatory variable and an outcome",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The motivating diagram names a specific unmeasured confounder, the patient's latent respiratory vulnerability driving both intubation and delirium, and the adjusted diagram is obtained by deleting it and every arrow attached to it. No proxy for that vulnerability, no negative control outcome and no validation subsample enters the analysis, so the assumption is discharged graphically. The consequence is stated rather than bounded: the causal vocabulary is withheld from a result that nonetheless reports an odds ratio of 1.05 with a credible interval of 1.02 to 1.09.",
+     "quote": "in accordance with the assumption of no unmeasured confounders, the unmeasured variables and all corresponding arrows have been removed",
+     "locator": "Methods, Definition of Time-Dependent Confounding"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A recruited cohort of 309 critically ill older patients reduces to the 93 who received any haloperidol, each contributing at most eight days, and inside that the estimate of interest concerns an interaction between cumulative haloperidol dose and intubation, so the subgroup carrying the interaction is smaller again. The three-way weighting scheme assigns daily inverse probability weights to two continuous cumulative doses and one binary treatment on that base, which is where the fragility sits rather than in the enrollment figure.",
+     "quote": "the subgroup of 93 patients who received at least one dose of haloperidol during their MICU stay were followed through death or their first eight days",
+     "locator": "Methods, Description of Analytical Sample"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Fitting the weighted model is explicitly refused as grounds for calling the result unbiased or causal, on the stated ground that capturing all covariates and having no unmeasured factors are very strong assumptions. That is the correct separation between the method label and the assumption burden, made in the same document that fits the method. It closes nothing structurally: the refusal is a sentence in a discussion, not a reporting requirement, and the same analysis presented with the causal vocabulary would be indistinguishable in its numbers.",
+     "quote": "we refrain from using the terms unbiased or causal in describing the resultant associations from this observational study",
+     "locator": "Methods, Definition of Time-Dependent Confounding"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}
