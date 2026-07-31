@@ -13,6 +13,7 @@ Usage: python3 build/lit/search.py [--refresh]
 """
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -31,19 +32,28 @@ OUT = os.path.join(ROOT, "documentation", "refs", "systematic")
 CACHE = os.path.join(OUT, "_cache")
 
 # Ordered narrowest first, by measured PubMed size. The order is load-bearing downstream:
-# topic_of() is first-match-wins, and the phrases nest. "target trial emulation" contains
-# "trial emulation", which contains neither but is contained by "target trial", so a paper
-# matching the specific phrase must be filed under it rather than under the broad one.
-# Counts measured 2026-07-30 against [Title/Abstract] OR [Other Term].
+# topic assignment is first-match-wins and the phrases nest. "target trial emulation" contains
+# "trial emulation" and is contained by "target trial", so a paper matching the specific phrase
+# must be filed under it rather than under the broad one that also matches.
+#
+# Each topic carries every surface form, because PubMed does NOT stem inside a quoted phrase.
+# Measured: "target trial" returns 1930 and "target trials" 415, and a paper titled "Emulating
+# target trials to study ICU interventions" is retrieved by the plural and NOT by the singular.
+# A singular-only phrase set silently loses those. Counts measured 2026-07-30.
 PHRASES = {
-    "ccw":   "clone censor weight",         # 66
-    "emul":  "emulated trial",              # 78
-    "gform": "parametric g-formula",        # 223
-    "msm":   "marginal structural model",   # 458
-    "itb":   "immortal time bias",          # 929
-    "tte":   "target trial emulation",      # 1278
-    "temu":  "trial emulation",             # 1395
-    "tt":    "target trial",                # 1930
+    "ccw":   ["clone censor weight", "clone-censor-weight", "cloning censoring weighting"],
+    "emul":  ["emulated trial", "emulated trials",
+              # ~50 records, most of them electroencephalography, where a "pseudotrial" is a
+              # resampled epoch and nothing to do with causal inference. Kept anyway: the
+              # handful that are ours include a propensity-score paper that no other phrase
+              # retrieves, and screening 40 obvious excludes is cheaper than missing it.
+              "pseudotrial", "pseudotrials", "pseudo-trial", "pseudo-trials"],
+    "gform": ["parametric g-formula", "parametric g formula", "g-formula", "g formula"],
+    "msm":   ["marginal structural model", "marginal structural models"],
+    "itb":   ["immortal time bias", "immortal person-time bias", "immortal time"],
+    "tte":   ["target trial emulation", "target trial emulations", "emulation of a target trial"],
+    "temu":  ["trial emulation", "trial emulations", "emulating a trial"],
+    "tt":    ["target trial", "target trials"],
 }
 
 # NCBI allows 3 requests/second without an API key.
@@ -275,11 +285,21 @@ def parse_pmc(xml):
 
 
 def efetch(db, ids, parser, tag):
-    """Fetch records in batches by explicit id, caching each batch."""
+    """Fetch records in batches by explicit id, caching each batch.
+
+    The cache file is named for the CONTENT of the batch, not its position. Keying on
+    position alone is wrong the moment the query changes: batch 3 of the old id list and
+    batch 3 of the new one get the same filename, so the second run reads the first run's
+    records back and reports its own, larger, id count while parsing the older set. That
+    failure is silent, because every count the run prints comes from esearch and is correct;
+    only the parsed records are stale. Hashing the ids makes a changed batch a different
+    file, so a changed query simply misses the cache and refetches.
+    """
     recs, size, total = [], 200, len(ids)
     os.makedirs(CACHE, exist_ok=True)
     for i in range(0, total, size):
-        path = os.path.join(CACHE, f"{tag}_{i:06d}.xml")
+        digest = hashlib.sha1(",".join(ids[i:i + size]).encode()).hexdigest()[:12]
+        path = os.path.join(CACHE, f"{tag}_{i:06d}_{digest}.xml")
         if os.path.exists(path) and os.path.getsize(path) > 200:
             xml = open(path, encoding="utf8", errors="ignore").read()
         else:
@@ -337,10 +357,16 @@ def main():
     os.makedirs(OUT, exist_ok=True)
     store, log = {}, []
 
-    for slug, phrase in PHRASES.items():
+    for slug, variants in PHRASES.items():
+        if isinstance(variants, str):
+            variants = [variants]
         for db in ("pubmed", "pmc"):
-            term = (f'"{phrase}"[Title/Abstract] OR "{phrase}"[Other Term]'
-                    if db == "pubmed" else f'"{phrase}"[Title/Abstract]')
+            parts = []
+            for v in variants:
+                parts.append(f'"{v}"[Title/Abstract]')
+                if db == "pubmed":
+                    parts.append(f'"{v}"[Other Term]')
+            term = " OR ".join(parts)
             ids, total, harvested = collect_ids(db, term)
             print(f"{slug:6s} {db:7s} {total:6d} hits, {len(ids):6d} ids retrieved",
                   file=sys.stderr)
@@ -351,7 +377,7 @@ def main():
                           f"{slug}_{db}")
             for r in recs:
                 merge(store, r, slug, db)
-            log.append({"phrase": phrase, "slug": slug, "db": db, "term": term,
+            log.append({"phrase": variants[0], "variants": variants, "slug": slug, "db": db, "term": term,
                         "hits": total, "ids": len(ids), "parsed": len(recs)})
 
     with open(os.path.join(OUT, "records.jsonl"), "w", encoding="utf8") as fh:

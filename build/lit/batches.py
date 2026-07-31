@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
-"""Stage 2 plumbing: prepare records for hand screening and record the decisions.
+"""Stage 2 plumbing: prepare records for screening and record the decisions.
 
 This script makes no screening judgments. It formats records for reading and
-stores the decisions that come back. Every include/exclude call is made by hand
-against the title and, where the title is not decisive, the abstract.
+stores the decisions that come back, together with who made them. Every
+include/exclude call is made against the title and, where the title is not
+decisive, the abstract.
+
+Who "who" is matters and is recorded per decision rather than assumed. In this
+project the reading is done by a language model against the inclusion rule,
+with a second model over the disagreements, which is not the same thing as a
+human screener and must not be described as one. Pass --by on `decide` to name
+the reviewer; it is carried into screened.jsonl and reported in INDEX.md.
 
 Batches are ordered by journal then year so that runs of the same venue read
-together, which is how a human screener actually works through a list.
+together.
 
   build    write screening batches to screening/batch_NNNN.txt
   abstract print the full abstract for specific ids (second-pass reading)
@@ -141,7 +148,8 @@ def cmd_decide(args):
     with open(DECISIONS, "a", encoding="utf8") as fh:
         for i in b["ids"]:
             d = "include" if i in inc else "uncertain" if i in unc else "exclude"
-            fh.write(json.dumps({"id": i, "decision": d, "batch": args.batch}) + "\n")
+            fh.write(json.dumps({"id": i, "decision": d, "batch": args.batch,
+                                 "by": args.by}) + "\n")
     print(f"batch {args.batch} ({b['topic']}, {b['n']} records): "
           f"{len(inc)} include, {len(unc)} uncertain, "
           f"{b['n'] - len(inc) - len(unc)} exclude")
@@ -213,7 +221,8 @@ def cmd_finalize(args):
             d = dec.get(i)
             if not d:
                 continue
-            r["screen"] = {"decision": d["decision"], "batch": d["batch"], "by": "manual"}
+            r["screen"] = {"decision": d["decision"], "batch": d["batch"],
+                           "by": d.get("by", "unrecorded")}
             fh.write(json.dumps(r, ensure_ascii=False) + "\n")
             n += 1
     print(f"{n} screened records written to screened.jsonl")
@@ -229,6 +238,9 @@ def main():
     a.add_argument("ids", nargs="+")
     a.add_argument("--chars", type=int, default=1200)
     d = sub.add_parser("decide")
+    d.add_argument("--by", default="unrecorded",
+                   help="who made these calls, e.g. a model id. Recorded per decision "
+                        "and published; do not leave it at the default.")
     d.add_argument("--batch", type=int, required=True)
     d.add_argument("--include", default="")
     d.add_argument("--uncertain", default="")
