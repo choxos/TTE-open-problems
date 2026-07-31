@@ -95,22 +95,55 @@ def main():
     unchecked = [r for r in rows if r["check_passed"] is None]
     failed = [r for r in rows if r["check_passed"] is False]
 
+    # Zero errata is a result only for the entries a reader could have read
+    # against. An entry drafted from the reading, or promoted afterwards from the
+    # gap labelling, did not exist while the papers were being read, so nothing
+    # has ever checked it for this class of error. Printing a clean bill of health
+    # over the whole registry would be the same mistake the channel exists to
+    # catch: a confident sentence that reads as sound.
+    exposed, later = [], []
+    for pid, p in sorted(problems.items()):
+        slice_ = (p.get("source") or {}).get("slice") or ""
+        (exposed if slice_.startswith("seed") else later).append(pid)
+    npapers = len(agg.get("papers") or []) or agg.get("n_papers") or 0
+
     L = ["# Errors in the registry itself", "",
          f"{len(rows)} places where an entry states something about the literature "
          f"or about software that the paper in front of the reader disproves. These "
          f"are not findings about whether a problem is open; they are mistakes in "
          f"the entry, and nothing else in the pipeline can see them. A plausible "
          f"name on a working DOI reads as sound, and so does a confident sentence "
-         f"about what a method does.", "",
-         f"{len(confirmed)} still reproduce against the paper or the installed "
-         f"software, {len(unchecked)} carry no mechanical check, and "
-         f"{len(failed)} no longer reproduce. Every check below re-runs from "
-         f"`build/lit/errata.py`.", "",
-         "A check that no longer reproduces means one of two things, and the "
-         "evidence line says which: the entry has since been corrected, so the "
-         "error the check looks for is genuinely gone, or the reported error "
-         "could not be substantiated. Read the evidence rather than the heading.",
-         ""]
+         f"about what a method does.", ""]
+    # The breakdown and the how-to-read note describe rows, so with no rows they
+    # are three paragraphs of zeros explaining how to interpret nothing.
+    if rows:
+        L += [f"{len(confirmed)} still reproduce against the paper or the installed "
+              f"software, {len(unchecked)} carry no mechanical check, and "
+              f"{len(failed)} no longer reproduce. Every check below re-runs from "
+              f"`build/lit/errata.py`.", "",
+              "A check that no longer reproduces means one of two things, and the "
+              "evidence line says which: the entry has since been corrected, so the "
+              "error the check looks for is genuinely gone, or the reported error "
+              "could not be substantiated. Read the evidence rather than the heading.",
+              ""]
+    L += ["## What this covers", "",
+         f"Every reader was asked, on each of the {npapers} papers read in full, "
+         f"whether the registry was wrong about that paper, with its own output "
+         f"channel so the answer could not be absorbed into a finding. "
+         + (f"Across the reading, {len(rows)} came back."
+            if rows else "Across the reading, none came back."), "",
+         f"That result covers the {len(exposed)} entries that existed while the "
+         f"papers were being read. {len(later)} did not"
+         + (f" ({', '.join(later)})" if later else "")
+         + ", because they were drafted from the reading itself or promoted from "
+           "the gap labelling afterwards, so no reader has ever checked them for "
+           "this class of error. They carry auditor opinions, which is a different "
+           "check answering a different question.", "",
+         "The mechanizable half of one erratum kind runs separately and "
+         "continuously: `build/lit/check_citations.py` resolves every DOI in the "
+         "registry and compares the cited surname and year against CrossRef, "
+         "which is the exact fault this channel was built for. Its current result "
+         "is in `CITATIONS.md`.", ""]
 
     for title, rs in (("Still reproduce", confirmed),
                       ("No longer reproduce: corrected, or unsubstantiated", failed),
@@ -119,7 +152,7 @@ def main():
             continue
         L += [f"## {title}", ""]
         for r in rs:
-            L += [f"### {r['problem_id']} — {r.get('problem_title') or ''}", "",
+            L += [f"### {r['problem_id']}: {r.get('problem_title') or ''}", "",
                   f"*{r.get('kind')}, reader confidence {r.get('confidence')}, "
                   f"from {r.get('paper')} ({(r.get('paper_title') or '')[:70]})*", "",
                   "**The registry says.** " + (r.get("what_the_registry_says") or ""),

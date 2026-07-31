@@ -3,17 +3,17 @@ title: "Phenotypes enter emulations as error-free binary variables"
 description: "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care received outside the system may be incompletely captured. Methods for outcome misclassification in electronic health records increasingly use validation samples and probabilistic phenotypes. Emulation pipelines almost universally do not: a phenotype is thresholded to a binary variable at the start and treated as truth thereafter. Differential misclassification then interacts with weighting and with time-varying confounding in ways that are not intuitive, because an error in the exposure at one time propagates into the weights at every later time, and no standard analysis propagates the phenotype uncertainty at all."
 pid: "MER-01"
 topic: "Measurement error & misclassification in routine data"
-categories: ["Measurement error & misclassification in routine data", "Very high priority", "Unverifiable", "Protocol: Eligibility", "Protocol: Treatment strategies", "Protocol: Outcome", "Data: EHR", "Data: Claims", "Data: Linked records"]
+categories: ["Measurement error & misclassification in routine data", "Very high priority", "Partially addressed", "Protocol: Eligibility", "Protocol: Treatment strategies", "Protocol: Outcome", "Data: EHR", "Data: Claims", "Data: Linked records"]
 priority: "Very high"
 prank: 1
-verdict: "Unverifiable"
-verdictslug: "unverifiable"
+verdict: "Partially addressed"
+verdictslug: "partially-addressed"
 maturity: "Promising"
 tractability: 4
 ---
 ::: {.problem-meta}
 [MER-01]{.problem-id}
-[Unverifiable]{.verdict .verdict-unverifiable}
+[Partially addressed]{.verdict .verdict-partially-addressed}
 [Very high priority]{.chip .chip-priority-very-high}
 [Promising]{.chip .chip-maturity-promising}
 [Tractability 4/5]{.chip}
@@ -49,9 +49,14 @@ Develop validation-subsample targeted learning, Bayesian latent-class g-formula 
 ## Verification
 
 ::: {.verification-trail}
-**Verdict.** Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.
+**Verdict.** Partially addressed. Auditors disagreed and the disagreement was evidence-bearing on both sides. Moved by the full-text reading: 9 findings from 9 papers naming work that covers part of this problem survived both the reader and an independent second reviewer, so the verdict moves from unverifiable to partially-addressed. A further 112 findings in the same reading restate the problem as open; the two are consistent, and the part that is covered is named above.
 
-**Dissent.** literature dissented (supported): Searching for phenotype uncertainty propagated through an emulation returned discussions of misclassification as a listed threat and no pipeline that accepts probabilistic treatment or outcome nodes and carries the uncertainty to the final interval. Design-bias reviews name outcome misclassification among the biases to avoid without supplying the propagation. The entry's specific claim, that the interaction between differential misclassification, weighting and time-varying confounding is not handled, is consistent with what the corpus shows. codex dissented (overstated): The underlying joint longitudinal measurement-error problem is real, but several assertions are too categorical. Prescribing, dispensing, and ingestion are distinct variables; their difference is misclassification only when the estimand targets one but the protocol measures another. In a cumulative inverse-probability weight, an erroneous treatment factor at time s remains in later cumulative products for a clone still at risk, but a clone artificially censored at s has no later weights. Mismeasurement of a time-varying confounder changes artificial-censoring membership only when that variable determines the dynamic strategy, eligibility, or censoring rule; under a static sustained strategy it can distort nuisance models without changing who is censored. The resulting biases can interact, but the defensible claim is that no unique identified additive measurement-versus-confounding decomposition generally exists without additional assumptions, not that no decomposition is possible. End-to-end propagation also does not require every estimator to accept soft inputs natively: multiple imputation, posterior draws, or a whole-pipeline bootstrap can wrap deterministic estimators. No package is named, so the claims about 'almost universally,' 'no standard analysis,' and 'most implementations' cannot be established from package ground truth. TrialEmulation 0.0.4.11 confirms one indicator-based implementation, not the asserted prevalence. The narrowed problem remains open, while uniformly assigning very-high severity is unjustified because importance depends on the estimand, error mechanism, validation information, and decision sensitivity.
+**Dissent.** literature dissented (supported): Searching for phenotype uncertainty propagated through an emulation returned discussions of misclassification as a listed threat and no pipeline that accepts probabilistic treatment or outcome nodes and carries the uncertainty to the final interval. Design-bias reviews name outcome misclassification among the biases to avoid without supplying the propagation. [...]
+
+**Revised by the full-text reading.** Applied full-text reading of the consolidated library.
+
+Verdict changed
+:   **unverifiable -> partially-addressed** 9 surviving findings from: Applying a hypothetical strategy to the intercurrent event o; Combining high quality data with rigorous methods: emulation; Comparing broad and narrow phenotype algorithms: differences; Correcting for Measurement Error in Time-Varying Covariates ; Exposure effects on count outcomes with observational data, ; Impact of Alcohol Consumption on Multiple Sclerosis Using Mo; Quantitative Bias Analysis for a Misclassified Confounder: A; Time-dependent mediators in survival analysis: Modeling dire; Transparency in real-world evidence (RWE) studies to build c. New citations: 10.1002/bimj.201800263, 10.1093/aje/kwae023, 10.1093/aje/kww068, 10.1097/ede.0000000000001239, 10.1111/dom.13918, 10.1136/bmj-2022-072346, 10.1186/s13063-026-09708-1, 10.3389/jpps.2023.12095, 10.34172/aim.2023.79
 
 4 of the 4 independent auditors returned an opinion on this entry.
 
@@ -81,7 +86,7 @@ GLM-5.2, third independent lens
 :   **open / supported.** The statement correctly identifies a methodological gap in target trial emulation using EHR data. It asserts that standard pipelines threshold phenotypes and do not propagate uncertainty, which is a claim about current practice rather than a structural impossibility. The reasoning given for it being open (nonlinear interaction of misclassification, transportability of validation samples, pipeline architecture limitations) is internally consistent and supports the claim being open. The scope is appropriate for a methodological research agenda, and the severity is proportionate to the risk of biased causal estimates.
 
 Decision path
-:   `R5:default-open → R7:counter-and-support-both-present(support=1/counter=1)`
+:   `R5:default-open → R7:counter-and-support-both-present(support=1/counter=1) → R17:reading-moved(unverifiable->partially-addressed)`
 
 :::
 

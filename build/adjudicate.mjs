@@ -253,7 +253,16 @@ export function adjudicate(record) {
               // misattribution rather than this, and was the giveaway that the
               // two axes had been collapsed into one.
               ? 'Auditors judged this is not a real methodological problem.'
-              : 'Auditors agreed the problem is open and no counterevidence surfaced.'
+              // Confirmed open is a finding about status. Saying the auditors also
+              // agreed about the wording is a separate claim and usually a false
+              // one: nearly every entry reaching this verdict does so through R9
+              // or R11, meaning at least one auditor called the claim too strong
+              // or narrowed it. That qualification is in the trail either way, so
+              // the summary line must not contradict it.
+              : support === 'supported'
+                ? 'Auditors agreed the problem is open and no counterevidence surfaced.'
+                : 'Auditors found the problem open. At least one qualified how it is '
+                  + 'stated; the qualification and who made it are in the trail below.'
 
   return {
     ...record,
@@ -294,7 +303,43 @@ function main() {
   const records = JSON.parse(readFileSync(src, 'utf8'))
   const out = records.map(adjudicate)
 
-  writeFileSync(join(AUDIT, 'registry/problems.json'), JSON.stringify(out, null, 1))
+  // The full-text reading is a second evidence stream, applied to the registry
+  // afterwards by build/lit/apply_changes.py. This rebuilds the registry from
+  // canonical every run, so without carrying that stream forward, re-running the
+  // auditors silently reverts every verdict the reading moved and deletes the
+  // trail saying it ever moved. That is the same trap that erased the `related`
+  // back-links, and here it would be invisible: the page would still look
+  // adjudicated and would simply state an older verdict.
+  //
+  // The reading does not overrule the auditors, it postdates them, so both are
+  // kept: the adjudication block records what the roster decided, the published
+  // verdict is what the reading left, and the decision path says so.
+  const prevPath = join(AUDIT, 'registry/problems.json')
+  const prev = existsSync(prevPath)
+    ? Object.fromEntries(JSON.parse(readFileSync(prevPath, 'utf8')).map((p) => [p.id, p]))
+    : {}
+  let carried = 0
+  for (const r of out) {
+    const before = prev[r.id]
+    const moved = (before?.reading_update?.changes || []).filter((c) => c.kind === 'verdict')
+    if (!moved.length) continue
+    r.reading_update = before.reading_update
+    // `what` is written by apply_changes as "<from> -> <to>".
+    const target = String(moved[moved.length - 1].what || '').split(' -> ').pop().trim()
+    if (target && target !== r.verdict) {
+      r.audit.adjudication.verdict_before_reading = r.verdict
+      r.audit.adjudication.decision_path = [
+        ...r.audit.adjudication.decision_path,
+        `R17:reading-moved(${r.verdict}->${target})`,
+      ]
+      r.verdict = target
+      r.verdict_rationale = before.verdict_rationale
+      carried++
+    }
+  }
+
+  writeFileSync(prevPath, JSON.stringify(out, null, 1))
+  if (carried) console.log(`${carried} verdict(s) carried forward from the full-text reading`)
 
   const counts = {}
   for (const r of out) counts[r.verdict] = (counts[r.verdict] || 0) + 1

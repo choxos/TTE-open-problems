@@ -385,7 +385,17 @@ function problemPage(p) {
     if (p.correction_note) out.push(`**What was wrong with it.** ${p.correction_note}`, '')
   }
   if (p.audit?.dissent) {
-    out.push(`**Dissent.** ${p.audit.dissent}`, '')
+    // adjudicate.mjs builds this string from each dissenter's whole rationale, and
+    // every one of those rationales is printed again in full a few lines below
+    // under its own auditor heading. Repeating two thousand words verbatim buries
+    // the thing the block exists to surface, which is that someone disagreed and
+    // on what. Say who and open the argument; the rest is directly beneath.
+    const opener = (s) => {
+      const cut = s.slice(0, 400)
+      const stop = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('; '))
+      return s.length <= 400 ? s : `${cut.slice(0, stop > 120 ? stop + 1 : 400).trim()} [...]`
+    }
+    out.push(`**Dissent.** ${opener(p.audit.dissent)}`, '')
   }
 
   // What the full-text reading changed, including what it deliberately did not.

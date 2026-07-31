@@ -138,8 +138,13 @@ def main():
     # no longer exists, so it is not carried over; the year and surname corrections below are
     # driven by citation-check.json and apply to whatever the check actually finds.
 
-    rows = json.load(open(os.path.join(REGISTRY, "citation-check.json"),
+    # check_citations.py used to write a bare list of citation rows and now writes
+    # an object carrying the link and preprint passes alongside them. Accept both:
+    # a file written by an older run is still readable, and iterating the object
+    # by mistake yields its keys, which are strings and fail silently one line down.
+    blob = json.load(open(os.path.join(REGISTRY, "citation-check.json"),
                           encoding="utf8"))
+    rows = blob["citations"] if isinstance(blob, dict) else blob
     years = {}
     for r in rows:
         if r.get("doi"):
@@ -199,15 +204,30 @@ def main():
         cites = sorted({f.get("doi") for f in c["findings"]
                         if f.get("doi") and f.get("effect") != "supports-open"})
         drv = c["flip_drivers"]
+        # The findings that move a verdict are almost always outnumbered by
+        # findings restating the problem as open, and that is not a contradiction:
+        # `partially-addressed` says part of the problem is covered, so one
+        # substantiated paper covering a part settles it however many papers say
+        # the rest is still open. It does mislead if only the drivers are printed.
+        # A reader seeing "5 findings moved this" without seeing the 191 that did
+        # not will take the reading to have found the problem largely solved.
+        still_open = sum(1 for f in c["findings"] if f.get("effect") == "supports-open")
+        # The wording was "reopened by the full-text reading", which is the opposite
+        # direction: every move this produces runs from open or unverifiable toward
+        # partially addressed, on findings saying part of the problem is covered.
         p["verdict_rationale"] = (
             (p.get("verdict_rationale") or "").rstrip()
-            + f" Reopened by the full-text reading: {drv} finding"
+            + f" Moved by the full-text reading: {drv} finding"
             + ("" if drv == 1 else "s")
             + f" from {len(c['flip_papers'])} paper"
             + ("" if len(c["flip_papers"]) == 1 else "s")
-            + " survived both the reader and an independent second reviewer, so "
-              "the verdict moves from " + old + " to " + c["proposed_verdict"]
-            + ("." if drv > 1 else ", on a single finding.")).strip()
+            + " naming work that covers part of this problem survived both the "
+              "reader and an independent second reviewer, so the verdict moves "
+              "from " + old + " to " + c["proposed_verdict"]
+            + ("." if drv > 1 else ", on a single finding.")
+            + (f" A further {still_open} findings in the same reading restate the "
+               f"problem as open; the two are consistent, and the part that is "
+               f"covered is named above." if still_open else "")).strip()
         p["reading_update"]["changes"][-1]["evidence"] = (
             f"{drv} surviving finding" + ("" if drv == 1 else "s")
             + " from: " + "; ".join(c["flip_papers"])
