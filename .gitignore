@@ -1,13 +1,15 @@
 # ---------------------------------------------------------------------------
-# documentation/ holds the source documents, the reference corpus and every
-# audit working file. It runs to gigabytes, so it is excluded by default, with
-# a few deliberate exceptions.
+# Technical documentation and audit working files.
 #
-# Those exceptions are what makes `node build/render_site.mjs` runnable on a
-# fresh clone. render_site.mjs reads the registry, so ignoring the registry
-# means the site can be re-rendered only on the machine that built it; the
+# The sibling ITC project excludes documentation/ wholesale. That keeps the
+# repository small and makes it unbuildable: render_site.mjs reads the registry,
+# so a fresh clone can re-render the site only on the machine that built it. The
 # published pages survive because problems/*.qmd are committed, but nothing can
-# regenerate them.
+# regenerate them, and the evidence behind every verdict lives only on one disk.
+#
+# So the directory is excluded by default with deliberate exceptions, in two
+# groups: the small inputs the site build needs, and the judgments that cannot
+# be recomputed.
 #
 # Git cannot re-include a file whose parent directory is excluded, so each level
 # is excluded by its contents (dir/*) and the next level down re-included, all
@@ -33,10 +35,11 @@ documentation/audit/schema/*
 # Everything below is a judgment made once and written down. The seed extraction is one
 # reading of the source document; an opinion is one auditor's assessment of one entry; a
 # synthesis file is the rewrite that survived that assessment; a reading finding is one
-# paper read in full with a verbatim quote. None of it can be regenerated: re-running the
-# external auditors returns different text, and re-reading 576 papers is the cost of the
-# whole reading phase. This is the same rule the screening decisions are kept under, and for
-# the same reason.
+# paper read in full with a verbatim quote; a review verdict is one external model's
+# judgment on a claim that would change the registry. None of it can be regenerated:
+# re-running the external auditors returns different text, and re-reading 573 papers is
+# the cost of the whole reading phase. This is the same rule the screening decisions are
+# kept under, and for the same reason.
 !documentation/audit/raw/
 documentation/audit/raw/*
 !documentation/audit/raw/*.json
@@ -52,6 +55,9 @@ documentation/audit/reading/*
 documentation/audit/reading/findings/*
 !documentation/audit/reading/findings/*.json
 !documentation/audit/reading/QUOTE-CHECK.md
+!documentation/audit/reading/review/
+documentation/audit/reading/review/*
+!documentation/audit/reading/review/verdict-*.json
 !documentation/audit/auditors/
 documentation/audit/auditors/*
 !documentation/audit/auditors/*/
@@ -80,6 +86,7 @@ documentation/refs/systematic/screening/*
 /.quarto/
 *_files/
 /site_libs/
+**/*.quarto_ipynb
 
 # Per-file HTML left in the source tree by an interrupted Quarto render
 /*.html
@@ -93,20 +100,43 @@ documentation/refs/systematic/screening/*
 *.Rproj
 *.rds
 
+# Python
+__pycache__/
+*.pyc
+
 # Node (site build script)
 node_modules/
+
+# Agent guidance files. ITC ignores CLAUDE.md, AGENTS.md and .claude/ entirely,
+# which leaves the agent definitions that produced the reading unrecorded. The
+# house style and the reading protocol are what make the prose one voice, so
+# they are tracked here; only local agent settings are not.
+.claude/*
+!.claude/agents/
+.claude/agents/*
+!.claude/agents/*.md
 
 # Working directories the reading agents extract paper text into. Regenerable
 # from the PDFs and large enough to dominate the repository.
 /scratch/
 /scratchpad/
 
+# Simulation study working files, for the study queue triaged from the finished
+# registry. Raw per-replicate output is regenerable from the master seed and
+# large; the tracked artifacts are the analysis outputs under results/*.csv and
+# the rendered manuscripts, which are what the manuscript reads.
+/studies/*/results/raw/
+/studies/*/results/pilot/
+/studies/*/results/cells/
+/studies/*/results/smoke-cells/
+/studies/*/logs/
+/studies/*/manuscript/manuscript_files/
+/studies/*/manuscript/*.md
+/studies/*/manuscript/*.pdf
+/studies/*/manuscript/*.odt
+
 # OS / editor cruft
 .DS_Store
 *~
 .vscode/
 .idea/
-
-**/*.quarto_ipynb
-__pycache__/
-*.pyc
