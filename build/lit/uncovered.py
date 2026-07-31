@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Work up the themes the gap labellers wanted and could not find.
 
-Twelve labellers attached 3,619 future-research gaps to a fixed theme set and
-were asked, at the end, what they had wanted and not found. Nine absences were
+Twelve labellers attached 798 future-research gaps to a fixed theme set and
+were asked, at the end, what they had wanted and not found. Six absences were
 named by more than one labeller working on disjoint gaps, which is independent
 agreement about a hole rather than one model's opinion.
 

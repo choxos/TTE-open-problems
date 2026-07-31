@@ -106,7 +106,7 @@ using a batch-scoped scratch directory.
 
 ```json
 {"batch":"{BATCH}",
- "entries":[{"title":"...","category":"DEC","statement":"...","why_open":"...",
+ "entries":[{"title":"...","category":"GMT","statement":"...","why_open":"...",
    "prior_work":[{"cite":"...","doi_or_url":"...","what_it_does":"..."}],
    "proposed_direction":"...","priority":"High","tractability":3,
    "maturity":"Emerging","severity":"...","verdict":"confirmed-open",
