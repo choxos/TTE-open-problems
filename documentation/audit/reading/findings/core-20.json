@@ -1,0 +1,696 @@
+{
+ "batch": "core-20",
+ "papers": [
+  {
+   "id": "L0331",
+   "read": true,
+   "doi": "10.1097/ede.0000000000002024",
+   "title": "Nesting a Target Study within a Target Trial: A Framework for Evaluating Intervention Effects on Disparities.",
+   "relevance": "high",
+   "one_line": "Nests a target study inside a target trial so that disparity is measured among social groups made similar on covariates judged morally allowable, then randomizes intervention strategies within each group, applied to pulse oximetry measurement bias and dexamethasone treatment.",
+   "what_was_done": "The framework has two components. The target study specifies an enrollment plan of stratified sampling from an explicit population in calendar time so that social groups are distributionally similar on covariates deemed allowable, meaning those whose differential distribution is not itself considered to constitute a disparity. Which covariates are allowable is a normative judgment that depends on whether the outcome is a healthcare good or a health status: for treatment outcomes it covers indicators of clinical need consistent with medical guidelines, and for health status outcomes it may cover baseline factors favorable to the disadvantaged group so as not to mask the disparity. All other covariates are non-allowable and enter only to address confounding or selection. The target trial then randomizes intervention strategies within each social group, which gives well-defined estimands for how an intervention changes a disparity. The application intervenes on pulse oximetry bias, comparing measured oxygen saturation against arterial saturation among non-Hispanic Black and non-Hispanic White patients with dexamethasone treatment as the outcome, using race as a proxy for skin tone since skin tone is unmeasured. Estimated treatment delays were about 30 minutes.",
+   "future_research": [
+    {
+     "gap": "Whether roughly 30-minute treatment delays cause harm is unclear and would need investigation of downstream adverse outcomes.",
+     "kind": "stated",
+     "quote": "Turning to the magnitude of the disparities, the risk\nof adverse consequences from estimated delays in treatment (approximately 30 minutes across\nscenarios) among NHB patients are unclear.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "The application estimated an intention-to-treat effect of baseline measurement bias and did not capture cumulative bias across repeated readings during follow-up.",
+     "kind": "stated",
+     "quote": "In addition, our application estimated an intention-to-treat effect of baseline biased SpO₂ but did not\nfully capture the cumulative impact of sustained measurement bias over the duration of care (i.e.,\nsubsequent SpO₂ readings during follow-up).",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MER-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Measurement error is the intervention here rather than a nuisance: the framework intervenes on how much bias a device is permitted, and shows how that bias propagates into treatment decisions and disparities. It also makes the phenotype substitution explicit, using race as a proxy for skin tone because skin tone is unrecorded, and it names the direction the framework could extend to, assigning different permissible bias within levels of true saturation.",
+     "quote": "For instance, one could define interventions that assign\ndifferent degrees of permissible bias in SpO₂ within levels of SaO₂ (e.g., 70-85%, ≥85%).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The estimand is constructed rather than inherited: which covariates the social groups are equalized on is a normative choice, and that choice defines what the disparity means. Making allowability an explicit design input turns an implicit adjustment decision into a stated one, and the paper declines to take a position on which choices are right in its own application.",
+     "quote": "We compare social groups who are similarly situated on “allowable” covariates, denoted by &! , those whose differential distribution is not considered to lead to disparity.",
+     "locator": "Signal paragraph, allowable covariates"
+    },
+    {
+     "problem_id": "PRO-05",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The intervention is a device performance threshold rather than a drug, and the framework gives it a protocol: the assignment unit is the measurement, the strategies are degrees of permissible bias, and regulatory draft guidance already specifies saturation-stratified thresholds that implicitly treat true saturation as allowable. It does not resolve how masking a clinician to a value they can see is emulated, which the paper lists as a limitation.",
+     "quote": "First, masking clinicians to SaO₂ was infeasible in routine clinical care. Although we\napproximated masking, residual awareness or unmeasured clinical need may still exist.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "LRN-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The design that would answer the sharpest version of the question, permissible bias stratified by true saturation, was not implemented for want of sample size within saturation strata, and Hispanic and mixed racial groups were excluded for insufficient sample and because the data cannot distinguish racial categories within them. The strata where the disparity is most consequential are the ones with the least support.",
+     "quote": "We do not take a position on specific allowability choices in this application and do\nnot implement this approach due to limited sample size within SaO₂ strata.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0333",
+   "read": true,
+   "doi": "10.1016/j.isci.2026.116584",
+   "title": "Exposure definition sensitivity unmasks hidden confounding in crystalloid target trial emulation.",
+   "relevance": "high",
+   "one_line": "Emulates a balanced crystalloid versus saline trial twice in 42,883 intensive care patients under two prespecified exposure definitions, obtains odds ratios of 0.49 and 2.51 with satisfactory propensity diagnostics under both, and traces the reversal to an 89.4 percent treatment switching rate driven by local workflow.",
+   "what_was_done": "Two prespecified exposure definitions were applied to the same emulated trial in MIMIC-IV with external validation in eICU: initial fluid assignment and dominant strategy over 48 hours. They gave directionally opposite estimates for major adverse kidney events at 30 days, odds ratios 0.49 and 2.51, while propensity score diagnostics were satisfactory under both, with a C-statistic of 0.787 and maximum standardized mean difference of 0.048. Treatment switching reached 89.4 percent, reflecting local fluid workflows, and was 1.2 percent in eICU where the pattern was absent. Prespecified negative control outcomes, pressure ulcer and urinary tract infection, flagged residual confounding by shifting in parallel with the primary outcomes, though both correlate with length of stay, limiting their purity. The paper argues that each operationalization targets a distinct estimand: initial assignment estimates the effect of being the kind of patient who receives a particular first fluid, confounded by resuscitation acuity, and the 48-hour strategy estimates the effect of being classified by cumulative fluid portfolio, confounded by survival and clinical trajectory. Baseline weighting cannot close post-baseline paths through clinical trajectory, switching, length of stay and latent subphenotypes. Five additions to standard protocols are proposed.",
+   "future_research": [
+    {
+     "gap": "Latent intensive care subphenotypes may drive part of the operationalization-dependent estimates and a phenotype-aware reanalysis is needed.",
+     "kind": "stated",
+     "quote": "Some of what is captured by the operationalization reversal may therefore reflect heterogeneous treatment effects across unmeasured subphenotypes rather than only time-varying confounding. Phenotype-aware reanalysis is an important next step.",
+     "locator": "Discussion, clinical heterogeneity"
+    },
+    {
+     "gap": "Time-varying methods might handle switching but a rate of 89.4 percent may exceed their capacity and they would target a different estimand requiring time-stamped data.",
+     "kind": "stated",
+     "quote": "When extensive switching is present, baseline propensity score methods may be insufficient, and time-varying approaches (marginal structural models and g-estimation) should be considered—though we note that our 89.4% switching rate may exceed the capacity of even these methods and that they would target a different estimand and require high-quality time-stamped covariate, treatment, and outcome data.",
+     "locator": "Discussion, implications"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Two defensible readings of the same treatment strategy give opposite answers, and the paper's diagnosis is that they are different estimands rather than different estimates of one. With 89.4 percent switching, neither reading is a sustained strategy at all: both capture phase-of-illness effects, so no equivalence class of treatment versions exists that would make the contrast a fluid-choice contrast.",
+     "quote": "In a setting where 89.4% of patients switch fluid types, both operationalizations capture phase-of-illness effects rather than crystalloid-choice effects.",
+     "locator": "Discussion, different operationalizations"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Published emulations typically report one operationalization without testing alternatives, so a reader of either of these two analyses would see satisfactory diagnostics and a clear result, with no signal that the opposite answer was available from the same data under an equally defensible definition. The paper proposes reporting whether multiple definitions converge or diverge, which does not currently happen.",
+     "quote": "Published TTEs typically report one operationalization without testing alternatives; our findings demonstrate the risk of this practice. 7",
+     "locator": "Discussion, different operationalizations"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Overlap and covariate balance both passed under the operationalization that gave 0.49 and the one that gave 2.51, so the diagnostics carry no information about which estimate is closer to anything. The paper's explanation is structural rather than a tuning failure: baseline weighting addresses pre-treatment paths and cannot block post-baseline ones however well balanced it is.",
+     "quote": "This is a structural limitation rather than a tuning issue: even a perfectly balanced baseline propensity score cannot block these paths.",
+     "locator": "Discussion, why baseline diagnostics missed the bias"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Prespecified negative control outcomes were the only device that detected the confounding, and their parallel directional shift under the two operationalizations is what identifies it as systematic. The paper is equally clear on their limits, since pressure ulcers and urinary tract infections track length of stay and nursing intensity, so they support residual confounding only combined with the reversal and switching evidence and cannot exclude a time-at-risk pathway.",
+     "quote": "Only the negative control outcomes flagged residual confounding.",
+     "locator": "Discussion, why baseline diagnostics missed the bias"
+    },
+    {
+     "problem_id": "DTA-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The whole phenomenon is absent in the second database, where recorded switching is 1.2 percent against 89.4 percent, and the paper attributes the difference to institutional fluid workflow while also noting that eICU infusion recording completeness is variable so the low rate may partly be documentation. An analysis pooling these two sources would combine one site where the exposure means a sustained strategy and one where it does not.",
+     "quote": "Second, MIMIC-IV is a single-center database, and the fluid-switching pattern is institution specific; this limits generalizability but illustrates the vulnerability of single-center TTEs.",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The 48-hour operationalization is a landmark, and the paper states that it is conditional on being alive and still in intensive care at 48 hours and therefore does not eliminate selection bias. The window length is a design parameter that changes which estimand is targeted and which selection survives, with no rule fixing it.",
+     "quote": "Seventh, the 48-h landmark analysis is conditional on being alive and still in ICU at 48 h and therefore does not eliminate selection bias.",
+     "locator": "Limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0334",
+   "read": true,
+   "doi": "10.1093/jamiaopen/ooag131",
+   "title": "From study design to executable code: automating target trial emulation with large language models.",
+   "relevance": "high",
+   "one_line": "Builds a two-step pipeline that maps a free-text study description to a JSON analytic specification with a language model and then to Strategus R code deterministically, reaching 0.93 to 0.97 accuracy on OHDSI studies and 0.82 to 0.95 on others, with up to 1.2 false-positive fields per study.",
+   "what_was_done": "Translating a target trial design into working analytic code is identified as the bottleneck in comparative effectiveness research, requiring both causal inference expertise and programming skill, with reviews finding that no single tool spans design through analysis and that the barrier is technical rather than methodological. THESEUS uses a language model to map a free-text description onto a JSON schema covering study period, time-at-risk, propensity score adjustment and outcome model, then converts the validated specification to Strategus R scripts through rule-based logic, so the mapping to code is deterministic once the design is formally specified. Eight models were compared on 15 OHDSI-based emulations and 15 non-OHDSI ones under primary-analysis and full-analyses settings. Primary-analysis standardization accuracy ran 0.93 to 0.97 on OHDSI studies and 0.82 to 0.95 on non-OHDSI ones. Under full analyses, field-level sensitivity ran 0.83 to 0.97 with 0.07 to 0.80 false positives per study on OHDSI studies, and 0.77 to 0.89 with 0.53 to 1.20 false positives on non-OHDSI ones. The model also outputs an explanation of how each part of the text was interpreted. The system was deployed as a web application and coding-agent tools.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "LRN-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Protocol translation is automated exactly as the concern anticipates: a natural-language description becomes a structured specification and then valid executable code. Field-level sensitivity below one and up to 1.2 false-positive fields per study mean the generated specification can differ from the described design while still running, and the errors are concentrated in the non-OHDSI descriptions, that is, the ones not already written in the tool's own conventions.",
+     "quote": "Under the full-analyses setting, field-level sensitivity ranged from 0.83 to 0.97 in OHDSI studies, with 0.07–0.80 false positives (FPs) per study, and from 0.77 to 0.89 in non-OHDSI studies, with 0.53–1.20 FPs per study.",
+     "locator": "Abstract, Results"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The paper states the reproducibility failure precisely: each team writes custom code for its local environment, and conceptually identical designs diverge through variable naming, data transformations or package versions. The proposed fix is a shareable JSON specification executable at any site without modification, which makes the analysis portable while leaving phenotype logic and rejected protocol versions outside what is shared.",
+     "quote": "Even when study designs are conceptually identical, differences in implementation such as variable naming, data transformations or even package versions can lead to divergent results.",
+     "locator": "Background"
+    },
+    {
+     "problem_id": "SFW-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The proof of concept covers the cohort method with propensity adjustment for point interventions, and the schema was restricted to four fields. Nothing in the specification language expresses cloning, sequence expansion or the variance treatment those require, so the designs that carry the hardest inference problems are outside what can be automated here.",
+     "quote": "As proof-of-concept, we focused on implementing the “Cohort Method” 15 design within the OHDSI research framework which emulates randomized controlled trials.",
+     "locator": "Conceptual framework design"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The pipeline emits an explanation of how each part of the free text was interpreted alongside the specification, which puts the design decisions in a machine-readable and auditable form rather than in prose. It records what was specified rather than which assumptions the specification commits the analysis to.",
+     "quote": "In addition, the LLM produces an explanation describing how each part of the text was interpreted and applied to the analytic specifications.",
+     "locator": "Step 1"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0335",
+   "read": true,
+   "doi": "10.3389/fmed.2026.1863026",
+   "title": "Data-driven trial design: use of target trial emulation to evaluate eligibility criteria in asthma and COPD.",
+   "relevance": "high",
+   "one_line": "Emulates two dupilumab trials in electronic health records, emulates 29 of 47 criteria for COPD and 21 of 38 for asthma, then uses Shapley values to retain nine and ten, expanding the cohort from 4,333 to 118,739 while the effect estimate moves less than 10 percent.",
+   "what_was_done": "A modified Trial Pathfinder approach was applied within the emulation framework to the dupilumab trials in chronic obstructive pulmonary disease and asthma, using Optum Market Clarity records with the annualized exacerbation rate ratio as the endpoint and doubly robust augmented inverse probability weighting with bootstrap intervals. New-user cohorts contained 388,051 patients for COPD and 915,154 for asthma. Of the published protocol criteria, 29 of 47 and 21 of 38 could be emulated, and applying all emulated criteria cut the cohorts to 4,333 and 115,761. Shapley value analysis retained nine criteria for COPD and ten for asthma, after which cohorts rose to 118,739 and 219,580 while the rate ratio point estimates moved under 10 percent with narrower intervals. E-values indicated an unmeasured confounder would need a four- to five-fold association with both treatment and outcome to nullify the findings, and representativeness was quantified with GIST 2.0. Criteria that could not be emulated included eosinophil counts, pulmonary function tests and cardiac arrhythmias, which the authors describe as a data limitation rather than a methodological one since they could have entered the propensity models had they been recorded.",
+   "future_research": [
+    {
+     "gap": "Positive or negative controls should be added to demonstrate internal validity of a trial emulation, and were not used here.",
+     "kind": "stated",
+     "quote": "A further refinement of trial emulation to consider is the use of positive or negative controls to demonstrate that internal validity of the trial emulation.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Relaxing criteria raises unresolved questions about criteria that could not be emulated and about regulatory expectations that some criteria are clinically necessary regardless.",
+     "kind": "stated",
+     "quote": "However, relaxing EC raises practical implications for trial execution, such as whether to implement key EC that could not be emulated, or regulatory expectations that certain EC are clinically necessary (e.g., due to safety concerns) despite emulation analyses that conclude they should be dropped.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "ELG-02",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Eligibility criteria are treated as a design variable with a measured consequence: Shapley values rank each criterion by its contribution to the effect estimate, and dropping all but nine or ten multiplies the cohort by 27 while moving the estimate under 10 percent. The ranking is computed only over the criteria the data could express, so criteria that were never emulated cannot be evaluated by it and cannot be defended or dropped on this evidence.",
+     "quote": "Analysis with Shapley values retained nine criteria for COPD and 10 for asthma. After applying this data-driven set of criteria, cohort sample sizes increased (COPD: N  = 118,739; asthma: N  = 219,580) while AERR point estimates changed by less than 10% with a narrower confidence interval width.",
+     "locator": "Abstract, Results"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Just over half the published protocol criteria could be emulated, and the unemulated ones are named as clinically meaningful and potentially effect-modifying: eosinophil counts, pulmonary function tests, cardiac arrhythmias. The paper frames this as a data limitation rather than a methodological one, which is exactly the substitution at issue, since the emulated protocol defines a different population and the absent criteria are treated as a source of unmeasured confounding to be bounded rather than as a change in the estimand.",
+     "quote": "We were able to replicate just over half of all EC from the published protocols ( 16 , 17 ); however, we failed to include a significant number of potentially clinically meaningful criteria that might have had a modifying impact on the treatment effect estimate (e.g., eosinophil counts, pulmonary function tests, cardiac arrhythmias, etc.).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "E-values are computed for the final cohorts and reported as requiring a four- to five-fold association to nullify the result, which is a quantitative bias analysis run as a routine step rather than an afterthought. Its evidential weight is then reinforced by agreement with the published trial, so the bias analysis and the benchmark are used to support each other.",
+     "quote": "As reported in Table 4 , the E -values for our final data-driven cohorts were substantial, indicating that an unmeasured confounder would need to have a strong association (greater than four- to five-fold) with both treatment and outcome to nullify our findings.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "BEN-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Agreement with the original trial estimates is used as the argument that unmeasured confounding from unemulated criteria was not substantial. That reasoning is only available where a trial exists, and the purpose of the exercise is to inform the design of trials that have not been run, so the validation does not extend to the use case.",
+     "quote": "The close alignment of our AERR with the RCT results provides compelling evidence that the net effect of any unmeasured confounding from unemulated criteria was likely not substantial enough to invalidate our conclusions.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0338",
+   "read": true,
+   "doi": "10.1530/eor-2025-0266",
+   "title": "Frameworks and methods for estimating the causal effect of clinical treatment in orthopaedics: a scoping review.",
+   "relevance": "high",
+   "one_line": "Reviews 85 orthopaedic causal inference studies drawn from 6,244 records, finds propensity matching and weighting dominant while target trial emulation and directed acyclic graphs are rare, and reports that only 10.5 percent of weighting studies used stabilized weights and none used trimming or truncation.",
+   "what_was_done": "Randomized trials are hard in orthopaedics for reasons the review sets out in detail: patients prefer surgery and surgery is irreversible with no washout, randomizing a technique is constrained by surgeon availability and scheduling, eligibility is sometimes only determinable intraoperatively, placebo surgery raises ethical problems, and blinding fails through differing access routes, scars, implants and rehabilitation. Against that background, a scoping review across PubMed, CENTRAL, EMBASE and SCOPUS returned 6,244 records and 85 included studies, with 858 eligible propensity-matching studies of which a subset was screened. Propensity score matching was the most common method, usually one-to-one, followed by inverse probability of treatment weighting, of which only 10.5 percent used stabilized weights and none used trimming or truncation. Instrumental variable analysis appeared only in multicentre settings and mostly exploited surgeon or hospital treatment preference. Target trial emulation and directed acyclic graphs were used by a small minority. The review notes that propensity methods restrict analyses to the region of common support and therefore often estimate an effect among the treated rather than in the whole population, that they discard unmatched observations, and that instrumental variable methods estimate a local effect in an unspecified subpopulation.",
+   "future_research": [
+    {
+     "gap": "Prospective, publicly available protocols incorporating these frameworks are needed and are scarce across observational medical research.",
+     "kind": "stated",
+     "quote": "We recommend using prospective, publicly available protocols that incorporate these tools to enhance transparency and validity.",
+     "locator": "Abstract, conclusion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Of the orthopaedic studies using inverse probability weighting, only a tenth used stabilized weights and not one used trimming or truncation, so extreme weights arising from propensity scores near zero or one went unhandled throughout. The review also notes that matching and weighting silently change the target population by restricting to common support, which is a positivity consequence not reported as such.",
+     "quote": "Only 10.5% of the IPTW studies have used stabilized weights, and none have used weight trimming or truncation.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Observational studies face no registration requirement and can be run quickly, so eligibility criteria and outcomes can change after the study begins with nothing recording it. The review names prospective public protocols as the remedy and reports them as scarce in medicine generally, not only in this field.",
+     "quote": "In contrast to RCTs, there is no strict regulation for observational studies and they can be conducted in minimal time ( 39 , 40 ).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Propensity score matching is widely used in this literature as an accessible confounding tool without any causal framework or explicit variable selection strategy behind it, and the review suspects the unscreened matching studies are worse still. Using a recognized method is functioning as the credential that a formal framework would have to earn.",
+     "quote": "This pattern may also reflect the widespread use of PSM in orthopaedic research, where its popularity as an accessible tool for addressing confounding sometimes leads to its application without a rigorous causal framework or an explicit variable selection strategy.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The review states that a propensity model should balance confounders rather than predict treatment best, and that variables affecting only assignment should be excluded because including them reduces precision and can increase bias. The prevailing practice it documents is the opposite, incorporating a comprehensive covariate set to avoid omitting a confounder, and no rule adjudicates.",
+     "quote": "Importantly, the goal of a propensity score model is not to achieve the best prediction of treatment assignment, but rather to balance confounders between treatment groups.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "PRO-05",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The reasons randomization fails in orthopaedics are the same reasons the intervention is hard to define: the treatment is a technique performed by a particular surgeon with a particular implant followed by a particular rehabilitation, and blinding fails because those differences are visible. An emulation inherits all of this, and the review treats surgical intervention as a single exposure throughout.",
+     "quote": "Second, randomization is particularly difficult because the surgical techniques must be randomized. Any limitation to carrying out one of the surgeries, such as only on certain days or with a specific surgeon, can compromise this principle.",
+     "locator": "Signal paragraph, introduction"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0340",
+   "read": true,
+   "doi": "10.21203/rs.3.rs-9613167/v1",
+   "title": "Federated target trial emulation for time-to-event outcomes via POLARIS: Pooled-equivalent One-shot Likelihood Aggregation for Real-world Inference in Survival.",
+   "relevance": "high",
+   "one_line": "Converts each site's weighted Cox risk function into a compact tensor shared once with the coordinating centre, reproducing pooled estimates exactly without patient-level transfer, and applies it across five US health systems to gastrointestinal risks after GLP-1 receptor agonist initiation.",
+   "what_was_done": "Detecting heterogeneous treatment effects needs scale and diversity that single sites lack, while data-sharing constraints block pooling patient-level records. POLARIS has each site fit its own propensity scores and weighted risk sets locally, then converts the weighted Cox risk function into a tensor transmitted once, from which the coordinating centre reproduces the pooled estimate losslessly. Two target trials were emulated across the University of Pennsylvania, Yale New Haven, OneFlorida+, Mayo Clinic and UT Southwestern: GLP-1 receptor agonists against SGLT2 inhibitors, and against DPP-4 inhibitors, in adults with type 2 diabetes newly starting between January 2019 and September 2024, excluding prior exposure, type 1 diabetes and end-stage renal disease, and requiring an encounter in the 12-month baseline. Outcomes were time to first abdominal pain, constipation, gastroesophageal reflux, nausea or vomiting from validated codes. GLP-1 initiation was consistently associated with higher gastrointestinal risk, largest for nausea and vomiting, with heterogeneity by sex, baseline HbA1c at or above 8.5 percent, chronic kidney disease and lipid-lowering therapy, and similar subgroup patterns against both comparators.",
+   "future_research": [
+    {
+     "gap": "The framework uses only structured records and would need federated methods jointly modeling unstructured notes, imaging and free text to improve phenotype precision.",
+     "kind": "stated",
+     "quote": "Future extensions may enhance phenotype precision and clinical depth by integrating these data sources through federated AI techniques that jointly model structured and unstructured information while preserving data locality.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "DTA-02",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The aggregation is lossless rather than an average of site estimates, so the pooled result is the one a centralized analysis would have produced, which removes the arithmetic half of the problem. The other half survives: each site fits its own propensity model, and the paper states that residual differences in unmeasured clinical practice, coding conventions and data capture may persist, so the sites can still be emulating different trials under a common protocol.",
+     "quote": "Second, although POLARIS accounts for observable cross-site heterogeneity by allowing each health system to estimate its own propensity scores and weighted risk sets before aggregation, residual differences in unmeasured clinical practices, coding conventions, or data-capture processes may persist across health systems 17 .",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Exposure and every outcome are structured record elements, and the paper states these may be incomplete or inconsistently recorded across sites, missing medication use or discontinuation and underreporting the adverse events being counted. The outcomes here are symptoms, which are recorded when a patient reports them and a clinician codes them, so the measurement process differs across the five systems being pooled.",
+     "quote": "First, exposure and outcome definitions were based on structured EHR data, which may be incomplete or inconsistently recorded across sites 14 – 16 . This could lead to missing information on medication use or treatment discontinuation and may result in underreporting of GI adverse events.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "LRN-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The framework exists to make subgroup effects detectable, and the subgroups it reports include sex, comorbidity and concomitant medication strata whose overlap is not characterized. Federated aggregation raises the effective sample without addressing whether the strata being contrasted have support at every site, and the covariate set is what the sites share rather than what the subgroup analysis requires.",
+     "quote": "These system-level variations are inherent to multi-site real-world data and may introduce heterogeneity that is not fully addressed by the current covariate set.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Treatment is defined as the first prescription for a drug class, so the strategies compared are class-level initiation with no dose, no duration and no handling of discontinuation, which the paper notes may be missing from the records. Gastrointestinal tolerability is dose-dependent and titration-dependent, so the class-level definition sits awkwardly with the outcome being studied.",
+     "quote": "The index date was defined as the date of first prescription fill for the study medication among patients without prior use of these drug classes.",
+     "locator": "Treatment"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0347",
+   "read": true,
+   "doi": "10.1002/sim.70500",
+   "title": "Missingness in Eligibility Criteria for Target Trial Emulation in EHR With Survival Outcomes.",
+   "relevance": "high",
+   "one_line": "Asks whether missing eligibility-defining variables should be imputed before or after excluding ineligible patients, and shows across simulations and advanced breast cancer records that imputing first with a random forest gives less bias, while none of the strategies removes it.",
+   "what_was_done": "Eligibility criteria in a target trial emulation are often defined by variables that are missing for some patients, and the framework offers no guidance on whether to impute before or after applying the criteria. Motivated by an emulation comparing fulvestrant with letrozole, each combined with palbociclib, in advanced breast cancer, the paper compared complete case analysis, exclude-then-impute, and impute-then-exclude with both parametric chained equations and random forests, estimating the average causal effect with survival outcomes under parametric and plasmode simulations and in oncology records. Under most scenarios with substantial missingness, impute-then-exclude gave less bias than the alternatives, and random forests less than parametric imputation. Exclude-then-impute degraded most when the eligibility variable was strongly associated with the outcome or other covariates. None of the strategies eliminated bias, which grew with the amount of missing data, because the imputed inclusion criterion is also an effect modifier so any error in who is included contaminates the treatment effect. Bootstrap standard errors were used because Rubin's rules are biased when eligibility criteria have been imputed, owing to incompatibility between imputation and outcome models. Missingness was assumed to be at random throughout.",
+   "future_research": [
+    {
+     "gap": "Performance under missing-not-at-random mechanisms was not examined and all imputation strategies would be expected to fail.",
+     "kind": "stated",
+     "quote": "We also note that we assume MAR missingness in the eligibility variable, but did not examine settings in which missingness was MNAR. Had the missing data mechanisms been MNAR, we would expect that all MI strategies would fail to perform well, including the impute‐then‐exclude strategies.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "The correct variance estimator for imputed eligibility criteria exists in the literature but is hard to implement and absent from standard software.",
+     "kind": "stated",
+     "quote": "While Giganti and Shepherd [ 15 ] have explored an alternative variance estimator from Robins and Wang [ 38 ] that uses components derived from imputation and analysis models, this estimator is challenging to implement and is not implemented in standard software.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MIS-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is the missing-data question posed at the eligibility step rather than the covariate step, and it is answered with simulations and a real analysis: impute first, use a flexible model, and expect residual bias that grows with missingness. What it does not do is address why the variable is missing, since the whole comparison assumes missingness at random and the authors state every strategy would fail otherwise.",
+     "quote": "In the target trial emulation framework, there is a dearth of information on how to best address missingness in eligibility criteria.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "ELG-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The bias is irreducible for a structural reason the paper identifies: the eligibility variable is also an effect modifier, so any error in who ends up in the study contaminates the treatment effect rather than merely adding noise. A criterion that is unrecorded is thus not just a lost observation but a distortion of the estimand, and the ordering of imputation and exclusion changes the answer.",
+     "quote": "The bias in all investigated approaches arises because the imputed inclusion criterion is also an effect modifier. Any degree of error in the included study population results in contamination of the effect of treatment and, therefore, bias.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Rubin's rules give biased standard errors when eligibility criteria have been imputed because the imputation and outcome models are incompatible, the estimator that would correct this is not in standard software, and the paper falls back on the bootstrap. Correct inference for a routine design choice is available only by resampling.",
+     "quote": "We used bootstrap standard errors because previous studies identified bias in standard errors estimated using Rubin's Rules applied to data in which eligibility criteria have been imputed [ 12 , 13 ].",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "BEN-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The randomized trial and an earlier emulation both found no difference, while every imputation strategy here produced a non-null overall survival effect, and the three-year survival rates sit between the earlier emulation and the trial. The paper's explanation is population difference rather than method, so the discordance is attributed without any procedure separating that from analytic choice.",
+     "quote": "For overall survival using data in the real‐world database, all MI strategies estimated non‐null treatment effects.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0351",
+   "read": true,
+   "doi": "10.3389/fendo.2026.1777954",
+   "title": "Emulating the LEADER trial in China: a regulatory science case study on non-interventional research.",
+   "relevance": "high",
+   "one_line": "Emulates the LEADER cardiovascular outcomes trial in 17,772 propensity-matched Beijing insurance beneficiaries with DPP-4 inhibitors as active comparator, obtaining a hazard ratio of 0.90 against the trial's 0.87, and treats successful replication as calibration of the data source for regulatory use.",
+   "what_was_done": "Regulatory acceptance of real-world evidence is argued to require demonstrating that local databases and methods can reproduce causal conclusions from high-quality trials, so LEADER was chosen as a benchmark and emulated in the Beijing Municipal Medical Insurance Database covering over 27 million insured individuals and nearly 8,000 designated institutions. New users of liraglutide were compared with new users of DPP-4 inhibitors, selected because guidelines treat them as cardiovascularly neutral, since no placebo arm can be constructed observationally. The protocol was mapped component by component to claims fields, reported against the TARGET checklist and registered with ISPOR. Among 17,772 matched patients followed a median of 35 months, three-point major adverse cardiovascular events occurred in 7.0 percent on liraglutide and 7.8 percent on comparator, hazard ratio 0.90 with interval 0.81 to 1.01, consistent in effect size with the trial's 0.87 but not statistically significant. Negative control outcomes, fractures and head injuries, showed no association, and E-values were computed. The study size was set by how many eligible patients the database held rather than by a power calculation.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "BEN-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The stated inferential move is that reproducing this trial's effect estimate shows the data source and analytic framework are robust enough to support regulatory decisions where no trial exists. Nothing connects agreement on one drug, one outcome and one population to any other question, and the paper offers the extrapolation as the purpose of the exercise rather than as an assumption.",
+     "quote": "Successful replication of the LEADER trial’s effect estimates would suggest that the underlying data source and analytical framework are sufficiently robust to support regulatory decisions when RCT evidence is unavailable.",
+     "locator": "Introduction"
+    },
+    {
+     "problem_id": "BEN-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The verdict rests on the point estimates being close, 0.90 against 0.87, while the emulation's interval crosses one and the trial's did not, and a sensitivity analysis reported with an identical hazard ratio and a barely different interval is described as demonstrating a significant benefit. Concordance is being read off proximity of point estimates without a calibrated comparison of the two estimands.",
+     "quote": "However, sensitivity analysis adjusting for baseline comorbidities and drug exposure demonstrated a significant benefit (HR 0.90; 95% CI: 0.80, 1.01).",
+     "locator": "Abstract, Results"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Two negative control outcomes with no plausible relation to the exposure were prespecified and returned null, and E-values were computed alongside, so the unmeasured confounding check is part of the analysis rather than a discussion point. The controls are chosen by clinical judgment about what liraglutide cannot affect, with no procedure establishing that they share the confounding structure of the primary outcome.",
+     "quote": "Negative control outcomes (fractures and head injuries) and E-values were employed to assess the potential for unmeasured confounding.",
+     "locator": "Materials and methods"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Exposure is assigned from medical expense claim forms, described as ensuring accuracy of grouping, so what is emulated is a prescription reimbursement record rather than the sustained treatment the trial randomized. The trial's own protocol involved titration and continued therapy, and neither is represented.",
+     "quote": "The information used for grouping patient exposure is obtained from medical expense claim forms, ensuring accuracy.",
+     "locator": "Study population"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Sample size was determined by whoever happened to be eligible in the database rather than by any power consideration, and the resulting analysis is underpowered against the effect it was benchmarking, returning an interval that crosses the null where the trial's did not. The database holds 27 million people and the matched analysis holds 17,772.",
+     "quote": "The study size was determined by the availability of eligible patients in the database rather than a pre",
+     "locator": "Study population"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0352",
+   "read": true,
+   "doi": "10.1136/bmjmed-2024-001280",
+   "title": "Identifying and avoiding design related biases in observational studies using the target trial framework.",
+   "relevance": "high",
+   "one_line": "Separates design-related biases, which arise from analyst decisions about aligning eligibility, assignment and follow-up start, from data-related biases such as confounding and measurement error, and states the framework addresses only the first class.",
+   "what_was_done": "Observational studies are commonly criticized for confounding while design-related biases, which arise from decisions researchers make when analyzing the data, are more prevalent and more often overlooked. These include selection bias and treatment misclassification produced by misaligning when eligibility is ascertained, when a treatment strategy is assigned, and when follow-up starts. The article works through how immortal time arises when the strategies under comparison cannot be distinguished at time zero, using a study of surgery against no surgery for lung cancer in elderly patients where a six-month grace period was needed because surgery does not follow diagnosis immediately: at diagnosis a patient's data are compatible with both strategies, and classifying by what happens later attributes pre-surgical deaths to the no-surgery strategy and creates up to six months of immortal time. Randomization avoids this by allocating prospectively. The remedy is to use approaches that assign without post-baseline information. Confounding is then treated separately with the standard toolkit of weighting, outcome regression, the g-formula, doubly robust estimators and matching, with the note that matching handles time-fixed confounding for point interventions but not time-varying confounding for sustained strategies.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The mechanism is set out precisely: a grace period is needed because treatment does not follow eligibility immediately, and its length here is six months, which is also the maximum immortal time created if patients are classified by what they later did. The article says the grace period was necessary without offering any procedure for choosing six months rather than three or twelve.",
+     "quote": "In a study that compared surgery with no surgery for lung cancer in elderly people, a grace period of six months was necessary to allow individuals time from their diagnosis to receive surgery, because surgery often does not occur immediately after diagnosis. 30",
+     "locator": "Signal paragraph, misclassification bias"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The article draws the boundary of what the framework delivers: it avoids biases created by the analyst's own design decisions and leaves confounding and measurement error untouched, to be handled by measurement, adjustment and unverifiable assumptions. A study described as a target trial emulation has therefore closed one class of error and made no claim about the other.",
+     "quote": "Although target trial emulation can help to avoid the design related biases outlined above, it does not eliminate data related biases, such as confounding or measurement error. 44",
+     "locator": "Signal paragraph, common approaches to handle confounding"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The root of the misclassification is that a patient's baseline data are compatible with more than one strategy, so which strategy the data represent is undetermined at the moment assignment must happen. This is a property of how the strategies are defined rather than of the records, and the article's remedy is to avoid using later information rather than to define strategies that are distinguishable at time zero.",
+     "quote": "This misclassification often occurs when treatment strategies under comparison cannot be distinguished at time zero.",
+     "locator": "Signal paragraph, misclassification bias"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Confounding by indication is described as more of a concern when comparing an active intervention against no intervention, with an active comparator offered as the way to reduce it. That reduction comes at the cost of changing the contrast, and the article does not address what the active comparator does to the estimand over long follow-up.",
+     "quote": "Confounding by indication may be more of a concern when comparing an active intervention (eg, a drug) to no intervention; the use of an active comparator (eg, another drug) may reduce the magnitude of confounding by indication. 74",
+     "locator": "Signal paragraph, common approaches to handle confounding"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0353",
+   "read": true,
+   "doi": "10.1136/bmjopen-2025-113432",
+   "title": "Patient and public involvement and engagement in target trial emulation framework: a scoping review protocol.",
+   "relevance": "medium",
+   "one_line": "Protocol for mapping whether and how published emulations report patient and public involvement, on the argument that the framework's central design decisions, including estimand definition and time zero, are value-laden rather than purely technical.",
+   "what_was_done": "The review will search MEDLINE and Embase from January 2011 for English-language studies that self-identify as using the target trial emulation framework and report empirical analyses of health outcomes, excluding protocols, methodological and simulation-only studies, preprints, abstracts and grey literature. Three reviewers will screen independently, and extraction will follow the GRIPP2 short-form checklist for reporting patient and public involvement. Three questions are posed: what proportion of emulations report any involvement and how this varies by study characteristics and calendar time; at which stages of the emulation lifecycle involvement occurred, listing causal question and estimand definition, protocol specification, protocol mapping to observational data, bias and confounder control method selection, statistical analysis, reporting and interpretation, and dissemination; and what roles and rationales were described and how completely they were reported. The rationale given is that the credibility of an emulation depends not only on methodological rigor and transparent reporting but on whether its design choices and generalizability assumptions are relevant and acceptable to patients and the public, and that key design decisions are value-laden. Prior reviews are cited as finding substantial gaps in describing how the target trial was emulated, presenting the protocol clearly, and addressing confounders.",
+   "future_research": [
+    {
+     "gap": "Whether and how patient and public involvement is incorporated into emulation studies has never been systematically mapped.",
+     "kind": "stated",
+     "quote": "Despite the advanced methodology and growth of TTE (including reporting guidelines) 19 and heightened PPIE awareness, to our knowledge, there has not been a systematic mapping of how PPIE is reported, described and operationalised in TTE studies.",
+     "locator": "Introduction"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "PRO-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The protocol names the design decisions that carry values rather than only technique: which outcomes are meaningful, how the causal question and estimand are defined, where time zero falls, which treatment strategies are compared, and whether an analytic trade-off is acceptable. Each is a choice among alternatives, and the published record shows only the one that was taken, which is why a review is needed to find out whether anyone outside the research team was involved in taking it.",
+     "quote": "This represents a consequential gap as key TTE design decisions, for example, selecting meaningful outcomes, defining the causal question and estimand, specifying time zero, treatment strategies and judging the acceptability of analytical trade-offs, are value-laden and likely to benefit from the perspectives of people with lived experience or members of the public.",
+     "locator": "Introduction"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Prior reviews are cited as finding that emulations commonly fail to describe how the target trial was emulated, to present the protocol clearly, or to address confounders, in a literature that grew so fast that three quarters of 200 studies published between 2012 and 2022 appeared in the last three years. The reporting deficit is being documented repeatedly without a mechanism that changes it.",
+     "quote": "Reviewers have also reported substantial gaps in TTE, including failing to describe how the target trial is emulated, to present the protocol clearly and to address confounders. 11 12",
+     "locator": "Introduction"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The review's inclusion rule is self-identification as a target trial emulation, and the authors record as a limitation that this may omit studies that did the same thing without the label. Membership of the category is therefore established by declaration, which is the same property that makes the label uninformative about assumption burden.",
+     "quote": "Inclusion will be restricted to studies that self-identify as using the target trial emulation framework, potentially omitting studies without explicit labelling.",
+     "locator": "Strengths and limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0355",
+   "read": true,
+   "doi": "10.1186/s12874-026-02799-z",
+   "title": "Mapping eligibility criteria in oncology target trial emulations using real-world data: a scoping review.",
+   "relevance": "high",
+   "one_line": "Across 74 oncology emulations, those replicating real trials specified a median of 29 eligibility criteria and mapped 35.5 percent of them, while those emulating hypothetical trials specified 5.5 criteria and mapped 91.7 percent, and no study used a common data model or computational phenotyping.",
+   "what_was_done": "MEDLINE was searched for oncology drug emulations published between January 2016 and April 2025, yielding 200 studies and 74 individual emulations across 47 papers, of which 51 gave enough detail to assess criterion-by-criterion mapping. Forty-two emulations replicated actual trials and 32 emulated hypothetical ones, most using registry data or electronic health records. A criterion counted as mapped only if it was explicitly represented and conceptually consistent with the target trial. Emulations of actual trials specified a median of 29 criteria and mapped a median of 35.5 percent per emulation; emulations of hypothetical trials specified 5.5 and mapped 91.7 percent. Among 1,222 individual criteria, demographic criteria were mapped in 93.9 percent of cases, while safety and concomitant-risk criteria were mapped in 3.7 percent, concomitant therapy and live vaccine criteria in 8.3 percent, current cancer therapy in 7.7 percent, and criteria with qualifiers such as active, acute, severe or uncontrolled in 21.2 percent. Direct mapping through administrative coding accounted for 72.5 percent; none used a common data model or language-model phenotyping. Three separate emulations of the same trial, KEYNOTE-189, mapped different criteria, and even studies using the same database differed.",
+   "future_research": [
+    {
+     "gap": "Real-world data sources need greater granularity in clinical disease qualifiers and temporal information before criteria containing them can be mapped.",
+     "kind": "stated",
+     "quote": "These findings suggest that there is a need to enhance the granularity of RWD sources with clinically relevant disease qualifiers and temporal information.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Common data models and language-model phenotyping should be integrated into eligibility mapping and currently are not used at all.",
+     "kind": "stated",
+     "quote": "None reported employing standardized data frameworks, such as the OMOP Common Data Model, or computational phenotyping approaches, such as NLP or LLMs.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "ELG-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Two thirds of the eligibility criteria in a replicated oncology trial go unmapped, and the failures are systematic rather than random: safety and concomitant-risk criteria are mapped in under 4 percent of cases, and criteria whose meaning depends on a qualifier such as active or uncontrolled in about a fifth. The emulated population is defined by what the coding system can express, and the criteria it cannot express are the ones that determine who is safe to treat.",
+     "quote": "Among 1,222 individual criteria, demographic criteria were most frequently mapped (46, 93.9%), while safety and concomitant risk–related criteria were least frequently mapped (7, 3.7%).",
+     "locator": "Abstract, Results"
+    },
+    {
+     "problem_id": "PRO-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Emulations of hypothetical trials mapped 91.7 percent of their criteria while specifying only 5.5 of them, and the review's reading is that these studies specify only the criteria they can already map. The target trial is then not an independent statement of the scientific question but a description of what the data support, and the high mapping rate is an artifact of that rather than evidence of fidelity.",
+     "quote": "The relatively small number of eligibility criteria reported, and the high proportion of criteria mapped in hypothetical trial emulations likely reflects a tendency for hypothetical trial emulations to include only those criteria that can be feasibly mapped onto the available data sources, rather than comprehensively specifying all eligibility criteria that would characterize a fully defined hypothetical target trial.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "DTA-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Three independent emulations of the same trial mapped different criteria, and studies using the same database still differed in which criteria they mapped. The same structural data support incompatible operational definitions of the same clinical concept, so harmonized structure does not deliver a harmonized cohort.",
+     "quote": "Notably, even studies using the same database differed in which eligibility criteria were mapped.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Emulations of hypothetical trials often stated only that criteria were the same as the target trial, without saying how they were implemented or whether proxies were used, which is precisely the information needed to judge whether the emulated population is the intended one. Reporting quality was worse for the hypothetical emulations, which are also the ones whose target trial is unconstrained.",
+     "quote": "In contrast, many hypothetical emulations summarized eligibility criteria only narratively or stated that they were “the same as the target trial,” without clarifying how these criteria were implemented in RWD or whether proxy variables were used.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Direct mapping through administrative coding systems accounted for 72.5 percent of emulations, so eligibility rests on diagnosis and procedure codes treated as faithful representations of clinical states. The criteria that codes cannot express, qualifiers of activity and severity and temporal proximity of other therapy, are dropped rather than approximated with a stated error.",
+     "quote": "The most common mapping method was direct mapping using administrative coding systems (37, 72.5%); no studies reported using common data models or computational methods.",
+     "locator": "Abstract, Results"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0359",
+   "read": true,
+   "doi": "10.1001/jamanetworkopen.2025.58262",
+   "title": "Design and Implementation of Observational Studies Emulating a Target Trial.",
+   "relevance": "high",
+   "one_line": "Surveys 237 published emulations in quartile-one clinical journals and finds 64.5 percent of those emulating a real trial and 96.1 percent of those emulating a hypothetical one gave no justification for the trial they chose to emulate.",
+   "what_was_done": "PubMed was searched for emulations published between January 2017 and December 2023 in quartile-one clinical medicine journals, with machine-assisted screening and dual extraction, yielding 237 studies. Over half evaluated drug interventions, concentrated in infectious disease, cardiology and oncology, and eight recurring clinical scenarios were identified including trial replication and extension to underrepresented populations or rare outcomes. The most common purposes were treatment effectiveness at 69.6 percent, long-term outcomes at 16.5 percent, emergency-use medications at 17.7 percent and active-treatment comparisons at 20.7 percent. On specification, 134 studies had a prespecified protocol, 127 did not review existing randomized trials, 20 of 31 emulating an existing trial and 147 of 153 emulating a hypothetical one gave no justification for the choice of trial. On implementation, 103 did not report all seven methodologic components, 36 used post-baseline information inappropriately for eligibility, only 40 provided a follow-up diagram defining time zero, and only 73 addressed unmeasured confounding. A five-step design framework and scenario-based recommendations were developed through a consensus process with 22 experts and six external evaluators.",
+   "future_research": [
+    {
+     "gap": "Guidance on how to design a target trial, as opposed to how to report one, remains underdeveloped.",
+     "kind": "stated",
+     "quote": "However, methodologic guidance on how to design such trials remains underdeveloped.",
+     "locator": "Introduction"
+    },
+    {
+     "gap": "The TARGET reporting guideline covers what should be reported and not how a target trial should be designed or executed.",
+     "kind": "stated",
+     "quote": "However, TARGET focuses on what should be reported rather than how target trials should be designed or technically executed.",
+     "locator": "Introduction"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "PRO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The trial that gets emulated is the pivot on which the whole exercise turns, and across 237 published studies it is chosen without stated reason in almost every case, 96.1 percent for hypothetical trials and 64.5 percent for real ones. Nothing in the record separates a study whose target trial answers the scientific question from one whose target trial was reverse-engineered from the data, because no study says why that trial rather than another.",
+     "quote": "most that emulated existing trials (20 of 31 [64.5%]) or hypothetical trials (147 of 153 [96.1%]) did not justify the choice of trial to emulate",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "PRO-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Only 134 of 237 studies had a prespecified protocol and 127 did not review the existing randomized evidence before designing their target trial. The design that inference conditions on was therefore available for adjustment after the data were in hand in nearly half the sample, and in more than half the target trial was specified without checking what trials already existed.",
+     "quote": "Major methodologic gaps were evident: only 134 studies (56.5%) developed a prespecified protocol, 127 (53.6%) did not review existing randomized clinical trials",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Nearly half the studies did not report all seven methodologic components, only 16.9 percent gave a follow-up diagram defining time zero, and only 30.8 percent addressed unmeasured confounding at all. The reader of a published emulation therefore usually cannot see the timeline or the assumption burden, and the paper states that the existing reporting guideline addresses what to report rather than how to design.",
+     "quote": "During implementation, 103 studies (43.5%) did not report all 7 methodologic components, 36 (15.2%) used postbaseline information inappropriately for eligibility, only 40 (16.9%) provided follow-up diagrams to define time zero, and only 73 (30.8%) addressed unmeasured confounding.",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Thirty-six of 237 studies used post-baseline information to determine eligibility, which is the alignment failure the framework was created to prevent, appearing in a sample restricted to top-quartile journals and to studies that self-identify as emulations. The design discipline the label denotes is not what the labelled studies did.",
+     "quote": "This cross-sectional study of TTE identified 8 common clinical scenarios for TTE application and substantial methodologic heterogeneity that threatened the credibility of resulting evidence.",
+     "locator": "Conclusions and Relevance"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Under a third of published emulations addressed unmeasured confounding in any form, in a literature whose central limitation relative to randomization is precisely that. Negative controls, proxies and bias analysis remain outside the standard workflow rather than being components of it.",
+     "quote": "only 73 (30.8%) addressed unmeasured confounding",
+     "locator": "Results"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}
