@@ -254,7 +254,13 @@ def main():
             per_paper[(bid, p["id"])] = (good, len(res), p.get("title") or "")
             for where, status, q, ctx in res:
                 tally[status] = tally.get(status, 0) + 1
-                if status not in ("ok", "near"):
+                # `near` rows go into the report too. A near miss is a quote whose
+                # opening matched and whose tail did not, which is an elision, a
+                # column-break run-on, or a quote that drifted from the source. The
+                # first two are harmless and the third is not, and only a person
+                # looking at the row can tell them apart. Counting them without
+                # listing them leaves nothing to look at.
+                if status != "ok":
                     rows.append((bid, p["id"], where, status, q, ctx))
 
     total = sum(tally.values())
@@ -291,6 +297,10 @@ def main():
             lines.append(f"| {k} | {v} |")
         if rows:
             lines += ["", "## Quotes needing a look", "",
+                      "`near` means the opening matched and the full string did not, "
+                      "which is usually an elision or a line break in the extracted "
+                      "text; check it and either fix the quote or leave it. "
+                      "`NOT-FOUND` means the text is not in the paper at all.", "",
                       "| batch | paper | attached to | status | quote |",
                       "|---|---|---|---|---|"]
             for bid, pid, where, status, q, _ in rows:
