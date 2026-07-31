@@ -1,0 +1,552 @@
+{
+ "batch": "core-08",
+ "papers": [
+  {
+   "id": "L0209",
+   "read": true,
+   "doi": "10.1002/cam4.71950",
+   "title": "Studying When to Add Biological Therapy to Cytotoxic Therapy in Advanced Cancer Care Using Real World Data: How to Avoid Design Choices That Generate Immortal Time.",
+   "relevance": "high",
+   "one_line": "Specifies a target trial for early versus deferred addition of monoclonal antibodies in metastatic colorectal cancer, identifies two design choices that would generate immortal time through selection or strategy misclassification, and emulates the trial avoiding both.",
+   "what_was_done": "Pivotal trials compared monoclonal antibodies against standard care rather than early against later use, so the optimal sequencing is unknown. The paper specifies the target trial in full: eligibility is metastatic colorectal cancer diagnosed between June 2014 and June 2018, treatment-naive for metastatic disease, no cancer in the prior three years, performance status 0 to 2, no metastatic resection, and a candidate for chemotherapy. The strategies are addition of the antibody within an 8-week grace period of starting first-line chemotherapy unless a contraindication occurs, defined as progression, performance status falling to 3 or 4, hospital admission, toxicity or a decision to stop cytotoxic therapy, against deferral to second-line chemotherapy. The causal contrast is the per-protocol effect, estimated by a pooled logistic model with restricted cubic splines in follow-up time, after censoring at deviation, with time-varying non-stabilized inverse probability weights over a named baseline and time-varying covariate set, weights truncated at the 99th percentile, and bootstrap intervals from 500 samples. Risks of toxicity and hospitalization are estimated without eliminating competing events. The emulation uses the GEMCAD 1401 prospective registry of 1,106 patients from 47 Spanish centers, and compares the unbiased design against the biased alternatives. The result is compatible with no effect of sequencing, and misalignment of time zero, assignment and eligibility is shown to introduce immortal time.",
+   "future_research": [
+    {
+     "gap": "Real-world data record prescription or administration rather than assignment, so the strategies a target trial randomizes are never directly observed.",
+     "kind": "stated",
+     "quote": "Since real‐world data lack information on treatment assignment (usually the only information available is treatment prescription/administration) and early outcomes can happen in advanced cancer, some design choices may introduce immortal time due to selection or due to treatment strategy misclassification.",
+     "locator": "Abstract, Background"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "For one class of question, when to add a second agent, this identifies the specific design choices that manufacture immortal time, distinguishes the two mechanisms, selection and strategy misclassification, and demonstrates an emulation that avoids both while reporting what the biased choices would have given. The grace period itself is still set by convention at 8 weeks, and no procedure is offered for choosing that length, so the entry's central claim survives on the component that remains.",
+     "quote": "Misalignment of time zero, treatment assignment, and eligibility introduced immortal time.",
+     "locator": "Conclusions"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Positivity is handled by truncating the time-varying weights at the 99th percentile to limit the influence of outliers. The analysis therefore proceeds on a modified weight distribution without reporting which covariate histories produced the extreme weights, which is the substitution of a weight diagnostic for a statement about support that the entry describes.",
+     "quote": "The estimated weights would be truncated at the 99th percentile to avoid undue influence of outliers.",
+     "locator": "Statistical Analysis"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Toxicity and hospitalization risks are estimated without eliminating competing events, which is stated as a design decision with a citation rather than left implicit. That is the choice being made an identifying assumption instead of a data-cleaning step, in the direction the entry asks for, within one analysis rather than as a convention.",
+     "quote": "Risk of grade 3–4 toxicity and of hospitalization would be estimated without elimination of competing events [ 10 ].",
+     "locator": "Statistical Analysis"
+    },
+    {
+     "problem_id": "SFW-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "After censoring at deviation and weighting, inference comes from 500 bootstrap resamples, the default the entry says has no scalable alternative. This emulation is small enough for that to be feasible, roughly a thousand patients from a registry, which is why the cost does not surface here and would in a claims-scale sequential emulation.",
+     "quote": "bounded by percentile‐based 95% confidence intervals computed using bootstrapping with 500 samples",
+     "locator": "Statistical Analysis"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0213",
+   "read": true,
+   "doi": "10.1093/oncolo/oyag078",
+   "title": "Time dependent outcomes modeling in a real-world analysis of the molecular tumor board at University Cancer Center Hamburg (2016-2022).",
+   "relevance": "medium",
+   "one_line": "Reports molecular tumor board outcomes with therapy initiation modeled as a time-dependent exposure through Mantel-Byar and Simon-Makuch methods, because therapy starts after the board meets and conventional survival curves would credit that interval to the treated.",
+   "what_was_done": "Molecular tumor board recommendations are implemented after the board discusses a case, so defining exposure groups by whether a recommended therapy was started makes the exposed group immortal from board date to therapy start. The study analyzes 1,074 case discussions covering 949 individuals at the University Cancer Center Hamburg between 2016 and 2022, focusing on 854 with solid tumors, with the index date set as the first board discussion and follow-up to death or last contact. Recommendations were graded by evidence level and ranked into a top-priority targeted option and a second-best alternative. In the time-dependent analyses each person contributes unexposed person-time from the index date until therapy start and exposed person-time to the corresponding stratum thereafter, visualized with Simon-Makuch plots. The interval between the sequencing report becoming available and the board discussion falls before the index date and is excluded from time at risk, with sequencing and pathology treated as baseline information. A within-person progression-free survival ratio against the previous line is also reported, with a threshold above 1.3 proposed as clinically meaningful. After correcting for immortal time the top-priority recommendation was still associated with better disease control and survival, with confounding and selection named as the remaining limitations.",
+   "future_research": [
+    {
+     "gap": "The time-dependent correction removes immortal time and leaves confounding and selection into implementation unaddressed.",
+     "kind": "stated",
+     "quote": "After correction for immortal time bias, implementation of the top-priority MTB recommendation was associated with improved disease control and survival signals, although confounding and selection effects remain key limitations.",
+     "locator": "Conclusions"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The index date was set at the board discussion, which places a variable-length interval, from sequencing report to board meeting, outside time at risk entirely and treats the sequencing result as baseline information. That interval is when a patient can die before ever reaching the decision the study is about, and no procedure is offered for deciding whether the clock should start at sequencing, at the board, or at therapy; the choice is stated and its consequences are not examined.",
+     "quote": "The interval between availability of the molecular sequencing report and MTB discussion occurred before t 0 and was therefore not included in time-at-risk for time-to-event analyses.",
+     "locator": "Index date and time-dependent exposure modeling"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Whether the recommendation is implemented depends on performance status, access and clinician judgment, all of which predict survival. The correction applied addresses only the timing, and the residual confounding is acknowledged in the conclusion without a negative control, a proxy adjustment or a bias analysis that would bound it.",
+     "quote": "Accurate outcomes estimation of MTB-guided therapy requires controlling for immortal time bias when treatment starts after MTB consultation.",
+     "locator": "Implications for Practice"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0215",
+   "read": true,
+   "doi": "10.1016/j.jaccao.2026.01.006",
+   "title": "Risk Prediction in Cardio-Oncology: Conceptual and Methodological Considerations: JACC: CardioOncology State-of-the-Art Review.",
+   "relevance": "low",
+   "one_line": "State-of-the-art review of risk prediction model development in cardio-oncology, covering index date and horizon alignment, competing risks, treatment exposure, and the absence of any formal test for whether data are missing at random.",
+   "what_was_done": "The review addresses prediction rather than causal effect estimation, and organizes model development around the clinical decision a model is meant to support: the prediction objective, the index date and the risk horizon must match that decision at a specific point in the cancer trajectory. It covers data source selection, population definition, sample size, variable selection, and the difficulties of incorporating treatment data, naming immortal time bias and confounding by indication as the two that arise when treatment is used as a predictor. Model classes reviewed are regression-based, competing risk, dynamic and machine learning approaches, evaluated on discrimination, calibration and clinical utility, with outcome imbalance flagged as a technical problem for machine learning because an uncorrected algorithm predicts the majority class and misses the clinically important minority. Missing data handling is singled out: no formal test exists for whether data are missing at random, so the judgment must be clinical, and multiple imputation is recommended above roughly 5 to 10 percent missingness on a key predictor. Implementation is treated as a continuing cycle of workflow integration, transparency, external validation and recalibration rather than a one-time build.",
+   "future_research": [
+    {
+     "gap": "No formal test exists for the missingness mechanism, so a decision that changes every downstream estimate rests on clinical judgment and a rule of thumb.",
+     "kind": "stated",
+     "quote": "There is no formal approach to test whether data are missing at random (or not), so the assessment should be informed by clinical knowledge.",
+     "locator": "Model development, missing data"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The review states plainly that whether data are missing at random cannot be tested, and then recommends multiple imputation, which is valid under exactly that untestable condition, above a threshold expressed as a proportion of missing values. Proportion missing is a property of the record, not of the mechanism, so the rule of thumb selects the remedy without bearing on the assumption the remedy needs.",
+     "quote": "Where feasible, multiple imputation is recommended to preserve statistical power, improve precision, and reduce bias.",
+     "locator": "Model development, missing data"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0216",
+   "read": true,
+   "doi": "10.1186/s40779-026-00685-9",
+   "title": "Target trial emulation in oncology: current use and future directions.",
+   "relevance": "high",
+   "one_line": "Systematic review of 90 oncology target trial emulations finding immortal time bias in 55.6 percent of treatment applications and dual agreement with the corresponding randomized trials in only 42.9 percent, against no defined regulatory threshold for what replication success would be.",
+   "what_was_done": "The review identified 90 target trial emulation studies in cancer through PubMed and Embase. Among the 54 applications in cancer treatment, registry databases were the commonest source at 44.4 percent and overall survival the commonest primary endpoint at 63.0 percent. Thirty of the included cases, 55.6 percent, were associated with immortal time bias and 21, 38.9 percent, with prevalent user bias, in a literature whose defining framework exists to prevent both. Of 21 emulations from 13 studies that set out to calibrate against pre-existing randomized trials, only 42.9 percent met both statistical agreement and estimate agreement, against roughly 65.0 percent dual agreement reported by the RCT-DUPLICATE initiative outside oncology. The review identifies the two limiting factors as availability of fit-for-purpose data and uncertainty about concordance, and proposes remedies: regional or national integration of electronic medical records, linkage with insurance claims, modernized eligibility criteria, overall survival as the primary endpoint, hierarchical rules and automated extraction for resolving candidate index dates, sensitivity analyses over alternative time-zero definitions, and preregistration of the time-zero definition. It states that no formal benchmark for replication success has been established and that the observed agreement rate is unlikely to meet what regulators would require.",
+   "future_research": [
+    {
+     "gap": "Standardized reporting guidelines for oncology target trial emulation do not exist, which limited the review's own assessment.",
+     "kind": "stated",
+     "quote": "Third, the absence of standardized reporting for TTE in oncology may have limited the comprehensiveness of our assessment.",
+     "locator": "Limitations and future directions"
+    },
+    {
+     "gap": "Benchmarking frameworks for validating emulated results against randomized trials remain to be developed.",
+     "kind": "stated",
+     "quote": "Future research should focus on establishing standardized reporting guidelines for oncology TTE, integrating multisource RWD to improve completeness, and developing benchmarking frameworks to validate emulated results against RCTs.",
+     "locator": "Limitations and future directions"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "This is the entry's claim stated by a systematic review of the field: no regulator has defined what an adequate emulation is, and specifically no threshold exists for how much agreement with a randomized trial would count as replication success. The review can therefore report 42.9 percent dual agreement and observe only that this is probably not enough, with nothing to measure it against.",
+     "quote": "A key challenge is the absence of defined regulatory standards or thresholds for acceptable replication success.",
+     "locator": "Insufficient regulatory acceptance"
+    },
+    {
+     "problem_id": "BEN-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Replication is scored as a pair of binary agreements, statistical and estimate, and the resulting rate is compared against another initiative's rate in a different disease area as if the two were commensurable. Nothing in the scoring accounts for how closely the estimands, populations and measurements were aligned in each emulation, which is what would make an agreement rate interpretable.",
+     "quote": "Although no formal benchmark has been established, these findings suggest that current oncology TTE do not yet meet the level of evidentiary consistency likely required for regulatory confidence.",
+     "locator": "Insufficient regulatory acceptance"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "More than half of the treatment emulations in this review carry immortal time bias, in a literature defined by a framework whose principal claim is that specifying time zero prevents it. The review attributes this to real ambiguity in the data, variability in initiation, recording delays and prior exposure, and its proposed remedies are hierarchical rules, automated date extraction and sensitivity analysis over alternative definitions, none of which selects a time zero without reference to the data.",
+     "quote": "In our systematic review, 30 (55.6%) of the included TTE studies suffered from immortal time bias, highlighting the practical impact of a misdefined time zero on causal inference.",
+     "locator": "Potential biases and analytical approaches"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The review's closing correction is aimed at the reading it found in the literature it surveyed: that the framework's name carries an assurance about the resulting estimate. Having documented immortal time bias in 55.6 percent and prevalent user bias in 38.9 percent of the emulations, it states that the label does not transfer to the result.",
+     "quote": "TTE is not a magic bullet, and that corresponding results still suffer from biases",
+     "locator": "Conclusions"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0220",
+   "read": true,
+   "doi": "10.1186/s12874-025-02739-3",
+   "title": "Identifying, handling and impact of immortal time bias on addressing treatment effects in observational studies using routinely collected data.",
+   "relevance": "high",
+   "one_line": "Surveys 162 cohort studies on routinely collected data for immortal time bias, finds over 90 percent could introduce immortal time and 21.6 percent at high risk, and corrects 16 of them to show a quarter change conclusion.",
+   "what_was_done": "A PubMed search of observational studies published from 2018 to 2020 that used routinely collected data to evaluate drug treatment effects yielded 256 studies, of which 162 cohort studies with time-to-event outcomes were assessed by examining the synchronization of eligibility, treatment assignment and start of follow-up. Thirteen, 8.0 percent, did not report the three time points well enough to judge. Of the rest, 35, 21.6 percent, were at high risk and 114, 70.4 percent, at low risk, of which only 15 were naturally synchronized and 99 used a design or analytic device, most often the active comparator new-user design at 56.6 percent and a time-varying exposure definition at 19.2 percent. Sixteen of the 35 high-risk studies carried enough information to correct, and among those 4, 25 percent, showed statistically significant differences between corrected and original estimates and 4 gave conflicting conclusions about significance, with around 20 percent differing in direction or significance. Only 5 of the 35 high-risk studies, 14.3 percent, mentioned that immortal time might affect their results. The paper distinguishes immortal time bias from prevalent user bias by whether the immortal interval is included in or excluded from follow-up, notes that landmark analysis introduces selection bias by conditioning on surviving to the landmark, and reports that its two correction strategies gave slightly different conclusions.",
+   "future_research": [
+    {
+     "gap": "The two correction strategies disagreed slightly, so no single quantitative bias analysis settles the impact of immortal time.",
+     "kind": "stated",
+     "quote": "our findings indicated slight differences in conclusions between these two strategies, suggesting the importance of concurrently applying multiple correction approaches to enhance the robustness of conclusions when evaluating the impact of ITB",
+     "locator": "Implications of study findings"
+    },
+    {
+     "gap": "Correcting a published study requires the length of immortal time, which many studies do not report, so the correctable subset is selected.",
+     "kind": "stated",
+     "quote": "Second, conducting quantitative bias analysis required the data of immortal time length, which was unreported in some studies.",
+     "locator": "Strengths and limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Over 90 percent of these studies had structures that could introduce immortal time, only 15 of 162 were naturally aligned, and 35 were left at high risk. The consequence is measured rather than asserted: of the 16 correctable high-risk studies a quarter changed materially and around a fifth changed in direction or significance. Almost none of the affected studies noticed, since only 14.3 percent of the high-risk group mentioned the possibility.",
+     "quote": "Only 5 of the 35 high-risk studies (14.3%) discussed that the results may be affected by ITB.",
+     "locator": "Abstract, Results"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Eight percent of studies could not be assessed at all because they did not report the three time points that determine whether immortal time exists. The information needed to judge the most basic design property of a time-to-event analysis is therefore absent from the published record in one study in twelve, which is what reporting without an assumption inventory produces.",
+     "quote": "Among the included studies, 8% did not fully report the three essential time points.",
+     "locator": "Discussion, principal findings"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The survey's own recategorization finds that time-varying treatment is the dominant source of immortal time, and it then states that removing the immortal time is not sufficient when patients switch from one treatment to another, because switching is driven by clinical indication. Fixing the temporal alignment leaves the confounding untouched, which is exactly the inference the entry says the framework's name invites.",
+     "quote": "Notably, in Scenario B (where individuals first receive a comparison treatment before switching to the treatment under study), mitigating ITB alone is insufficient to ensure unbiased treatment effect estimates.",
+     "locator": "Implications of study findings"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The available remedies are not interchangeable. Landmark analysis conditions on surviving to the landmark and so introduces selection, leaving a sample systematically unlike the original population, while a time-varying exposure definition reassigns the misclassified interval instead. The paper reports that the two gave slightly different conclusions on the same studies and recommends running both, which concedes that neither is a defensible default.",
+     "quote": "Besides, it should be recognized that landmark analysis, while mitigating the risk of ITB, may introduce selection bias [ 37 ], as it only includes individuals who have not experienced the outcome event before the landmark time.",
+     "locator": "Implications of study findings"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0225",
+   "read": true,
+   "doi": "10.17305/bb.2025.12842",
+   "title": "Bariatric metabolic surgery and cancer risk: Target trial emulation using iterative time distribution matching.",
+   "relevance": "high",
+   "one_line": "Emulates a target trial of bariatric surgery and cancer in Qatari records using an iterative refinement of prescription time distribution matching to align time zero, moving the hazard ratio from 0.70 under the usual approach to 0.49.",
+   "what_was_done": "Observational studies of bariatric surgery and cancer disagree, and trials lack the follow-up to see cancer. The study builds a retrospective cohort of 124,780 adults aged 30 and over with obesity from the Qatari public electronic medical record from 2018, including 1,465 who underwent surgery and 1,583 who developed cancer, with median follow-up 7.79 years and an interquartile range of 4.89 to 10.85. Time zero for non-recipients is assigned by iterative time distribution matching, an iterative version of prescription time distribution matching that refines the assignment until the distribution of immortal time in the non-surgery group matches that in the surgery group. A Cox model adjusted for confounders and prognostic covariates then gives a hazard ratio of 0.49 with an interval of 0.31 to 0.76. The approach most observational studies take is reported for comparison and gives 0.70 with an interval of 0.45 to 1.09, which the paper reads as biased toward the null and consistent with the existing literature. Three factors are named as determining the size of the distortion: mean pre-exposure immortal time, the proportion exposed and the length of follow-up. Only 41 cancers occurred among surgery recipients, of which 2 were gastrointestinal, so procedure-specific and site-specific analyses were not possible. Smoking status was missing for over half the cohort, and post-operative weight change was unavailable.",
+   "future_research": [
+    {
+     "gap": "Procedure-specific and cancer-site-specific effects could not be estimated because too few cancers occurred among surgery recipients.",
+     "kind": "stated",
+     "quote": "Due to the limited number of incident cancers among BMS recipients in our study, we could not rigorously test this hypothesis.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Mediators of the effect, post-operative weight loss and metabolic remission, were unavailable, so the mechanism cannot be separated.",
+     "kind": "stated",
+     "quote": "Fifth, data on post-operative weight loss, BMI changes, or metabolic remission were unavailable in our dataset.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Time zero for the unexposed is assigned by an explicit, iterated procedure that matches the distribution of pre-exposure time rather than by a landmark or an arbitrary index date, and the paper reports what the conventional approach would have given in the same data, 0.70 against 0.49. It also names the three quantities that determine how much distortion remains. The procedure aligns a distribution rather than establishing when eligibility, assignment and follow-up coincide for each person, and it is specific to a one-time surgical exposure.",
+     "quote": "The iterative process further enhances this approach by systematically refining T 0 assignment in the non-surgery group until the distribution of immortal time aligns optimally with that of the surgery group.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper draws the line the entry says is routinely blurred: the emulation framework fixes design-induced bias and does nothing about whether the variables mean what the protocol needs them to mean. In this analysis smoking is missing for over half the cohort and the mediating weight change is absent, and no amount of design specification improves either.",
+     "quote": "Second, while target trial emulation addresses issues related to improper design, it does not resolve limitations associated with data quality [ 49 ].",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The dominant confounder of the cancer outcome is smoking, absent for more than half the cohort, and the record is acknowledged to carry errors in body mass index measurements, dates and cancer diagnoses. The study proceeds, states this in the limitations, and offers no threshold at which the data would have been declared unfit for this target trial.",
+     "quote": "For instance, smoking status was inadequately captured, with over half the cohort lacking this information, which hinders effective adjustment.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0228",
+   "read": true,
+   "doi": "10.1002/pds.70223",
+   "title": "Demystifying Clone-Censor-Weighting to Studying Treatment Initiation Windows: An Example Using Publicly Available Synthetic Medicare Claims Data.",
+   "relevance": "high",
+   "one_line": "Tutorial on clone-censor-weighting for comparing treatment initiation windows, showing that the causal contrast such a comparison estimates depends on when the study population happens to initiate.",
+   "what_was_done": "Regimens defined by when treatment starts are indistinguishable at baseline, and the traditional handling, excluding immortal time, landmarking, or conditional estimates from time-varying exposure models, each changes the estimated quantity, needs strong assumptions, or misaligns eligibility, initiation and start of follow-up. The tutorial works through clone-censor-weighting instead, using Medicare synthetic public use files to identify 1,589 patients with myocardial infarction and no prior aspirin or clopidogrel. Each person is cloned to three regimens, initiation within 30 days, within 90 days, and from 30 to 90 days, and clones are censored when they deviate by failing to initiate in time or initiating too early, with informative censoring handled by inverse probability of censoring weights. In this cohort 15 percent initiated within 30 days and 26 percent between 30 and 90 days, and the weighted 180-day risk of rehospitalization or death was 40.2 percent under the 30-day regimen, 35.7 percent under the 90-day regimen and 35.2 percent under the 30-to-90-day regimen. The tutorial discusses whether to clone individuals incompatible with a regimen at time zero, why to fit censoring weights among recent initiators at the end of a window, and how to visualize the exposure distribution underlying each regimen. SAS code and the analytic cohort are released on GitHub. It states that the intervention underlying a start-by-day-X regimen varies with the population's initiation pattern.",
+   "future_research": [
+    {
+     "gap": "Requiring persistence after initiation, or comparing initiation of different treatments, adds analytic complexity the tutorial does not cover.",
+     "kind": "stated",
+     "quote": "Requiring individuals to remain on treatment after initiation or comparing effects of initiating different treatment options introduces additional analytic complexity [ 30 ].",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Fitting censoring models in the base cohort rather than within clones could improve precision under extra parametric assumptions, and is not done.",
+     "kind": "stated",
+     "quote": "under additional parametric assumptions about treatment initiation probabilities, fitting models within the base cohort can increase precision by drawing on information about the characteristics of people who initiated outside a specific regimen's treatment window",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A window is not a neutral device for making a strategy estimable. The tutorial states that what a start-by-day-X regimen actually intervenes on depends on when people in that population initiate, so the same nominal window defines different interventions in different cohorts. Choosing the window therefore chooses the estimand, and nothing outcome-blind selects it.",
+     "quote": "Interventions underlying “start by day X” and “start between day X and Y” regimens vary depending on initiation patterns within the study population.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The consequence the tutorial draws is a reporting one: an effect estimate from this design cannot be interpreted, and two studies of nominally the same regimens cannot be compared, without the initiation timing distribution of each population. That information is not part of what such studies report, so the number is published without the context that fixes what it means.",
+     "quote": "As a result, interpreting effect estimates or comparing findings across different studies studying the same regimens requires information on initiating timings (similar to studies of other “natural” interventions) [ 14 ].",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Cloning replaces immortal time with artificial censoring, and the estimate then rests on the censoring weights capturing every predictor of deviation that also predicts the outcome. In routine data the reasons a patient does not initiate within a window include severity signals that appear only when someone recorded them, so the condition the design needs is the one the observation process undermines.",
+     "quote": "Additionally, if predictors of censoring associated with the outcome are unmeasured or omitted from IPCW, estimates will be biased.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The whole analysis is reproducible by a reader: the data are Medicare synthetic public use files, the SAS code is in the article appendix and on GitHub, and the base analytic cohort is published with it, including code for examining censoring weight performance and for visualizing the exposure distributions. That is the artifact set the entry says emulations do not release, supplied for a tutorial rather than for a substantive study.",
+     "quote": "SAS code is included in the appendix of this article, along with the base analytic cohort, are on GitHub at https://github.com/mawcpharmdphd/CCW_tutorial .",
+     "locator": "Data Availability Statement"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0229",
+   "read": true,
+   "doi": "10.7759/cureus.90666",
+   "title": "Effectiveness of a Covid mRNA Vaccine Against Two Early Variants: A Reanalysis of Published Data.",
+   "relevance": "high",
+   "one_line": "Reanalyzes a published vaccine effectiveness study after removing the case-counting window and applying a negative-control-derived correction for healthy vaccinee bias, moving effectiveness against a severe outcome from 100 percent to about 50 percent and then to no meaningful benefit.",
+   "what_was_done": "Two biases are argued to distort observational estimates of Covid vaccine effectiveness: immortal time, arising from the widespread practice of ignoring events in the first 14 days after the first dose, which the paper calls case-counting window bias; and healthy vaccinee bias, residual confounding by health-related attributes. Published data from a test-negative case-control study of an mRNA vaccine against the Alpha and Beta variants were reanalyzed. Immortal time was removed by counting all events and estimating built-up immunity by 27 days after the first dose and 13 days after the second. Healthy vaccinee bias was reduced by a bias factor correction derived from the pseudo-effect on non-Covid death, used as a negative control outcome. Effectiveness against infection may have been negative in the first two weeks after the first dose and reached only 41 percent against Alpha and 15 percent against Beta by the end of the fourth week, and around 60 percent against Alpha and below 50 percent against Beta at full immunity, against over 95 percent as originally computed. Against a severe outcome the original 100 percent became about 50 percent after removing immortal time alone, and the negative control correction removed meaningful benefit and raised the possibility of a negative effect. The paper asks that the reanalysis be replicated by others.",
+   "future_research": [
+    {
+     "gap": "The reanalysis rests on one published dataset and its own bias correction, and the paper asks for replication across other vaccine effectiveness studies to corroborate or refute it.",
+     "kind": "stated",
+     "quote": "The robustness of these findings should be examined by others, whatever the outcome might be: corroboration or refutation.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A 14-day window in which events are not counted became standard practice in an entire literature, and it is a choice about when follow-up begins made after the exposure. The paper's objection is that it presumes no early harm as well as no early benefit, which no randomized trial would grant, and the magnitude is the difference between 100 percent and about 50 percent effectiveness against a severe outcome. Nothing outcome-blind selected 14 days.",
+     "quote": "Discarding early events is a new method to analyze data. It is a major source of bias in an observational study [ 4 ] and is unjustifiable even in the context of a randomized trial.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A negative control outcome, non-Covid death, is used not as a qualitative signal that residual confounding exists but to derive a bias factor that is then applied to the estimate, which changes the conclusion. That is the integration the entry says is missing, carried out on one dataset with a correction the paper itself calls rudimentary and with no procedure specifying when a given negative control licenses a given correction.",
+     "quote": "Healthy vaccinee bias was reduced by applying a bias factor correction derived from the pseudo-effect on non-Covid death (negative controls).",
+     "locator": "Abstract, Methods"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0232",
+   "read": true,
+   "doi": "10.1371/journal.pone.0325695",
+   "title": "Emulating the EPIC trial using VetCompass primary-care data: causal effects of pimobendan in UK dogs with grade IV/VI heart murmurs.",
+   "relevance": "high",
+   "one_line": "Emulates a veterinary randomized trial in primary-care records and reports each source of estimand misalignment separately, including a time zero defined by murmur grade against the trial's disease stage, which only about half of stage B2 dogs meet.",
+   "what_was_done": "The EPIC trial found that pimobendan delays congestive heart failure and extends survival in dogs with preclinical degenerative mitral valve disease. This study emulates it in the VetCompass primary-care database, in 928 dogs aged 6 years or more and 15 kilograms or less at first grade IV of VI murmur diagnosis between January 2016 and December 2018, addressing immortal time bias, confounding and loss to follow-up. Prescription within 6 months of that diagnosis reduced the 5-year cumulative incidence of congestive heart failure by 22.2 percentage points, with an interval of minus 30.5 to minus 13.6, giving 34.1 percent against 56.3 percent, where the trial reported 33.1 percent against 43.2 percent. Restricted mean time lost to heart failure fell by 311 days, against a 462-day difference in median time to a composite outcome in the trial. Five-year survival probability differed by 10.2 percentage points, with an interval of 2.3 to 17.7, and mean survival was 1,051 against 905 days, closely matching the trial's 1,059 against 902. The competing event of death is modeled rather than censored, and the study reports that death without heart failure was more likely under treatment, which follows from fewer dogs reaching heart failure first. Four sources of divergence from the trial are named individually: a different time zero, different case definitions and populations, an intention-to-treat rather than per-protocol estimand, and the competing event.",
+   "future_research": [
+    {
+     "gap": "Whether other disease stages would benefit is unresolved, since the emulated population spans stages the trial did not enroll.",
+     "kind": "stated",
+     "quote": "Stage B2 DMVD was proposed as the intervention point for pimobendan treatment following the EPIC trial results [ 8 ], but there could be other DMVD popu",
+     "locator": "Overall discussion and limitations"
+    },
+    {
+     "gap": "Records cannot distinguish unassisted death with undetected heart failure from true sudden cardiac death, so a safety signal from the trial cannot be checked.",
+     "kind": "stated",
+     "quote": "However, it is possible some of the dogs that died unassisted did have CHF prior to death, thus the difference in sudden cardiac death between the treatment groups is more difficult to interpret based on EHRs.",
+     "locator": "CHF outcome with competing event of death"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "BEN-02",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The comparison is not reported as replicated or not. Each source of divergence is named and its direction argued: an intention-to-treat estimand against the trial's per-protocol, an explicitly modeled competing event the trial did not model, different case definitions and populations, and a different time zero, with the emulation's more conservative estimate attributed to the first two. The agreement is then stated separately for each outcome, close for survival and diverging in the untreated arm for heart failure. That is the calibrated comparison the entry asks for, done once rather than established as a convention.",
+     "quote": "The current study evaluated an intention to treat estimate, rather than the per-protocol estimate measured in the EPIC trial, and accounted for the competing event of death, potentially explaining the more conservative estimate for the treatment effect in the current study.",
+     "locator": "CHF outcome with competing event of death"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The trial enrolled at a disease stage established by echocardiography; the records carry a murmur grade recorded by a primary-care veterinarian. Only about half of dogs at the trial's enrollment stage have that murmur grade, so the eligibility component that could not be observed produced a different population spanning two disease stages, not a noisy version of the trial's. The emulation reports this rather than absorbing it into a claim of replication.",
+     "quote": "It has been reported that 48.7% dogs in stage B2 DMVD have a grade IV murmur [ 10 ], therefore it is likely the dogs in the current study represent different ACVIM disease stages.",
+     "locator": "Overall discussion and limitations"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Death is treated as a competing event with its own cumulative incidence rather than as censoring, and the consequence is reported and interpreted: treatment raised the 5-year probability of dying without heart failure, which follows mechanically from fewer treated dogs reaching heart failure first. Handling the competing event as part of the estimand rather than as cleaning is what makes that reading available.",
+     "quote": "However, because pimobendan prescription caused a lower 5-year cumulative incidence of CHF, it follows that there would be a greater number of dogs remaining at risk of death as a first event and therefore the 5-year cumulative incidence of death may be higher.",
+     "locator": "CHF outcome with competing event of death"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Exchangeability rests on a directed acyclic graph and an assumption that the adjustment set is sufficient, which the paper labels strong because unknown confounders may remain. No negative control, proxy or validation source enters, so the residual is named and not bounded.",
+     "quote": "This is a strong assumption because some confounders may remain unknown and hence unobserved.",
+     "locator": "Statistical analysis of the emulated trial"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0235",
+   "read": true,
+   "doi": "10.3390/cancers17091451",
+   "title": "Glucagon-like Peptide-1 (GLP-1) Receptor Agonists and Cancer Prevention: Methodological Pitfalls in Observational Studies.",
+   "relevance": "medium",
+   "one_line": "Adapts a risk-of-bias framework into seven criteria specific to whether weight loss from GLP-1 receptor agonists reduces cancer risk, and finds six of the seven at high risk in a recently published study.",
+   "what_was_done": "Trials of GLP-1 receptor agonists show substantial weight loss, roughly 15 percent with high-dose semaglutide in obesity without diabetes, but are neither large enough nor long enough to see cancer, so the question is being pursued observationally. The paper modifies the ROBINS-E framework into seven criteria specific to this question: adequate adjustment for key parameters of body fatness, immortal time bias, treatment allocation bias, survival bias, cumulative drug dose effect, sufficient sojourn time between the drug and cancer presentation, and whether the effect is specific to obesity-related cancers. Applying them to a recently published study in the same journal, six of the seven were at high risk of bias. The paper argues that a positive finding cannot inform practice until these are addressed, and that mediation analysis or a large trial would be needed to separate the two candidate mechanisms, weight loss as an indirect effect and a direct anti-cancer effect of the drugs. Real-world availability, adherence, side effects and weight regain are named as further obstacles to translating trial weight loss into a population effect.",
+   "future_research": [
+    {
+     "gap": "Whether cancer risk reduction runs through weight loss or through a direct drug effect is unresolved, and would need mediation analysis or a trial to separate.",
+     "kind": "stated",
+     "quote": "It is also key to understand the causal pathways for these drugs and their potential in cancer prevention, whether it is via weight loss (indirect effect) or a direct anti-cancer effect of the GLP-1 drugs themselves (direct effect).",
+     "locator": "Section 4, Conclusions"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Seven criteria are named for one question, and a published study is scored against each, which produces something closer to an assumption inventory than a narrative limitations paragraph. Two of the seven are the untestable ones, adjustment for body fatness and treatment allocation, and they are scored alongside the checkable ones without distinguishing what evidence could move each. The instrument is also question-specific and derived by hand from ROBINS-E.",
+     "quote": "We modified the ROBINS-E framework for assessing risk of bias, identifying seven methodological criteria specific to this research question, against which data should be interpreted.",
+     "locator": "Abstract, Results"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Two of the seven criteria are timing choices with no principled setting: immortal time, and whether enough sojourn time was allowed between starting the drug and a cancer becoming detectable. A latency window too short counts cancers that were already present and one too long discards real events, and the framework asks whether the choice was sufficient without saying how sufficiency would be established.",
+     "quote": "These include adequate adjustment for key parameters of body fatness; immortal time bias; treatment allocation bias; survival bias; cumulative drug dose effect; sufficient sojourn time between drug intervention and cancer presentation; and treatment effect specific to obesity-related cancers.",
+     "locator": "Abstract, Results"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0236",
+   "read": true,
+   "doi": "10.1177/02537176251343289",
+   "title": "Immortal Time Bias in Cohort Studies: A Concept Simply Explained.",
+   "relevance": "medium",
+   "one_line": "Teaching note defining immortal time bias through a hypothetical antidepressant example and a published intensive care example where synchronizing baselines moved an adjusted hazard ratio from 0.21 to 1.02.",
+   "what_was_done": "The note explains immortal time bias as arising when observation starts before exposure and when anyone experiencing the outcome before exposure is by design ineligible for the exposed arm, so the exposed are immortal between baseline and exposure. It works the concept through a hypothetical study of antidepressant initiation and first ischemic heart disease events, with baseline at the date of depression diagnosis, and notes that the longer the interval to initiation the larger the bias. A side note adds that the same structure induces a second bias even when the outcome is occurrence rather than time to event: patients with worse prognosis have their events early and are thereby assigned to the comparison arm, so the exposed arm is selected for good prognosis. The remedy given is to synchronize the start of follow-up so that immortal time is similar across groups, or to restrict the exposed arm to those initiating at baseline. A published example makes the magnitude concrete: among 2,054 intensive care patients, those given suvorexant at any point during the stay had an adjusted hazard ratio for new-onset delirium of 0.21 with an interval of 0.16 to 0.27, while restricting to receipt within 72 hours of admission among 1,255 patients gave 1.02 with an interval of 0.65 to 1.59. The note states the bias also arises in case-control studies and randomized trials when exposure timing is misaligned.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The worked example gives the scale of the failure in a published analysis: an adjusted hazard ratio of 0.21 becomes 1.02 once the baselines are synchronized, that is, a large protective effect becomes nothing. The two analyses differ only in when follow-up starts and in which exposures count, and both were available from the same records.",
+     "quote": "However, when an attempt was made to limit immortal time and synchronize baselines, among 1,255 patients, those who received suvorexant within 72 hours of ICU admission were at similar risk of delirium relative to those with no exposure to suvorexant within 72 hours of ICU admission (aHR, 1.02; 95% CI, 0.65–1.59).",
+     "locator": "Suvorexant for the Prevention of Delirium"
+    },
+    {
+     "problem_id": "ELG-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The exposed arm is defined by a criterion that only survivors can satisfy, so eligibility conditions on having avoided the outcome. The note draws out that this selects the exposed arm for good prognosis, a selection effect distinct from the misallocated person-time and one that persists when the outcome is a simple occurrence rather than a time. An eligibility rule is acting as a conditioning statement on a descendant of the outcome.",
+     "quote": "Because these patients are now ineligible for inclusion in the exposure arm (e.g., SSRI arm, in the example above), the exposure arm will experience a selection bias for patients with good prognosis.",
+     "locator": "Side Note"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0242",
+   "read": true,
+   "doi": "10.1097/xcs.0000000000001241",
+   "title": "Immortal Time Bias with NSQIP Readmission.",
+   "relevance": "medium",
+   "one_line": "Letter noting that a national surgical registry tracks outcomes for 30 days after operation rather than after discharge, so days available to record a readmission shrink as length of stay grows, biasing readmission comparisons by frailty.",
+   "what_was_done": "The letter identifies a structural feature of the American College of Surgeons National Surgical Quality Improvement Program: outcomes are tracked for 30 days after the operation rather than 30 days after discharge. A patient with a 29-day stay therefore has one day in which a readmission can be recorded, so the observation window shrinks as length of stay grows. In the study being commented on, all patients admitted for up to 30 days were included, and length of stay increased with frailty, so readmission rates for frail and severely frail patients are underestimated by construction. Earlier work has handled this by excluding patients above a length-of-stay cutoff below 30 days, for example one machine learning study excluded colorectal patients staying more than 20 days, based on work tracking the discrepancy between 30-day postoperative and 30-day postdischarge readmission rates by length of stay. The letter endorses changing the registry to track readmissions for 30 days after discharge, for consistency with Centers for Medicare and Medicaid Services reporting, and asks researchers using the current registry to limit or at least acknowledge the bias.",
+   "future_research": [
+    {
+     "gap": "The available workaround is an arbitrary length-of-stay cutoff, and the letter's preferred fix requires the registry itself to change what it collects.",
+     "kind": "stated",
+     "quote": "We agree with Hugar and colleagues (6) that NSQIP\nshould track readmissions for 30 days postdischarge for consistency with the Centers for\nMedicare and Medicaid Services reporting and to eliminate this bias.",
+     "locator": "Letter"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The clock starts at the operation while the outcome can only occur after discharge, so the time at risk is a function of an intermediate variable, length of stay. The effect is systematic rather than random because length of stay tracks frailty, which is the exposure under study. The only available remedy is to exclude patients above a length-of-stay threshold, and the threshold is chosen by precedent, 20 days in one cited study, with nothing selecting it.",
+     "quote": "As length of stay increases, the available days for a patient to have a recorded readmission\ndecreases.",
+     "locator": "Letter"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The registry's follow-up window is fixed at collection and is incompatible with a readmission question, and no assessment of fitness prevented the study from being conducted and published. The mismatch is not a data quality defect in the usual sense: every field is accurate, and the observation period is simply anchored to the wrong event for this outcome.",
+     "quote": "As the authors noted, NSQIP tracks outcomes for 30 days after operation rather than 30\ndays after discharge. This introduces an immortal time bias when studying readmissions (2).",
+     "locator": "Letter"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}
