@@ -104,7 +104,10 @@ def topic_of(rec):
     for t in TOPIC_ORDER:
         if t in rec.get("found_by", []):
             return t
-    return "nma"
+    # Unreachable while every record carries at least one phrase from the
+    # search; TOPIC_ORDER[-1] is the broadest set, so a record that somehow
+    # lost its provenance still lands in a real folder rather than a KeyError.
+    return TOPIC_ORDER[-1]
 
 
 def folder_for(rec):

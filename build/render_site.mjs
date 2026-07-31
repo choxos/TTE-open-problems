@@ -580,7 +580,7 @@ catalog is about.
     'case study, a meta-research corpus, or a proof.',
     '',
     `Every one of the ${Object.values(queue.excluded || {}).reduce((a, b) => a + b, 0) + (queue.queue?.length || 0)} catalog entries was judged on both questions separately,`,
-    'by an external model, before the program started: is this a population-adjustment',
+    'by an external model, before the program started: is this a target trial emulation',
     'problem, and what kind of study would settle it. The queue below is the intersection.',
     '',
     '::: {.table-scroll}', '', '| Why an entry is not in the program | n |', '|---|---:|'
@@ -630,7 +630,7 @@ catalog is about.
     '    is the timestamp.',
     '',
     'Code, protocols and results are at',
-    '[github.com/choxos/ITC-open-problems/tree/main/studies](https://github.com/choxos/ITC-open-problems/tree/main/studies).',
+    `[${REPO.replace('https://', '')}/tree/main/studies](${REPO}/tree/main/studies).`,
     ''
   )
   return out.join('\n')

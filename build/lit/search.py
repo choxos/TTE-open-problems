@@ -107,8 +107,8 @@ def collect_ids(db, term):
     """Every id for a term, splitting by publication date when the query is too big.
 
     Neither the id-list form nor the history server will hand back more than
-    about 10 000 records for a single query, and "network meta-analysis" is well
-    past that. Partitioning by year keeps every sub-query under the ceiling; the
+    about 10 000 records for a single query, and the broader phrases here are
+    well past that. Partitioning by year keeps every sub-query under the ceiling; the
     partition totals are checked against the unpartitioned count so a silent
     truncation cannot pass unnoticed.
     """

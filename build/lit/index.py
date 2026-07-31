@@ -36,11 +36,36 @@ def load(name, default):
         return json.load(fh)
 
 
+def load_prior():
+    """The tte-review screening flags, keyed the way batches.py keys records.
+
+    Absent on a machine that never ran import_tte_review.py, which is why the
+    agreement section is written only when there is something to agree with.
+    """
+    path = os.path.join(OUT, "screening", "prior.jsonl")
+    if not os.path.exists(path):
+        return {}
+    with open(path, encoding="utf8") as fh:
+        return {p["id"]: p for p in (json.loads(l) for l in fh)}
+
+
+def kappa(a, b, c, d):
+    """Cohen's kappa for the 2x2 table [[a, b], [c, d]], rows = prior."""
+    n = a + b + c + d
+    if not n:
+        return None
+    po = (a + d) / n
+    pe = ((a + b) * (a + c) + (c + d) * (b + d)) / (n * n)
+    return None if pe == 1 else (po - pe) / (1 - pe)
+
+
 def main():
     log = load("search-log.json", [])
     hits = defaultdict(dict)
+    variants = {}
     for e in log:
         hits[e["phrase"]][e["db"]] = e["hits"]
+        variants[e["phrase"]] = len(e.get("variants") or [e["phrase"]])
     manifest = load("manifest.json", [])
     code = {c["dir"]: c["links"] for c in load("code-manifest.json", [])}
 
@@ -64,12 +89,20 @@ def main():
     w("")
     w("## The search")
     w("")
-    w("| phrase | PubMed | PMC |")
-    w("|---|---:|---:|")
+    w("Each phrase was searched as a family of surface forms, because PubMed "
+      "does not stem inside a quoted phrase: `\"target trial\"` returns 1930 "
+      "records and `\"target trials\"` a further 415, and the paper *Emulating "
+      "target trials to study ICU interventions* is reachable only through the "
+      "plural. The forms searched for each phrase are recorded in "
+      "`search-log.json`.")
+    w("")
+    w("| phrase | forms | PubMed | PMC |")
+    w("|---|---:|---:|---:|")
     for t in TOPIC_ORDER:
         phrase = TOPIC_PHRASE[t]
         h = hits.get(phrase, {})
-        w(f"| {phrase} | {h.get('pubmed', '-')} | {h.get('pmc', '-')} |")
+        w(f"| {phrase} | {variants.get(phrase, 1)} | "
+          f"{h.get('pubmed', '-')} | {h.get('pmc', '-')} |")
     w("")
     w(f"After deduplication on PMID, DOI, PMCID and title: "
       f"**{len(screened)} unique records**.")
@@ -91,6 +124,94 @@ def main():
     for k in ("include", "exclude"):
         w(f"- {k}: {decisions.get(k, 0)}")
     w("")
+    readers = Counter(r["screen"].get("by") or "unrecorded" for r in screened)
+    w("Every decision records who made it. " + "; ".join(
+        f"{who}: {n}" for who, n in readers.most_common()) + ".")
+    w("")
+    w("A record that could not be settled from its title was read against its "
+      "abstract in a second pass and resolved there; no record was left "
+      "undecided.")
+    w("")
+    w("Include rates differ by an order of magnitude across the phrase sets, "
+      "which is the expected shape: the narrow method names are almost all "
+      "method papers, and `target trial` alone also catches trials named "
+      "TARGET, treat-to-target regimens and forty years of attention research "
+      "on target stimuli.")
+    w("")
+    w("| set | phrase | kept | screened | rate |")
+    w("|---|---|---:|---:|---:|")
+    per_set = defaultdict(lambda: [0, 0])
+    for r in screened:
+        found = r.get("found_by") or []
+        for t in TOPIC_ORDER:
+            if t.lower() in found:
+                per_set[t][1] += 1
+                if r["screen"]["decision"] == "include":
+                    per_set[t][0] += 1
+                break
+    for t in TOPIC_ORDER:
+        kept, seen = per_set[t]
+        if not seen:
+            continue
+        w(f"| {t} | {TOPIC_PHRASE[t]} | {kept} | {seen} | "
+          f"{100 * kept / seen:.1f}% |")
+    w("")
+
+    prior = load_prior()
+    if prior:
+        tab = Counter()
+        for r in screened:
+            for k in ("pmid", "doi"):
+                v = r.get(k)
+                if v and str(v) in prior:
+                    tab[(prior[str(v)]["prior"],
+                         r["screen"]["decision"])] += 1
+                    break
+        a = tab[("likely-exclude", "exclude")]
+        b = tab[("likely-exclude", "include")]
+        c = tab[("likely-include", "exclude")]
+        d = tab[("likely-include", "include")]
+        n = a + b + c + d
+        unknown = sum(v for k, v in tab.items() if k[0] == "unknown")
+        if n:
+            k_ = kappa(a, b, c, d)
+            w("### Agreement with the earlier screen")
+            w("")
+            w("A separate review of the same field "
+              "(`tte-review`, a concordance study of emulations against their "
+              "index trials) screened an overlapping corpus and flagged which "
+              "records it judged methodological. Those flags were loaded as a "
+              "**prior** and deliberately not shown during screening, so the "
+              "two passes are independent and the comparison is a real "
+              "inter-rater statistic rather than a check of one against "
+              "itself.")
+            w("")
+            w("The two screens were also run under opposite intent. The "
+              "earlier one flagged methodological papers in order to *exclude* "
+              "them from a concordance review; here they are the target. Where "
+              "they agree, they agree despite that.")
+            w("")
+            w("| | kept here | dropped here |")
+            w("|---|---:|---:|")
+            w(f"| flagged methodological earlier | {d} | {c} |")
+            w(f"| not flagged earlier | {b} | {a} |")
+            w("")
+            w(f"- records carrying a prior: {n}"
+              + (f" (a further {unknown} had no flag either way)"
+                 if unknown else ""))
+            w(f"- raw agreement: {100 * (a + d) / n:.1f}%")
+            if k_ is not None:
+                w(f"- Cohen's kappa: {k_:.2f}")
+            w(f"- kept here but not flagged earlier: {b}")
+            w(f"- flagged earlier but dropped here: {c}")
+            w("")
+            w("The off-diagonal is the informative part. The earlier screen "
+              "also rejected 236 records as not-TTE that this one had no "
+              "reason to reject, and it did not look for benchmarking studies, "
+              "reporting guidance or data-source evaluations at all, so the "
+              "two cells are not symmetric errors: they are two different "
+              "questions asked of the same papers.")
+            w("")
     w("## What was downloaded")
     w("")
     w("| set | kept | with PDF | with XML | with supplements | with code or data |")

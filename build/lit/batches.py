@@ -63,7 +63,7 @@ def topic_of(r):
     for t in TOPIC_ORDER:
         if t in r.get("found_by", []):
             return t
-    return "nma"
+    return TOPIC_ORDER[-1]
 
 
 def squash(s, n):
@@ -177,17 +177,27 @@ def cmd_resolve(args):
     with open(DECISIONS, "a", encoding="utf8") as fh:
         for ids, d in ((inc, "include"), (exc, "exclude")):
             for i in ids:
-                fh.write(json.dumps({"id": i, "decision": d,
-                                     "batch": dec[i]["batch"]}) + "\n")
+                fh.write(json.dumps(
+                    {"id": i, "decision": d, "batch": dec[i]["batch"],
+                     "by": args.by or dec[i].get("by"), "pass": 2}) + "\n")
     print(f"resolved {len(inc)} include, {len(exc)} exclude")
 
 
 def latest():
-    """Last decision per id, so a re-decided batch supersedes the earlier pass."""
+    """Last decision per id, so a re-decided batch supersedes the earlier pass.
+
+    A later line inherits `by` from the earlier one when it does not carry its
+    own. The second pass is the same reader returning to a record they could
+    not settle from its title, so dropping the attribution there would lose it
+    for the whole record, not just for the re-read.
+    """
     out = {}
     if os.path.exists(DECISIONS):
         for line in open(DECISIONS, encoding="utf8"):
             d = json.loads(line)
+            prev = out.get(d["id"])
+            if prev and not d.get("by"):
+                d["by"] = prev.get("by")
             out[d["id"]] = d
     return out
 
@@ -247,6 +257,9 @@ def main():
     l = sub.add_parser("list")
     l.add_argument("--decision", default="uncertain")
     r = sub.add_parser("resolve")
+    r.add_argument("--by", default="",
+                   help="who made these calls. Defaults to whoever made the "
+                        "first-pass decision on the same record.")
     r.add_argument("--include", default="")
     r.add_argument("--exclude", default="")
     sub.add_parser("status")
