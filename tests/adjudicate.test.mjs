@@ -26,6 +26,34 @@ const cases = [
     ]),
     expect: 'confirmed-open' },
 
+  // The refuter is a dormant hook: no refuting auditor runs in this configuration, and
+  // INDEPENDENT does not name one, so nothing about the published verdicts depends on it. It is
+  // tested anyway. A branch that is retained and never exercised is how the sibling project
+  // ended up declaring an auditor that casts no opinions, and the point of keeping the hook is
+  // that it will work if a refuter is ever added rather than that it exists.
+  { name: 'R15: a refuter veto downgrades supported, and cannot do more than downgrade',
+    rec: mk('REF-01', [
+      { auditor: 'codex', status_vote: 'open', support_vote: 'supported', rationale: 'holds' },
+      { auditor: 'literature', status_vote: 'open', support_vote: 'supported', rationale: 'holds' },
+      { auditor: 'grok', status_vote: 'open', support_vote: 'supported', rationale: 'nothing since' },
+      { auditor: 'refuter', status_vote: 'not-a-problem', support_vote: 'overstated',
+        rationale: 'the strong form does not hold' },
+    ]),
+    // The verdict label does not move: the veto acts on the support axis only, and the status
+    // axis is untouched, so a refuter cannot reopen or close anything on its own. That is the
+    // property being pinned, and the path token is what proves the veto fired at all.
+    expect: 'confirmed-open', pathIncludes: 'R15:refuter-veto-downgrade' },
+
+  { name: 'R14: a refuter counter-quote forces a contest rather than a downgrade',
+    rec: mk('REF-02', [
+      { auditor: 'codex', status_vote: 'open', support_vote: 'supported', rationale: 'holds' },
+      { auditor: 'literature', status_vote: 'open', support_vote: 'supported', rationale: 'holds' },
+      { auditor: 'refuter', status_vote: 'open', support_vote: 'misattributed',
+        counter_evidence: [{ locator: '10.1000/x', quote: 'the cited work says the opposite' }],
+        rationale: 'the citation does not support the claim' },
+    ]),
+    expect: 'unverifiable', pathIncludes: 'R14:refuter-counter-quote-forces-contested' },
+
   { name: 'R0: a solved vote with no locator is downgraded, not counted',
     rec: mk('X-01', [
       { auditor: 'grok', status_vote: 'solved', support_vote: 'supported', rationale: 'I believe this is solved' },
