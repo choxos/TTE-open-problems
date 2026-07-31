@@ -1,0 +1,81 @@
+---
+title: "Eligibility criteria built from healthcare-use variables can induce selection through colliders"
+description: "An eligibility criterion is a conditioning statement, and conditioning on a variable that is a collider, or a relevant descendant of one, in the graph relating determinants of treatment and outcome opens a noncausal path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables: a required prior visit, a recorded baseline laboratory value, a minimum enrollment period. Being a healthcare-use variable is not sufficient for the bias, and these variables are the ones most likely to sit at the junction, because pre-baseline treatment decisions, incipient disease and the common causes of care-seeking and outcome all feed them. Nothing in the current workflow checks an eligibility definition for that structure before the analysis runs, and the reporting checklist asks what the criteria were rather than what conditioning on them does."
+pid: "ELG-02"
+topic: "Eligibility, cohort entry & the new-user question"
+categories: ["Eligibility, cohort entry & the new-user question", "Medium-high priority", "Confirmed open"]
+priority: "Medium-high"
+prank: 3
+verdict: "Confirmed open"
+verdictslug: "confirmed-open"
+maturity: "Speculative"
+tractability: 3
+---
+::: {.problem-meta}
+[ELG-02]{.problem-id}
+[Confirmed open]{.verdict .verdict-confirmed-open}
+[Medium-high priority]{.chip .chip-priority-medium-high}
+[Speculative]{.chip .chip-maturity-speculative}
+[Tractability 3/5]{.chip}
+:::
+## Statement
+
+An eligibility criterion is a conditioning statement, and conditioning on a variable that is a collider, or a relevant descendant of one, in the graph relating determinants of treatment and outcome opens a noncausal path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables: a required prior visit, a recorded baseline laboratory value, a minimum enrollment period. Being a healthcare-use variable is not sufficient for the bias, and these variables are the ones most likely to sit at the junction, because pre-baseline treatment decisions, incipient disease and the common causes of care-seeking and outcome all feed them. Nothing in the current workflow checks an eligibility definition for that structure before the analysis runs, and the reporting checklist asks what the criteria were rather than what conditioning on them does.
+
+## Why it is open
+
+Whether a criterion is a collider depends on the causal structure, which is what the study is trying to learn, so the check cannot be purely empirical. Observational data alone cannot certify the required structure: graph-learning algorithms recover a Markov equivalence class at best and are further limited by latent confounding, so they can flag candidates and never license removal. Removing a criterion also changes the target population, so the correction carries a cost that has to be argued clinically rather than statistically, and domain-grounded causal review therefore remains necessary rather than replaceable.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol 2016;183(8):758-764](https://doi.org/10.1093/aje/kwv254) | Requires eligibility to be specified as a trial would specify it, which is the discipline that makes the collider question askable at all. |
+| [Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA 2025](https://doi.org/10.1001/jama.2025.13350) | Requires the eligibility criteria and their emulation to be reported, without requiring an assessment of the selection they induce. |
+
+:::
+
+## Probable solution or research direction
+
+Build a causal-discovery eligibility auditor that combines temporal checks with graph learning under explicit assumptions, flagging criteria that are post-baseline, that are colliders, or that encode healthcare use, and treat its output as advisory input to a domain review rather than as an automatic exclusion. Evaluate it on generated graphs with known structure, scoring collider-warning sensitivity, false-positive rate, expert agreement and, decisively, whether acting on the warnings reduces bias. Never let an algorithm define eligibility by maximizing the apparent treatment effect, which is a search over estimands dressed as a design step.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Confirmed open. Auditors agreed the problem is open and no counterevidence surfaced.
+
+**The source said.** "An eligibility criterion is a conditioning statement, and conditioning on a variable that is a common effect of treatment and outcome opens a path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables such as a required prior visit, a recorded baseline laboratory value or a minimum enrollment period, all of which can be descendants of the treatment decision or of early disease. Nothing in the current workflow checks an eligibility definition for this property, and the reporting checklist asks what the criteria were rather than what conditioning on them does."
+
+**What was wrong with it.** The timing in the original was wrong. Eligibility is fixed before the time-zero treatment, so it cannot be a descendant of the treatment under study. The mechanism that does operate runs through pre-baseline treatment decisions, incipient disease and common causes of care-seeking and outcome, and it produces selection bias when the criterion is a collider or a descendant of one in the assumed graph. Being a healthcare-use variable is not by itself sufficient.
+
+Literature and prior-art check
+:   **open / supported-with-caveat.** The claim that nothing checks an eligibility definition for collider structure holds, and adjacent work is closer than the entry suggests. A 2026 npj Health Systems paper addresses eligibility-criteria-induced temporal selection directly, and machine-learning trial-eligibility emulation has been used to evaluate the generalizability of oncology trial results. A 2026 Frontiers in Medicine study uses emulation to evaluate eligibility criteria themselves in asthma and COPD. These evaluate the consequences of criteria rather than auditing them for collider structure before the analysis, which is what the entry proposes, so the specific artifact is still absent.
+    Cites 10.1038/s44401-026-00082-3: Treats selection induced by eligibility criteria as the object of study, which is the mechanism the entry names..
+    Cites 10.3389/fmed.2026.1863026: Uses emulation to evaluate eligibility criteria, showing the criteria are becoming an object of analysis rather than a fixed input..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** Conditioning on an eligibility variable opens a noncausal path only when that variable is a collider, or a relevant descendant of one, in the assumed causal structure. Being a healthcare-use variable is not sufficient. The stated treatment-to-eligibility-to-outcome timing is also imprecise: eligibility fixed before time-zero treatment cannot be caused by that subsequent treatment or its subsequent outcome. The relevant graph may instead involve prebaseline treatment decisions, incipient disease, or common causes of treatment and outcome. Causal discovery does not universally return only a Markov equivalence class; what can be oriented depends on temporal, interventional, functional-form, and latent-confounding assumptions. It nevertheless cannot certify collider status from unrestricted observational data. An advisory tool for identifying possible temporal or collider problems remains an open development problem, but the asserted medium-high severity is context dependent rather than general.
+
+Grok 4.5, recency lens
+:   **open / supported.** Inverted prior: treat collider-inducing eligibility as already audited in routine TTE workflows, then search for a method or tool that does so. Found conceptual and design literature, not a solution. Hernán and Robins (2016) already require that eligibility not use postbaseline events; that is design discipline, not an automated check of whether a healthcare-use criterion is a collider. Weiskopf et al. (2023, JAMIA) explicitly frame healthcare utilization as a common collider in EHR reuse and warn that conditioning on utilization (by selection or adjustment) opens non-causal paths; Digitale et al. (2023, J Clin Epidemiol) likewise describe collider-conditioning bias when restricting to people in care or with a disease history. Wang et al. (2026) restate that conditioning eligibility on utilization induces collider bias at cohort entry. These works strengthen that the mechanism is real; they do not supply a certified check. TARGET (Hansford et al., 2025) requires reporting of eligibility criteria and their emulation, not assessment of the selection graph those criteria induce; the entry’s reading of TARGET is accurate. Practical reviews (e.g., Tran et al., 2026) continue to document post-treatment eligibility as a frequent high-risk design error, which is evidence the gap is still live in applications. No retrieved paper or package implements a causal-discovery or temporal-rule eligibility auditor for proposed TTE criteria with evaluation on known graphs (sensitivity, false-positive rate, expert agreement, bias reduction when acting on warnings). Federated causal discovery and general DAG tools exist in adjacent literature but are not integrated into TTE protocol design or reporting checklists. Graph learning recovering only a Markov equivalence class under latent confounding remains a structural limit, as the entry states; formalizations of that limit do not close the problem. Queries run: collider + eligibility + target trial (2024–2026); healthcare utilization collider + eligibility; TARGET checklist collider/selection; causal discovery eligibility auditor TTE; CRAN/GitHub TrialEmulation, WeightIt, MatchIt, cobalt for eligibility-collider features (none found). Open as a workflow and tooling problem; prior art names the bias and forbids postbaseline criteria but does not solve systematic detection of healthcare-use colliders in eligibility definitions.
+
+glm
+:   **open / supported.** The claim is coherent and proportionate. It accurately describes how conditioning on healthcare-use variables for eligibility can induce collider bias. The reasons given for the problem being open are structurally sound: the causal structure is the target of inference, graph-learning algorithms can only flag candidates and cannot certify due to latent confounding, and removing a criterion changes the estimand. This is a claim about a real structural difficulty and current practice limitations, not an overstatement of impossibility.
+
+Decision path
+:   `R5:default-open → R9:substantiated-overstatement(n=1/4):codex`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [ELG-01 — An unrecorded eligibility criterion is indistinguishable from a criterion that was met](ELG-01-an-unrecorded-eligibility-criterion-is-indistinguishable-fro.qmd)
+- [PRO-04 — An unobservable protocol component produces a different, data-defined estimand rather than a noisy version of the intended one](PRO-04-an-unobservable-protocol-component-produces-a-different-data.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 114, the paragraph on eligibility-criterion auditing (seed-data).

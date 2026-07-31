@@ -1,0 +1,86 @@
+---
+title: "An unobservable protocol component produces a different, data-defined estimand rather than a noisy version of the intended one"
+description: "The canonical protocol has seven linked components: eligibility, treatment strategies, assignment, follow-up, outcomes, causal contrast and analysis plan. Conceptual specification and operational realization are distinct, and when a component cannot be observed the analyst substitutes a proxy. If no valid measurement, missing-data or validation model recovers the intended variable, the resulting observed-data functional generally does not identify the intended causal effect, and it does not automatically identify some other one either: naming it a different estimand requires a corresponding intervention and an identification argument. A criterion that cannot be verified is dropped and the population changes; a strategy that cannot be distinguished from its neighbor is merged and the contrast changes; an outcome that is only partly captured redefines the endpoint. Nothing in current reporting requires the operational target and its assumptions to be stated, so the paper names the intended estimand and reports a functional whose causal interpretation was never argued."
+pid: "PRO-04"
+topic: "Protocol specification & well-defined interventions"
+categories: ["Protocol specification & well-defined interventions", "Very high priority", "Partially addressed"]
+priority: "Very high"
+prank: 1
+verdict: "Partially addressed"
+verdictslug: "partially-addressed"
+maturity: "Promising"
+tractability: 4
+---
+::: {.problem-meta}
+[PRO-04]{.problem-id}
+[Partially addressed]{.verdict .verdict-partially-addressed}
+[Very high priority]{.chip .chip-priority-very-high}
+[Promising]{.chip .chip-maturity-promising}
+[Tractability 4/5]{.chip}
+:::
+## Statement
+
+The canonical protocol has seven linked components: eligibility, treatment strategies, assignment, follow-up, outcomes, causal contrast and analysis plan. Conceptual specification and operational realization are distinct, and when a component cannot be observed the analyst substitutes a proxy. If no valid measurement, missing-data or validation model recovers the intended variable, the resulting observed-data functional generally does not identify the intended causal effect, and it does not automatically identify some other one either: naming it a different estimand requires a corresponding intervention and an identification argument. A criterion that cannot be verified is dropped and the population changes; a strategy that cannot be distinguished from its neighbor is merged and the contrast changes; an outcome that is only partly captured redefines the endpoint. Nothing in current reporting requires the operational target and its assumptions to be stated, so the paper names the intended estimand and reports a functional whose causal interpretation was never argued.
+
+## Why it is open
+
+The substitution happens component by component during implementation, often in code rather than in prose, and by the time results exist there is no artifact recording which component was compromised. Stating the operational target requires a language for partially specified interventions that does not yet exist in usable form. There is also a reasonable disagreement underneath: some substitutions are innocuous refinements and others change the question, and no criterion separates them.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol 2016;183(8):758-764](https://doi.org/10.1093/aje/kwv254) | Establishes the seven components and the requirement to map each to the data, which is the framework within which the substitution becomes visible. |
+| [Moreno-Betancur M, et al. The ideal trial: defining causal estimands that balance relevance and feasibility in target trial emulations and actual randomized trials. arXiv 2024](https://arxiv.org/abs/2405.10026) | Argues that discrepancies between the ideal, target and actual trials should be made explicit, which is the general case of this specific substitution. |
+| [Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026](https://doi.org/10.1038/s41746-026-02563-z) | Works through the operational realization of each component against record data, which is where the substitutions occur in practice. |
+
+:::
+
+## Probable solution or research direction
+
+Require a component-by-component mapping table carrying each component's conceptual specification, its operational realization, and what changed between them. Where a component cannot be realized, require the operational target and its assumptions to be stated, without labeling it a causal estimand unless an intervention and an identification argument are supplied. Develop criteria, tested against benchmarking data, for which substitutions historically preserved agreement with the corresponding trial and which did not.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Partially addressed. Part of this problem is addressed by existing work; the entry names which part.
+
+**The source said.** "The canonical protocol has seven linked components: eligibility, treatment strategies, assignment, follow-up, outcomes, causal contrast and analysis plan. Conceptual specification and operational realization are distinct, and when a required component cannot be observed the analyst does not obtain a mismeasured version of the intended effect. They obtain a different effect, defined by what the data can express. A criterion that cannot be verified is dropped and the population changes; a strategy that cannot be distinguished from its neighbor is merged and the contrast changes; an outcome that is only partly captured redefines the endpoint. Nothing in current reporting requires that substitution to be named, so the paper states the intended estimand and reports the substituted one."
+
+**What was wrong with it.** Calling the result a substituted causal estimand was too strong. When an intended protocol variable is replaced by an operational proxy and no valid measurement, missing-data or validation model recovers the intended variable, the resulting observed-data functional generally does not identify the intended effect and need not identify any well-defined causal effect. Naming it an estimand requires a corresponding intervention and an identification argument, which the substitution does not supply.
+
+**Dissent.** literature dissented (open): Operational frameworks for mapping each protocol component onto record data exist, and a 2024 Frontiers in Pharmacology case study applies the estimand and target trial frameworks together to an external control analysis, which is the closest the corpus comes to naming the substituted estimand explicitly. None requires that the substituted estimand replace the intended one in the paper's headline, and none supplies criteria for which substitutions preserve the question. The entry's claim is about a reporting requirement rather than a method, and no such requirement appears in the reporting literature.
+
+Literature and prior-art check
+:   **open / supported.** Operational frameworks for mapping each protocol component onto record data exist, and a 2024 Frontiers in Pharmacology case study applies the estimand and target trial frameworks together to an external control analysis, which is the closest the corpus comes to naming the substituted estimand explicitly. None requires that the substituted estimand replace the intended one in the paper's headline, and none supplies criteria for which substitutions preserve the question. The entry's claim is about a reporting requirement rather than a method, and no such requirement appears in the reporting literature.
+    Cites 10.3389/fphar.2024.1223858: Combines the estimand framework with the target trial framework so the realized estimand is stated, which is the practice the entry asks to be made general..
+    Cites 10.1038/s41746-026-02563-z: Works through the operational realization of each component, which is where substitutions occur..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** The statement treats all failures of observation as estimand substitution, which is incorrect. Depending on the measurement and identification structure, an operational proxy may still identify the intended effect through a valid measurement-error, missing-data, or validation model; it may define a different, well-defined causal effect; or it may identify only a statistical functional with no coherent intervention-based interpretation. Dropping an eligibility criterion, merging strategies, and redefining an endpoint change the target only when the analyst actually makes those substitutions. They are not logically forced by partial observation. Conversely, simply naming a substituted estimand does not make it causal or identified. Agreement with a benchmark trial cannot determine whether an estimand was preserved because different targets and compensating biases can yield similar estimates. Component-level conceptual-to-operational mapping is important and can be decision-critical, but the universal claim and very-high-severity framing are excessive.
+
+Grok 4.5, recency lens
+:   **partially-solved / supported-with-caveat.** Conceptual naming of substituted estimands is advanced by Moreno-Betancur ideal/target/actual trials and by operational TTE frameworks (Hernán–Robins components; Wang npj Digit Med 2026 operational EHR mapping). That is partial progress on making substitution visible. Missing pieces remain: a usable language for partially specified interventions, mandatory component-by-component conceptual vs operational tables with substituted estimand as headline, and criteria validated on benchmarking data for which substitutions preserve trial agreement. Not fully solved.
+    Cites arXiv:2405.10026: Partial: explicit ideal vs target vs actual trial discrepancies so unobservable components can be named as changed estimands rather than measurement error; does not deliver component mapping tables, partial-intervention language, or benchmarking criteria for innocuous vs question-changing substitutions..
+    Cites 10.1038/s41746-026-02563-z: Partial: works through operational realization of protocol components against EHR data, the setting where component substitution occurs; does not require substituted estimands as headline quantities or validation criteria for which substitutions preserve trial agreement..
+
+glm
+:   **open / supported.** The claim is internally consistent and pitched at the right level of generality. It argues that an unobservable protocol component produces a different estimand rather than a noisy version, and that current reporting does not require naming this substitution. The reason given—that the substitution happens in code, no artifact records it, and no usable language or criterion currently exists to separate innocuous from question-changing substitutions—supports the claim that this remains an open gap in practice.
+
+Decision path
+:   `R3:partially-solved(n=1/4) → R9:substantiated-overstatement(n=1/4):codex`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [ELG-02 — Eligibility criteria built from healthcare-use variables can induce selection through colliders](ELG-02-eligibility-criteria-built-from-healthcare-use-variables-can.qmd)
+- [PRO-01 — No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error](PRO-01-no-decomposition-separates-scientific-target-mismatch-from-p.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 34 (seed-conceptual).

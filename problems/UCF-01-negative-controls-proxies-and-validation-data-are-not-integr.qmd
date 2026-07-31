@@ -1,0 +1,82 @@
+---
+title: "Negative controls, proxies and validation data are not integrated into a standard emulation workflow"
+description: "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confounding, and it does not."
+pid: "UCF-01"
+topic: "Unmeasured confounding, negative controls & bias analysis"
+categories: ["Unmeasured confounding, negative controls & bias analysis", "Very high priority", "Unverifiable"]
+priority: "Very high"
+prank: 1
+verdict: "Unverifiable"
+verdictslug: "unverifiable"
+maturity: "Promising"
+tractability: 3
+---
+::: {.problem-meta}
+[UCF-01]{.problem-id}
+[Unverifiable]{.verdict .verdict-unverifiable}
+[Very high priority]{.chip .chip-priority-very-high}
+[Promising]{.chip .chip-maturity-promising}
+[Tractability 3/5]{.chip}
+:::
+## Statement
+
+A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confounding, and it does not.
+
+## Why it is open
+
+Combining these tools is not a matter of adding evidence but of reconciling incompatible identification stories, and the joint model that would do it has to commit to one estimand, which discards the reason several tools were used. A negative control shares only some of the confounding mechanisms of the primary outcome, and how much is not knowable from the data. Proximal methods need proxies satisfying completeness-type conditions that cannot be checked, and weak proxies produce instability that reads as precision loss rather than assumption failure. Validation subsamples are rarely random, which imports a second selection problem into the correction for the first.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Hubbard RA, Hernán MA. "Target trial emulation" for observational studies: potential and pitfalls. N Engl J Med 2024](https://doi.org/10.1056/NEJMp2407586) | States plainly that emulation removes design-induced bias and leaves confounding, which is the boundary this problem sits on. |
+| [Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol 2016;183(8):758-764](https://doi.org/10.1093/aje/kwv254) | The foundational framework: it specifies the seven protocol components and their observational mapping, and locates confounding outside what the framework itself resolves. |
+
+:::
+
+## Probable solution or research direction
+
+Build an estimand-aligned joint model in which the proxies, negative controls and validation data enter as components of one identification argument, rather than seeking an order in which to apply them separately. Declare the treatment-inducing and outcome-inducing proxies and the negative controls in the protocol, and report the conventional estimate alongside E-values, bias functions, Rosenbaum-style sensitivity models, tipping-point analyses and priors on unmeasured confounding, all keyed to the same estimand so a reader sees one quantity under several assumption sets. Establish by simulation how far negative-control calibration transfers when the control shares only part of the confounding structure, which is the assumption the method makes and never states.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.
+
+**The source said.** "Specifying a target trial prevents the temporal biases an analyst inflicts on themselves; it does not create randomization. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurements all reduce residual confounding without guaranteeing exchangeability. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, exist separately and are not part of any standard emulation workflow: there is no agreed order in which to apply them, no convention for reporting what each one bought, and no accepted way to combine their answers when they disagree. Covariate balance continues to be reported as though it bore on unmeasured confounding, which it does not."
+
+**What was wrong with it.** The entry asked for an agreed order in which to apply these tools. There cannot be one: they identify under distinct, partly untestable assumptions and sometimes target different estimands, so they cannot be mechanically ordered or combined without an explicit estimand-aligned joint model. The missing thing is that joint model, not a sequence.
+
+**Dissent.** literature dissented (supported): Searching for an integrated workflow combining negative controls, proxies, instrumental variables and validation data within an emulation returned applied studies that use one of these tools, not a workflow that orders or combines them. A 2026 iScience paper shows exposure-definition sensitivity unmasking hidden confounding in a crystalloid emulation, which is a diagnostic in the family the entry describes and is a single-tool example. Proximal causal inference has been applied within an emulation for influenza vaccination and cardiovascular events, again as one method rather than as part of a standard sequence. The entry's claim is about integration and reporting convention rather than about any missing method, and nothing in the corpus supplies that. grok dissented (supported-with-caveat): Inverted-prior search treated the gap as already closed and looked for a field-standard emulation pipeline that declares negative controls, treatment/outcome proxies, proximal identification, instruments, and validation samples in the protocol, reports what each tool bought on a shared estimand, and reconciles disagreements. That standard was not found. The cited works (Hubbard–Hernán 2024; Hernán–Robins 2016) correctly locate residual confounding outside protocol design; they do not integrate residual-confounding tools into a workflow. Recent literature and software add components and occasional applications, not a consensus order or combination rule. Guo et al. (2025) run a target trial emulation under proximal causal inference with declared NCE/NCO proxies and sensitivity swaps of those controls: that is a serious applied fusion of TTE and PCI, not a field standard or a protocol template for combining PCI with E-values, bias functions, Rosenbaum models, tipping points, and external validation on one estimand. BenchExCal (Wang et al. 2025) proposes a structured benchmark–expand–calibration process that uses negative-control calibration in an emulation pipeline; the paper is a design and planned evaluation, not an established convention. Practical TTE checklists and operational EHR frameworks (e.g., Tran 2026; Nature Digital Medicine operational TTE 2026) recommend negative-control diagnostics, which softens the claim that residual tools are invisible in guidance, but still treat them as optional diagnostics rather than protocol-declared primary analyses. TARGET (JAMA 2025) is a reporting checklist for emulations; it does not prescribe proximal protocols or multi-tool reconciliation. CRAN task-view and package checks (TrialEmulation, gfoRmula, gfoRmulaICE, lmtp, ltmle, WeightIt, MatchIt, cobalt, PCL) show no merged standard that wires NCO panels, proximal estimation, validation-sample correction, and conventional estimands into one emulation API. Distributional NCO diagnosis/calibration work on medRxiv (2026) is a proposal. Sensitivity and proximal methods still rest on untestable, non-identical identification stories; papers that propose or apply methods do not solve combination under disagreement. Covariate balance remains widely reported without claiming identification of unmeasured confounding in the sources retrieved. Queries run: TTE+proximal; NCO calibration/BenchExCal/TARGET; PCI software (PCL, regression-based PCI); package/CRAN activity for TrialEmulation/gfoRmula/lmtp; guidance (TARGET, ENCePP, ICH). Net: the problem as stated (no agreed integrated residual-confounding workflow for emulations) remains open; the caveat is that TTE+PCI applications and NCO-centric calibration proposals now exist and should be cited as prior art, not as closure.
+
+Literature and prior-art check
+:   **open / supported.** Searching for an integrated workflow combining negative controls, proxies, instrumental variables and validation data within an emulation returned applied studies that use one of these tools, not a workflow that orders or combines them. A 2026 iScience paper shows exposure-definition sensitivity unmasking hidden confounding in a crystalloid emulation, which is a diagnostic in the family the entry describes and is a single-tool example. Proximal causal inference has been applied within an emulation for influenza vaccination and cardiovascular events, again as one method rather than as part of a standard sequence. The entry's claim is about integration and reporting convention rather than about any missing method, and nothing in the corpus supplies that.
+    Cites 10.1016/j.isci.2026.116584: Demonstrates one diagnostic for residual confounding inside an emulation, showing the tools are reaching applied work individually..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** The integration and reporting problem is legitimate, but several technical absolutes are wrong. Merely specifying a target trial does not prevent temporal bias; correct time-zero alignment and implementation can prevent particular design-induced biases. Active-comparator new-user designs, high-dimensional propensity scores, and richer measurements are not guaranteed to reduce confounding and can introduce bias through poor comparator or variable selection. Negative controls often diagnose or falsify rather than identify a corrected effect. Instrument relevance and some proxy-strength or rank features are assessable even though exclusion, proxy validity, and completeness relative to latent confounding are not fully testable. IV, proximal, and conventional analyses can also target different estimands, so E-values, Rosenbaum analyses, bias functions, and causal estimates are not automatically commensurate answers about one quantity. Balance on ordinary measured covariates cannot establish balance on unmeasured confounders, although validated proxies can provide indirect information. Residual confounding is decision-critical, but the absence of one universal integration workflow is primarily a standardization and triangulation problem; the asserted very-high severity and claim that the framework does nothing to secure exchangeability are inflated. No R or Python package capability is asserted here.
+
+Grok 4.5, recency lens
+:   **open / supported-with-caveat.** Inverted-prior search treated the gap as already closed and looked for a field-standard emulation pipeline that declares negative controls, treatment/outcome proxies, proximal identification, instruments, and validation samples in the protocol, reports what each tool bought on a shared estimand, and reconciles disagreements. That standard was not found. The cited works (Hubbard–Hernán 2024; Hernán–Robins 2016) correctly locate residual confounding outside protocol design; they do not integrate residual-confounding tools into a workflow. Recent literature and software add components and occasional applications, not a consensus order or combination rule. Guo et al. (2025) run a target trial emulation under proximal causal inference with declared NCE/NCO proxies and sensitivity swaps of those controls: that is a serious applied fusion of TTE and PCI, not a field standard or a protocol template for combining PCI with E-values, bias functions, Rosenbaum models, tipping points, and external validation on one estimand. BenchExCal (Wang et al. 2025) proposes a structured benchmark–expand–calibration process that uses negative-control calibration in an emulation pipeline; the paper is a design and planned evaluation, not an established convention. Practical TTE checklists and operational EHR frameworks (e.g., Tran 2026; Nature Digital Medicine operational TTE 2026) recommend negative-control diagnostics, which softens the claim that residual tools are invisible in guidance, but still treat them as optional diagnostics rather than protocol-declared primary analyses. TARGET (JAMA 2025) is a reporting checklist for emulations; it does not prescribe proximal protocols or multi-tool reconciliation. CRAN task-view and package checks (TrialEmulation, gfoRmula, gfoRmulaICE, lmtp, ltmle, WeightIt, MatchIt, cobalt, PCL) show no merged standard that wires NCO panels, proximal estimation, validation-sample correction, and conventional estimands into one emulation API. Distributional NCO diagnosis/calibration work on medRxiv (2026) is a proposal. Sensitivity and proximal methods still rest on untestable, non-identical identification stories; papers that propose or apply methods do not solve combination under disagreement. Covariate balance remains widely reported without claiming identification of unmeasured confounding in the sources retrieved. Queries run: TTE+proximal; NCO calibration/BenchExCal/TARGET; PCI software (PCL, regression-based PCI); package/CRAN activity for TrialEmulation/gfoRmula/lmtp; guidance (TARGET, ENCePP, ICH). Net: the problem as stated (no agreed integrated residual-confounding workflow for emulations) remains open; the caveat is that TTE+PCI applications and NCO-centric calibration proposals now exist and should be cited as prior art, not as closure.
+
+glm
+:   **open / supported.** The claim is internally consistent and correctly scoped as a problem of current practice (lack of standardization and integration) rather than a structural impossibility. The reasons given for it being open (incompatible identification stories, untestable assumptions differing across tools) genuinely support the claim that these tools are not currently integrated into a standard emulation workflow. The severity is proportionate to the methodological gap.
+
+Decision path
+:   `R5:default-open → R7:counter-and-support-both-present`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [LRN-03 — Learned embeddings from clinical text can carry post-treatment information into a baseline adjustment set](LRN-03-learned-embeddings-from-clinical-text-can-carry-post-treatme.qmd)
+- [UCF-02 — Sensitivity analyses vary one violated assumption at a time when several are violated together](UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 69, row 'Residual and unmeasured confounding' (seed-methodological).

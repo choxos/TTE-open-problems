@@ -1,0 +1,82 @@
+---
+title: "Subgroup effects are estimated where overlap is worst, and the groups with worst overlap are often the protected ones"
+description: "Causal forests and meta-learners estimate heterogeneous treatment effects and inherit every identification assumption of the base analysis without relaxing any of them. A subgroup analysis therefore requires subgroup-specific assessment of exchangeability, measurement validity, positivity and uncertainty, and apparent heterogeneity can reflect differential measurement or differential access rather than differential biology. Two further requirements are routinely skipped. Adaptively chosen subgroups need selection-aware inference, because the reported interval otherwise conditions on a subgroup the data chose. And restricting to regions with adequate overlap changes the target population rather than fixing the estimate, so it has to be reported as a change of question. Where the groups with the poorest support are the protected groups the analysis was undertaken to examine, that has to be demonstrated in the data at hand rather than assumed, and it is neither demonstrated nor required to be."
+pid: "LRN-04"
+topic: "Machine learning, high-dimensional adjustment & automated emulation"
+categories: ["Machine learning, high-dimensional adjustment & automated emulation", "High priority", "Partially addressed"]
+priority: "High"
+prank: 2
+verdict: "Partially addressed"
+verdictslug: "partially-addressed"
+maturity: "Promising"
+tractability: 4
+---
+::: {.problem-meta}
+[LRN-04]{.problem-id}
+[Partially addressed]{.verdict .verdict-partially-addressed}
+[High priority]{.chip .chip-priority-high}
+[Promising]{.chip .chip-maturity-promising}
+[Tractability 4/5]{.chip}
+:::
+## Statement
+
+Causal forests and meta-learners estimate heterogeneous treatment effects and inherit every identification assumption of the base analysis without relaxing any of them. A subgroup analysis therefore requires subgroup-specific assessment of exchangeability, measurement validity, positivity and uncertainty, and apparent heterogeneity can reflect differential measurement or differential access rather than differential biology. Two further requirements are routinely skipped. Adaptively chosen subgroups need selection-aware inference, because the reported interval otherwise conditions on a subgroup the data chose. And restricting to regions with adequate overlap changes the target population rather than fixing the estimate, so it has to be reported as a change of question. Where the groups with the poorest support are the protected groups the analysis was undertaken to examine, that has to be demonstrated in the data at hand rather than assumed, and it is neither demonstrated nor required to be.
+
+## Why it is open
+
+Overlap within a subgroup is a property of the data that no estimator improves, and restricting to where it holds removes the subgroups a fairness analysis exists to report on. Distinguishing effect modification from differential measurement requires validation data within each subgroup, which is scarcest where the subgroup is smallest. Honest sample splitting and selection-aware inference both cost precision in exactly the strata that are already imprecise, so the statistically correct analysis is the one least able to say anything.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Feuerriegel S, Frauen D, Melnychuk V, et al. Causal machine learning for predicting treatment outcomes. Nat Med 2024;30:958-968](https://doi.org/10.1038/s41591-024-02902-1) | States that causal machine learning supports individualized effect estimation only under the same identification assumptions as conventional methods, which is the constraint subgroup analyses routinely ignore. |
+| [Target trial emulation under nonmutually exclusive assignment. Am J Epidemiol 2026;195(4):1045](https://doi.org/10.1093/aje/kwaf018) | Shows overlap defeating advanced adjustment, which is the mechanism by which a subgroup estimate fails. |
+
+:::
+
+## Probable solution or research direction
+
+Report subgroup-specific data support, calibration and uncertainty next to every subgroup effect, so a wide and poorly supported estimate cannot be read as a finding, and show the support of protected groups in the data at hand rather than asserting it. Use honest sample splitting and selection-aware inference for adaptively chosen subgroups, and state overlap restriction as a change of target population when it is used. Evaluate not only whether benefit varies across groups but whether the emulation's identification assumptions hold equally across them, since differential measurement and differential access are alternative explanations for the same pattern.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Partially addressed. Part of this problem is addressed by existing work; the entry names which part.
+
+**The source said.** "Causal forests and meta-learners estimate heterogeneous treatment effects, and they inherit every identification assumption of the base analysis without relaxing any of them. Subgroup discovery adds three specific hazards: confounding that varies by subgroup, multiplicity across the many subgroups a flexible learner implicitly examines, and limited overlap within small strata. Apparent heterogeneity can therefore reflect differential measurement, differential healthcare access or model extrapolation rather than differential biology. The distributional problem is that the groups with the least data and the poorest overlap are frequently the protected groups whose effects the analysis was undertaken to examine, so the least reliable estimates carry the most weight in interpretation."
+
+**What was wrong with it.** The claim that protected groups have the poorest overlap is an empirical claim about a particular dataset and has to be shown there rather than assumed. Adaptive subgroup selection also needs selection-aware inference specifically, and restricting to regions of adequate overlap changes the target population rather than repairing the estimate.
+
+Literature and prior-art check
+:   **partially-solved / supported-with-caveat.** Subgroup estimation inside emulations is being done carefully in places the entry does not credit. A 2026 European Journal of Epidemiology paper extends a CONFIRM emulation to subgroups explicitly, a 2026 Alzheimer's and Dementia paper estimates heterogeneous statin effects on dementia with causal machine learning inside an emulation, and a 2026 Epidemiology paper nests a target study within a target trial specifically to evaluate intervention effects on disparities, which is the equity question the entry raises. What remains is the reporting requirement: none of these establishes that subgroup-specific data support and calibration must be reported alongside every subgroup effect, and none tests whether the emulation's assumptions differ across groups.
+    Cites 10.1097/ede.0000000000002024: Provides a framework for the equity question the entry raises, within the emulation setting..
+    Cites 10.1007/s10654-026-01379-1: A worked subgroup extension of an emulation, showing the practice exists..
+    Cites 10.1002/alz.71178: Applies causal machine learning for heterogeneity inside an emulation, which is the combination the entry describes as hazardous..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** Conditional and subgroup effects require the relevant consistency, conditional exchangeability, and positivity conditions within the target subgroups; flexible estimators do not create missing support. However, multiplicity is specifically a problem when adaptively discovered subgroups or contrasts are selected and interpreted inferentially, not an automatic defect of every conditional-effect estimator. Whether protected groups have the poorest overlap is an empirical, dataset-specific claim that must be demonstrated rather than presumed. Validation data are one way to distinguish effect modification from differential measurement, but the categorical requirement is too strong because additional measurement models or identifying assumptions may also be used. Honest estimation, shrinkage, and overlap restriction can improve inference, but shrinkage does not restore identification and restriction changes the target population. Causal-effect calibration is also not directly observable and must be defined through identifiable group-level contrasts or external validation. No package capability claim is present.
+
+Grok 4.5, recency lens
+:   **open / supported-with-caveat.** Feuerriegel et al. (2024) again bind individualized causal ML to classical identification assumptions; that supports the problem's premise without solving subgroup practice. Tools already recommended in the agenda exist in partial form: honest sample splitting in causal forests (Wager and Athey lineage), propensity trimming and common-support restriction, and various hierarchical or shrinkage approaches to unstable strata. Recent applied causal-forest work still documents poor within-stratum overlap and relies on post hoc trimming (e.g., 2025 Scientific Reports-style pipelines). What remains open is the joint operational problem the statement names: subgroup and protected-group HTE is often the scientific target; those strata systematically have the worst overlap and measurement quality; and there is no adopted standard that reports subgroup-specific data support, calibration, and differential assumption plausibility next to every CATE so that a poorly supported protected-group estimate cannot be read as a finding. Overlap is a data property no estimator repairs. Fairness-aware HTE and group-bias CATE work is active on arXiv and conference tracks but has not certified subgroup effects under differential access and measurement. Status remains open; the caveat is that honesty, trimming, and shrinkage are available components, not a field solution to protected-stratum extrapolation.
+
+glm
+:   **open / supported.** The claim is internally consistent and correctly identifies that overlap is a property of the data that cannot be fixed by the estimator, and that this disproportionately affects protected groups. The reasons given for it being open logically support the claim. The scope and severity are proportionate to the real-world cost of misinterpreting subgroup effects.
+
+Decision path
+:   `R3:partially-solved(n=1/4) → R9:substantiated-overstatement(n=1/4):codex`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [LRN-01 — Flexible estimation is presented as a remedy for identification failure](LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.qmd)
+- [OVL-01 — Positivity diagnostics describe weights instead of naming which patient histories are unsupported](OVL-01-positivity-diagnostics-describe-weights-instead-of-naming-wh.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 122, row 'Treatment-effect heterogeneity and fairness' (seed-interpretation).

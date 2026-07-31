@@ -1,0 +1,83 @@
+---
+title: "Learned embeddings from clinical text can carry post-treatment information into a baseline adjustment set"
+description: "Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. A learned representation of a clinical note is a dense summary of everything in the note, which can include the site, the treating clinician's behavior, protected characteristics and information about a treatment decision already made. An embedding whose input window is not demonstrably prior to both the assignment and the decision behind it can therefore carry post-treatment content into a nominal baseline adjustment set, and a timestamp preceding assignment does not establish that it does not. Formal treatment-leakage methods and text distillation exist and are not standard practice in emulations, and no routine test certifies that a representation encodes prognosis rather than the treatment that was about to be given."
+pid: "LRN-03"
+topic: "Machine learning, high-dimensional adjustment & automated emulation"
+categories: ["Machine learning, high-dimensional adjustment & automated emulation", "High priority", "Unverifiable"]
+priority: "High"
+prank: 2
+verdict: "Unverifiable"
+verdictslug: "unverifiable"
+maturity: "Emerging"
+tractability: 3
+---
+::: {.problem-meta}
+[LRN-03]{.problem-id}
+[Unverifiable]{.verdict .verdict-unverifiable}
+[High priority]{.chip .chip-priority-high}
+[Emerging]{.chip .chip-maturity-emerging}
+[Tractability 3/5]{.chip}
+:::
+## Statement
+
+Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. A learned representation of a clinical note is a dense summary of everything in the note, which can include the site, the treating clinician's behavior, protected characteristics and information about a treatment decision already made. An embedding whose input window is not demonstrably prior to both the assignment and the decision behind it can therefore carry post-treatment content into a nominal baseline adjustment set, and a timestamp preceding assignment does not establish that it does not. Formal treatment-leakage methods and text distillation exist and are not standard practice in emulations, and no routine test certifies that a representation encodes prognosis rather than the treatment that was about to be given.
+
+## Why it is open
+
+The causal role of an embedding dimension is not interpretable, so the standard remedy of inspecting an adjustment set does not apply. Predictiveness of treatment is the obvious test and settles nothing: a genuinely prognostic representation predicts treatment through confounding by indication, and a leaking one predicts it directly. Restricting to pre-assignment text bounds the leak without eliminating it, because a note written before treatment can describe a decision already taken, and validity therefore rests on auditable content provenance rather than on timing metadata.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026](https://doi.org/10.1038/s41746-026-02563-z) | Proposes natural language processing for eligibility extraction and phenotyping within an emulation framework. |
+| [Feuerriegel S, Frauen D, Melnychuk V, et al. Causal machine learning for predicting treatment outcomes. Nat Med 2024;30:958-968](https://doi.org/10.1038/s41591-024-02902-1) | Sets the boundary between predictive performance and causal validity that high-dimensional adjustment repeatedly crosses. |
+
+:::
+
+## Probable solution or research direction
+
+Use temporally locked encoders trained on content demonstrably prior to both the assignment and the treatment decision, and publish the provenance of that window in dates and document types rather than in prose. Adopt the existing treatment-leakage tests and text distillation methods rather than treating predictiveness as a diagnostic, and where a representation is used as a proxy, state the proximal role and the identification conditions it requires. Prefer interpretable proxy sets over indiscriminate adjustment for a high-dimensional representation whose causal role cannot be argued.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.
+
+**The source said.** "Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. The risk is specific: a learned representation of a clinical note is a dense summary of everything in the note, which can include post-treatment information, the identity of the site, the behavior of the treating clinician and protected characteristics. Adjusting for such a representation is adjusting for an object whose causal role is unknown and probably mixed, and the usual justification, that more information reduces confounding, does not hold when part of that information is a descendant of treatment."
+
+**What was wrong with it.** Two corrections. A timestamp preceding assignment is not sufficient: what matters is that the input window is demonstrably prior to both the assignment and the underlying treatment decision, which is a provenance requirement rather than a date check. And the entry's proposed test, whether the embedding predicts treatment better than structured covariates do, neither establishes nor rules out leakage. Formal treatment-leakage methods and text distillation exist without being standard.
+
+**Dissent.** grok dissented (overstated): The report frames embedding adjustment as an open risk without naming the literature that already defines and partially remediates it. Daoud, Jerzak, and Johansson (NAACL 2022) formalize treatment leakage when text is used as a confounder proxy, including leakage from pre-assignment documents that anticipate treatment. Daoud, Johansson, and Jerzak (arXiv:2601.02400, late 2025/2026) add formal definitions, four distillation methods (similarity passage removal, distant-supervision passage classification, salient-feature removal, iterative nullspace projection), and simulation plus empirical sensitivity analysis; they explicitly address the paradox that pre-timestamped text can still encode treatment. That is real prior art for detection and mitigation, not mere restatement. Residual openness remains for clinical TTE: methods are not standard in EHR phenotyping pipelines; Wang et al. (2026) still promote NLP for eligibility without a required leakage audit; temporal locking plus formal comparison of embedding-versus-structured treatment prediction is recommended in the agenda and only partially operationalized outside medicine. Sensitivity and distillation quantify or reduce leakage; they do not make an embedding's causal role fully interpretable dimension-by-dimension. The problem is therefore partially solved in the text-as-confounder literature and still under-adopted in clinical emulation practice.
+
+Literature and prior-art check
+:   **open / supported.** A search for treatment leakage, temporal locking or auditing of learned representations used as adjustment sets returned nothing in the screened corpus. The claim is therefore unrefuted and weakly evidenced: the corpus is built from target trial and g-method phrases, and work on representation leakage would most likely appear in machine learning venues that none of the eight phrases reaches. The vote is open at the confidence ceiling this project sets for searched-and-found-nothing.
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** An embedding derived from content observed after treatment assignment or after the clinical treatment decision can encode descendants of treatment and make baseline adjustment invalid. The risk is conditional on the source content and causal timing, not on representation learning or opacity by itself. A deterministic embedding of genuinely baseline variables remains baseline, and site or protected characteristics are not automatically invalid adjustment variables. Individual embedding dimensions need not be causally interpretable if the provenance and causal roles of their inputs are defensible. The proposed treatment-prediction test is not a valid leakage diagnostic: stronger prediction of assigned treatment can arise from additional legitimate confounder information, instruments, or actual leakage, and the test cannot distinguish these explanations. Likewise, merely declaring an embedding a proximal proxy is insufficient without valid proxy roles and the associated identifying conditions. No package capability claim is present.
+
+Grok 4.5, recency lens
+:   **partially-solved / overstated.** The report frames embedding adjustment as an open risk without naming the literature that already defines and partially remediates it. Daoud, Jerzak, and Johansson (NAACL 2022) formalize treatment leakage when text is used as a confounder proxy, including leakage from pre-assignment documents that anticipate treatment. Daoud, Johansson, and Jerzak (arXiv:2601.02400, late 2025/2026) add formal definitions, four distillation methods (similarity passage removal, distant-supervision passage classification, salient-feature removal, iterative nullspace projection), and simulation plus empirical sensitivity analysis; they explicitly address the paradox that pre-timestamped text can still encode treatment. That is real prior art for detection and mitigation, not mere restatement. Residual openness remains for clinical TTE: methods are not standard in EHR phenotyping pipelines; Wang et al. (2026) still promote NLP for eligibility without a required leakage audit; temporal locking plus formal comparison of embedding-versus-structured treatment prediction is recommended in the agenda and only partially operationalized outside medicine. Sensitivity and distillation quantify or reduce leakage; they do not make an embedding's causal role fully interpretable dimension-by-dimension. The problem is therefore partially solved in the text-as-confounder literature and still under-adopted in clinical emulation practice.
+    Cites https://aclanthology.org/2022.naacl-main.413/: Defines treatment leakage when text used for confounding adjustment also carries treatment signal, including leakage from pre-assignment future-referencing language; establishes the identification and estimation problem the agenda restates..
+    Cites arXiv:2601.02400: Provides formal statistical definitions of treatment leakage plus automatic and semi-automatic distillers and leakage sensitivity analysis so that text representations can be purged or stress-tested for treatment-predictive content before adjustment..
+
+glm
+:   **open / overstated.** The claim correctly identifies the risk of post-treatment leakage in learned embeddings. However, the assertion that 'no test distinguishes' a representation encoding prognosis from one encoding treatment is an overstatement of impossibility when it means that no standard or easily applicable test exists. It is a claim about current practice wearing the language of impossibility.
+
+Decision path
+:   `R3:partially-solved(n=1/4) → R7:counter-and-support-both-present`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [LRN-01 — Flexible estimation is presented as a remedy for identification failure](LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.qmd)
+- [UCF-01 — Negative controls, proxies and validation data are not integrated into a standard emulation workflow](UCF-01-negative-controls-proxies-and-validation-data-are-not-integr.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 110, row 'Unstructured text and multimodal proxies' (seed-data).

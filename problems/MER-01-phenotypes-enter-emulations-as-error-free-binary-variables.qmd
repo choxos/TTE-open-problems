@@ -1,0 +1,95 @@
+---
+title: "Phenotypes enter emulations as error-free binary variables"
+description: "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquely separated. Emulation pipelines threshold at the start and propagate none of this."
+pid: "MER-01"
+topic: "Measurement error & misclassification in routine data"
+categories: ["Measurement error & misclassification in routine data", "Very high priority", "Unverifiable"]
+priority: "Very high"
+prank: 1
+verdict: "Unverifiable"
+verdictslug: "unverifiable"
+maturity: "Promising"
+tractability: 4
+---
+::: {.problem-meta}
+[MER-01]{.problem-id}
+[Unverifiable]{.verdict .verdict-unverifiable}
+[Very high priority]{.chip .chip-priority-very-high}
+[Promising]{.chip .chip-maturity-promising}
+[Tractability 4/5]{.chip}
+:::
+## Statement
+
+Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquely separated. Emulation pipelines threshold at the start and propagate none of this.
+
+## Why it is open
+
+The interaction is nonlinear: misclassification of a time-varying confounder biases the weight and changes who is censored, so the bias does not decompose into a measurement part and a confounding part without further assumptions. Validation samples that would calibrate a phenotype are usually convenience samples from one site, and transporting a sensitivity and specificity across sites is itself an untested transport claim. Propagation is achievable without rebuilding the pipeline, by embedding a deterministic analysis in multiple imputation, posterior draws or a bootstrap, which makes the absence a matter of convention rather than of capability.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026](https://doi.org/10.1038/s41746-026-02563-z) | Describes validation-sample and probabilistic phenotype approaches to outcome misclassification in record-based studies. |
+| [Benz L, et al. Adjusting for selection bias due to missing eligibility criteria in emulated target trials. Am J Epidemiol 2025](https://doi.org/10.1093/aje/kwae471) | Shows the shape of a validation-anchored correction for one protocol component, which is the template a phenotype correction would follow. |
+
+:::
+
+## Probable solution or research direction
+
+Propagate phenotype uncertainty by embedding the existing deterministic pipeline in multiple imputation, posterior sampling or a bootstrap over the measurement model, which requires no new estimator and produces an interval that reflects the measurement. Develop validation-subsample targeted learning and Bayesian latent-class g-formula models for the cases where that is not enough, and state the transport assumption when a validation sample from one site calibrates another. Simulate sensitivity and specificity from 0.70 to 0.99 with differential misclassification odds ratios from 1 to 4, reporting bias in the estimated regime effect rather than in the phenotype, and establish how large a validation sample must be before the correction is worth its variance cost.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.
+
+**The source said.** "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care received outside the system may be incompletely captured. Methods for outcome misclassification in electronic health records increasingly use validation samples and probabilistic phenotypes. Emulation pipelines almost universally do not: a phenotype is thresholded to a binary variable at the start and treated as truth thereafter. Differential misclassification then interacts with weighting and with time-varying confounding in ways that are not intuitive, because an error in the exposure at one time propagates into the weights at every later time, and no standard analysis propagates the phenotype uncertainty at all."
+
+**What was wrong with it.** The propagation mechanism was stated too loosely. An erroneous weight factor persists in the cumulative weights of clones that remain at risk, and artificial-censoring membership changes only when the mismeasured variable enters the strategy, the eligibility rule or the censoring rule; those are different channels. The entry also implied that a pipeline must accept probabilistic inputs natively, when a deterministic pipeline embedded in multiple imputation, posterior draws or a bootstrap achieves the same propagation.
+
+**Dissent.** literature dissented (supported): Searching for phenotype uncertainty propagated through an emulation returned discussions of misclassification as a listed threat and no pipeline that accepts probabilistic treatment or outcome nodes and carries the uncertainty to the final interval. Design-bias reviews name outcome misclassification among the biases to avoid without supplying the propagation. The entry's specific claim, that the interaction between differential misclassification, weighting and time-varying confounding is not handled, is consistent with what the corpus shows. codex dissented (overstated): The underlying joint longitudinal measurement-error problem is real, but several assertions are too categorical. Prescribing, dispensing, and ingestion are distinct variables; their difference is misclassification only when the estimand targets one but the protocol measures another. In a cumulative inverse-probability weight, an erroneous treatment factor at time s remains in later cumulative products for a clone still at risk, but a clone artificially censored at s has no later weights. Mismeasurement of a time-varying confounder changes artificial-censoring membership only when that variable determines the dynamic strategy, eligibility, or censoring rule; under a static sustained strategy it can distort nuisance models without changing who is censored. The resulting biases can interact, but the defensible claim is that no unique identified additive measurement-versus-confounding decomposition generally exists without additional assumptions, not that no decomposition is possible. End-to-end propagation also does not require every estimator to accept soft inputs natively: multiple imputation, posterior draws, or a whole-pipeline bootstrap can wrap deterministic estimators. No package is named, so the claims about 'almost universally,' 'no standard analysis,' and 'most implementations' cannot be established from package ground truth. TrialEmulation 0.0.4.11 confirms one indicator-based implementation, not the asserted prevalence. The narrowed problem remains open, while uniformly assigning very-high severity is unjustified because importance depends on the estimand, error mechanism, validation information, and decision sensitivity.
+
+Literature and prior-art check
+:   **open / supported.** Searching for phenotype uncertainty propagated through an emulation returned discussions of misclassification as a listed threat and no pipeline that accepts probabilistic treatment or outcome nodes and carries the uncertainty to the final interval. Design-bias reviews name outcome misclassification among the biases to avoid without supplying the propagation. The entry's specific claim, that the interaction between differential misclassification, weighting and time-varying confounding is not handled, is consistent with what the corpus shows.
+    Cites 10.1136/bmjmed-2024-001280: Enumerates design-related biases including measurement, showing the problem is recognized within the framework without being handled quantitatively..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** The underlying joint longitudinal measurement-error problem is real, but several assertions are too categorical. Prescribing, dispensing, and ingestion are distinct variables; their difference is misclassification only when the estimand targets one but the protocol measures another. In a cumulative inverse-probability weight, an erroneous treatment factor at time s remains in later cumulative products for a clone still at risk, but a clone artificially censored at s has no later weights. Mismeasurement of a time-varying confounder changes artificial-censoring membership only when that variable determines the dynamic strategy, eligibility, or censoring rule; under a static sustained strategy it can distort nuisance models without changing who is censored. The resulting biases can interact, but the defensible claim is that no unique identified additive measurement-versus-confounding decomposition generally exists without additional assumptions, not that no decomposition is possible. End-to-end propagation also does not require every estimator to accept soft inputs natively: multiple imputation, posterior draws, or a whole-pipeline bootstrap can wrap deterministic estimators. No package is named, so the claims about 'almost universally,' 'no standard analysis,' and 'most implementations' cannot be established from package ground truth. TrialEmulation 0.0.4.11 confirms one indicator-based implementation, not the asserted prevalence. The narrowed problem remains open, while uniformly assigning very-high severity is unjustified because importance depends on the estimand, error mechanism, validation information, and decision sensitivity.
+
+Grok 4.5, recency lens
+:   **open / supported-with-caveat.** Inverted prior: searched for an end-to-end solution that lets sustained-strategy or time-varying TTE pipelines take probabilistic (non-thresholded) treatment, confounder, and outcome phenotypes and propagate differential misclassification through weights and censoring into the regime-effect interval. Nothing retrieved closes that full claim.
+
+Own citations first. Wang et al. (npj Digit Med 2026; 10.1038/s41746-026-02563-z) is an operational TTE framework paper. Available text describes validation samples and probabilistic or uncertainty-aware outcome models as tools that can account for measurement error, and separately reviews g-methods for sustained strategies. It does not deliver a validated pipeline that accepts probabilistic treatment and outcome nodes end to end, nor simulations of regime-effect bias under differential time-varying misclassification. Description of existing pieces is not resolution. Benz et al. (Am J Epidemiol 2025; 10.1093/aje/kwae471; arXiv:2406.16830) targets selection bias from missing eligibility criteria via IPW under an MAR-type assumption for eligibility ascertainment. It is a useful template for validation-anchored IPW on one protocol component; it is not phenotype measurement-error correction for time-varying exposure or confounders.
+
+Component prior art (does not close the stated gap). Hubbard, Tong, Duan, Chen (Epidemiology 2020; 10.1097/EDE.0000000000001193) give a hand-computable bias correction for continuous EHR probabilistic outcome phenotypes in association studies. Scope is outcome misclassification and association parameters, not time-varying treatment weights or sustained regimes. Edwards et al. (Am J Epidemiol 2018; 10.1093/aje/kwy028) fold sensitivity analysis for cause-of-death misclassification into the parametric g-formula; that is quantitative bias analysis, not identification with validation-anchored probabilistic nodes. Edwards et al. (RIME; PubMed 31971584, 2020) reparameterize imputation for exposure misclassification with validation data and illustrate combination with IPW for hazard ratios and risks: point-exposure misclassification with IPW, not full longitudinal differential error in exposure, confounders, and outcomes under dynamic or sustained strategies. Nab et al. (Epidemiology 2020) quantify bias from a misclassified confounder in MSM-IPW; characterization and QBA, not a solved TTE pipeline. Lu et al. (J Biomed Inform 2024; 10.1016/j.jbi.2024.104690) leverage multiple error-prone algorithm phenotypes plus a small validation set for risk-factor associations: again association, not TTE g-methods.
+
+Material that strengthens openness. Ross, Cole, et al. (Epidemiology 2024; 35(2):196–207) document challenges of transporting measurement-error parameters (sensitivity, specificity, and related bias parameters) from external validation data: this supports the report’s claim that Se/Sp transport across sites is itself an untested or fragile transport claim, not a solved step.
+
+Software (CRAN/GitHub scan). TrialEmulation, gfoRmula, gfoRmulaICE, lmtp, ltmle, survtmle, WeightIt, MatchIt, cobalt, ipw, adjustedCurves, riskRegression, and related Python stacks (zEpid, causallib, lifelines, scikit-survival) remain binary or continuous node pipelines for treatment and outcome after analyst thresholding. CRAN’s causal-inference task view points measurement-error tooling to sensitivity packages (e.g., episensr, EValue), not first-class probabilistic phenotype inputs inside sequential TTE or g-formula estimation. No merged PR or release note retrieved that closes end-to-end phenotype uncertainty in these packages through 2025–2026.
+
+Queries run (representative): Wang operational TTE DOI and Nature page/PDF; Benz kwae471/arXiv; “probabilistic phenotype” + causal/IPTW/g-formula/lmtp/ltmle/TTE 2023–2026; measurement error misclassification + MSM-IPW / g-formula / time-varying / sustained strategy; Hubbard probabilistic phenotypes; Edwards RIME and g-formula misclassification; Ross transporting measurement error; CRAN/GitHub TrialEmulation gfoRmula lmtp measurement error; TARGET/ENCePP/FDA RWE measurement error guidance cross-check. Journals and preprint venues searched via web for 2024–2026 hits on those terms.
+
+Caveat on support: the entry is faithful that standard TTE pipelines threshold phenotypes and that the nonlinear interaction of differential time-varying misclassification with weighting and censoring is not handled end to end. It would be overstated only if read as “no methods exist for any piece of phenotype error.” Pieces exist (outcome probabilistic correction in associations; exposure misclassification with IPW; g-formula outcome SA; transport problems formalized). None of those pieces, alone or as packaged software, solves the problem as stated for sustained-strategy emulation with uncertainty carried to the final interval.
+
+glm
+:   **open / supported.** The statement correctly identifies a methodological gap in target trial emulation using EHR data. It asserts that standard pipelines threshold phenotypes and do not propagate uncertainty, which is a claim about current practice rather than a structural impossibility. The reasoning given for it being open (nonlinear interaction of misclassification, transportability of validation samples, pipeline architecture limitations) is internally consistent and supports the claim being open. The scope is appropriate for a methodological research agenda, and the severity is proportionate to the risk of biased causal estimates.
+
+Decision path
+:   `R5:default-open → R7:counter-and-support-both-present`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [DTA-03 — Common data models harmonize structure without guaranteeing that the same variable means the same thing](DTA-03-common-data-models-harmonize-structure-without-guaranteeing-.qmd)
+- [ELG-01 — An unrecorded eligibility criterion is indistinguishable from a criterion that was met](ELG-01-an-unrecorded-eligibility-criterion-is-indistinguishable-fro.qmd)
+- [MIS-01 — The visit process is treated as a nuisance to be imputed rather than as part of the causal structure](MIS-01-the-visit-process-is-treated-as-a-nuisance-to-be-imputed-rat.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 107, row 'Exposure, outcome and covariate misclassification' (seed-data).

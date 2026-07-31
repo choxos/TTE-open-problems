@@ -1,0 +1,89 @@
+---
+title: "No outcome-blind procedure selects the time grid or the grace period"
+description: "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation processes alone with outcome labels masked, and treatment and observation processes without further clinical and causal assumptions cannot identify a uniquely meaningful grace period or guarantee that a grid preserves the relevant ordering. Alternative grace periods are different treatment strategies rather than alternative specifications of one, and are presented as sensitivity analyses of a single estimand."
+pid: "TZO-01"
+topic: "Time zero, alignment & time-related bias"
+categories: ["Time zero, alignment & time-related bias", "Very high priority", "Confirmed open"]
+priority: "Very high"
+prank: 1
+verdict: "Confirmed open"
+verdictslug: "confirmed-open"
+maturity: "Emerging"
+tractability: 4
+---
+::: {.problem-meta}
+[TZO-01]{.problem-id}
+[Confirmed open]{.verdict .verdict-confirmed-open}
+[Very high priority]{.chip .chip-priority-very-high}
+[Emerging]{.chip .chip-maturity-emerging}
+[Tractability 4/5]{.chip}
+:::
+## Statement
+
+An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation processes alone with outcome labels masked, and treatment and observation processes without further clinical and causal assumptions cannot identify a uniquely meaningful grace period or guarantee that a grid preserves the relevant ordering. Alternative grace periods are different treatment strategies rather than alternative specifications of one, and are presented as sensitivity analyses of a single estimand.
+
+## Why it is open
+
+The choice is made before any model is fitted, so no model can price it, and selecting by fit to the outcome is the one move that would make it a statistical problem and the move that induces selection. The clinically meaningful interval is a property of the disease and the care process rather than of the data, and no purely data-driven criterion recovers it. Published emulations overwhelmingly report a single specification: a systematic review of 14 comparative studies found the grace period unreported in 36% and ranging from 0 to 180 days when reported, with no study conducting a sensitivity analysis on it.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Hernán MA, Sauer BC, Hernández-Díaz S, Platt R, Shrier I. Specifying a target trial prevents immortal time bias and other self-inflicted injuries in observational analyses. J Clin Epidemiol 2016](https://doi.org/10.1016/j.jclinepi.2016.04.014) | Names the misalignment of eligibility, assignment and follow-up as the source of immortal time bias and shows that specifying the trial removes it. Treats the grace period as given. |
+| [Cain LE, Robins JM, Lanoy E, Logan R, Costagliola D, Hernán MA. Using observational data to emulate a randomized trial of dynamic treatment-switching strategies. Int J Epidemiol 2016;45(6):2038-2049](https://doi.org/10.1093/ije/dyv295) | Works an emulation with grace periods and dynamic switching, establishing the design without a criterion for the grace period's length. |
+| [Maringe C, Benitez Majano S, Exarchakou A, et al. Reflection on modern methods: trial emulation in the presence of immortal-time bias. Int J Epidemiol 2020;49(5):1719-1729](https://doi.org/10.1093/ije/dyaa057) | A worked clone-censor-weight example that makes the artificial censoring and its weights explicit. |
+| [Ferreira Guerra S, et al. Impact of discretization of the timeline for longitudinal causal inference methods. Stat Med 2020](https://doi.org/10.1002/sim.8710) | Shows that discretization changes the parameter and loses confounder information, and evaluates cross-validated variance as a data-support criterion for choosing a discretization. A selection tool, and not an outcome-blind one. |
+| [Optimal CD4 count for initiating HIV treatment: impact of CD4 observation frequency and grace periods, and performance of dynamic marginal structural models. Epidemiology 2014](https://doi.org/10.1097/ede.0000000000000043) | Quantifies how the optimal dynamic regime shifts with observation frequency and grace-period length. |
+| [Impact of time zero designation on estimated COVID-19 antiviral effectiveness in observational studies. Am J Epidemiol 2026](https://doi.org/10.1093/aje/kwaf221) | Compares five time-zero designations in one cohort, a worked example of the multiverse this entry asks for. |
+| [Reporting and variability of constructing medication treatment episodes in pharmacoepidemiology studies: a meta-epidemiological review. Pharmacoepidemiol Drug Saf 2020](https://doi.org/10.1002/pds.5071) | Finds the grace period unreported in 36% of 14 studies and ranging from 0 to 180 days when reported, with no study conducting a sensitivity analysis on the assumption. |
+| [Tankpinou Zoumenou H, et al. Time Partitioning in Target Trial Emulation. arXiv 2026](https://arxiv.org/abs/2603.15924) | Treats time partitioning as an unresolved problem in its own right rather than an implementation detail. |
+
+:::
+
+## Probable solution or research direction
+
+Prespecify an outcome-blind grid rule and report post-lock comparisons across plausible grids that hold the estimand fixed, so what varies is the discretization rather than the question. Present alternative grace periods as different treatment strategies with their own estimands, not as a sensitivity analysis of one. Compare landmarking, sequential trials, continuous-time g-computation, counting-process marginal structural models and clone-censor-weighting on the same generated data, scoring the proportion of within-interval ordering conflicts alongside bias and coverage, and report grid invariance as a diagnostic while stating that it reveals sensitivity rather than establishing identification.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Confirmed open. Auditors agreed the problem is open and no counterevidence surfaced.
+
+**The source said.** "An emulated protocol has to fix three times that a randomized trial fixes in one act: when eligibility is assessed, when treatment is assigned, and when follow-up begins. It also has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as a schedule of study visits. Clone-censor-weight and sequential emulation both handle the misalignment itself, but neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring is applied; a fine interval produces high-dimensional nuisance models and unstable weights. What does not exist is a procedure that selects either quantity from the treatment and observation processes alone, without touching outcome information, together with a reported measure of how far the estimate would have moved under the alternatives."
+
+**What was wrong with it.** Two additions. A selection tool for the time grid does exist, using cross-validated variance as a measure of data support, and it uses outcome information, so it is a procedure and not an outcome-blind one. And alternative grace periods are not competing specifications of one estimand: they define different treatment strategies and potentially different estimands, so presenting them as a sensitivity analysis misdescribes what is varying.
+
+Literature and prior-art check
+:   **open / supported-with-caveat.** The claim has more prior work behind it than the entry admits, and the work does not close it. Ferreira Guerra et al. investigate exactly the selection question for the time grid, showing that different discretizations change both the parameter and the information retained about time-dependent confounders, and evaluating cross-validated variance as a criterion for choosing one. That is a selection procedure, so the entry's flat claim that none exists is wrong. It is not an outcome-blind procedure, which is what the entry's own title asks for, so the qualified claim survives. On the empirical side the entry is understated rather than overstated: a systematic review of 14 DPP-4 inhibitor studies found grace periods unreported in 36% and ranging from 0 to 180 days when reported, with no study conducting a sensitivity analysis on the assumption. A 2026 study designating time zero five different ways in the same nirmatrelvir-ritonavir cohort supplies the sensitivity evidence the entry says the field lacks. Sperling and colleagues showed in 2014 that the optimal dynamic regime itself moves with CD4 observation frequency and grace-period length, which is a stronger version of the entry's claim and predates it by a decade. Supporting quotation retained here rather than as counter-evidence: [10.1002/pds.5071] Grace period was not reported in 5 (35.7%) studies and ranged from 0 days to 180 days when reported ... No studies conducted sensitivity analyses examining the effects of these assumptions on study findings.
+    Cites 10.1002/sim.8710: Shows that discretization changes the parameter and loses confounder information, and evaluates cross-validated variance as a data-support criterion for choosing a discretization with pooled longitudinal TMLE. This is a selection tool, so the entry must not claim none exists; it uses outcome information, so the outcome-blind claim stands..
+    Cites 10.1097/ede.0000000000000043: Quantifies how the optimal dynamic regime shifts with observation frequency and grace-period length, establishing the dependence the entry describes..
+    Cites 10.1093/aje/kwaf221: Compares five time-zero designations in one cohort, which is the multiverse over time zero that the entry proposes as a direction and which therefore already has a worked example..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** A narrower methodological gap remains open, but the statement conflates protocol definition, discretization, and sensitivity analysis. The grace period is part of the sustained treatment strategy: changing it generally changes the adherence rule and causal estimand, so movement across grace periods is not sensitivity of one fixed effect. Grid width can instead be a measurement or numerical-approximation choice, and grid stability is interpretable only when nested grids preserve the treatment strategy, event-ordering convention, and underlying continuous-time estimand. Treatment and visit processes alone cannot guarantee a causally adequate grid because data-generating processes with identical treatment and observation laws can have different within-interval outcome timing. Nevertheless, an outcome-blind selection rule can be prespecified and frozen, after which outcomes can be used to report a multiverse without outcome-driven selection. Coarse intervals do not inevitably reverse treatment-outcome ordering when exact timestamps are retained, and fine intervals do not inevitably create high-dimensional nuisance models or unstable weights; those consequences depend on event-time resolution, model parameterization, and positivity. Misaligned time zero and lost temporal ordering can be critical, but the absence of an automatic selector is a roadmap issue rather than uniformly very-high severity. The literature-wide assertion that no procedure exists is not established under the assigned technical-only lens.
+
+Grok 4.5, recency lens
+:   **open / supported.** Inverted-prior search did not turn up an outcome-blind procedure that selects the time-grid width or grace-period length from treatment and observation processes alone and reports how far the estimate moves under alternatives. The report's own core citation, Tankpinou Zoumenou et al. (arXiv:2603.15924, 2026), formalizes when partitioning is too fine or too coarse via structural causal models, shows that clone-censor-weight can fail when treatment affects outcome inside a period, and recommends clinical specification of partitioning rather than defaulting to data resolution. That is design guidance and a validity check, not an algorithmic, outcome-masked selector. Wanis et al. (JRSS-A 2024; arXiv:2212.11398) formalizes natural versus stochastic grace-period strategies (how treatment is distributed during a grace window) and leaves window length as a protocol input. Ferreira Guerra et al. (Stat Med 2020) and Adams, Saria, and Rosenblum (arXiv:2011.15099) quantify estimation consequences of timeline discretization; they do not choose the grid without outcome use. Continuous-time MSMs and marked-point-process weights (Ryalen/Røysland line; Kalia et al., Stat Med 2025) reduce dependence on an arbitrary binning for some sustained-treatment estimands, but they do not select a grace period, do not fix the eligibility–assignment–follow-up triad for clone or sequential emulations, and do not ship a grid-invariance diagnostic. TARGET (JAMA 2025), HARPER/STaRT-RWE-style protocol templates, and Fu et al. (BMJ 2026) require reporting interval width and grace period and teach alignment; none supply a data-only selection rule. Applied emulations often vary grace period in one-off sensitivity analyses (for example six versus twelve months); that is ad hoc robustness, not outcome-blind primary selection plus a multiverse movement measure. CRAN/GitHub surfaces for TrialEmulation, gfoRmula, gfoRmulaICE, lmtp, ltmle, concrete, CICI, WeightIt, ipw, adjustedCurves, riskRegression, zEpid, and related tools treat interval unit and grace length as user arguments, with no merged PR implementing outcome-masked grid or grace selection. Queries covered the problem's prior_work list; grace-period/time-grid/partitioning terms in AJE, Epidemiology, IJE, EJE, JCE, PDS, Stat Med, Biometrics/Biostatistics, BMJ/JAMA family, 2024–2026; arXiv stat.ME and medRxiv; multiverse/specification-curve + grace or time-zero; continuous-time MSM/g-computation; visit-intensity or observation-process interval selection; and package activity. Proposal, formalization, and sensitivity practice leave the stated gap open.
+
+glm
+:   **open / supported.** The claim asserts a methodological gap: no outcome-blind procedure currently exists for selecting the time grid or grace period, nor is there a standard for reporting sensitivity to these choices. The reason given (that outcome-based selection induces selection bias, and clinical intervals are not purely data-driven) coherently supports why this gap exists and why it remains open. The claim is pitched at the right level of generality, describing a current absence in practice rather than a structural impossibility, as evidenced by the proposed direction to build such a procedure.
+
+Decision path
+:   `R5:default-open → R9:substantiated-overstatement(n=1/4):codex`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [GMT-02 — Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved](GMT-02-identification-of-dynamic-regimes-in-continuous-time-under-t.qmd)
+- [SEQ-01 — Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals](SEQ-01-sequential-emulation-creates-repeated-participation-and-cale.qmd)
+- [STR-01 — No procedure defines clinically defensible equivalence classes of treatment versions](STR-01-no-procedure-defines-clinically-defensible-equivalence-class.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 66, row 'Time zero, grace periods and temporal resolution' (seed-methodological).

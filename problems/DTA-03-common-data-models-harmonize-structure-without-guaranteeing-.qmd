@@ -1,0 +1,80 @@
+---
+title: "Common data models harmonize structure without guaranteeing that the same variable means the same thing"
+description: "Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within one site. Multi-source linked databases are associated with better emulation of trials, which makes linkage decisions consequential rather than administrative. Common data models solve the structural half and do not guarantee semantic equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications. Semantic drift is invisible in the analytic dataset, because the column is populated and the values are in range."
+pid: "DTA-03"
+topic: "Data sources, linkage & federated infrastructure"
+categories: ["Data sources, linkage & federated infrastructure", "High priority", "Confirmed open"]
+priority: "High"
+prank: 2
+verdict: "Confirmed open"
+verdictslug: "confirmed-open"
+maturity: "Promising"
+tractability: 4
+---
+::: {.problem-meta}
+[DTA-03]{.problem-id}
+[Confirmed open]{.verdict .verdict-confirmed-open}
+[High priority]{.chip .chip-priority-high}
+[Promising]{.chip .chip-maturity-promising}
+[Tractability 4/5]{.chip}
+:::
+## Statement
+
+Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within one site. Multi-source linked databases are associated with better emulation of trials, which makes linkage decisions consequential rather than administrative. Common data models solve the structural half and do not guarantee semantic equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications. Semantic drift is invisible in the analytic dataset, because the column is populated and the values are in range.
+
+## Why it is open
+
+Detecting drift requires the mapping history and a comparison across extracts, and both are normally discarded once the analytic file is built, so the evidence that would settle it is destroyed rather than merely unexamined. Linkage error is also non-random, correlating with the same social and health-system factors that predict treatment and outcome, which makes it a confounded measurement error rather than noise. And propagating linkage uncertainty correctly needs an explicit model of the linkage mechanism, which is exactly what a probabilistic linkage supplies only partially.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Concordance between target trial emulation and randomised controlled trials: systematic review and meta-analysis. BMJ 2025](https://doi.org/10.1136/bmj-2025-086810) | Finds that closer design emulation and better outcome emulation predict agreement with trials, and that claims-based emulations tended to underestimate trial effects, which is where data provenance becomes measurable. |
+| [Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026](https://doi.org/10.1038/s41746-026-02563-z) | Sets out the operational mapping from source fields to protocol components, the level at which provenance would have to be recorded. |
+
+:::
+
+## Probable solution or research direction
+
+Maintain provenance graphs from source field to analytic variable and publish them, so a reader can see which code set produced an outcome and when it changed. Run phenotype invariance and temporal-drift checks as standard diagnostics, and report leave-one-source-out analyses so each linked source's contribution is visible. Propagate linkage uncertainty under stated assumptions about the linkage mechanism, and report a linkage sensitivity analysis rather than treating a probabilistic weight as though it converted bias into variance.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Confirmed open. Auditors agreed the problem is open and no counterevidence surfaced.
+
+**The source said.** "Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within a site. Multi-source linked databases are associated with better emulation of trials, which makes the linkage decisions consequential rather than administrative. Common data models solve the structural half of this and do not guarantee semantic or causal equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications."
+
+**What was wrong with it.** The statement stands; the proposed direction did not. Carrying probabilistic linkage weights into the estimator does not turn linkage bias into variance and does not by itself guarantee unbiased estimation. Propagating linkage uncertainty requires stating the assumptions under which the propagation is valid.
+
+Literature and prior-art check
+:   **open / supported.** A search for linkage or common-data-model work addressing semantic drift, provenance graphs or phenotype invariance returned nothing in the screened corpus. The concordance meta-analysis provides indirect support by finding that claims-based emulations tended to underestimate trial effects and that outcome-emulation quality predicted agreement, which is the data-provenance channel operating without being measured directly. The absence is the evidence here, so the confidence is capped: informatics venues indexed outside these eight phrases would not have been retrieved.
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** It is technically correct that a common data model standardizes representation without guaranteeing semantic, measurement, or causal equivalence. Versioned provenance and temporal validation are therefore important. Several stronger assertions are not generally correct. Semantic drift is not necessarily invisible in an analytic dataset; prevalence discontinuities, distribution shifts, coding transitions, and changes in associations can flag it, although provenance is usually needed to explain it. Linkage error is not inherently nonrandom and should not generically be called confounded measurement error: depending on the linkage mechanism, it can induce selection bias, exposure or outcome misclassification, or little bias. Most importantly, carrying probabilistic linkage weights into a causal estimator does not automatically convert hidden bias into interval width. That requires a calibrated linkage model, compatible integration with treatment and censoring estimation, and valid uncertainty propagation; differential or misspecified linkage can leave substantial bias. Provenance graphs, drift checks, and leave-one-source-out analyses are useful diagnostics but cannot prove semantic invariance or identify linkage bias by themselves. The issue is critical when key eligibility, treatment, confounder, or outcome variables are affected, but otherwise may be a robustness and provenance roadmap item.
+
+Grok 4.5, recency lens
+:   **open / supported.** The core claim is still true and was not overturned by 2024-2026 literature or software: common data models (OMOP and peers) standardize structure and vocabulary mapping, but do not guarantee semantic or causal equivalence of analytic variables across sites or years, and the mapping history and extract versions needed to check drift are still rarely published with target trial emulations. TARGET (2025) improves reporting of how the trial protocol is mapped to observational data, and OHDSI tools (DataQualityDashboard, CohortDiagnostics, standardized vocabularies) improve structural quality and phenotype characterization, but neither certifies that the same column means the same clinical construct. Work that partially implements pieces of the proposed direction exists and should not be ignored: Guha and Reiter (2024) fuse Bayesian probabilistic record linkage with causal estimators so linkage uncertainty propagates into treatment-effect inference rather than being collapsed to a hard match (bipartite two-file setting, evaluated in simulation and survey data, not multi-source claims-EHR-registry TTE as standard practice); Johns, Baum, and Prasser (2025) track provenance through clinical-warehouse ETL for quality management; semi-automated linkage provenance prototypes appear in the data-linkage literature. Those are proposals or infrastructure for components of the agenda, not a solved provenance-plus-invariance-plus-leave-one-source-out standard for multi-source TTE. The BMJ 2025 concordance review supports that design and outcome emulation quality matter for trial agreement, which makes provenance consequential, but does not itself close the semantic-equivalence gap. Searches for phenotype temporal-drift diagnostics, published source-to-analytic provenance graphs in TTE, and routine leave-one-source-out multi-source analyses as standard practice returned methods papers and tools, not field resolution. Vote open; partial methods noted in rationale without over-crediting them as solutions.
+
+glm
+:   **open / supported.** The statement is internally consistent and correctly distinguishes structural harmonization from semantic equivalence. The claim that common data models solve the structural half without guaranteeing semantic equivalence is proportionate. The reasons provided for it being open (semantic drift is invisible in the analytic dataset, mapping histories are discarded, and linkage error is non-random) logically entail that the problem is currently open.
+
+Decision path
+:   `R5:default-open → R9:substantiated-overstatement(n=1/4):codex`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [DTA-01 — Data-fitness assessment is narrative and has no thresholds that would stop a study](DTA-01-data-fitness-assessment-is-narrative-and-has-no-thresholds-t.qmd)
+- [DTA-02 — Averaging site estimates in a federated emulation can conceal that the sites emulated different trials](DTA-02-averaging-site-estimates-in-a-federated-emulation-can-concea.qmd)
+- [MER-01 — Phenotypes enter emulations as error-free binary variables](MER-01-phenotypes-enter-emulations-as-error-free-binary-variables.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 109, row 'Data linkage, provenance and temporal drift' (seed-data).

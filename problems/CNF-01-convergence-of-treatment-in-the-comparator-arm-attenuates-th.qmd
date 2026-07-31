@@ -1,0 +1,87 @@
+---
+title: "Convergence of treatment in the comparator arm attenuates the observational intention-to-treat analogue with follow-up length"
+description: "The observational analogue of an intention-to-treat effect contrasts assigning initiation now against not initiating now, and in that contrast the comparator group does not stay untreated: patients frequently initiate later. Reduced separation between the treatment histories can move the estimated effect at longer horizons, in a direction and by an amount that depend on the treatment-effect dynamics, the switching mechanism, the competing events and the effect scale. This is a feature of the estimand rather than a bias to be removed, and it occurs in randomized trials too. What emulations do not do is report it: the cumulative incidence of initiation in each arm over follow-up is rarely published, so a reader cannot judge how far the contrasted strategies stayed distinct, and a null result at a long horizon cannot be read against the convergence that actually occurred."
+pid: "CNF-01"
+topic: "Confounding control & the assignment assumption"
+categories: ["Confounding control & the assignment assumption", "High priority", "Overstated"]
+priority: "High"
+prank: 2
+verdict: "Overstated"
+verdictslug: "overstated"
+maturity: "Established"
+tractability: 4
+---
+::: {.problem-meta}
+[CNF-01]{.problem-id}
+[Overstated]{.verdict .verdict-overstated}
+[High priority]{.chip .chip-priority-high}
+[Established]{.chip .chip-maturity-established}
+[Tractability 4/5]{.chip}
+:::
+## Statement
+
+The observational analogue of an intention-to-treat effect contrasts assigning initiation now against not initiating now, and in that contrast the comparator group does not stay untreated: patients frequently initiate later. Reduced separation between the treatment histories can move the estimated effect at longer horizons, in a direction and by an amount that depend on the treatment-effect dynamics, the switching mechanism, the competing events and the effect scale. This is a feature of the estimand rather than a bias to be removed, and it occurs in randomized trials too. What emulations do not do is report it: the cumulative incidence of initiation in each arm over follow-up is rarely published, so a reader cannot judge how far the contrasted strategies stayed distinct, and a null result at a long horizon cannot be read against the convergence that actually occurred.
+
+## Why it is open
+
+The convergence is a property of the strategy contrast, so it cannot be adjusted away without changing to a per-protocol estimand that carries its own assumptions, and methods for that exist. The reporting gap is what remains, and it persists because the trajectories are an extra analysis that weakens no result and strengthens none. There is also no convention for choosing the horizon at which an open-ended no-initiation arm is still a meaningful comparator, and the rate of convergence depends on the health system and calendar period rather than on anything intrinsic to the treatment.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol 2016;183(8):758-764](https://doi.org/10.1093/aje/kwv254) | Defines the observational analogues of the intention-to-treat and per-protocol effects and states what each requires. |
+| [Cain LE, Robins JM, Lanoy E, Logan R, Costagliola D, Hernán MA. Using observational data to emulate a randomized trial of dynamic treatment-switching strategies. Int J Epidemiol 2016;45(6):2038-2049](https://doi.org/10.1093/ije/dyv295) | Handles later initiation and switching explicitly through dynamic strategies, which is the design response to convergence. |
+| [Statistical methods to adjust for treatment switching in real-world clinical studies: a scoping review and decision framework. Clin Pharmacol Ther 2025](https://doi.org/10.1002/cpt.70013) | Catalogs the available methods for treatment switching and supplies a framework for choosing among them, which is the body of work the entry originally overlooked. |
+| [Caution in handling switchers in pharmacoepidemiologic studies estimating treatment effects. Am J Epidemiol 2026](https://doi.org/10.1093/aje/kwaf044) | Sets out the analytic hazards specific to switchers in effect estimation. |
+| [Addressing treatment switching in the ALTA-1L trial with g-methods: exploring the impact of model specification. BMC Med Res Methodol 2024](https://doi.org/10.1186/s12874-024-02437-6) | Applies g-methods to switching and examines how sensitive the result is to specification. |
+
+:::
+
+## Probable solution or research direction
+
+Report the cumulative incidence of initiation in both arms over follow-up alongside the effect estimate, so the separation between strategies is visible rather than assumed. Prefer contrasts that name the later initiation explicitly, such as initiate now versus initiate on a stated clinical trigger, over an open-ended no-initiation arm the data will not sustain, and use the existing switching methods when the per-protocol question is the one being asked. Quantify by simulation how a given convergence rate moves the estimate at each horizon under different effect dynamics, so the reader has something to read a null against.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Overstated. 2 independent auditors judged the claim as stated too strong. Methods for handling treatment switching exist and have been reviewed; emulations do not conventionally report initiation trajectories in both arms, so a reader cannot judge how far the contrasted strategies remained distinct over follow-up.
+
+**The source said.** "The observational analogue of an intention-to-treat effect contrasts assigning initiation now against not initiating now. Two things then happen that do not happen in a randomized trial. Assignment is confounded, so the contrast requires baseline adjustment to mean anything. And the comparator group does not stay untreated: patients assigned to no initiation now frequently initiate later, so with longer follow-up the two strategies converge and the estimated effect attenuates toward the null for reasons that have nothing to do with the treatment's efficacy. The attenuation is a function of the follow-up horizon and of local prescribing behavior, and it is rarely reported as such, so an emulation with long follow-up and a null result cannot be distinguished from one where the treatment does not work."
+
+**What was wrong with it.** Two errors. Crossover into the comparator arm happens in randomized trials as well, so it is not something that happens only in an emulation. And attenuation toward the null is not guaranteed: the direction and size depend on the treatment-effect dynamics, the switching mechanism, competing events and the effect scale, so a convergence rate alone does not determine an attenuation factor. Methods for handling treatment switching also exist and have been reviewed, which the entry did not acknowledge.
+
+Literature and prior-art check
+:   **partially-solved / overstated.** The entry treats comparator convergence as an unhandled feature of the observational intention-to-treat analogue. Treatment switching is a well-developed area with its own methods and its own scoping review. A 2025 Clinical Pharmacology and Therapeutics scoping review catalogs statistical methods to adjust for treatment switching in real-world studies and offers a decision framework for choosing among them. A 2026 American Journal of Epidemiology paper warns specifically about how switchers are handled in pharmacoepidemiologic effect estimation, and a 2024 BMC Medical Research Methodology paper applies g-methods to switching in the ALTA-1L trial. The entry's implicit claim that the analyst has no options is wrong. What survives is narrower and still real: reporting the cumulative incidence of initiation in both arms is not conventional, so a reader cannot see how far the strategies stayed distinct, and no convention exists for choosing the horizon at which the contrast remains meaningful.
+    Cites 10.1002/cpt.70013: Catalogs the available methods and supplies a framework for choosing among them, which contradicts the entry's implication that convergence cannot be addressed..
+    Cites 10.1093/aje/kwaf044: Addresses the specific analytic hazard of switchers in effect estimation..
+    Cites 10.1186/s12874-024-02437-6: Applies g-methods to switching and examines the sensitivity of the result to specification..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **partially-solved / overstated.** The valid core is that a baseline-assignment, treatment-policy analogue permits subsequent initiation, so increasing crossover can reduce exposure separation and may dilute the assignment effect. This is part of that estimand, not confounding bias to be adjusted away. However, crossover also occurs in randomized trials, so it is not uniquely observational. Convergence of current treatment status does not imply convergence of cumulative exposure histories, and attenuation toward the null with longer follow-up is not guaranteed: its direction and magnitude depend on treatment timing, effect dynamics, switching mechanisms, competing events, and the effect scale. A convergence rate alone therefore cannot determine an attenuation factor. Nor does a null estimate become categorically indistinguishable from biological inefficacy; treatment trajectories, alternative sustained or dynamic-strategy estimands, and assumption-based analyses can clarify interpretation, although they cannot identify a decomposition without additional assumptions. Existing target-trial and dynamic-strategy methods substantially address the design problem; context-specific horizon selection and adequate trajectory reporting remain unresolved practice issues. High severity is justified only when the reported estimand is mischaracterized or exposure separation is inadequate for the intended decision.
+    Cites 10.1093/aje/kwv254: Provides the distinction between observational analogues of intention-to-treat and per-protocol effects and the corresponding design and adjustment requirements..
+    Cites 10.1093/ije/dyv295: Shows that later initiation and switching can be specified explicitly as dynamic strategies rather than treated as an unaddressable convergence problem..
+
+Grok 4.5, recency lens
+:   **open / supported.** Under an inverted prior, the open components of CNF-01 were treated as likely already closed by method, reporting guidance, or software; searches do not support that closure. The phenomenon itself is long recognized: observational assignment-to-initiate contrasts are confounded at baseline, and later initiation in the non-initiator arm dilutes the observational intention-to-treat (ITT) analogue as follow-up lengthens. Hernán and Hernández-Díaz (Clin Trials 2012; doi:10.1177/1740774511420743) document ITT dilution under nonadherence and argue for careful per-protocol (PP) work in comparative effectiveness. Hernán and Robins (Am J Epidemiol 2016; doi:10.1093/aje/kwv254), already cited, define observational ITT versus PP analogues and what each requires; they do not supply a reporting convention that forces cumulative initiation trajectories in both arms beside the effect estimate, nor a rule for a still-meaningful horizon. Cain et al. (Int J Epidemiol 2016; doi:10.1093/ije/dyv295), also already cited, is the main design response: name later initiation via dynamic strategies rather than an open-ended never-initiate arm. That changes the estimand; it does not identify or “debias” the attenuated ITT contrast under realistic crossover. Recent restatements keep the issue open rather than solved. Terman (Neurology 2025; doi:10.1212/WNL.0000000000214269) states that the ITT effect is typically attenuated to the degree patients switch after assignment, with a statin initiator versus noninitiator example where PP was stronger than ITT. Molero-Calafell et al. (J Clin Epidemiol 2024) restate that ITT can dilute effects when adherence differs. TARGET (Cashin et al., JAMA 2025; doi:10.1001/jama.2025.13350) is the strongest recent reporting push: it requires naming the causal contrast (assignment versus adherence), mapping strategies to data, and reporting sensitivity to design and analysis choices. From published summaries of the 21-item checklist, it does not mandate cumulative incidence of treatment initiation in both arms over follow-up as a standard diagnostic of strategy convergence, and it does not establish a horizon convention for when an initiate-now versus not-now contrast remains interpretable. STaRT-RWE, HARPER, NICE RWE framework, FDA RWE/data-source materials, ENCePP, and ICH E9(R1) improve estimand language and protocol structure generally; none close the specific CNF-01 gap that a long-horizon null observational ITT cannot be read against the convergence that produced it. Package checks (TrialEmulation, gfoRmula, lmtp, ltmle, WeightIt, MatchIt, cobalt, riskRegression, adjustedCurves, zEpid, causallib) show outcome cumulative-incidence tools and ITT/PP estimation, not a merged standard for dual-arm treatment-trajectory diagnostics or horizon-linked attenuation simulation. No 2024–2026 paper was found that (i) evaluates a field convention for publishing initiation trajectories beside the ITT estimate, (ii) defines a horizon rule for when the strategies remain distinct enough, or (iii) ships a validated simulation tool mapping observed convergence rates to expected attenuation at each horizon. Proposal and restatement are not resolution. Convergence remains a feature of the ITT strategy contrast under later initiation; PP or dynamic redesigns answer a different question. Status therefore remains open as stated. Queries run: observational ITT attenuation/dilution with later initiation and comparator crossover; target trial emulation treatment trajectories and cumulative initiation in both arms; TARGET/Cashin/Hansford reporting items on adherence and trajectories; Cain/Hernán prior art on dynamic strategies and ITT analogues; arXiv/medRxiv 2024–2026 TTE ITT crossover; CRAN/GitHub activity for TrialEmulation, gfoRmula, lmtp and related packages; FDA/EMA/NICE/ENCePP/STaRT-RWE/HARPER 2024–2026 guidance on adherence and ITT in observational emulations.
+
+glm
+:   **open / supported.** The statement is internally consistent and correctly identifies a structural feature of the observational ITT analogue (convergence of strategies over time) rather than a removable bias. The reason given for the problem being open—that convergence is intrinsic to the strategy contrast, rarely reported, and lacks a convention for horizon selection—actually supports its open status. The scope is appropriate: it correctly limits the claim to the ITT analogue and acknowledges that dynamic strategies (per-protocol) are a design response, not a fix for the ITT contrast itself. The severity is proportionate because an unreported convergence can lead to a misinterpretation of a null result.
+
+Decision path
+:   `R3:partially-solved(n=2/4) → R8:overstated-majority(n=2/4)`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [EST-03 — A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible](EST-03-a-hazard-ratio-is-reported-where-the-estimand-was-a-weighted.qmd)
+- [STR-01 — No procedure defines clinically defensible equivalence classes of treatment versions](STR-01-no-procedure-defines-clinically-defensible-equivalence-class.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 52, the estimand table row for the baseline assignment analogue (seed-conceptual).

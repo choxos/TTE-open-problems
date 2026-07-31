@@ -1,0 +1,83 @@
+---
+title: "Automated protocol translation can change the estimand while producing valid code"
+description: "Systems now translate trial descriptions into cohort definitions or analysis code, and natural language processing extracts eligibility information from unstructured notes. The failure mode is not that they crash. It is that validly executing code implements a different estimand: a mistranslated temporal condition, an ambiguous eligibility phrase resolved to the wrong operationalization, a join that reads treatment before eligibility as treatment after it. None of that is visible in the output, which is a working pipeline returning a plausible number, and downstream numerical plausibility does not validate the translation. Semantic fidelity is testable, against independently specified protocols, expert annotations, reference implementations and synthetic patients built so each temporal condition has a case that distinguishes the correct reading from the plausible wrong one. No such regime is required or routine, and the artifact under review remains the number rather than the specification."
+pid: "LRN-02"
+topic: "Machine learning, high-dimensional adjustment & automated emulation"
+categories: ["Machine learning, high-dimensional adjustment & automated emulation", "High priority", "Confirmed open"]
+priority: "High"
+prank: 2
+verdict: "Confirmed open"
+verdictslug: "confirmed-open"
+maturity: "Emerging"
+tractability: 4
+---
+::: {.problem-meta}
+[LRN-02]{.problem-id}
+[Confirmed open]{.verdict .verdict-confirmed-open}
+[High priority]{.chip .chip-priority-high}
+[Emerging]{.chip .chip-maturity-emerging}
+[Tractability 4/5]{.chip}
+:::
+## Statement
+
+Systems now translate trial descriptions into cohort definitions or analysis code, and natural language processing extracts eligibility information from unstructured notes. The failure mode is not that they crash. It is that validly executing code implements a different estimand: a mistranslated temporal condition, an ambiguous eligibility phrase resolved to the wrong operationalization, a join that reads treatment before eligibility as treatment after it. None of that is visible in the output, which is a working pipeline returning a plausible number, and downstream numerical plausibility does not validate the translation. Semantic fidelity is testable, against independently specified protocols, expert annotations, reference implementations and synthetic patients built so each temporal condition has a case that distinguishes the correct reading from the plausible wrong one. No such regime is required or routine, and the artifact under review remains the number rather than the specification.
+
+## Why it is open
+
+Temporal logic is where these systems fail and where testing is hardest: the difference between treatment before eligibility assessment and treatment after it is one word in the specification and one join condition in the code, and both execute. A gold-standard cohort for a real dataset is often unavailable, which removes the most direct test and leaves the indirect ones, each of which costs the effort the automation was adopted to save. The systems are also spreading faster than any validation convention, now reaching concept-set authoring as well as protocol translation.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Kim, et al. From study design to executable code: automating target trial emulation with large language models. JAMIA Open 2026](https://doi.org/10.1093/jamiaopen/ooag131) | Builds the translation from study design to executable emulation code, which is the system whose failure modes this problem concerns. |
+| [Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026](https://doi.org/10.1038/s41746-026-02563-z) | Specifies the operational mapping from protocol component to record-level definition, which is the interface a compiler would have to respect. |
+
+:::
+
+## Probable solution or research direction
+
+Treat automation as a constrained compiler: a human-authored causal specification, a typed intermediate representation, and data-source-specific code generated from it, with temporal-logic validation applied to the intermediate representation rather than to the output. Require unit tests over synthetic patients constructed so that each temporal condition has a case distinguishing the correct reading from the plausible wrong one, and test semantic fidelity against independently specified protocols and reference implementations where they exist. Require dual human sign-off on the specification and the generated cohort counts, and publish both, so what is reviewed is the specification and not the estimate.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Confirmed open. Auditors agreed the problem is open and no counterevidence surfaced.
+
+**The source said.** "Systems now translate trial descriptions into cohort definitions or analysis code, and natural language processing extracts eligibility information from unstructured notes. The failure mode of these systems is not that they crash. It is that they silently substitute a different estimand: mistranslating a temporal condition, resolving an ambiguous eligibility phrase to the wrong operationalization, or emitting code that is syntactically valid and causally invalid. None of these failures is visible in the output, which is a working pipeline returning a plausible number. What is missing is a validation regime that treats generated code as an untrusted artifact rather than as a productivity gain."
+
+**What was wrong with it.** The entry argued that validation is impossible because the correct cohort is what the pipeline was built to produce. That is too strong: semantic fidelity can be tested against independently specified protocols, expert annotations, reference implementations and synthetic temporal boundary cases even when a gold-standard cohort for the real dataset is unavailable.
+
+**Dissent.** literature dissented (supported): Automated translation from study design to executable emulation code exists, and agentic authoring of OMOP concept sets from natural language is now being attempted, so the systems the entry describes are real and multiplying. Nothing in the corpus supplies the validation regime the entry asks for: no typed intermediate representation, no temporal-logic validation, no synthetic test patients constructed to distinguish the correct reading of a temporal condition from the plausible wrong one, and no dual sign-off requirement. The gap between capability and validation is the claim, and the corpus shows only the capability half.
+
+Literature and prior-art check
+:   **open / supported.** Automated translation from study design to executable emulation code exists, and agentic authoring of OMOP concept sets from natural language is now being attempted, so the systems the entry describes are real and multiplying. Nothing in the corpus supplies the validation regime the entry asks for: no typed intermediate representation, no temporal-logic validation, no synthetic test patients constructed to distinguish the correct reading of a temporal condition from the plausible wrong one, and no dual sign-off requirement. The gap between capability and validation is the claim, and the corpus shows only the capability half.
+    Cites 10.1093/jamiaopen/ooag131: Builds the translation the entry is concerned about, which establishes the capability without supplying the validation..
+    Cites 10.64898/2026.06.02.26354704: Extends automation to phenotype definition, which is the component where a silent error changes the cohort..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** Executable code can silently change eligibility, time zero, assignment, follow-up, or the resulting estimand, so the core risk is real. However, it is false that such errors are necessarily invisible or that no reference answer can exist. Independently authored specifications, expert-labeled records, hand-coded reference implementations, differential testing, and synthetic boundary-case patients can provide component-level or end-to-end reference answers. The report's own proposed synthetic-patient tests contradict the categorical no-reference-answer claim. Agreement of a downstream effect estimate is insufficient evidence of semantic correctness, but evaluating against an external randomized benchmark is not literally circular. Typed intermediate representations and temporal tests reduce risk without proving semantic equivalence for every real-world mapping. No package capability claim is present.
+
+Grok 4.5, recency lens
+:   **open / supported.** Kim et al. (JAMIA Open 2026; THESEUS) and Wang et al. (npj Digit Med 2026) build or specify automated protocol-to-code and operational EHR mappings; they are the systems whose silent estimand-shift risk the problem names, not fixes of that risk. Lee et al. (JMIR Med Inform 2025) validate LLM-generated trial-criteria queries for functional correctness, which is partial operational testing but not temporal-logic unit tests that distinguish treatment-before versus treatment-after eligibility. Girshovitz, Zeltzer, and Gilad-Bachrach (arXiv:2607.21173, 2026) propose ARA: structured protocol intermediate form, SCM synthetic failure scenarios, and adversarial validation so that silent success is replaced by visible protocol or diagnostic failure. That is closely aligned with the report direction, yet it is a proposal with a small econometric-style benchmark; it does not establish a standard validation regime for TTE automation, dual human sign-off on specification and cohort counts, or synthetic patients that isolate each temporal join. Guidance (TARGET 2025 reporting; FDA/EMA RWE documents) addresses transparency of human-designed emulations, not untrusted machine-generated code. No CRAN or GitHub merge was found that ships a constrained TTE compiler with temporal unit tests. Silent estimand substitution under syntactically valid pipelines remains open.
+
+glm
+:   **open / supported.** The claim is internally consistent and correctly identifies the silent estimand substitution as a structural risk in automated translation. The reasons given for it being open (lack of reference answers, circularity of downstream evaluation) strongly support the claim. The scope is appropriate and the severity is proportionate to the cost of a wrong estimand.
+
+Decision path
+:   `R5:default-open → R9:substantiated-overstatement(n=1/4):codex`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [ELG-01 — An unrecorded eligibility criterion is indistinguishable from a criterion that was met](ELG-01-an-unrecorded-eligibility-criterion-is-indistinguishable-fro.qmd)
+- [SFW-03 — Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations](SFW-03-code-phenotype-logic-weight-diagnostics-and-rejected-protoco.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 97, row 'Automation, large language models and executable phenotyping' (seed-practical).

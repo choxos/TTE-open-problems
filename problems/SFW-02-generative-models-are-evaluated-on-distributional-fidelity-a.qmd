@@ -1,0 +1,86 @@
+---
+title: "Generative models are evaluated on distributional fidelity and used for causal work"
+description: "Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation does not match the use. Marginal and temporal fidelity do not validate a generator's counterfactual behavior, and cannot: without identifying assumptions or interventional ground truth, two generators indistinguishable on observed data can disagree on some interventions. A model optimized for fidelity can therefore reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those appears in the loss. Privacy mechanisms compound it by suppressing rare patterns, which are often the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and current benchmarks do not test whether it is."
+pid: "SFW-02"
+topic: "Software, computation & reproducibility"
+categories: ["Software, computation & reproducibility", "Medium-high priority", "Partially addressed"]
+priority: "Medium-high"
+prank: 3
+verdict: "Partially addressed"
+verdictslug: "partially-addressed"
+maturity: "Emerging"
+tractability: 4
+---
+::: {.problem-meta}
+[SFW-02]{.problem-id}
+[Partially addressed]{.verdict .verdict-partially-addressed}
+[Medium-high priority]{.chip .chip-priority-medium-high}
+[Emerging]{.chip .chip-maturity-emerging}
+[Tractability 4/5]{.chip}
+:::
+## Statement
+
+Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation does not match the use. Marginal and temporal fidelity do not validate a generator's counterfactual behavior, and cannot: without identifying assumptions or interventional ground truth, two generators indistinguishable on observed data can disagree on some interventions. A model optimized for fidelity can therefore reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those appears in the loss. Privacy mechanisms compound it by suppressing rare patterns, which are often the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and current benchmarks do not test whether it is.
+
+## Why it is open
+
+Causal fidelity is not identifiable from the observational data the generator was trained on, which is the same reason the analyses these data are meant to support need assumptions. Evaluating it therefore requires a gold-standard structural model or external interventional evidence rather than a real dataset, which changes what is being validated. Privacy and causal fidelity are also in direct tension, since the mechanisms that protect rare individuals remove the rare strata that carry the overlap.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Shi, et al. Generating high-fidelity privacy-conscious synthetic patient data for causal effect estimation with multiple treatments. Front Artif Intell 2022](https://doi.org/10.3389/frai.2022.918813) | Builds synthetic patient generation aimed specifically at causal effect estimation with multiple treatments, which is where the fidelity question becomes sharp. |
+
+:::
+
+## Probable solution or research direction
+
+Build causal benchmarks on an explicit structural data-generating model with known counterfactuals, or on external interventional evidence, rather than on a real dataset the generator can be scored against. Assess conditional support, longitudinal ordering, effect fidelity and privacy loss separately, since a single score lets a model trade one against another invisibly. State as a standing rule that synthetic-effect estimates are not clinical evidence, and confine synthetic data to code development, power planning and method benchmarking.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Partially addressed. Part of this problem is addressed by existing work; the entry names which part.
+
+**The source said.** "Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation practice does not match the use. A model optimized for marginal or temporal fidelity can reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those quantities appears in the loss. Privacy mechanisms compound this by suppressing rare patterns, and rare patterns are often exactly the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and current benchmarks do not test whether it is."
+
+**What was wrong with it.** Sharpened rather than corrected: the reason marginal fidelity does not validate a generator is that without identifying assumptions or interventional ground truth, observationally indistinguishable generators can disagree on some interventions, which is why a causal benchmark needs an explicit structural model or external interventional evidence rather than a better fidelity metric.
+
+**Dissent.** literature dissented (open): The corpus contains synthetic patient generation aimed at causal effect estimation and generative approaches to causal graphs, and contains no evaluation of a generative model against a known structural model's interventional distributions. The entry's claim, that fidelity evaluation does not test causal validity, is consistent with the absence, and the confidence is capped because the generative-model literature sits mostly in venues these eight phrases would not retrieve. grok dissented (supported): Inverted prior: assume causal evaluation of synthetic patients is already standard. The report's own prior work (Shi et al. 2022) already builds privacy-conscious synthetic data with ground-truth multi-treatment effects, so the agenda's proposed direction (causally annotated synthetic trials) has a published instance rather than a blank slate. Amad et al. (arXiv 2510.18768; NeurIPS 2025) explicitly diagnose evaluation on distributional resemblance while treatments invite causal analysis, state desiderata (covariate distribution, treatment assignment mechanism, outcome generation mechanism), propose metrics (precision/recall on covariates, propensity JSD, PEHE utility), and introduce STEAM to factor generation along that DGP. That is substantive prior art on evaluation design and generation, not mere marginal fidelity.
+
+It does not solve the problem as a field practice claim. STEAM and Shi are proposals/datasets, not industry standard. Causal fidelity of a generator trained only on observational data remains non-identifiable without a structural gold standard; two SCMs can match all observational margins and disagree on interventions. Privacy mechanisms that erase rare strata still conflict with positivity-relevant tails. Hernandez et al. (Front Digit Health 2025) still frame synthetic tabular evaluation around fidelity/utility/privacy without interventional ground truth. Queries run: causal fidelity synthetic evaluation; STEAM treatment effect synthetic data; Shi 2022 ground truth; PEHE synthetic medical; synthetic patient counterfactual evaluation 2024–2026. No evidence that clinical or regulatory use treats synthetic-effect estimates as non-evidence by default, nor that mainstream generators are scored on intervention response error. Partial solve of evaluation methodology; the practice mismatch remains open.
+
+Literature and prior-art check
+:   **open / supported.** The corpus contains synthetic patient generation aimed at causal effect estimation and generative approaches to causal graphs, and contains no evaluation of a generative model against a known structural model's interventional distributions. The entry's claim, that fidelity evaluation does not test causal validity, is consistent with the absence, and the confidence is capped because the generative-model literature sits mostly in venues these eight phrases would not retrieve.
+    Cites 10.3389/frai.2022.918813: Targets synthetic generation at causal estimation, which is where the fidelity question becomes consequential..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** The central warning is correct: observational distributional fidelity alone does not establish counterfactual fidelity. The impossibility argument is nevertheless too broad. Observationally equivalent causal models can disagree on some interventions, not necessarily every intervention. Interventional distributions can also be identified under explicit causal assumptions or evaluated using randomized or other interventional data, so a known structural simulator is not the only possible benchmark. Positivity and treatment overlap are properties of the observed longitudinal law; a generator that exactly preserves the full joint law preserves them, although marginal-fidelity metrics can miss serious conditional-support errors. Temporal ordering is likewise observable and testable. Privacy protection creates a utility tradeoff for rare strata but does not invariably remove them or create a direct mathematical conflict with causal fidelity.
+
+Grok 4.5, recency lens
+:   **partially-solved / supported.** Inverted prior: assume causal evaluation of synthetic patients is already standard. The report's own prior work (Shi et al. 2022) already builds privacy-conscious synthetic data with ground-truth multi-treatment effects, so the agenda's proposed direction (causally annotated synthetic trials) has a published instance rather than a blank slate. Amad et al. (arXiv 2510.18768; NeurIPS 2025) explicitly diagnose evaluation on distributional resemblance while treatments invite causal analysis, state desiderata (covariate distribution, treatment assignment mechanism, outcome generation mechanism), propose metrics (precision/recall on covariates, propensity JSD, PEHE utility), and introduce STEAM to factor generation along that DGP. That is substantive prior art on evaluation design and generation, not mere marginal fidelity.
+
+It does not solve the problem as a field practice claim. STEAM and Shi are proposals/datasets, not industry standard. Causal fidelity of a generator trained only on observational data remains non-identifiable without a structural gold standard; two SCMs can match all observational margins and disagree on interventions. Privacy mechanisms that erase rare strata still conflict with positivity-relevant tails. Hernandez et al. (Front Digit Health 2025) still frame synthetic tabular evaluation around fidelity/utility/privacy without interventional ground truth. Queries run: causal fidelity synthetic evaluation; STEAM treatment effect synthetic data; Shi 2022 ground truth; PEHE synthetic medical; synthetic patient counterfactual evaluation 2024–2026. No evidence that clinical or regulatory use treats synthetic-effect estimates as non-evidence by default, nor that mainstream generators are scored on intervention response error. Partial solve of evaluation methodology; the practice mismatch remains open.
+    Cites 10.3389/frai.2022.918813: Provides a large synthetic patient resource with explicit ground-truth effects for many hypertension treatments, showing that causally annotated synthetic data for multi-treatment effect estimation already exists as prior art (partial instance of the agenda's proposed direction)..
+    Cites arxiv:2510.18768: Formalizes that standard synthetic evaluation ignores treatment-specific causal structure; defines causal-use desiderata and metrics (propensity fidelity, PEHE utility); proposes STEAM generation aligned to those metrics. Partially closes the evaluation-design gap without making causal scoring universal practice..
+
+glm
+:   **open / supported.** The claim is structurally sound and proportionate. The core identifiability argument—that two structural models agreeing on every observational distribution can disagree on every interventional one—is a well-established result in causal inference and correctly grounds the claim that causal fidelity cannot be assessed from observational data alone. The claim does not assert that causally valid generators are impossible to build; it asserts that current benchmarks do not test for causal validity, which is a claim about practice, not about impossibility. The tension between privacy mechanisms and causal fidelity (suppression of rare patterns that carry overlap) is a genuine practical tradeoff, correctly framed as tension rather than impossibility. The standing rule proposed—that synthetic-effect estimates are not clinical evidence—is proportionate to the severity of the error (clinical decisions based on non-causally-valid synthetic data). The scope is right: the claim is about evaluation practice, not about the existence of generative models per se.
+
+Decision path
+:   `R3:partially-solved(n=1/4) → R9:substantiated-overstatement(n=1/4):codex`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [SFW-03 — Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations](SFW-03-code-phenotype-logic-weight-diagnostics-and-rejected-protoco.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 111, row 'Synthetic data and generative trial models' (seed-data).

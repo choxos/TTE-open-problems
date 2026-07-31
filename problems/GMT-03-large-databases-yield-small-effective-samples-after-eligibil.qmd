@@ -1,0 +1,83 @@
+---
+title: "Large databases yield small effective samples after eligibility, comparator restriction and weighting"
+description: "A database of millions can carry very little information about a specific target trial once strict eligibility, active-comparator restriction and weighting have been applied, and extreme weights reduce the effective sample size far below the nominal count. Conventional asymptotic inference then becomes unreliable, most sharply for rare competing events and for subgroup effects, which are the quantities decision makers ask about. Papers continue to report the nominal number of patients, which for a weighted longitudinal analysis is not the quantity that governs the variance, and no convention requires the effective size to appear beside it."
+pid: "GMT-03"
+topic: "G-methods: specification, estimation & inference"
+categories: ["G-methods: specification, estimation & inference", "Medium-high priority", "Confirmed open"]
+priority: "Medium-high"
+prank: 3
+verdict: "Confirmed open"
+verdictslug: "confirmed-open"
+maturity: "Promising"
+tractability: 4
+---
+::: {.problem-meta}
+[GMT-03]{.problem-id}
+[Confirmed open]{.verdict .verdict-confirmed-open}
+[Medium-high priority]{.chip .chip-priority-medium-high}
+[Promising]{.chip .chip-maturity-promising}
+[Tractability 4/5]{.chip}
+:::
+## Statement
+
+A database of millions can carry very little information about a specific target trial once strict eligibility, active-comparator restriction and weighting have been applied, and extreme weights reduce the effective sample size far below the nominal count. Conventional asymptotic inference then becomes unreliable, most sharply for rare competing events and for subgroup effects, which are the quantities decision makers ask about. Papers continue to report the nominal number of patients, which for a weighted longitudinal analysis is not the quantity that governs the variance, and no convention requires the effective size to appear beside it.
+
+## Why it is open
+
+The effective sample size is estimator-specific and time-varying in a longitudinal analysis, so there is no single number to report and no convention for which to choose. Small-sample corrections in this setting have to account for the estimated weights as well as the outcome model, and that theory is thin. There is also no incentive to report a number that shrinks a study's apparent size by an order of magnitude.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Robins JM, Hernán MA, Brumback B. Marginal structural models and causal inference in epidemiology. Epidemiology 2000;11(5):550-560](https://doi.org/10.1097/00001648-200009000-00011) | Introduces the weighted estimator whose variance is governed by the weight distribution rather than by the record count. |
+| [Impact of near-positivity violations on IPTW-estimated marginal structural survival models with time-dependent covariates. Biom J 2025](https://doi.org/10.1002/bimj.70093) | Quantifies how near-positivity degrades weighted longitudinal survival estimation, which is the mechanism by which effective sample size collapses. |
+| [lmtp: Non-Parametric Causal Effects of Feasible Interventions Based on Modified Treatment Policies. CRAN](https://cran.r-project.org/package=lmtp) | Targets shifted rather than deterministic interventions, one route to keeping the effective sample size usable. |
+
+:::
+
+## Probable solution or research direction
+
+Investigate Bayesian hierarchical g-computation, targeted shrinkage, exact or permutation-based inference, outcome-adaptive case-control sampling and cross-site borrowing for the regime where the effective sample is small. Require that the effective sample size be reported alongside the nominal one at each follow-up time, so a reader sees the information actually available. Establish by simulation the point at which asymptotic intervals stop covering, as a function of the weight tail and the event rate, so the reporting threshold is empirical rather than conventional.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Confirmed open. Auditors agreed the problem is open and no counterevidence surfaced.
+
+**The source said.** "A database of millions can carry very little information about a specific target trial once strict eligibility, active-comparator restriction and weighting have been applied, and extreme weights reduce the effective sample size much further than the nominal count suggests. Conventional asymptotic inference then becomes unreliable, most sharply for rare competing events and for subgroup effects, which are precisely the quantities decision-makers ask about. Papers continue to report the nominal number of patients, which for a weighted longitudinal analysis is not the quantity that governs the variance."
+
+**What was wrong with it.** No auditor found the claim overstated. The statement is retained with the effect of near-positivity on weighted longitudinal survival estimation cited, which supplies the mechanism the entry asserts.
+
+**Dissent.** literature dissented (supported): Nothing in the corpus reports the effective sample size alongside the nominal one as a convention, nor establishes the point at which asymptotic intervals stop covering as a function of weight tail and event rate. Work on near-positivity violations in IPTW-estimated marginal structural survival models measures the consequence, which is the closest existing treatment, and it characterizes bias rather than supplying a reporting rule. The claim is a reporting and small-sample-inference gap rather than a missing estimator, which makes it harder to refute by finding a method paper and easier to confirm by observing practice.
+
+Literature and prior-art check
+:   **open / supported.** Nothing in the corpus reports the effective sample size alongside the nominal one as a convention, nor establishes the point at which asymptotic intervals stop covering as a function of weight tail and event rate. Work on near-positivity violations in IPTW-estimated marginal structural survival models measures the consequence, which is the closest existing treatment, and it characterizes bias rather than supplying a reporting rule. The claim is a reporting and small-sample-inference gap rather than a missing estimator, which makes it harder to refute by finding a method paper and easier to confirm by observing practice.
+    Cites 10.1002/bimj.70093: Quantifies the consequence of near-positivity for weighted survival estimation, which is the mechanism by which effective sample size collapses..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / supported-with-caveat.** The central claim is correct. Eligibility and comparator restrictions reduce the number of relevant independent patients, while concentrated positive weights reduce the Kish effective sample size through (sum w)^2 divided by sum(w^2). Rare events and subgroup restrictions can leave little information despite a large source database. The important caveat is that a weight-only effective sample size is not the information governing every estimator. In longitudinal emulations it is time-specific and must account for risk sets, events, repeated or cloned records, within-patient dependence, estimated nuisance functions and the outcome variance. A small calculated effective sample size therefore does not automatically invalidate asymptotic inference; validity also depends on independent-cluster counts, event counts, weight-tail moments and nuisance-estimation behavior. Reporting time-specific weight concentration is useful but cannot replace at-risk counts, event counts, overlap plots and influence-function or cluster-level variance diagnostics. Exact or permutation inference is not generally available in observational data without a known assignment mechanism. Shrinkage and cross-site borrowing add assumptions and cannot repair structural positivity failure or absent outcome information. Simulation can characterize a specified design but cannot produce a universal coverage threshold. The lmtp software claim is unverified because no pinned lmtp source is vendored.
+
+Grok 4.5, recency lens
+:   **open / supported-with-caveat.** The core claim survives: after eligibility, active-comparator restriction, and inverse-probability weighting, information can collapse far below the nominal N, and papers still lead with headcount rather than information. What exists does not close the agenda item. Kish-style ESS, WeightIt::ESS, and cobalt balance tables already report weight-based effective sample size (including longitudinal MSM balance displays); Zhang, Bujkiewicz, and Jackson (BMC Medical Research Methodology 2024; 10.1186/s12874-024-02412-1) add three ESS estimators aimed at population-adjusted indirect comparison and general weighted analyses. Those are diagnostics for precision loss, not small-sample inference for estimated longitudinal weights plus outcome models, not time-varying ESS conventions for MSM/LTMLE follow-up, and not a simulation standard for when asymptotic intervals stop covering as a function of weight tails and event rates. lmtp's modified treatment policies help keep positivity usable but do not solve ESS reporting or finite-sample theory. No 2024 to 2026 reporting guideline (TARGET 2025, HARPER, STaRT-RWE, ENCePP) was found that requires ESS alongside nominal N at each follow-up time. Searches: effective sample size inverse probability weights MSM longitudinal 2024 2025; Zhang Bujkiewicz Jackson ESS; WeightIt ESS cobalt; small sample inference IPW MSM sandwich correction; TARGET ESS reporting. Vote open because the agenda's open parts (estimator-specific time-varying ESS convention, weight-aware small-sample theory, reporting incentive) remain; partial software and population-adjustment ESS papers are caveats, not solutions.
+
+glm
+:   **open / supported.** The claim is well-constructed and proportionate. It describes a real statistical phenomenon (effective sample size collapse under weighting and restriction) and a real reporting gap (papers report nominal counts). The reason given for openness is practical and theoretical: effective sample size is estimator-specific and time-varying so there is no single number, small-sample correction theory for estimated weights is thin, and there is no incentive to report a smaller number. None of these are impossibility claims; they are claims about the absence of convention and theory. The scope is right—it does not claim all large databases are uninformative, only that they can be, and that the reporting does not reflect the information actually available.
+
+Decision path
+:   `R5:default-open → R11:caveated(n=2)`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [OVL-01 — Positivity diagnostics describe weights instead of naming which patient histories are unsupported](OVL-01-positivity-diagnostics-describe-weights-instead-of-naming-wh.qmd)
+- [SFW-01 — Variance estimation after cloning and sequence expansion has no scalable, correct default](SFW-01-variance-estimation-after-cloning-and-sequence-expansion-has.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 112, row 'Rare treatments, outcomes and small effective samples' (seed-data).

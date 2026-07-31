@@ -1,0 +1,90 @@
+---
+title: "Variance estimation after cloning and sequence expansion has no scalable, correct default"
+description: "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practice once nuisance models must be refitted per replicate."
+pid: "SFW-01"
+topic: "Software, computation & reproducibility"
+categories: ["Software, computation & reproducibility", "High priority", "Unverifiable"]
+priority: "High"
+prank: 2
+verdict: "Unverifiable"
+verdictslug: "unverifiable"
+maturity: "Promising"
+tractability: 4
+---
+::: {.problem-meta}
+[SFW-01]{.problem-id}
+[Unverifiable]{.verdict .verdict-unverifiable}
+[High priority]{.chip .chip-priority-high}
+[Promising]{.chip .chip-maturity-promising}
+[Tractability 4/5]{.chip}
+:::
+## Statement
+
+Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practice once nuisance models must be refitted per replicate.
+
+## Why it is open
+
+The dependence is nested and partly induced by the analysis rather than present in the data, so the clustering variable that is correct for repeated participation is not obviously correct for clones. An influence-function variance estimator needs the influence function of the full estimator including the weight-estimation step, which is unavailable in closed form once the nuisance models are learned. Every workaround trades in the same currency: subsampling to make the bootstrap affordable reintroduces the finite-sample instability the bootstrap was there to characterize.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Su L, et al. TrialEmulation: an R package to emulate target trials for causal analysis of observational time-to-event data. arXiv 2024](https://arxiv.org/abs/2402.12083) | Implements sequence expansion, censoring-weight calculation and outcome models for intention-to-treat and per-protocol analyses, with chunked processing for the data expansion. |
+| [TrialEmulation getting-started vignette](https://causal-lda.github.io/TrialEmulation/articles/Getting-Started.html) | Documents the all-in-one initiators() workflow and the modular functions, which is the reference implementation practitioners actually use. |
+
+:::
+
+## Probable solution or research direction
+
+Use person-clustered sandwich inference as the default where its conditions hold, and state that the weights were treated as fixed when they were. Derive a variance estimator that propagates estimated-weight and flexible-nuisance uncertainty and accommodates site-level sampling, which is the case no current option covers, and check its coverage against a person-level bootstrap on data small enough to run both. Support the scale with streaming risk-set construction, columnar back ends and case-control sampling with proven error control rather than heuristic subsampling.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.
+
+**The source said.** "Sequential emulation and cloning expand a dataset by orders of magnitude: each person contributes a row per eligible decision point, and cloning multiplies that by the number of strategies with which the person is initially compatible. Two dependence structures result. Repeated eligibility means a person appears in many trials, and cloning means several rows are copies of the same person's history. Naive standard errors ignore both. The bootstrap is correct in principle and often prohibitive at this scale, particularly with flexible nuisance models that must be refitted per replicate. The `TrialEmulation` package supports sequence expansion, censoring weights, outcome models and chunked processing, and general scalable variance estimation for this design remains unsettled."
+
+**What was wrong with it.** Person-clustered sandwich inference is a scalable answer to the dependence created by repeated eligibility and cloning when the weights are fixed or the estimating-equation conditions hold, and evaluated options now exist for the parametric case with inverse probability weighting. The entry treated the whole problem as unsettled. What remains unsettled is narrower and still real.
+
+**Dissent.** literature dissented (supported-with-caveat): The variance problem for the sequence-expansion half of this entry has been addressed: a 2025 paper compares sandwich, nonparametric bootstrap, jackknife and linearized estimating function bootstrap confidence intervals for sequential trial emulation with survival outcomes and finds a computationally feasible option with better coverage in the motivating regime. The entry should not present that as open. The cloning half is not covered by that work, and a search for variance estimation under cloning specifically returned nothing, so the dependence induced by copies of the same person remains unaddressed. The computational directions the entry proposes, streaming risk sets and columnar back ends, appear nowhere in the corpus. codex dissented (overstated): The full-estimator variance problem remains real, but the stated rationale overreaches. Rows created by repeated eligibility or cloning remain within the original individual, so clustering on that individual handles arbitrary dependence among those rows; clone dependence is not a separate sampling level. The pinned TrialEmulation source automatically computes a person-clustered sandwich covariance for its fitted MSM, providing a scalable analytic default for the outcome-model estimating equation. It does not propagate uncertainty from estimated switching or censoring weights, flexible nuisance learning, or site-level sampling. If sites are the independent units, inference should generally cluster or resample sites rather than treat clones-within-person-within-site as an exotic multiway structure. Likewise, a bootstrap is valid only when it resamples the appropriate independent unit and refits the full pipeline. A learner-specific closed-form influence function is also not universally necessary for orthogonal, cross-fitted estimators under suitable rate conditions. grok dissented (supported-with-caveat): Inverted prior: assume scalable correct variance already exists. Highest-yield hit is Limozin, Seaman, and Su (SMMR 2025; arXiv 2407.08317), co-authored with the TrialEmulation lead: they compare sandwich, nonparametric bootstrap, jackknife, and a new LEF bootstrap for sequential trial emulation (STE) marginal risk differences under IPW. LEF is faster than full bootstrap and covers better under the sparse regimes that motivate STE; sandwich is fastest and covers well only with large n and medium/high event rates. They state explicitly that sandwich is the only CI method in TrialEmulation and that it ignores weight-estimation uncertainty. That is real progress on the sequential-eligibility half of the claim.
+
+It does not close the problem as stated. Coverage guidance is setting-specific, not a single default. LEF is research code (GitHub simulation repo), not a TrialEmulation default. The design is parametric MSM/IPW STE, not nested clone-within-person-within-site dependence from multi-strategy cloning, and not influence functions for flexible nuisance models. Clone-censor-weight primers (Gaber et al. 2024; Webster-Clark et al. PDS 2025; survivalCCW) still recommend bootstrap or robust SE and ship bootstrap vignettes; they do not deliver streaming IF or Arrow/DuckDB risk-set variance. Queries run: sequential trial variance sandwich bootstrap jackknife; clone-censor-weight variance; TrialEmulation robust SE; arXiv 2407.08317; survivalCCW; Enders 2018 sandwich (still not off-the-shelf). No 2025–2026 package release supplies a general scalable correct default for both cloning and sequence expansion under flexible nuisances. Partial solve of STE inference guidance; core gap remains.
+
+Literature and prior-art check
+:   **partially-solved / supported-with-caveat.** The variance problem for the sequence-expansion half of this entry has been addressed: a 2025 paper compares sandwich, nonparametric bootstrap, jackknife and linearized estimating function bootstrap confidence intervals for sequential trial emulation with survival outcomes and finds a computationally feasible option with better coverage in the motivating regime. The entry should not present that as open. The cloning half is not covered by that work, and a search for variance estimation under cloning specifically returned nothing, so the dependence induced by copies of the same person remains unaddressed. The computational directions the entry proposes, streaming risk sets and columnar back ends, appear nowhere in the corpus.
+    Cites 10.1177/09622802251356594: Supplies and evaluates variance estimation for sequence expansion, including a bootstrap alternative fast enough to run..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **partially-solved / overstated.** The full-estimator variance problem remains real, but the stated rationale overreaches. Rows created by repeated eligibility or cloning remain within the original individual, so clustering on that individual handles arbitrary dependence among those rows; clone dependence is not a separate sampling level. The pinned TrialEmulation source automatically computes a person-clustered sandwich covariance for its fitted MSM, providing a scalable analytic default for the outcome-model estimating equation. It does not propagate uncertainty from estimated switching or censoring weights, flexible nuisance learning, or site-level sampling. If sites are the independent units, inference should generally cluster or resample sites rather than treat clones-within-person-within-site as an exotic multiway structure. Likewise, a bootstrap is valid only when it resamples the appropriate independent unit and refits the full pipeline. A learner-specific closed-form influence function is also not universally necessary for orthogonal, cross-fitted estimators under suitable rate conditions.
+    Cites CRAN package TrialEmulation 0.0.4.11: The NAMESPACE exports trial_msm, and the pinned implementation automatically invokes robust_calculation with the original individual identifier. robust_calculation uses sandwich::vcovCL clustered by that identifier. This resolves the duplication-induced within-person component, but not full nuisance-estimation or site-level uncertainty..
+
+Grok 4.5, recency lens
+:   **partially-solved / supported-with-caveat.** Inverted prior: assume scalable correct variance already exists. Highest-yield hit is Limozin, Seaman, and Su (SMMR 2025; arXiv 2407.08317), co-authored with the TrialEmulation lead: they compare sandwich, nonparametric bootstrap, jackknife, and a new LEF bootstrap for sequential trial emulation (STE) marginal risk differences under IPW. LEF is faster than full bootstrap and covers better under the sparse regimes that motivate STE; sandwich is fastest and covers well only with large n and medium/high event rates. They state explicitly that sandwich is the only CI method in TrialEmulation and that it ignores weight-estimation uncertainty. That is real progress on the sequential-eligibility half of the claim.
+
+It does not close the problem as stated. Coverage guidance is setting-specific, not a single default. LEF is research code (GitHub simulation repo), not a TrialEmulation default. The design is parametric MSM/IPW STE, not nested clone-within-person-within-site dependence from multi-strategy cloning, and not influence functions for flexible nuisance models. Clone-censor-weight primers (Gaber et al. 2024; Webster-Clark et al. PDS 2025; survivalCCW) still recommend bootstrap or robust SE and ship bootstrap vignettes; they do not deliver streaming IF or Arrow/DuckDB risk-set variance. Queries run: sequential trial variance sandwich bootstrap jackknife; clone-censor-weight variance; TrialEmulation robust SE; arXiv 2407.08317; survivalCCW; Enders 2018 sandwich (still not off-the-shelf). No 2025–2026 package release supplies a general scalable correct default for both cloning and sequence expansion under flexible nuisances. Partial solve of STE inference guidance; core gap remains.
+    Cites 10.1177/09622802251356594: Provides a full simulation comparison of sandwich, nonparametric bootstrap, LEF bootstrap, and jackknife for STE marginal risk differences; adapts LEF bootstrap to STE; documents that TrialEmulation implements only sandwich and that sandwich ignores weight uncertainty; gives practical choice rules by sample size and event rate..
+    Cites arxiv:2407.08317: Open preprint of the same STE inference comparison; confirms dependence induced by patients entering multiple trials and the computational barrier of nonparametric bootstrap..
+    Cites 10.1007/s40471-024-00346-2: Does not solve scalable variance; documents current practice that CCW inference requires bootstrap or robust variance, reinforcing that a correct cloning-aware default is still an implementation gap rather than a solved product feature..
+
+glm
+:   **open / supported.** The claim is internally consistent and proportionate. It does not assert impossibility; it says the problem 'remains unsettled,' which is a claim about the state of methodology and practice. The reason given for openness—nested dependence (clones within persons within sites) and the lack of closed-form influence functions once nuisance models are learned—is a genuine methodological gap that structurally supports the claim being open. The acknowledgment that the bootstrap is 'correct in principle' but 'often prohibitive' is a fair characterization of a practical tradeoff rather than an overstatement. I cannot verify what the TrialEmulation package does or does not implement, but the core methodological claim about the absence of a scalable, correct default variance estimator for this design is coherent and the stated reasons entail openness. The claim about software capabilities is not the load-bearing part of the argument; the load-bearing part is the identifiability/derivability of the influence function under learned nuisance models, which is a methodological claim I can assess for coherence.
+
+Decision path
+:   `R3:partially-solved(n=3/4) → R7:counter-and-support-both-present`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [GMT-03 — Large databases yield small effective samples after eligibility, comparator restriction and weighting](GMT-03-large-databases-yield-small-effective-samples-after-eligibil.qmd)
+- [SEQ-01 — Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals](SEQ-01-sequential-emulation-creates-repeated-participation-and-cale.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 95, row 'Computational scale and variance estimation' (seed-practical).

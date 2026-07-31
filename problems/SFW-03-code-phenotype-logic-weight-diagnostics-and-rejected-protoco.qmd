@@ -1,0 +1,91 @@
+---
+title: "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations"
+description: "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires."
+pid: "SFW-03"
+topic: "Software, computation & reproducibility"
+categories: ["Software, computation & reproducibility", "High priority", "Partially addressed"]
+priority: "High"
+prank: 2
+verdict: "Partially addressed"
+verdictslug: "partially-addressed"
+maturity: "Promising"
+tractability: 5
+---
+::: {.problem-meta}
+[SFW-03]{.problem-id}
+[Partially addressed]{.verdict .verdict-partially-addressed}
+[High priority]{.chip .chip-priority-high}
+[Promising]{.chip .chip-maturity-promising}
+[Tractability 5/5]{.chip}
+:::
+## Statement
+
+The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.
+
+## Why it is open
+
+Phenotype logic is often held under license or embedded in institutional tooling, so publishing it is a legal and technical problem rather than a willingness problem. Analysis code depends on a data model the reader cannot obtain, which makes released code unrunnable and therefore feel pointless to release, and the answer, a synthetic fixture, is extra work that benefits nobody in the authoring group. Rejected protocol versions are not artifacts anyone currently keeps, so there is nothing to publish even where there is a will to.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA 2025](https://doi.org/10.1001/jama.2025.13350) | Establishes the reporting standard for emulations, whose purpose is transparency rather than risk-of-bias certification. |
+| [Su L, et al. TrialEmulation: an R package to emulate target trials for causal analysis of observational time-to-event data. arXiv 2024](https://arxiv.org/abs/2402.12083) | Provides a reference implementation for sequence expansion and weighting, which is the level at which reproducibility becomes achievable rather than aspirational. |
+
+:::
+
+## Probable solution or research direction
+
+Publish machine-readable protocols, complete phenotype logic with code-set versions, weight diagnostics, a documented schema, a container and synthetic fixtures that exercise the pipeline end to end, and state that the target is external auditability rather than numerical reproduction. Retain material protocol amendments in a versioned decision log. Pair the reporting checklist with RECORD and STROBE and with a causal risk-of-bias assessment, so reporting, provenance and appraisal are separately satisfied rather than conflated.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Partially addressed. Part of this problem is addressed by existing work; the entry names which part.
+
+**The source said.** "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and it is a transparency instrument rather than a risk-of-bias certification. What remains unavailable in practice is the material that would let someone re-run the study: the analysis code, the complete phenotype logic including the code lists and their versions, the weight diagnostics, and the protocol versions that were tried and rejected. An emulation is a long pipeline in which most of the decisions are expressed in code rather than in prose, so a paper that reports the protocol faithfully can still be irreproducible in every operative detail."
+
+**What was wrong with it.** Releasing code with a documented schema, a container and synthetic fixtures establishes executability and does not reproduce the published estimate, so the entry's implied goal was the wrong one. What such a release achieves is external auditability of the operative decisions, which is worth stating as the target rather than reproduction.
+
+**Dissent.** literature dissented (open): The corpus contains reporting standards, quality assessment tools and comprehensive analyses of emulation practice, and none requires or reports the release of analysis code, complete phenotype logic with code-set versions, weight diagnostics or simulated test data. The automated-code-generation paper implies the artifacts exist in machine-readable form, which strengthens the entry: the material could be released and is not. grok dissented (supported): Inverted prior: assume executable code, versioned phenotypes, weight diagnostics, and rejected protocols are already standard deliverables. TARGET (Cashin/Hansford et al., JAMA/BMJ 2025) is correctly scoped as a reporting checklist for protocol, mapping, estimands, assumptions, estimates, and sensitivity analyses; it is not a risk-of-bias instrument and does not require analysis code, code-list versions, weight diagnostics dumps, or failed protocol versions. That part of the claim stands.
+
+Partial prior art exists in infrastructure, not in universal publication norms. OHDSI Phenotype Library is a public, version-controlled phenotype repository with release versioning and DOIs for cohort definitions (partial answer to phenotype logic and code-set versions, limited to OMOP/OHDSI contributors). Strategus/HADES encode analyses as shareable JSON-plus-R workflows on OMOP. THESEUS (Kim et al., medRxiv 2026.03.13.26348306) automates mapping free-text TTE descriptions to Strategus JSON and executable R, improving shareable machine-readable specs for OHDSI-style studies; it does not compel release of rejected protocols or non-OMOP phenotype licenses. Scattered tutorials (e.g. Hoffman steroids-trial-emulation with simulated data) and TrialEmulation show that reference code can be released, which does not make re-runnable artifacts common for applied emulations on licensed claims/EHR. Queries run: TARGET reproducibility code phenotype; OHDSI Phenotype Library; THESEUS Strategus TTE; STaRT-RWE HARPER code sharing; RECORD-PE STROBE rejected protocol versions. No 2025–2026 guidance requires publishing rejected protocol versions or institution-exportable simulated test datasets as the standard companion to TARGET. Legal and data-model barriers named in the problem remain. Partial solve for OHDSI-adjacent machine-readable design; field-wide unavailability of code, full phenotypes, weight diagnostics, and rejected versions remains open.
+
+Literature and prior-art check
+:   **open / supported.** The corpus contains reporting standards, quality assessment tools and comprehensive analyses of emulation practice, and none requires or reports the release of analysis code, complete phenotype logic with code-set versions, weight diagnostics or simulated test data. The automated-code-generation paper implies the artifacts exist in machine-readable form, which strengthens the entry: the material could be released and is not.
+    Cites 10.1093/jamiaopen/ooag131: Produces the executable specification as an artifact, which shows the material a reproducibility requirement would ask for is producible..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** The reproducibility objective is technically sound, but the report turns a variable practice deficit into a universal claim. Code tied to an inaccessible data model is still useful when accompanied by a schema, adapters, containers, or synthetic fixtures. Version control and protocol registries can retain amendments, so it is false that rejected versions are artifacts nobody keeps. Synthetic test data can establish executability and exercise phenotype and weighting logic, but cannot reproduce or validate the real-data estimate. Final analysis code, versioned phenotype definitions, and weight diagnostics are decision-critical; publication of every discarded draft is a lower-priority provenance demand and is better framed as a prospective amendment and decision log. The pinned TrialEmulation source supports the narrower claim that reusable sequence-expansion and weighting machinery exists, but it cannot supply study-specific phenotype logic or release artifacts.
+
+Grok 4.5, recency lens
+:   **partially-solved / supported.** Inverted prior: assume executable code, versioned phenotypes, weight diagnostics, and rejected protocols are already standard deliverables. TARGET (Cashin/Hansford et al., JAMA/BMJ 2025) is correctly scoped as a reporting checklist for protocol, mapping, estimands, assumptions, estimates, and sensitivity analyses; it is not a risk-of-bias instrument and does not require analysis code, code-list versions, weight diagnostics dumps, or failed protocol versions. That part of the claim stands.
+
+Partial prior art exists in infrastructure, not in universal publication norms. OHDSI Phenotype Library is a public, version-controlled phenotype repository with release versioning and DOIs for cohort definitions (partial answer to phenotype logic and code-set versions, limited to OMOP/OHDSI contributors). Strategus/HADES encode analyses as shareable JSON-plus-R workflows on OMOP. THESEUS (Kim et al., medRxiv 2026.03.13.26348306) automates mapping free-text TTE descriptions to Strategus JSON and executable R, improving shareable machine-readable specs for OHDSI-style studies; it does not compel release of rejected protocols or non-OMOP phenotype licenses. Scattered tutorials (e.g. Hoffman steroids-trial-emulation with simulated data) and TrialEmulation show that reference code can be released, which does not make re-runnable artifacts common for applied emulations on licensed claims/EHR. Queries run: TARGET reproducibility code phenotype; OHDSI Phenotype Library; THESEUS Strategus TTE; STaRT-RWE HARPER code sharing; RECORD-PE STROBE rejected protocol versions. No 2025–2026 guidance requires publishing rejected protocol versions or institution-exportable simulated test datasets as the standard companion to TARGET. Legal and data-model barriers named in the problem remain. Partial solve for OHDSI-adjacent machine-readable design; field-wide unavailability of code, full phenotypes, weight diagnostics, and rejected versions remains open.
+    Cites 10.1001/jama.2025.13350: Does not resolve executable reproducibility; establishes the reporting standard the claim correctly distinguishes from code, phenotype, and rejected-protocol release. Included as the cited prior work that frames what remains out of scope..
+    Cites ohdsi/PhenotypeLibrary: Partial infrastructure for publishing complete phenotype logic with versioning and DOIs inside the OMOP/OHDSI ecosystem, addressing one stated blocker (code lists and versions) for studies that use that stack..
+    Cites 10.64898/2026.03.13.26348306: Shows LLM-assisted standardization of TTE design text into constrained JSON and executable Strategus R scripts, improving machine-readable, shareable analysis specs in OHDSI settings; proposal/automation of the coding step rather than field-wide release of phenotypes, weight diagnostics, or rejected protocols..
+
+glm
+:   **open / supported-with-caveat.** The claim is largely coherent and the reasons given (licensing constraints, institutional tooling embedding phenotype logic, unrunnable released code, nobody keeping rejected protocols) are practical barriers that support the claim being open as a matter of current practice. However, the phrasing 'not available for emulations' could be read as universal—no emulation anywhere publishes these materials—when the intended meaning is clearly 'not routinely or standardly available.' The statement's own language ('What remains unavailable in practice') mitigates this, but the title-level claim is slightly broader than the evidence supports. The claim correctly distinguishes the TARGET statement as a transparency instrument rather than a risk-of-bias tool, and correctly identifies that faithful protocol reporting in prose does not guarantee operative reproducibility when decisions are expressed in code. The reasons given are about current practice wearing the language of a gap, not structural impossibility, which is the right framing. The severity is proportionate: irreproducible emulations carry real costs for decision-makers who cannot verify or re-run analyses.
+
+Decision path
+:   `R3:partially-solved(n=1/4) → R9:substantiated-overstatement(n=1/4):codex`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [LRN-02 — Automated protocol translation can change the estimand while producing valid code](LRN-02-automated-protocol-translation-can-change-the-estimand-while.qmd)
+- [PRO-03 — Registrations record the final protocol and not the alternatives that were rejected](PRO-03-registrations-record-the-final-protocol-and-not-the-alternat.qmd)
+- [REG-02 — There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike](REG-02-there-is-no-assumption-dashboard-so-diagnosable-and-undiagno.qmd)
+- [SFW-02 — Generative models are evaluated on distributional fidelity and used for causal work](SFW-02-generative-models-are-evaluated-on-distributional-fidelity-a.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 124, row 'Reporting and reproducibility' (seed-interpretation).

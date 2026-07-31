@@ -1,0 +1,81 @@
+---
+title: "Averaging site estimates in a federated emulation can conceal that the sites emulated different trials"
+description: "Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been developed to the point of pooled-equivalent estimation for time-to-event outcomes. The statistical machinery for combining site estimates is not the hard part. Sites differ in coding systems, treatment availability, confounding structure and time resolution, so one executable protocol can define materially different eligibility, exposure and outcome at each site, and pooling then averages several different questions. Aggregation cannot detect that: heterogeneity between site estimates is produced equally by real effect modification and by mapping failure. Local validation and aggregate diagnostics shared without patient records can flag some of it, and no current practice requires either, or requires the target population and pooling weights to be stated."
+pid: "DTA-02"
+topic: "Data sources, linkage & federated infrastructure"
+categories: ["Data sources, linkage & federated infrastructure", "High priority", "Partially addressed"]
+priority: "High"
+prank: 2
+verdict: "Partially addressed"
+verdictslug: "partially-addressed"
+maturity: "Emerging"
+tractability: 4
+---
+::: {.problem-meta}
+[DTA-02]{.problem-id}
+[Partially addressed]{.verdict .verdict-partially-addressed}
+[High priority]{.chip .chip-priority-high}
+[Emerging]{.chip .chip-maturity-emerging}
+[Tractability 4/5]{.chip}
+:::
+## Statement
+
+Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been developed to the point of pooled-equivalent estimation for time-to-event outcomes. The statistical machinery for combining site estimates is not the hard part. Sites differ in coding systems, treatment availability, confounding structure and time resolution, so one executable protocol can define materially different eligibility, exposure and outcome at each site, and pooling then averages several different questions. Aggregation cannot detect that: heterogeneity between site estimates is produced equally by real effect modification and by mapping failure. Local validation and aggregate diagnostics shared without patient records can flag some of it, and no current practice requires either, or requires the target population and pooling weights to be stated.
+
+## Why it is open
+
+The incompatibility is semantic rather than statistical: two sites can both return well-estimated, internally valid effects for populations the protocol did not intend to distinguish, and no summary of the estimates reveals it. The diagnostics that would reveal it need either patient-level data, which federation exists to keep local, or agreement in advance on what to compute and share, which is a governance problem rather than a methods problem. Heterogeneity statistics cannot separate the two causes because both produce between-site variance.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Li, et al. Federated target trial emulation using distributed observational data for treatment effect estimation. npj Digit Med 2025](https://doi.org/10.1038/s41746-025-01803-y) | Demonstrates that distributed effect estimation for an emulated trial is feasible without pooling patient-level data. |
+| [Manke-Reimers M, et al. When, why and how are estimated effects transported between populations? A scoping review. Eur J Epidemiol 2025](https://doi.org/10.1007/s10654-025-01217-w) | Reviews transport practice, which is the framework needed to say what a multi-site average is an estimate of. |
+
+:::
+
+## Probable solution or research direction
+
+State the target population and the pooling weights in the protocol so the pooled quantity is a transported effect for a named population rather than an unweighted average of whatever the sites produced. Share sufficient statistics, influence curves and aggregate balance measures, which is enough to diagnose incompatibility without moving patient records, and adopt the multi-site conduct principles now being codified for distributed analysis. Gate aggregation behind site-level component validation, so a site that fails contributes to the report and not to the estimate.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Partially addressed. Part of this problem is addressed by existing work; the entry names which part.
+
+**The source said.** "Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been proposed and demonstrated for distributed effect estimation. The statistical machinery for combining site estimates is not the hard part. The hard part is that sites differ in coding systems, treatment availability, confounding structure and time resolution, so the same executable protocol can define materially different eligibility, exposure and outcome at each site. Averaging the resulting estimates produces a number whose estimand is the average of several different questions, and nothing in the aggregation step detects that."
+
+**What was wrong with it.** Nothing in the aggregation step detects it, which the entry stated correctly, but local validation and privacy-preserving aggregate diagnostics can flag some incompatibilities without centralizing records, so the situation is not undiagnosable. Federated estimation for emulated trials has also advanced past the feasibility demonstration the entry cites.
+
+Literature and prior-art check
+:   **partially-solved / supported-with-caveat.** Federated emulation has advanced past the feasibility demonstration the entry cites. POLARIS supplies a one-shot likelihood approach for federated emulation with time-to-event outcomes that claims pooled-equivalent estimates, and a 2026 JAMIA paper sets out ten principles for high-quality multi-site studies using privacy-preserving distributed algorithms, which is directly the site-validation discipline the entry asks for. The entry's specific claim, that averaging site estimates can conceal that sites emulated different trials and that nothing in the aggregation detects it, is not answered by either: both improve the statistics of pooling rather than detecting semantic incompatibility.
+    Cites 10.21203/rs.3.rs-9613167/v1: Provides pooled-equivalent federated estimation for emulated trials with survival outcomes, well past feasibility..
+    Cites 10.1093/jamia/ocag119: Codifies multi-site conduct including site-level validation, which is the gate the entry proposes..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** The central warning is correct: operational differences can make site-specific estimates contrasts for different populations, interventions, outcomes, or follow-up regimes. A pooled result is still mathematically an average under specified weights, but it is not automatically an effect for a scientifically meaningful target population. Heterogeneity statistics cannot identify whether variation reflects effect modification, sampling error, positivity problems, or semantic mapping failure. The impossibility claim is too strong, however. Patient-level centralization is not required for all relevant diagnostics; sites can return cohort attrition, prevalence, support, balance, event rates, code-set provenance, and other privacy-preserving summaries after local validation. Conversely, sufficient statistics, influence curves, and balance summaries are not enough to establish semantic equivalence. A transport model also cannot repair incorrectly defined variables and requires explicit target-population and effect-modification assumptions. The open problem is reliable semantic validation and governance under federation, not the complete absence of diagnostics.
+
+Grok 4.5, recency lens
+:   **open / supported.** The report's own cited work, Li et al. (FL-TTE, 2025), demonstrates that distributed effect estimation for an emulated trial is feasible without pooling patient-level data. That is estimation machinery, not a solution to semantic incompatibility: sites can still implement different eligibility, exposure, or outcome mappings under the same executable protocol, and averaging site estimates does not detect that. Manke-Reimers et al. (2025) is a scoping review of transportability practice; it clarifies when a multi-site average needs an explicit transport model, but does not supply site-level diagnostics that separate mapping failure from true effect modification using only the aggregates federation is allowed to share. Recent federated causal-inference methods (for example Khellaf, Bellet, and Josse on propensity-score aggregation across sites; LATTE one-shot federated TTE showcased at OHDSI 2025) again address statistical pooling and privacy-preserving nuisance estimation, not semantic trial equivalence. Queries across AJE/Epidemiology/IJE/EJE/PDS/SiM, arXiv stat.ME, medRxiv, and package ecosystems (TrialEmulation, lmtp, ltmle, WeightIt, MatchIt, gfoRmula) did not surface a released method that gates secure aggregation behind site-level trial-component validation or that diagnoses coding-system and phenotype discordance from sufficient statistics and aggregate balance alone. Heterogeneity statistics remain confounded between real effect modification and mapping failure, exactly as the problem states. Status remains open as stated.
+
+glm
+:   **open / supported.** The claim is coherent and pitched at the right level of generality. It accurately identifies that the core difficulty in federated emulation is semantic incompatibility rather than statistical combination. The reasons given for it being open (diagnostics require patient-level data that federation restricts, and heterogeneity statistics conflate mapping failure with effect modification) directly support the claim that the problem remains open.
+
+Decision path
+:   `R3:partially-solved(n=1/4) → R9:substantiated-overstatement(n=1/4):codex`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [DTA-03 — Common data models harmonize structure without guaranteeing that the same variable means the same thing](DTA-03-common-data-models-harmonize-structure-without-guaranteeing-.qmd)
+- [EST-02 — Transporting an observational estimate compounds sampling assumptions on top of confounding assumptions with no accounting](EST-02-transporting-an-observational-estimate-compounds-sampling-as.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 96, row 'Multisite analysis and data sharing' (seed-practical).

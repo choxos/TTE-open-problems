@@ -1,0 +1,86 @@
+---
+title: "Flexible estimation is presented as a remedy for identification failure"
+description: "Identification is a property of the observed data together with the assumptions, not of the estimator. A flexible learner reduces approximation error in a nuisance function and cannot repair nonidentification, and the same smoothness that reduces that error extends the fit confidently into regions holding no observations. Support and overlap diagnostics can flag particular forms of extrapolation, and they depend on how support is defined and on the model producing them, so a passing diagnostic certifies nothing about sequential exchangeability, positivity or identification. The gap widens with high-dimensional treatment histories, where the region a prediction is being asked about is itself hard to characterize, and applied work continues to offer a more flexible learner as the response to a confounding or positivity concern."
+pid: "LRN-01"
+topic: "Machine learning, high-dimensional adjustment & automated emulation"
+categories: ["Machine learning, high-dimensional adjustment & automated emulation", "High priority", "Confirmed open"]
+priority: "High"
+prank: 2
+verdict: "Confirmed open"
+verdictslug: "confirmed-open"
+maturity: "Promising"
+tractability: 4
+---
+::: {.problem-meta}
+[LRN-01]{.problem-id}
+[Confirmed open]{.verdict .verdict-confirmed-open}
+[High priority]{.chip .chip-priority-high}
+[Promising]{.chip .chip-maturity-promising}
+[Tractability 4/5]{.chip}
+:::
+## Statement
+
+Identification is a property of the observed data together with the assumptions, not of the estimator. A flexible learner reduces approximation error in a nuisance function and cannot repair nonidentification, and the same smoothness that reduces that error extends the fit confidently into regions holding no observations. Support and overlap diagnostics can flag particular forms of extrapolation, and they depend on how support is defined and on the model producing them, so a passing diagnostic certifies nothing about sequential exchangeability, positivity or identification. The gap widens with high-dimensional treatment histories, where the region a prediction is being asked about is itself hard to characterize, and applied work continues to offer a more flexible learner as the response to a confounding or positivity concern.
+
+## Why it is open
+
+Extrapolation is invisible in any conventional fit statistic: a model can have excellent cross-validated loss on the observed region and be entirely unconstrained off it. The regions that matter are conditional on a growing treatment and covariate history, so whether a given prediction is supported is itself a high-dimensional question, and any diagnostic answering it has to define support in a way that is a modeling choice rather than a fact. The professional incentive also points one way, since the flexible estimate is the one with the tighter interval.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Feuerriegel S, Frauen D, Melnychuk V, et al. Causal machine learning for predicting treatment outcomes. Nat Med 2024;30:958-968](https://doi.org/10.1038/s41591-024-02902-1) | States that causal machine learning supports individualized effect estimation only under the same identification assumptions as conventional methods, which is the claim applied work elides. |
+| [Target trial emulation under nonmutually exclusive assignment. Am J Epidemiol 2026;195(4):1045](https://doi.org/10.1093/aje/kwaf018) | Demonstrates empirically that poor overlap defeats advanced adjustment, which is the concrete form the general point takes. |
+
+:::
+
+## Probable solution or research direction
+
+Pair every flexible nuisance model with a support diagnostic reported for the conditioning sets the model actually uses, and state the support definition, since the diagnostic is only as meaningful as that definition. Score estimators on failure awareness: whether their diagnostics signal a severe positivity violation or a non-identifiable target, tested against deliberately non-identifiable simulation scenarios. Include at least one such scenario in every methods comparison, because an estimator that always returns a narrow interval is not robust if it never warns.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Confirmed open. Auditors agreed the problem is open and no counterevidence surfaced.
+
+**The source said.** "Identification is a property of the observed data together with the assumptions, not a property of the estimator. A neural network cannot learn a counterfactual contrast that the data and assumptions do not identify, and flexible modeling that reduces approximation error in a nuisance function can at the same time disguise unsupported extrapolation, because a smooth fit extends confidently into regions with no observations. The distinction is stated clearly in the methodological literature and is repeatedly elided in applied work, where a more flexible learner is offered as the answer to a confounding or positivity concern. There is no diagnostic in common use that separates a flexible model interpolating where data exist from the same model extrapolating where they do not."
+
+**What was wrong with it.** Support and overlap diagnostics that flag particular forms of extrapolation do exist, so the claim that no diagnostic separates interpolation from extrapolation was too strong. They are definition-dependent and model-dependent, and they cannot certify sequential exchangeability, positivity or identification, which is the weaker and correct version.
+
+**Dissent.** literature dissented (supported): The corpus contains a growing body of flexible estimation inside emulations, including ensemble-learning marginal structural models and deep learning comparisons, and it contains no support diagnostic reported alongside a flexible nuisance model and no methods comparison that includes a deliberately non-identifiable scenario. A 2026 Nature Communications paper evaluates bias across statistical and deep learning methods in a heart failure emulation, which is the comparison the entry wants and does not include a non-identifiable arm. Failure awareness as a scored property does not appear anywhere.
+
+Literature and prior-art check
+:   **open / supported.** The corpus contains a growing body of flexible estimation inside emulations, including ensemble-learning marginal structural models and deep learning comparisons, and it contains no support diagnostic reported alongside a flexible nuisance model and no methods comparison that includes a deliberately non-identifiable scenario. A 2026 Nature Communications paper evaluates bias across statistical and deep learning methods in a heart failure emulation, which is the comparison the entry wants and does not include a non-identifiable arm. Failure awareness as a scored property does not appear anywhere.
+    Cites 10.1038/s41467-026-74999-6: Compares flexible against conventional estimation for bias inside an emulation, which is the nearest existing test and does not include a non-identifiable scenario..
+    Cites 10.1002/bimj.70133: Applies ensemble learning to the weight model in a longitudinal setting, which is where the extrapolation concern applies..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** The central identification claim is correct, although identification formally concerns the observed-data law, causal model, target estimand, and identifying assumptions rather than the realized finite dataset. Flexible estimation cannot repair failed exchangeability or positivity. The absolute diagnostic claim is too strong: propensity-score overlap, conditional treatment probabilities, density ratios, nearest-neighbor distances, leverage, and related support diagnostics can operationally flag extrapolation. They cannot certify identification, diagnose unmeasured confounding, or provide a model-free boundary between interpolation and extrapolation in high-dimensional longitudinal histories. Simulations can test warnings for deliberately detectable support failures, but no estimator can be required to detect every nonidentifiable target from the observed distribution alone. No package capability claim is present.
+
+Grok 4.5, recency lens
+:   **open / supported-with-caveat.** Inverted search did not find a standard that closes this gap. Feuerriegel et al. (Nat Med 2024) restate that causal ML requires the same identification assumptions as classical methods and does not identify contrasts the data cannot support; that is prior art for the claim, not a solution. Hill and Su (Ann Appl Stat 2013) and Nethery et al. (Ann Appl Stat 2019) give BART-centered common-support diagnostics and nonoverlap-aware estimation, and propensity-score density/trim diagnostics remain routine for low-dimensional scores. Those tools do not constitute a diagnostic in common use that flags, for a general flexible nuisance (including neural nets) and for the same high-dimensional conditioning sets the nuisance uses, which predictions are interpolation versus extrapolation. Package activity in TrialEmulation, gfoRmula, lmtp, WeightIt, and related tools still emphasizes IPW weight extremity and classical overlap plots rather than per-prediction support maps for flexible outcome models. Failure-awareness scoring against deliberately non-identifiable simulations is not an established methods-comparison standard. The problem remains open as stated for applied flexible nuisance work; the caveat is that specialized support diagnostics for some nonparametric models already exist and should be named rather than implied to be nonexistent.
+
+glm
+:   **open / supported.** The claim correctly identifies that identification is a property of data and assumptions, not the estimator, and that flexible models can disguise extrapolation. The reason given for it being open (lack of common diagnostics for high-dimensional extrapolation) logically supports the claim. The claim is pitched at the right level of generality and correctly frames the issue as a current practice gap rather than a structural impossibility.
+
+Decision path
+:   `R5:default-open → R9:substantiated-overstatement(n=1/4):codex`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [GMT-01 — Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance](GMT-01-cross-validation-for-longitudinal-nuisance-models-optimizes-.qmd)
+- [GMT-04 — No estimator is defensible as a default, and no study is required to show that its choice mattered](GMT-04-no-estimator-is-defensible-as-a-default-and-no-study-is-requ.qmd)
+- [LRN-03 — Learned embeddings from clinical text can carry post-treatment information into a baseline adjustment set](LRN-03-learned-embeddings-from-clinical-text-can-carry-post-treatme.qmd)
+- [LRN-04 — Subgroup effects are estimated where overlap is worst, and the groups with worst overlap are often the protected ones](LRN-04-subgroup-effects-are-estimated-where-overlap-is-worst-and-th.qmd)
+- [OVL-01 — Positivity diagnostics describe weights instead of naming which patient histories are unsupported](OVL-01-positivity-diagnostics-describe-weights-instead-of-naming-wh.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md lines 87, 136 and 189 (seed-theoretical).

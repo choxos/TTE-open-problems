@@ -1,0 +1,90 @@
+---
+title: "An unrecorded eligibility criterion is indistinguishable from a criterion that was met"
+description: "Trial eligibility is assessed at a screening visit; a database records what a clinician happened to order. Restricting an emulation to patients with complete eligibility information can bias it when observation of the criterion depends on determinants of treatment or outcome that the recorded history does not adequately control, which is the ordinary case when testing tracks severity and access. Weighting and missing-data methods for unrecorded eligibility now exist in more than one paper. The harder version remains: eligibility is latent rather than merely missing, since an absent creatinine value is consistent both with a patient who would have failed the criterion and with one who was never tested. When true eligibility among unobserved records is missing not at random, the effect in the truly eligible population is not identified from the main data alone and requires either additional identifying assumptions or external information."
+pid: "ELG-01"
+topic: "Eligibility, cohort entry & the new-user question"
+categories: ["Eligibility, cohort entry & the new-user question", "High priority", "Partially addressed"]
+priority: "High"
+prank: 2
+verdict: "Partially addressed"
+verdictslug: "partially-addressed"
+maturity: "Emerging"
+tractability: 4
+---
+::: {.problem-meta}
+[ELG-01]{.problem-id}
+[Partially addressed]{.verdict .verdict-partially-addressed}
+[High priority]{.chip .chip-priority-high}
+[Emerging]{.chip .chip-maturity-emerging}
+[Tractability 4/5]{.chip}
+:::
+## Statement
+
+Trial eligibility is assessed at a screening visit; a database records what a clinician happened to order. Restricting an emulation to patients with complete eligibility information can bias it when observation of the criterion depends on determinants of treatment or outcome that the recorded history does not adequately control, which is the ordinary case when testing tracks severity and access. Weighting and missing-data methods for unrecorded eligibility now exist in more than one paper. The harder version remains: eligibility is latent rather than merely missing, since an absent creatinine value is consistent both with a patient who would have failed the criterion and with one who was never tested. When true eligibility among unobserved records is missing not at random, the effect in the truly eligible population is not identified from the main data alone and requires either additional identifying assumptions or external information.
+
+## Why it is open
+
+Missing-at-random conditional on the recorded history is not credible here, because the recording decision is a clinical judgment informed by the same severity that predicts the outcome. The external information that would identify the effect is a validation source in which the criterion was assessed for everyone, and such sources are rare, rarely representative, and rarely transportable to the analysis population. Imputing the underlying measurement and imputing the eligibility indicator need different models, so an implementation has to choose which object it is modeling and defend that choice, and applied work seldom states which it did.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Benz L, et al. Adjusting for selection bias due to missing eligibility criteria in emulated target trials. Am J Epidemiol 2025](https://doi.org/10.1093/aje/kwae471) | Develops weighting for missing eligibility information in emulated trials. |
+| [Missingness in eligibility criteria for target trial emulation in EHR with survival outcomes. Stat Med 2026](https://doi.org/10.1002/sim.70500) | A second direct treatment of the problem, for survival outcomes in record data. |
+| [Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026](https://doi.org/10.1038/s41746-026-02563-z) | Sets out how each protocol component, eligibility included, is realized against record-level data and where the realization is partial. |
+
+:::
+
+## Probable solution or research direction
+
+Model true eligibility and its observation jointly, anchoring the measurement model on validation records where the criterion was assessed for everyone. Compare multiple imputation, inverse-probability-of-eligibility weighting, doubly robust selection correction and partial-identification bounds on the same data, stating for each whether the model is of the measurement or of the eligibility indicator, since they are not interchangeable even when they target the same estimand. Report the eligible population under each approach alongside the effect, because a method that changes who is in the trial has changed the estimand.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Partially addressed. Part of this problem is addressed by existing work; the entry names which part.
+
+**The source said.** "Trial eligibility is assessed at a screening visit; a database records what a clinician happened to order. Restricting an emulation to patients with complete eligibility information therefore selects on laboratory testing, clinical documentation and specialist access, which differ systematically from the excluded patients. Weighting methods for missing eligibility have recently been developed and the literature remains small. The harder version of the problem is that eligibility is latent rather than merely missing: an absent creatinine value is consistent both with a patient who would have failed the criterion and with one who was never tested, and the missingness itself may depend on treatment anticipation or on the impending outcome."
+
+**What was wrong with it.** Systematic differences between the included and the excluded do not by themselves establish bias for a specified estimand; the bias arises when observation of the criterion depends on determinants of treatment or outcome that the recorded history does not control. The literature is also larger than one paper. The entry's claim that imputing the value and imputing eligibility have not been separated was too strong: they require different models, and coherent implementations of either can target the same causal estimand.
+
+**Dissent.** literature dissented (open): The entry says the literature on missing eligibility is small. It is small and it is larger than the one paper the entry cites. A 2026 Statistics in Medicine paper treats missingness in eligibility criteria for target trial emulation in electronic health records with survival outcomes, alongside the 2025 American Journal of Epidemiology weighting paper the entry already carries. The harder claim, that eligibility is latent rather than missing and that an absent value is consistent with both a failed criterion and an untested patient, is not addressed by either and stands. codex dissented (overstated): Restricting analysis to records with observed eligibility can cause selection bias, but systematic differences between included and excluded patients do not alone establish bias for a specified causal estimand. Identification depends on conditional exchangeability for the observation or selection process and adequate observed support. When true eligibility is missing not at random, the effect among truly eligible patients is generally not identified from the main data alone. However, assessing the criterion for everyone in a validation source is sufficient, not necessary. A probability validation subsample, auxiliary-variable restrictions, explicit parametric assumptions, sensitivity analysis, or partial-identification methods can also inform the problem. If eligibility is a deterministic threshold of an underlying measurement, imputing that measurement and deriving eligibility can target the same population as directly imputing eligibility. Changing imputed membership across draws represents missing-data uncertainty and does not automatically change the estimand. Existing weighting work addresses an important identified-assumption case, while the unrestricted latent-eligibility problem remains open.
+
+Literature and prior-art check
+:   **open / supported-with-caveat.** The entry says the literature on missing eligibility is small. It is small and it is larger than the one paper the entry cites. A 2026 Statistics in Medicine paper treats missingness in eligibility criteria for target trial emulation in electronic health records with survival outcomes, alongside the 2025 American Journal of Epidemiology weighting paper the entry already carries. The harder claim, that eligibility is latent rather than missing and that an absent value is consistent with both a failed criterion and an untested patient, is not addressed by either and stands.
+    Cites 10.1002/sim.70500: A second and more recent direct treatment of the problem, which the entry's claim of a very small literature should acknowledge..
+    Cites 10.1093/aje/kwae471: The weighting approach the entry already cites..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **partially-solved / overstated.** Restricting analysis to records with observed eligibility can cause selection bias, but systematic differences between included and excluded patients do not alone establish bias for a specified causal estimand. Identification depends on conditional exchangeability for the observation or selection process and adequate observed support. When true eligibility is missing not at random, the effect among truly eligible patients is generally not identified from the main data alone. However, assessing the criterion for everyone in a validation source is sufficient, not necessary. A probability validation subsample, auxiliary-variable restrictions, explicit parametric assumptions, sensitivity analysis, or partial-identification methods can also inform the problem. If eligibility is a deterministic threshold of an underlying measurement, imputing that measurement and deriving eligibility can target the same population as directly imputing eligibility. Changing imputed membership across draws represents missing-data uncertainty and does not automatically change the estimand. Existing weighting work addresses an important identified-assumption case, while the unrestricted latent-eligibility problem remains open.
+    Cites doi:10.1093/aje/kwae471: Provides a weighting approach for selection arising from missing eligibility information under identifying assumptions; it does not nonparametrically identify unrestricted missing-not-at-random latent eligibility..
+
+Grok 4.5, recency lens
+:   **partially-solved / supported-with-caveat.** Inverted prior: treat missing-eligibility selection as already handled, then check what exists. Three direct method papers (not one) address the complete-case selection problem under explicit missingness models. Tompsett et al. (2023) formalize bias from missing eligibility in a point-treatment TTE, show patterns under MAR and MNAR, and evaluate multiple imputation of the eligibility-defining variables plus MNAR sensitivity shifts; they state that MNAR imputation remains exploratory because the sensitivity parameters are not identified from the data alone. Benz et al. (2025; also arXiv:2406.16830), which the entry cites as the first direct treatment, develops inverse-probability-of-ascertainment weights for sequential TTE with time-to-event endpoints under an eligibility-MAR assumption (ascertainment independent of true eligibility given non-eligibility covariates and treatment), evaluates them in plasmode EHR simulations, and applies them to a Kaiser Permanente bariatric-surgery cohort; accompanying research code is on GitHub (lbenz730/missing_eligibility_tte), not a production CRAN/Python package. Shen et al. (2026, Stat Med) compares complete-case analysis with three multiple-imputation strategies for eligibility-defining variables in EHR survival TTEs and reports that flexible MI often reduces bias when missingness is high. Wang et al. (2026) map eligibility realization in EHR data and cite Tompsett and Benz as the handling literature; they do not add a new estimator. What remains open, and matches the entry’s harder claim, is latent eligibility: an absent lab is consistent with never-tested versus would-have-failed, with recording driven by the same severity that predicts treatment and outcome (MNAR not cured by MAR IPW or standard MI). No paper retrieved jointly models true eligibility and its observation process anchored to a validation source where the criterion was assessed for everyone; no head-to-head of MI, IPW, doubly robust selection correction, and partial-identification bounds on the same TTE data with reporting of the implied eligible population under each method was found. Package search (TrialEmulation, WeightIt missing-covariate handling, gfoRmula, lmtp, ltmle, zEpid, causallib) shows no shipped inverse-probability-of-eligibility-ascertainment or joint latent-eligibility measurement model. 2025–2026 guidance (TARGET, FDA RWE/ECT, EMA registry, NICE RWE) does not resolve identification of latent eligibility. Partial solve covers MAR complete-case selection; the title problem (unrecorded criterion indistinguishable from met criterion) stays open.
+    Cites 10.1093/aje/kwac202: Partial: identifies and simulates selection bias from missing eligibility in TTE; evaluates MI of eligibility-defining variables and MNAR sensitivity imputation for recovering the eligible-population ACE under stated MAR/MNAR mechanisms (point treatment, continuous/binary outcome setting)..
+    Cites 10.1093/aje/kwae471: Partial: IPW framework for selection due to incomplete eligibility ascertainment in sequential TTE with time-to-event endpoints under an eligibility-MAR assumption; simulation evaluation and real EHR application. Does not identify effects when missingness depends on latent eligibility itself..
+    Cites 10.1002/sim.70500: Partial: compares complete-case analysis versus three MI strategies for eligibility-defining variables in EHR survival TTEs; empirical guidance on when flexible MI reduces bias under high missingness. Still imputes recorded values rather than separating latent eligibility from observation..
+    Cites arxiv:2406.16830: Same as Benz 2025 AJE; states the eligibility-MAR assumption used by the weights and makes clear that standard complete-case analysis targets a different estimand (eligible complete cases, not all eligible)..
+
+glm
+:   **open / supported.** The claim is internally consistent and pitched at the right level of generality. It correctly identifies that restricting to complete cases selects on healthcare utilization, and that the latent eligibility problem is distinct from simple missingness. The stated reasons for the problem being open (MAR is not credible, validation sources are rare, and imputing a value is different from imputing eligibility) logically entail that the problem remains open. The claim does not assert an impossibility but rather a current methodological gap and a structural difficulty in distinguishing latent states from missing measurements.
+
+Decision path
+:   `R3:partially-solved(n=2/4) → R9:substantiated-overstatement(n=1/4):codex`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [ELG-02 — Eligibility criteria built from healthcare-use variables can induce selection through colliders](ELG-02-eligibility-criteria-built-from-healthcare-use-variables-can.qmd)
+- [LRN-02 — Automated protocol translation can change the estimand while producing valid code](LRN-02-automated-protocol-translation-can-change-the-estimand-while.qmd)
+- [MER-01 — Phenotypes enter emulations as error-free binary variables](MER-01-phenotypes-enter-emulations-as-error-free-binary-variables.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 106, row 'Missing eligibility information' (seed-data).

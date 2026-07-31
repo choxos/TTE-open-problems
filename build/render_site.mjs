@@ -457,8 +457,23 @@ function problemPage(p) {
     out.push(':::', '')
   }
 
+  // Provenance takes two shapes. An entry extracted from the source document carries a
+  // `source` block naming the section and line it came from, which is checkable; an entry
+  // drafted from the full-text reading carries `source_refs`, the corpus slices behind it.
+  // An entry with neither is not published without a note, because a claim whose origin is
+  // unrecorded is the one thing this catalog is built not to have.
   out.push('## Source', '')
-  out.push(`Derived from ${p.source_refs.join(', ')} of the reviewed corpus.`, '')
+  if (p.source?.locator) {
+    out.push(
+      `Extracted from the source document at ${p.source.locator}` +
+        (p.source.slice ? ` (${p.source.slice})` : '') + '.',
+      ''
+    )
+  } else if (p.source_refs?.length) {
+    out.push(`Derived from ${p.source_refs.join(', ')} of the reviewed corpus.`, '')
+  } else {
+    out.push('Provenance for this entry is not recorded.', '')
+  }
 
   return out.join('\n')
 }
@@ -895,12 +910,22 @@ function main() {
       ? `${partly}% of the problems presented as open turn out to be partly addressed already, ` +
         'usually by work the source material does not cite. Those entries name what covers which part.'
       : 'No entry has yet been found to be partly addressed by work the source material does not cite.'
+  // What was audited, counted from the registry. Two shapes exist: entries decomposed into
+  // atomic claims, and entries assessed whole by several independent auditors. Reporting the
+  // claim count alone printed "0 individual claims" for the second, which reads as a failed
+  // audit rather than a different unit of assessment.
+  const nClaims = problems.reduce((t, p) => t + (p.claims_to_check || []).length, 0)
+  const nOpinions = problems.reduce((t, p) => t + (p.audit?.opinions || []).length, 0)
+  const auditors = new Set(problems.flatMap((p) => (p.audit?.opinions || []).map((o) => o.auditor)))
+  const audited = nClaims
+    ? `carrying ${nClaims} individual claims that were checked.`
+    : nOpinions
+      ? `assessed by ${auditors.size} independent auditors, ${nOpinions} opinions in all.`
+      : 'not yet audited.'
   const stats = `::: {.callout-note appearance="simple"}
 ## What the audit found
 
-**${problems.length} problems** across ${CATEGORIES.length} categories, carrying
-${problems.reduce((t, p) => t + (p.claims_to_check || []).length, 0)} individual claims that
-were checked.
+**${problems.length} problems** across ${CATEGORIES.length} categories, ${audited}
 
 | Verdict | Entries | |
 |---|---:|---:|

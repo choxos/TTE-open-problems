@@ -1,0 +1,81 @@
+---
+title: "Inference conditions on a fixed target trial that was in fact selected after seeing the data"
+description: "Eligibility thresholds, comparators, grace periods, washout windows and outcome definitions are routinely revised after investigators inspect the data. When outcome-relevant information from the analysis data is used to select among candidate protocols, a confidence interval calibrated for a protocol fixed in advance need not have nominal coverage for the selected estimand, unless the selection is incorporated into the inference or separated out through independent data. Saying so requires naming the target of inference and whether the coverage claimed is conditional on the selection or marginal over it, and applied reports do neither. Design multiverse analyses of emulations exist and display the spread of estimates across specifications, which is informative and is not a correction: a multiverse shows the sensitivity and leaves the reported interval uncalibrated for the search that produced it."
+pid: "PRO-02"
+topic: "Protocol specification & well-defined interventions"
+categories: ["Protocol specification & well-defined interventions", "High priority", "Partially addressed"]
+priority: "High"
+prank: 2
+verdict: "Partially addressed"
+verdictslug: "partially-addressed"
+maturity: "Emerging"
+tractability: 3
+---
+::: {.problem-meta}
+[PRO-02]{.problem-id}
+[Partially addressed]{.verdict .verdict-partially-addressed}
+[High priority]{.chip .chip-priority-high}
+[Emerging]{.chip .chip-maturity-emerging}
+[Tractability 3/5]{.chip}
+:::
+## Statement
+
+Eligibility thresholds, comparators, grace periods, washout windows and outcome definitions are routinely revised after investigators inspect the data. When outcome-relevant information from the analysis data is used to select among candidate protocols, a confidence interval calibrated for a protocol fixed in advance need not have nominal coverage for the selected estimand, unless the selection is incorporated into the inference or separated out through independent data. Saying so requires naming the target of inference and whether the coverage claimed is conditional on the selection or marginal over it, and applied reports do neither. Design multiverse analyses of emulations exist and display the spread of estimates across specifications, which is informative and is not a correction: a multiverse shows the sensitivity and leaves the reported interval uncalibrated for the search that produced it.
+
+## Why it is open
+
+The search is usually undocumented, so even a method that corrected for it would have no record of what was searched. Selective-inference corrections exist for well-defined selection events such as variable selection under a known rule, and protocol development is not one: it is a sequence of human decisions with no likelihood. Splitting the data into design and analysis halves solves the inference problem and costs precision in exactly the settings, rare treatments and rare outcomes, where precision is already binding.
+
+## What has been tried
+
+::: {.table-scroll}
+
+| Work | What it contributes |
+|---|---|
+| [Hansford HJ, et al. Design and implementation of observational studies emulating a target trial. JAMA Netw Open 2026](https://doi.org/10.1001/jamanetworkopen.2025.58262) | Enumerates the design decisions an emulation must make, which is also the enumeration of what can be revised after seeing data. |
+| [Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA 2025](https://doi.org/10.1001/jama.2025.13350) | A 21-item reporting checklist for the final specification. Its purpose is transparency about what was done, not a record of what was rejected. |
+
+:::
+
+## Probable solution or research direction
+
+Divide the data into a design partition and an analysis partition, or expose only outcome-blinded metadata during protocol development, so the search happens where it cannot contaminate inference. Where a selection-aware correction is attempted, state the target of inference and whether coverage is conditional or marginal, since the claim is not well formed without it. Require dated decision logs so the search becomes a recorded object: a correction is impossible while the search history is unavailable even to the investigators.
+
+## Verification
+
+::: {.verification-trail}
+**Verdict.** Partially addressed. Part of this problem is addressed by existing work; the entry names which part.
+
+**The source said.** "Eligibility thresholds, comparators, grace periods, washout windows and outcome definitions are routinely revised after investigators inspect the data. Even an investigator who never looks at a treatment effect can be influenced by outcome prevalence, by covariate-outcome associations or by which specification yields a workable sample size. Standard inferential theory conditions on a fixed target trial and takes no account of the search over candidate emulations that produced it, so the reported confidence interval has the wrong coverage for the procedure actually run. A protocol chosen by an algorithm is an estimated object with its own sampling variability, and nothing in current practice treats it as one."
+
+**What was wrong with it.** The coverage claim needs its condition stated. An interval calibrated for a protocol fixed in advance loses nominal coverage when outcome-relevant information from the analysis data is used to select among protocols, and the statement has to name which target of inference and which coverage probability, conditional or marginal, is meant. Design multiverse analyses of emulations also already exist, which the entry did not acknowledge.
+
+Literature and prior-art check
+:   **partially-solved / supported-with-caveat.** The entry says standard inference conditions on a fixed target trial and ignores the search over candidate emulations. The search is now being reported in at least one applied setting: a 2025 European Journal of Epidemiology study uses a multiverse analysis to characterize uncertainty in the estimated effect of statin initiation on dementia across design choices. That is the design multiverse the entry proposes, already run. What remains unaddressed is the inferential half: a multiverse displays the spread and does not correct coverage, and no selective-inference treatment of protocol selection exists in the corpus. The entry should not claim the multiverse is absent.
+    Cites 10.1007/s10654-025-01231-y: Runs the design multiverse the entry proposes, in an applied emulation, which means the proposal has a precedent rather than being untried..
+    Cites 10.1093/aje/kwae346: Documents the specification choices oncology emulations actually make, which is the empirical base for describing the search space..
+
+GPT-5.6 Sol, technical and source-code lens
+:   **open / overstated.** Outcome-dependent selection of a protocol using the analysis data can invalidate an interval calibrated for a protocol fixed in advance, so the narrowed problem is real. It is not true that every data-informed revision produces wrong coverage. Choices based only on treatment and covariate information may be handled conditionally, independent design and analysis samples break the relevant dependence, and simultaneous or selection-aware inference can cover specified searches. An algorithmically selected protocol produces a data-adaptive target; that does not automatically create an extra variance component, because coverage must first be defined conditionally or marginally and for either the selected estimand or a fixed scientific estimand. An undocumented human search precludes an exact reconstruction of that selection event, but it does not make all valid inference impossible. High severity is warranted only when outcome-relevant selection is material and ignored.
+
+Grok 4.5, recency lens
+:   **open / supported.** Selective-inference and post-selection literature exists for covariates and models, not for human search over TTE protocol components (eligibility, grace period, washout, outcomes). TARGET and Hansford 2025–2026 report the final protocol; they do not correct coverage for data-dependent protocol selection. Outcome-blinded design splits and dated decision logs remain proposals, not standard practice or validated TTE-specific selective-inference procedures. No CRAN/GitHub change for TrialEmulation/lmtp/ltmle/gfoRmula treats the protocol as a random object. Open.
+
+glm
+:   **open / supported.** The claim is internally consistent and proportionate. It asserts that current practice does not treat the protocol as an estimated object with sampling variability. The reason given for it being open—that the search is undocumented and protocol development is not a well-defined selection event—directly supports the claim that standard inferential theory and current practice fail to account for this search. The scope is correctly pitched at current practice.
+
+Decision path
+:   `R3:partially-solved(n=1/4) → R9:substantiated-overstatement(n=1/4):codex`
+
+:::
+
+## Related problems
+
+::: {.related-links}
+- [PRO-01 — No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error](PRO-01-no-decomposition-separates-scientific-target-mismatch-from-p.qmd)
+- [PRO-03 — Registrations record the final protocol and not the alternatives that were rejected](PRO-03-registrations-record-the-final-protocol-and-not-the-alternat.qmd)
+:::
+
+## Source
+
+Extracted from the source document at seed-linked.md line 85, row 'Data-adaptive trial specification and selective inference' (seed-theoretical).
