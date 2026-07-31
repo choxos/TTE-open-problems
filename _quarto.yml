@@ -6,6 +6,13 @@ project:
     - "/*.qmd"
     - "/categories/*.qmd"
     - "/problems/*.qmd"
+  # Manuscripts are rendered by build/studies/publish.py, not by the site
+  # build, so they are copied as resources rather than compiled as pages.
+  resources:
+    - "studies/*/out/**"
+    # The Markdown manuscript references figures by relative path from out/, so
+    # they have to be served too or the downloaded .md shows broken images.
+    - "studies/*/results/figures/**"
 
 website:
   title: "Open Problems in Target Trial Emulation"
@@ -47,9 +54,10 @@ website:
           - categories/learning.qmd
       - href: agenda.qmd
         text: Agenda
-      # chronology.qmd is written by render_site.mjs only once the full-text
-      # reading has produced a timeline, so it is added here in that phase and
-      # not before: a navbar entry pointing at a missing file fails the render.
+      - href: studies.qmd
+        text: Studies
+      - href: chronology.qmd
+        text: Chronology
       - href: landscape.qmd
         text: Landscape
       - href: methods.qmd
