@@ -45,8 +45,9 @@ READING = os.path.join(AUDIT, "reading")
 REVIEW = os.path.join(READING, "review")
 PER_BATCH = 3        # these payloads are long; three problems is already a lot
 
-PROMPT = """You are an independent reviewer for a catalog of open problems in indirect
-treatment comparisons and population-adjusted indirect comparisons.
+PROMPT = """You are an independent reviewer for a catalog of open problems in target
+trial emulation and the g-methods used to estimate the effects of sustained
+treatment strategies.
 
 For each problem below you are shown two sets of claims made by papers that were
 read in full, split by publication date. `called_open_by` are older papers that
