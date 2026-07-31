@@ -29,10 +29,11 @@ const fold = (s) => (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '')
 
 // The longest run of plain prose inside the ground-truth string, which is what is actually
 // expected to appear in the file. Fixture text often wraps the quote in a locator.
-const quotedSpan = (s) => {
-  const quoted = [...(s || '').matchAll(/[“"']([^“”"']{20,})[”"']/g)].map((m) => m[1])
-  return quoted.length ? quoted.sort((a, b) => b.length - a.length)[0] : null
-}
+// Every quoted span, not the longest one. A ground truth that quotes six exported symbols is
+// asserting all six; verifying only the longest lets the other five be deleted from the pinned
+// source without the fixture noticing.
+const quotedSpans = (s) =>
+  [...(s || '').matchAll(/[“"']([^“”"']{20,})[”"']/g)].map((m) => m[1])
 
 function main() {
   if (!existsSync(CAL)) {
@@ -66,15 +67,45 @@ function main() {
         // is the normal state in CI, and not "the fixture is broken". Skipped loudly rather
         // than silently, because a run where nothing was checkable must not read as a pass.
         skipped.push(`${tag}: ${f.ground_truth_file} not vendored here`)
-      } else if (!/\.(pdf|png|jpg)$/i.test(p)) {
-        const span = quotedSpan(f.ground_truth)
-        if (span) {
-          truthChecked++
-          if (!fold(readFileSync(p, 'utf8')).includes(fold(span))) {
-            failures.push(
-              `${tag}: the quoted ground truth is no longer in ${f.ground_truth_file}. ` +
-              'The pinned source moved, so the fixture is stale rather than the audit being wrong.')
+      } else if (/\.(pdf|png|jpg)$/i.test(p)) {
+        // Binary ground truth cannot be grepped from here. Named rather than passed over, so
+        // the count of checked quotes is never mistaken for the count of fixtures with a file.
+        skipped.push(`${tag}: ${f.ground_truth_file} is binary and cannot be checked textually`)
+      } else {
+        const spans = quotedSpans(f.ground_truth)
+        if (spans.length) {
+          const body = fold(readFileSync(p, 'utf8'))
+          for (const span of spans) {
+            truthChecked++
+            if (!body.includes(fold(span))) {
+              failures.push(
+                `${tag}: the quoted ground truth "${span}" is no longer in ${f.ground_truth_file}. ` +
+                'The pinned source moved, so the fixture is stale rather than the audit being wrong.')
+            }
           }
+        } else if (f.ground_truth_check === 'seed-citations-resolved') {
+          // A negative claim cannot be checked by finding a string, since finding it would mean
+          // the opposite of what the fixture asserts. This one is structural, so it is evaluated
+          // as structure: every source reference must carry an identifier and none may be left
+          // at the confidence value that marks an unresolved work.
+          truthChecked++
+          const seed = JSON.parse(readFileSync(p, 'utf8'))
+          const entries = Object.values(seed)
+          const unresolved = entries.filter((e) => e?.confidence === 'none')
+          const idless = entries.filter((e) => !(e?.doi || e?.arxiv || e?.url || e?.pmid))
+          if (unresolved.length || idless.length) {
+            failures.push(
+              `${tag}: ${unresolved.length} source reference(s) still marked unresolved and ` +
+              `${idless.length} carry no identifier, so a claim resting only on one of them ` +
+              'could ship as if it had been read.')
+          }
+        } else {
+          // The file is here and readable and still nothing was verified, because the ground
+          // truth was written as a summary rather than as a quotation. That is the failure mode
+          // this whole file exists to prevent, so it is reported rather than skipped in silence.
+          skipped.push(
+            `${tag}: ground truth for ${f.ground_truth_file} carries no quoted span of 20 ` +
+            'characters or more, so nothing was verified against the file')
         }
       }
     }
@@ -118,11 +149,22 @@ function main() {
     console.log(`${uninstantiated.length} fixture${uninstantiated.length === 1 ? '' : 's'} ` +
                 `matched no registry entry and therefore tested no verdict: ` +
                 `${uninstantiated.join(', ')}.`)
+    // These fixtures are known-answer controls for the auditors, not claims the catalog makes.
+    // Every one of them uninstantiated is the expected and desirable state: it says none of
+    // these wrong claims reached the registry. It is stated because a line reading "0 verdicts
+    // checked" next to "Calibration OK" otherwise looks like a harness that does nothing.
+    if (uninstantiated.length === fixtures.length) {
+      console.log('  No fixture claim appears in the registry, which is the intended state: ' +
+                  'these are controls for the auditors rather than claims the catalog makes. ' +
+                  'The verdict axis bites only if one of them is ever asserted as an entry.')
+    }
   }
   if (skipped.length) {
     console.log(`${skipped.length} ground-truth check(s) skipped:`)
     for (const s of skipped) console.log(`  - ${s}`)
-    console.log('  Run `bash build/vendor_packages.sh` to fetch the pinned sources and check these.')
+    if (skipped.some((s) => s.includes('not vendored here'))) {
+      console.log('  Run `bash build/vendor_packages.sh` to fetch the pinned sources and check these.')
+    }
   }
   if (!problems.length) {
     console.log('Registry is empty, so only ground truth was checkable. That is expected before ' +
