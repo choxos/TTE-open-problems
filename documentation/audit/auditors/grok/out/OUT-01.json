@@ -1,0 +1,104 @@
+{
+  "text": "{ \"batch_id\": \"OUT-01\", \"auditor\": \"grok\", \"opinions\": [] }{\n  \"batch_id\": \"OUT-01\",\n  \"auditor\": \"grok\",\n  \"opinions\": [\n    {\n      \"problem_id\": \"OUT-01\",\n      \"status_vote\": \"partially-solved\",\n      \"support_vote\": \"supported-with-caveat\",\n      \"confidence\": 0.82,\n      \"rationale\": \"Inverted-prior search shows the methodological core of OUT-01 is older and better equipped than a pure 'open' label implies, while the applied silence problem remains. Young, Stensrud, Tchetgen Tchetgen and Hernán (2020) already formalize that treating a competing event as censoring selects a controlled-direct-effect style question rather than a total-effect cumulative incidence, so the 'identifying assumption vs data cleaning' distinction is settled in the causal competing-risks literature. Software already embeds that choice for sustained or feasible longitudinal interventions: gfoRmula documents explicit options for competing events under time-varying treatment strategies, and lmtp implements time-to-event outcomes with competing risks for modified treatment policies, including a later 'total effect' option in version 1.5.0 (citing Díaz, Hoffman and Hejazi). Janvin, Young, Ryalen and Stensrud (2024) formalize causal estimands for recurrent events with and without a terminal competing event. None of that fully closes OUT-01 as stated. Applied primers still describe censor-at-death plus Fine-Gray sensitivity as common practice (Terman et al., 2025). ICH E9(R1) still governs trials more tightly than routine emulation protocols; TARGET (2025) improves TTE reporting generally but does not by itself force an intercurrent-event strategy for death the way E9(R1) does for trials. Separable effects remain a substantive product claim, not a software switch. Joint recurrent-plus-terminal estimation under longitudinal confounding is advancing (Prosepe et al., 2025 multistate g-computation; D'Alessio et al., 2026 arXiv g-computation for recurrent and semi-competing events with time-varying actions) but those are method papers and proposals, not field-wide defaults or head-to-head evaluations of multistate g-computation, joint frailty, separable effects and recurrent-event targeted learning on a known competing-event DGP. Net: estimator and formal estimand machinery for competing death under many sustained strategies exist; silent preprocessing and incomplete recurrent/terminal tooling keep the problem only partially solved. Queries run included competing risks/censoring at death in target trial emulation; intercurrent events in RWE/TTE; separable effects software; multistate g-computation sustained strategies; lmtp/gfoRmula/gfoRmulaICE NEWS and CRAN; TARGET 2025 checklist coverage; arXiv/medRxiv 2024–2026; Janvin recurrent competing; Díaz LMTP competing risks.\",\n      \"weakest_true_restatement\": null,\n      \"resolving_work\": [\n        {\n          \"locator\": \"doi:10.1002/sim.8471\",\n          \"title\": \"A causal framework for classical statistical estimands in failure-time settings with competing events\",\n          \"year\": 2020,\n          \"what_it_resolves\": \"Makes explicit that defining competing events as censoring is an identifying choice among total, controlled direct and related counterfactual estimands, not a neutral cleaning step; this is the conceptual backbone of OUT-01.\",\n          \"quote\": null\n        },\n        {\n          \"locator\": \"doi:10.1007/s10985-023-09606-7\",\n          \"title\": \"Causal survival analysis under competing risks using longitudinal modified treatment policies\",\n          \"year\": 2024,\n          \"what_it_resolves\": \"Provides identification and estimation for survival under competing risks with longitudinal modified treatment policies, so competing death is part of the estimand rather than only a preprocessing censor code for feasible sustained-style interventions.\",\n          \"quote\": null\n        },\n        {\n          \"locator\": \"cran:lmtp\",\n          \"title\": \"lmtp: Non-Parametric Causal Effects of Feasible Interventions Based on Modified Treatment Policies\",\n          \"year\": null,\n          \"what_it_resolves\": \"Released R software that natively supports time-to-event outcomes with competing risks for MTPs/dynamic rules; NEWS for 1.5.0 adds estimation of the total effect under competing risks, reducing the incentive to censor death before fitting.\",\n          \"quote\": \"Added the ability to estimate the so-called \\\"total effect\\\" for survival outcome with competing risks (see issue #143).\"\n        },\n        {\n          \"locator\": \"doi:10.1016/j.patter.2020.100008\",\n          \"title\": \"gfoRmula: An R Package for Estimating the Effects of Sustained Treatment Strategies via the Parametric g-formula\",\n          \"year\": 2020,\n          \"what_it_resolves\": \"Implements parametric g-formula for sustained treatment strategies with documented options for handling competing events, covering the sustained-strategy case the agenda flags as missing when analysts stay inside cause-specific Cox pipelines.\",\n          \"quote\": null\n        },\n        {\n          \"locator\": \"doi:10.1007/s10985-023-09594-8\",\n          \"title\": \"Causal inference with recurrent and competing events\",\n          \"year\": 2024,\n          \"what_it_resolves\": \"Formalizes several causal estimands for recurrent event settings with and without competing terminal events, partially addressing the report's claim that recurrent and terminal structure is not worked out at the estimand level.\",\n          \"quote\": null\n        },\n        {\n          \"locator\": \"doi:10.1002/sim.70061\",\n          \"title\": \"Causal Multistate Models to Evaluate Treatment Delay\",\n          \"year\": 2025,\n          \"what_it_resolves\": \"Combines multistate models with g-computation for causal effects of treatment-delay strategies, showing multistate g-computation for longitudinal treatment timing is an active, published method stream rather than a blank spot.\",\n          \"quote\": null\n        },\n        {\n          \"locator\": \"arxiv:2603.10169\",\n          \"title\": \"Novel g-computation algorithms for time-varying actions with recurrent and semi-competing events\",\n          \"year\": 2026,\n          \"what_it_resolves\": \"Proposes g-computation algorithms for time-varying actions with recurrent and semi-competing events; progress on the exact joint structure OUT-01 says is missing, but still a method proposal rather than a completed evaluation suite or standard package default.\",\n          \"quote\": null\n        },\n        {\n          \"locator\": \"doi:10.3389/fphar.2024.1223858\",\n          \"title\": \"Applying the estimand and target trial frameworks to external control analyses using observational data: a case study in the solid tumor setting\",\n          \"year\": 2024,\n          \"what_it_resolves\": \"Shows joint use of ICH-style estimands (including intercurrent-event strategies) with target trial emulation in observational external-control work, partial inheritance of E9(R1) discipline into emulation design.\",\n          \"quote\": null\n        }\n      ],\n      \"counter_evidence\": [\n        {\n          \"locator\": \"doi:10.1212/WNL.0000000000214269\",\n          \"quote\": \"Investigators often censor at death and then conduct a sensitivity analysis using the Fine-Gray approach, but it is important to recognize the strengths and limitations of each approach and frame results in terms of which type of question is of greater interest.\"\n        }\n      ]\n    }\n  ]\n}",
+  "stopReason": "EndTurn",
+  "sessionId": "019fb614-4b51-71f3-8320-bbc7da107839",
+  "requestId": "73afda8f-48b1-41f9-bd67-c3ecc80847e0",
+  "thought": "The user wants me to act as a literature-recency auditor for a research problem about target trial emulation - specifically OUT-01: \"Censoring at death is applied as data cleaning rather than as an id...I need to dig deeper. Let me search for more specific recent work on:Let me check the TARGET checklist and BMJ PDF for competing risks items. Also need DOIs for Díaz LMTP competing risks, Janvin, Polito, etc.Let me try to get TARGET checklist content and Janvin DOI, and check if there's something that fully solves the \"silent data cleaning\" problem.I have a clear picture. Let me also quickly check gfoRmula competing risks and whether TARGET requires reporting of competing events. Also check if the problem's claim that \"recurrent and terminal wit...I see you're working through the competing risks angle for gfoRmula and the TARGET trial's reporting requirements. Janvin et al. 2024 does lay out the causal estimands for recurrent events under competing terminals, but it stays at the theoretical level—doesn't directly address sustained-strategy emulation or g-methods integration. The Díaz/Hoffman/Hejazi work with lmtp does close that software gap for longitudinal MTPs, so the \"not worked out\" part in the report is now partially addressed.\n\nTerman 2025 still flags the silent censoring habit in practice, and Polito 2024/EMA pushes the estimand framework into RWE but hasn't forced field-wide adoption. So the methodological scaffolding exists, but the applied default of treating censoring-at-death as invisible data prep remains the real gap.\n\nMy take on the status_vote is **partially-solved**—the framework and tools are there, but the infrastructure for 100% of recurrent+terminal+sustained pipelines isn't complete yet. For support_vote, **supported-with-caveat** feels right: the practice claim holds up, and the \"not worked out\" claim is overstated for competing risks under MTPs because lmtp/Díaz already bridges it (even if the 2020 report didn't cite the updates).\n\nIf you want to tighten the resolving_work section, I'd pull the exact lmtp CRAN version that added competing-risks support and note how gfoRmula's own vignette handles time-varying treatments with events. That should keep the critique proportionate without overclaiming.Now output the final JSON schema response. The user asked for a specific JSON schema format for the auditor verdict.\n",
+  "usage": {
+    "input_tokens": 200392,
+    "cache_read_input_tokens": 1498112,
+    "output_tokens": 6343,
+    "reasoning_tokens": 4355,
+    "total_tokens": 1704847
+  },
+  "num_turns": 6,
+  "total_cost_usd": 1.4313248,
+  "total_cost_usd_ticks": 14313248000,
+  "modelUsage": {
+    "grok-4.5-build": {
+      "inputTokens": 200392,
+      "outputTokens": 6343,
+      "cacheReadInputTokens": 1498112,
+      "modelCalls": 6,
+      "costUSD": 1.4313248
+    }
+  },
+  "structuredOutput": {
+    "batch_id": "OUT-01",
+    "auditor": "grok",
+    "opinions": [
+      {
+        "problem_id": "OUT-01",
+        "status_vote": "partially-solved",
+        "support_vote": "supported-with-caveat",
+        "confidence": 0.82,
+        "rationale": "Inverted-prior search shows the methodological core of OUT-01 is older and better equipped than a pure 'open' label implies, while the applied silence problem remains. Young, Stensrud, Tchetgen Tchetgen and Hernán (2020) already formalize that treating a competing event as censoring selects a controlled-direct-effect style question rather than a total-effect cumulative incidence, so the 'identifying assumption vs data cleaning' distinction is settled in the causal competing-risks literature. Software already embeds that choice for sustained or feasible longitudinal interventions: gfoRmula documents explicit options for competing events under time-varying treatment strategies, and lmtp implements time-to-event outcomes with competing risks for modified treatment policies, including a later 'total effect' option in version 1.5.0 (citing Díaz, Hoffman and Hejazi). Janvin, Young, Ryalen and Stensrud (2024) formalize causal estimands for recurrent events with and without a terminal competing event. None of that fully closes OUT-01 as stated. Applied primers still describe censor-at-death plus Fine-Gray sensitivity as common practice (Terman et al., 2025). ICH E9(R1) still governs trials more tightly than routine emulation protocols; TARGET (2025) improves TTE reporting generally but does not by itself force an intercurrent-event strategy for death the way E9(R1) does for trials. Separable effects remain a substantive product claim, not a software switch. Joint recurrent-plus-terminal estimation under longitudinal confounding is advancing (Prosepe et al., 2025 multistate g-computation; D'Alessio et al., 2026 arXiv g-computation for recurrent and semi-competing events with time-varying actions) but those are method papers and proposals, not field-wide defaults or head-to-head evaluations of multistate g-computation, joint frailty, separable effects and recurrent-event targeted learning on a known competing-event DGP. Net: estimator and formal estimand machinery for competing death under many sustained strategies exist; silent preprocessing and incomplete recurrent/terminal tooling keep the problem only partially solved. Queries run included competing risks/censoring at death in target trial emulation; intercurrent events in RWE/TTE; separable effects software; multistate g-computation sustained strategies; lmtp/gfoRmula/gfoRmulaICE NEWS and CRAN; TARGET 2025 checklist coverage; arXiv/medRxiv 2024–2026; Janvin recurrent competing; Díaz LMTP competing risks.",
+        "weakest_true_restatement": null,
+        "resolving_work": [
+          {
+            "locator": "doi:10.1002/sim.8471",
+            "title": "A causal framework for classical statistical estimands in failure-time settings with competing events",
+            "year": 2020,
+            "what_it_resolves": "Makes explicit that defining competing events as censoring is an identifying choice among total, controlled direct and related counterfactual estimands, not a neutral cleaning step; this is the conceptual backbone of OUT-01.",
+            "quote": null
+          },
+          {
+            "locator": "doi:10.1007/s10985-023-09606-7",
+            "title": "Causal survival analysis under competing risks using longitudinal modified treatment policies",
+            "year": 2024,
+            "what_it_resolves": "Provides identification and estimation for survival under competing risks with longitudinal modified treatment policies, so competing death is part of the estimand rather than only a preprocessing censor code for feasible sustained-style interventions.",
+            "quote": null
+          },
+          {
+            "locator": "cran:lmtp",
+            "title": "lmtp: Non-Parametric Causal Effects of Feasible Interventions Based on Modified Treatment Policies",
+            "year": null,
+            "what_it_resolves": "Released R software that natively supports time-to-event outcomes with competing risks for MTPs/dynamic rules; NEWS for 1.5.0 adds estimation of the total effect under competing risks, reducing the incentive to censor death before fitting.",
+            "quote": "Added the ability to estimate the so-called \"total effect\" for survival outcome with competing risks (see issue #143)."
+          },
+          {
+            "locator": "doi:10.1016/j.patter.2020.100008",
+            "title": "gfoRmula: An R Package for Estimating the Effects of Sustained Treatment Strategies via the Parametric g-formula",
+            "year": 2020,
+            "what_it_resolves": "Implements parametric g-formula for sustained treatment strategies with documented options for handling competing events, covering the sustained-strategy case the agenda flags as missing when analysts stay inside cause-specific Cox pipelines.",
+            "quote": null
+          },
+          {
+            "locator": "doi:10.1007/s10985-023-09594-8",
+            "title": "Causal inference with recurrent and competing events",
+            "year": 2024,
+            "what_it_resolves": "Formalizes several causal estimands for recurrent event settings with and without competing terminal events, partially addressing the report's claim that recurrent and terminal structure is not worked out at the estimand level.",
+            "quote": null
+          },
+          {
+            "locator": "doi:10.1002/sim.70061",
+            "title": "Causal Multistate Models to Evaluate Treatment Delay",
+            "year": 2025,
+            "what_it_resolves": "Combines multistate models with g-computation for causal effects of treatment-delay strategies, showing multistate g-computation for longitudinal treatment timing is an active, published method stream rather than a blank spot.",
+            "quote": null
+          },
+          {
+            "locator": "arxiv:2603.10169",
+            "title": "Novel g-computation algorithms for time-varying actions with recurrent and semi-competing events",
+            "year": 2026,
+            "what_it_resolves": "Proposes g-computation algorithms for time-varying actions with recurrent and semi-competing events; progress on the exact joint structure OUT-01 says is missing, but still a method proposal rather than a completed evaluation suite or standard package default.",
+            "quote": null
+          },
+          {
+            "locator": "doi:10.3389/fphar.2024.1223858",
+            "title": "Applying the estimand and target trial frameworks to external control analyses using observational data: a case study in the solid tumor setting",
+            "year": 2024,
+            "what_it_resolves": "Shows joint use of ICH-style estimands (including intercurrent-event strategies) with target trial emulation in observational external-control work, partial inheritance of E9(R1) discipline into emulation design.",
+            "quote": null
+          }
+        ],
+        "counter_evidence": [
+          {
+            "locator": "doi:10.1212/WNL.0000000000214269",
+            "quote": "Investigators often censor at death and then conduct a sensitivity analysis using the Fine-Gray approach, but it is important to recognize the strengths and limitations of each approach and frame results in terms of which type of question is of greater interest."
+          }
+        ]
+      }
+    ]
+  }
+}

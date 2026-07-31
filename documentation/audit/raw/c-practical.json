@@ -1,0 +1,237 @@
+{
+ "slice": "seed-practical",
+ "source": "documentation/seed-linked.md, section 'Practical and operational open problems' (table rows) and the paragraph that closes it",
+ "extracted_by": "claude-opus-5, reading the full source document",
+ "problems": [
+  {
+   "id": "p1",
+   "title": "Registrations record the final protocol and not the alternatives that were rejected",
+   "category": "PRO",
+   "statement": "An emulation makes many defensible decisions: active comparator, washout period, time zero, grace period, how treatment episodes are constructed, censoring rules, follow-up length and outcome definition. Each has more than one reasonable answer, and the set of answers is the researcher's degrees of freedom. Design guidance now exists and states plainly that the operational methods remain scenario dependent, which means the guidance narrows the set without closing it. Registrations, where they exist, record only the specification that was finally run; they do not record the alternatives considered, the order in which decisions were made, or which decisions were revised after the data were inspected. A reader therefore cannot distinguish a protocol written once from one converged upon.",
+   "why_open": "The information that would settle it is destroyed rather than merely unrecorded: once a decision log is not kept, no later audit can reconstruct it, and there is no artifact to demand. Registration systems were designed for randomized trials, where the protocol precedes the data, and have no natural slot for a design that is necessarily developed against an existing dataset. Requiring a full multiverse imposes a cost proportional to the number of decisions, which for a longitudinal emulation is large, so the honest practice is also the expensive one.",
+   "prior_work": [
+    {
+     "cite": "Hansford HJ, et al. Design and implementation of observational studies emulating a target trial. JAMA Netw Open 2026",
+     "doi_or_url": "10.1001/jamanetworkopen.2025.58262",
+     "what_it_does": "Sets out the design decisions and acknowledges that operational methods remain scenario dependent, which is the residual this problem names."
+    },
+    {
+     "cite": "Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA 2025",
+     "doi_or_url": "10.1001/jama.2025.13350",
+     "what_it_does": "A 21-item checklist covering what the study did. It reports the final specification and is explicitly a reporting rather than a design instrument."
+    }
+   ],
+   "proposed_direction": "Require version-controlled protocols, dated decision logs and outcome-blinded feasibility reports, so that the chronology of decisions is an artifact rather than a memory. Prespecify a primary emulation plus a principled design multiverse over the decisions known to move estimates, and report the distribution rather than the chosen point. Hash the executable specification before outcome analysis, which makes the claim of prespecification checkable by a third party instead of taken on trust.",
+   "priority": "High",
+   "maturity": "Promising",
+   "tractability": 4,
+   "severity": "Without the chronology, a reader cannot tell prespecification from post hoc convergence, and both look identical on the page.",
+   "protocol_component": [
+    "cross-cutting"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 93, row 'Protocol development and researcher degrees of freedom'",
+   "related_hint": [
+    "Inference conditions on a fixed target trial that was in fact selected after seeing the data",
+    "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations"
+   ]
+  },
+  {
+   "id": "p2",
+   "title": "Data-fitness assessment is narrative and has no thresholds that would stop a study",
+   "category": "DTA",
+   "statement": "Electronic health records arise from encounters, billing and documentation rather than from scheduled research assessments, so eligibility and follow-up in an emulation partly reflect care-seeking and access rather than the biology the protocol intends. Whether a given database can support a given target trial is therefore a question about the data source and the trial jointly. In practice this is answered narratively, in a paragraph asserting that the data are suitable, with no quantitative thresholds and no procedure that could return the answer no. A pipeline that cannot conclude that the trial is not emulable will always produce an estimate, and the estimate will not carry the fact that the question could not be asked.",
+   "why_open": "Fitness is not a property of the data alone but of the pair formed by the data and the protocol, so a fixed score is the wrong object and a per-protocol assessment has to be constructed each time. Any threshold that would stop a study is a threshold that costs someone a publication, and no external body currently imposes one. There is also a measurement problem underneath: assessing capture continuity or outcome validity generally requires a validation source, and if that source existed the fitness question would be less pressing.",
+   "prior_work": [
+    {
+     "cite": "Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026",
+     "doi_or_url": "10.1038/s41746-026-02563-z",
+     "what_it_does": "Sets out the operational constraints electronic health records place on each protocol component, which is the raw material a fitness score would formalize."
+    },
+    {
+     "cite": "NICE real-world evidence framework",
+     "doi_or_url": "https://www.nice.org.uk/corporate/ecd9/resources/nice-realworld-evidence-framework-pdf-1124020816837",
+     "what_it_does": "States that some target trials cannot be adequately emulated with available data and that bespoke data collection may be preferable, which is the design-failure outcome this problem wants to make operational."
+    }
+   ],
+   "proposed_direction": "Build trial-component fitness scores for observability, temporal precision, capture continuity, comparator support, outcome validity and linkage completeness, each computed against the specific protocol rather than the database in the abstract. Predefine stop rules that trigger when an essential component fails, and publish the fitness report whether or not the study proceeds, so that a negative fitness assessment is a citable result rather than a private decision. Validate the scores against benchmarking data by checking whether low fitness predicts poor concordance with the corresponding trial.",
+   "priority": "Very high",
+   "maturity": "Emerging",
+   "tractability": 4,
+   "severity": "A study that should never have run is indistinguishable in print from one that should.",
+   "protocol_component": [
+    "cross-cutting",
+    "eligibility",
+    "outcome"
+   ],
+   "data_setting": [
+    "ehr",
+    "claims",
+    "registry",
+    "linked"
+   ],
+   "source_locator": "seed-linked.md lines 94 and 100",
+   "related_hint": [
+    "There is no theory for extrapolating successful replication of selected trials to new questions",
+    "Common data models harmonize structure without guaranteeing that the same variable means the same thing"
+   ]
+  },
+  {
+   "id": "p3",
+   "title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+   "category": "SFW",
+   "statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: each person contributes a row per eligible decision point, and cloning multiplies that by the number of strategies with which the person is initially compatible. Two dependence structures result. Repeated eligibility means a person appears in many trials, and cloning means several rows are copies of the same person's history. Naive standard errors ignore both. The bootstrap is correct in principle and often prohibitive at this scale, particularly with flexible nuisance models that must be refitted per replicate. The `TrialEmulation` package supports sequence expansion, censoring weights, outcome models and chunked processing, and general scalable variance estimation for this design remains unsettled.",
+   "why_open": "The dependence is nested rather than simply clustered: clones within a person within a site, with the clone-level dependence induced by the analysis rather than present in the data. Influence-function variance estimators need the influence function of the full estimator including the weight-estimation step, which is not available in closed form once the nuisance models are learned. Every workaround trades in the same currency, since subsampling to make the bootstrap affordable reintroduces the finite-sample instability the bootstrap was there to characterize.",
+   "prior_work": [
+    {
+     "cite": "Su L, et al. TrialEmulation: an R package to emulate target trials for causal analysis of observational time-to-event data. arXiv 2024",
+     "doi_or_url": "https://arxiv.org/abs/2402.12083",
+     "what_it_does": "Implements sequence expansion, censoring-weight calculation and outcome models for intention-to-treat and per-protocol analyses, with chunked processing for the data expansion."
+    },
+    {
+     "cite": "TrialEmulation getting-started vignette",
+     "doi_or_url": "https://causal-lda.github.io/TrialEmulation/articles/Getting-Started.html",
+     "what_it_does": "Documents the all-in-one initiators() workflow and the modular functions, which is the reference implementation practitioners actually use."
+    }
+   ],
+   "proposed_direction": "Derive influence-function and multiplier-bootstrap variance estimators clustered by original individual and by site, so that the clone-level dependence created by the analysis is handled where it is created. Support the scale with streaming risk-set construction, columnar back ends such as DuckDB or Arrow, sparse history representations, and case-control sampling with proven error control rather than heuristic subsampling. Report coverage under the actual dependence structure rather than under independence, because the failure this produces is anticonservative and therefore invisible in a point estimate.",
+   "priority": "High",
+   "maturity": "Promising",
+   "tractability": 4,
+   "severity": "Anticonservative intervals from a computationally convenient variance estimator are indistinguishable from precision.",
+   "protocol_component": [
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "claims",
+    "ehr",
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 95, row 'Computational scale and variance estimation'",
+   "related_hint": [
+    "Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals",
+    "Large databases yield small effective samples after eligibility, comparator restriction and weighting"
+   ]
+  },
+  {
+   "id": "p4",
+   "title": "Averaging site estimates in a federated emulation can conceal that the sites emulated different trials",
+   "category": "DTA",
+   "statement": "Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been proposed and demonstrated for distributed effect estimation. The statistical machinery for combining site estimates is not the hard part. The hard part is that sites differ in coding systems, treatment availability, confounding structure and time resolution, so the same executable protocol can define materially different eligibility, exposure and outcome at each site. Averaging the resulting estimates produces a number whose estimand is the average of several different questions, and nothing in the aggregation step detects that.",
+   "why_open": "The incompatibility is semantic rather than statistical: two sites can both return well-estimated, internally valid effects for populations the protocol was not intended to distinguish, and no summary of the estimates reveals it. The diagnostics that would reveal it require the patient-level data that federation exists to keep local. Heterogeneity statistics cannot separate real effect modification from mapping failure, since both produce between-site variance.",
+   "prior_work": [
+    {
+     "cite": "Li, et al. Federated target trial emulation using distributed observational data for treatment effect estimation. npj Digit Med 2025",
+     "doi_or_url": "10.1038/s41746-025-01803-y",
+     "what_it_does": "Demonstrates that distributed effect estimation for an emulated trial is feasible without pooling patient-level data."
+    },
+    {
+     "cite": "Manke-Reimers M, et al. When, why and how are estimated effects transported between populations? A scoping review. Eur J Epidemiol 2025",
+     "doi_or_url": "10.1007/s10654-025-01217-w",
+     "what_it_does": "Reviews transport practice, which is the framework needed to say what a multi-site average is an estimate of."
+    }
+   ],
+   "proposed_direction": "Combine federated nuisance estimation with site-specific diagnostics and an explicit transport model, so the pooled quantity is a transported effect for a stated target population rather than an unweighted average. Share sufficient statistics, influence curves and aggregate balance measures, which is enough to diagnose incompatibility without moving patient records. Gate secure aggregation behind site-level trial-component validation: a site that fails the fitness check contributes to the report and not to the estimate.",
+   "priority": "High",
+   "maturity": "Emerging",
+   "tractability": 4,
+   "severity": "Federated analysis is being adopted for exactly the questions where site heterogeneity is largest.",
+   "protocol_component": [
+    "cross-cutting",
+    "eligibility",
+    "outcome"
+   ],
+   "data_setting": [
+    "federated",
+    "multi-database"
+   ],
+   "source_locator": "seed-linked.md line 96, row 'Multisite analysis and data sharing'",
+   "related_hint": [
+    "Transporting an observational estimate compounds sampling assumptions on top of confounding assumptions with no accounting",
+    "Common data models harmonize structure without guaranteeing that the same variable means the same thing"
+   ]
+  },
+  {
+   "id": "p5",
+   "title": "Automated protocol translation can change the estimand while producing valid code",
+   "category": "LRN",
+   "statement": "Systems now translate trial descriptions into cohort definitions or analysis code, and natural language processing extracts eligibility information from unstructured notes. The failure mode of these systems is not that they crash. It is that they silently substitute a different estimand: mistranslating a temporal condition, resolving an ambiguous eligibility phrase to the wrong operationalization, or emitting code that is syntactically valid and causally invalid. None of these failures is visible in the output, which is a working pipeline returning a plausible number. What is missing is a validation regime that treats generated code as an untrusted artifact rather than as a productivity gain.",
+   "why_open": "Temporal logic is where these systems fail and where testing is hardest: the difference between treatment before eligibility assessment and treatment after it is one word in the specification and one join condition in the code, and both readings execute. There is no reference answer to test against, because the correct cohort is precisely what the pipeline was built to produce. Evaluating on downstream effect estimates is circular, since a wrong cohort with a plausible effect passes.",
+   "prior_work": [
+    {
+     "cite": "Kim, et al. From study design to executable code: automating target trial emulation with large language models. JAMIA Open 2026",
+     "doi_or_url": "10.1093/jamiaopen/ooag131",
+     "what_it_does": "Builds the translation from study design to executable emulation code, which is the system whose failure modes this problem concerns."
+    },
+    {
+     "cite": "Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026",
+     "doi_or_url": "10.1038/s41746-026-02563-z",
+     "what_it_does": "Specifies the operational mapping from protocol component to record-level definition, which is the interface a compiler would have to respect."
+    }
+   ],
+   "proposed_direction": "Treat automation as a constrained compiler with three stages: a human-authored causal specification, a typed intermediate representation, and data-source-specific code generated from it. Require unit tests over synthetic test patients constructed so that each temporal condition has a patient that distinguishes the correct reading from the plausible wrong one, plus temporal-logic validation of the intermediate representation. Require dual human sign-off on the specification and on the generated cohort counts, and publish both, so the artifact under review is the specification rather than the number.",
+   "priority": "High",
+   "maturity": "Emerging",
+   "tractability": 4,
+   "severity": "These systems scale one analyst's error to every study that uses them.",
+   "protocol_component": [
+    "cross-cutting",
+    "eligibility"
+   ],
+   "data_setting": [
+    "ehr",
+    "claims"
+   ],
+   "source_locator": "seed-linked.md line 97, row 'Automation, large language models and executable phenotyping'",
+   "related_hint": [
+    "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "An unrecorded eligibility criterion is indistinguishable from a criterion that was met"
+   ]
+  },
+  {
+   "id": "p6",
+   "title": "Regulators have no thresholds for adequate emulation, acceptable residual confounding or sufficient sensitivity analysis",
+   "category": "REG",
+   "statement": "FDA guidance asks sponsors to describe an approach that supports causal inference and names target trial emulation where appropriate. NICE states that some target trials cannot be adequately emulated and that bespoke data collection may then be preferable. EMA and ICH guidance emphasize fit-for-use data, prespecification and transparent non-interventional design. What none of them supplies is a threshold: how close an emulation must be to count as adequate, how much residual confounding is acceptable for a given decision, or what set of sensitivity analyses is sufficient. Sponsors therefore cannot know in advance whether a submission will be accepted, and reviewers have no consistent basis on which to accept or reject one.",
+   "why_open": "A threshold requires a metric, and the quantities that matter, residual confounding and estimand distance, are not identified from the data of the study in question. Any fixed threshold would be gamed and would also be wrong for some decisions, since the tolerable bias depends on what the decision costs. Agencies are also reasoning from a small and non-random set of precedents, so the empirical base for calibrating a threshold does not yet exist.",
+   "prior_work": [
+    {
+     "cite": "FDA guidance on non-interventional studies for drug and biological products",
+     "doi_or_url": "https://www.fda.gov/media/177128/download",
+     "what_it_does": "Asks sponsors to describe an approach supporting causal inference, naming target trial emulation where appropriate, without setting an acceptance threshold."
+    },
+    {
+     "cite": "NICE real-world evidence framework",
+     "doi_or_url": "https://www.nice.org.uk/corporate/ecd9/resources/nice-realworld-evidence-framework-pdf-1124020816837",
+     "what_it_does": "Recognizes that some target trials cannot be adequately emulated and may require bespoke data collection, which is the closest any guidance comes to a stop rule."
+    },
+    {
+     "cite": "ICH E9(R1) addendum on estimands and sensitivity analysis in clinical trials",
+     "doi_or_url": "https://www.ema.europa.eu/en/ich-e9-statistical-principles-clinical-trials-scientific-guideline",
+     "what_it_does": "Establishes the estimand framework and the requirement for aligned sensitivity analyses, which regulators apply to trials and have not translated into thresholds for emulations."
+    }
+   ],
+   "proposed_direction": "Build regulator-facing evidence dossiers that separate protocol fidelity, identification assumptions, data validation, diagnostics and decision uncertainty into distinct sections, so a reviewer can accept some and reject others rather than judging the whole. Conduct prospective qualification studies of data sources and phenotypes, in which fitness is established before the question is asked, rather than relying on post hoc reassurance. Use benchmarking evidence to calibrate what degree of protocol match has historically corresponded to what agreement, which is the only empirical route to a defensible threshold.",
+   "priority": "High",
+   "maturity": "Promising",
+   "tractability": 3,
+   "severity": "The acceptance boundary is where emulation either enters decision-making or does not, and it is currently undefined on both sides.",
+   "protocol_component": [
+    "cross-cutting"
+   ],
+   "data_setting": [
+    "claims",
+    "ehr",
+    "registry",
+    "multi-database"
+   ],
+   "source_locator": "seed-linked.md line 98, row 'Regulatory and health-technology-assessment acceptance'",
+   "related_hint": [
+    "There is no theory for extrapolating successful replication of selected trials to new questions",
+    "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike"
+   ]
+  }
+ ]
+}

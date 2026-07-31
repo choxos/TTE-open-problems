@@ -1,0 +1,229 @@
+{
+ "slice": "seed-interpretation",
+ "source": "documentation/seed-linked.md, section 'Interpretability and communication open problems' (table rows) and the assumption-to-conclusion ladder that closes it",
+ "extracted_by": "claude-opus-5, reading the full source document",
+ "problems": [
+  {
+   "id": "i1",
+   "title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+   "category": "EST",
+   "statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. The concrete failure is specific rather than general: a reader sees a hazard ratio and infers an intention-to-treat contrast, while the analysis in fact estimated a per-protocol effect, weighted for informative censoring, among the subset of patients whose observed treatment stayed compatible with a strategy during a grace period. Those are different quantities in different populations and nothing in the presentation distinguishes them.",
+   "why_open": "The hazard ratio is a familiar output that survives every methodological upgrade beneath it, so improvements in the estimator do not change what gets read. Stating the estimand precisely requires naming the population induced by cloning and censoring, which has no simple clinical description. Absolute risks and restricted mean survival differences communicate better and require the analyst to commit to a time horizon, which is an additional decision most would rather not defend.",
+   "prior_work": [
+    {
+     "cite": "ICH E9(R1) addendum on estimands and sensitivity analysis in clinical trials",
+     "doi_or_url": "https://www.ema.europa.eu/en/ich-e9-statistical-principles-clinical-trials-scientific-guideline",
+     "what_it_does": "Defines the estimand attributes, population, treatment, endpoint, intercurrent-event strategy and summary measure, that an emulation report would have to fill in."
+    },
+    {
+     "cite": "Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA 2025",
+     "doi_or_url": "10.1001/jama.2025.13350",
+     "what_it_does": "A 21-item checklist requiring the target protocol and its emulation to be reported, aimed at transparency rather than at risk-of-bias certification."
+    },
+    {
+     "cite": "Maringe C, Benitez Majano S, Exarchakou A, et al. Reflection on modern methods: trial emulation in the presence of immortal-time bias. Int J Epidemiol 2020;49(5):1719-1729",
+     "doi_or_url": "10.1093/ije/dyaa057",
+     "what_it_does": "Makes explicit that clone-censor-weight analyses target per-protocol-type contrasts rather than baseline intention-to-treat effects."
+    }
+   ],
+   "proposed_direction": "Require a one-sentence estimand statement naming the intervention, the population, the horizon and the intercurrent-event strategy, positioned before any effect measure. Report absolute risks, risk differences and restricted mean outcomes at clinically meaningful horizons, with the hazard ratio as a supplement rather than the headline. Include a timeline diagram showing treatment paths and censoring rules, since the population induced by cloning is easier to draw than to describe.",
+   "priority": "Very high",
+   "maturity": "Established",
+   "tractability": 5,
+   "severity": "Readers act on a quantity other than the one estimated, and the gap is systematic rather than occasional.",
+   "protocol_component": [
+    "causal-contrast",
+    "outcome"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 120, row 'Communicating the actual estimand', and line 60 on grace periods",
+   "related_hint": [
+    "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "Calling an analysis a target trial emulation is treated as evidence about its assumption burden"
+   ]
+  },
+  {
+   "id": "i2",
+   "title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+   "category": "REG",
+   "statement": "Exchangeability and consistency cannot be established from the observed data. Positivity, model behavior, balance and measurement validity can at least be diagnosed. Current reports blur the distinction: a propensity-score overlap plot is offered, and the reader is left to infer that the assumptions have been checked, when the plot bears on one of them and is silent on the rest. No standard set of diagnostics exists for an emulation, so what appears varies by author and by journal, and the absence of a diagnostic cannot be distinguished from a diagnostic that was run and not reported.",
+   "why_open": "A dashboard is a convention rather than a discovery, and conventions require an adopting body. Several of the components are not yet standardized as measurements, since balance at each time, support by history and phenotype validity have no agreed summary statistic in the longitudinal setting. Separating the testable from the untestable also makes the untestable ones conspicuous, which is uncomfortable and is exactly the point.",
+   "prior_work": [
+    {
+     "cite": "Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA 2025",
+     "doi_or_url": "10.1001/jama.2025.13350",
+     "what_it_does": "Establishes what must be reported about the protocol and its emulation, and is explicitly not a risk-of-bias or diagnostic standard."
+    },
+    {
+     "cite": "Hansford HJ, et al. Reporting of observational studies explicitly aiming to emulate randomized trials: a systematic review. JAMA Netw Open 2023",
+     "doi_or_url": "10.1001/jamanetworkopen.2023.36023",
+     "what_it_does": "Across 200 published emulations, 43% did not describe all key emulation components and 57% did not describe both the target protocol and its emulation, which is the measured baseline of reporting practice."
+    }
+   ],
+   "proposed_direction": "Define an assumption dashboard reporting covariate balance at each time, effective sample size, weight tails, support by treatment history, censoring rates, missingness, phenotype validity and sensitivity contours, arranged so that the empirically testable diagnostics are visibly separated from the untestable assumptions. Standardize a summary statistic for longitudinal balance and for support by history, since those are the two components that currently have no agreed form. Pair the dashboard with the reporting checklist so that a missing panel is a visible omission rather than an inference.",
+   "priority": "High",
+   "maturity": "Promising",
+   "tractability": 5,
+   "severity": "Readers cannot currently tell a checked assumption from an unchecked one.",
+   "protocol_component": [
+    "analysis-plan",
+    "cross-cutting"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 121, row 'Making assumptions inspectable', with the reporting figures from line 9",
+   "related_hint": [
+    "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "Regulators have no thresholds for adequate emulation, acceptable residual confounding or sufficient sensitivity analysis"
+   ]
+  },
+  {
+   "id": "i3",
+   "title": "Subgroup effects are estimated where overlap is worst, and the groups with worst overlap are often the protected ones",
+   "category": "LRN",
+   "statement": "Causal forests and meta-learners estimate heterogeneous treatment effects, and they inherit every identification assumption of the base analysis without relaxing any of them. Subgroup discovery adds three specific hazards: confounding that varies by subgroup, multiplicity across the many subgroups a flexible learner implicitly examines, and limited overlap within small strata. Apparent heterogeneity can therefore reflect differential measurement, differential healthcare access or model extrapolation rather than differential biology. The distributional problem is that the groups with the least data and the poorest overlap are frequently the protected groups whose effects the analysis was undertaken to examine, so the least reliable estimates carry the most weight in interpretation.",
+   "why_open": "Overlap within a subgroup is a property of the data that cannot be improved by a better estimator, and restricting to regions with adequate overlap changes which subgroups can be reported at all. Distinguishing effect modification from differential measurement requires validation data within each subgroup, which is rarer where the subgroup is smaller. Honest sample splitting costs precision in exactly the strata that are already imprecise.",
+   "prior_work": [
+    {
+     "cite": "Feuerriegel S, Frauen D, Melnychuk V, et al. Causal machine learning for predicting treatment outcomes. Nat Med 2024;30:958-968",
+     "doi_or_url": "10.1038/s41591-024-02902-1",
+     "what_it_does": "States that causal machine learning supports individualized effect estimation only under the same identification assumptions as conventional methods, which is the constraint subgroup analyses routinely ignore."
+    },
+    {
+     "cite": "Target trial emulation under nonmutually exclusive assignment. Am J Epidemiol 2026;195(4):1045",
+     "doi_or_url": "10.1093/aje/kwaf018",
+     "what_it_does": "Shows overlap defeating advanced adjustment, which is the mechanism by which a subgroup estimate fails."
+    }
+   ],
+   "proposed_direction": "Use honest sample splitting, restrict conditional effect estimation to regions with adequate overlap, and apply hierarchical shrinkage across subgroups so that small strata borrow rather than assert. Report subgroup-specific data support, calibration and uncertainty next to every subgroup effect, so that a wide, poorly supported estimate cannot be read as a finding. Evaluate not only whether benefit varies across groups but whether the emulation's assumptions vary across them, since differential measurement and differential access are alternative explanations for the same pattern.",
+   "priority": "High",
+   "maturity": "Promising",
+   "tractability": 4,
+   "severity": "Subgroup findings drive individualized recommendations and are least reliable where they are most consequential.",
+   "protocol_component": [
+    "causal-contrast",
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "ehr",
+    "claims",
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 122, row 'Treatment-effect heterogeneity and fairness'",
+   "related_hint": [
+    "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "Flexible estimation is presented as a remedy for identification failure"
+   ]
+  },
+  {
+   "id": "i4",
+   "title": "Replication is reported as a binary label rather than as a calibrated comparison of estimands",
+   "category": "BEN",
+   "statement": "Agreement between an emulation and a trial is informative only when the estimands, populations and measurements are close enough to be comparable, and better design alignment is empirically associated with stronger concordance. Benchmarking nonetheless reports success or failure as a binary label, usually derived from whether the confidence intervals overlap or whether the direction agrees. That label mixes estimand mismatch with random error: two studies estimating the same quantity with wide intervals will agree by that criterion, and two estimating different quantities precisely will disagree. The reported statistic therefore does not measure what its users take it to measure.",
+   "why_open": "Constructing a graded measure requires deciding how much estimand difference is tolerable, which is a judgment the binary label exists to avoid. Prediction-interval coverage would be the natural criterion and requires a distributional claim about the trial's own error that the trial does not publish. The label is also convenient for the audiences who cite benchmarking results, so there is little pressure to replace it.",
+   "prior_work": [
+    {
+     "cite": "Wang SV, Schneeweiss S, RCT-DUPLICATE Initiative. Emulation of randomized clinical trials with nonrandomized database analyses: results of 32 clinical trials. JAMA 2023;329(16):1376-1385",
+     "doi_or_url": "10.1001/jama.2023.4221",
+     "what_it_does": "Reports agreement across 32 prespecified emulations using several agreement metrics, which is the most careful existing treatment of the labeling question."
+    },
+    {
+     "cite": "Concordance between target trial emulation and randomised controlled trials: systematic review and meta-analysis. BMJ 2025",
+     "doi_or_url": "10.1136/bmj-2025-086810",
+     "what_it_does": "Reports effect correlation and standardized-difference agreement across 107 pairs and relates concordance to specific design features rather than to a pass or fail label."
+    }
+   ],
+   "proposed_direction": "Report the ratio of effects, the absolute effect difference, standardized agreement and prediction-interval coverage together, so that estimand mismatch and random error are separately visible. Use positive and negative controls alongside the trial comparison, and prefer prospective forecasts of a trial's result to retrospective comparisons, since only the former is uncontaminated by knowing the answer. Replicate across databases as well as across questions, because a data source's calibration is what a decision-maker actually needs to know.",
+   "priority": "High",
+   "maturity": "Established",
+   "tractability": 5,
+   "severity": "The binary label is what gets cited, and it conflates the two things a reader needs to separate.",
+   "protocol_component": [
+    "cross-cutting"
+   ],
+   "data_setting": [
+    "claims",
+    "ehr",
+    "multi-database"
+   ],
+   "source_locator": "seed-linked.md line 123, row 'Benchmarking and calibration'",
+   "related_hint": [
+    "There is no theory for extrapolating successful replication of selected trials to new questions"
+   ]
+  },
+  {
+   "id": "i5",
+   "title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+   "category": "SFW",
+   "statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and it is a transparency instrument rather than a risk-of-bias certification. What remains unavailable in practice is the material that would let someone re-run the study: the analysis code, the complete phenotype logic including the code lists and their versions, the weight diagnostics, and the protocol versions that were tried and rejected. An emulation is a long pipeline in which most of the decisions are expressed in code rather than in prose, so a paper that reports the protocol faithfully can still be irreproducible in every operative detail.",
+   "why_open": "Phenotype logic is often held under license or embedded in institutional tooling, so publishing it is a legal and technical problem rather than a willingness problem. Analysis code for a longitudinal emulation depends on a data model the reader cannot obtain, which makes released code unrunnable and therefore feel pointless to release. Rejected protocol versions are not artifacts anyone currently keeps, so there is nothing to publish even when there is a will to.",
+   "prior_work": [
+    {
+     "cite": "Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA 2025",
+     "doi_or_url": "10.1001/jama.2025.13350",
+     "what_it_does": "Establishes the reporting standard for emulations, whose purpose is transparency rather than risk-of-bias certification."
+    },
+    {
+     "cite": "Su L, et al. TrialEmulation: an R package to emulate target trials for causal analysis of observational time-to-event data. arXiv 2024",
+     "doi_or_url": "https://arxiv.org/abs/2402.12083",
+     "what_it_does": "Provides a reference implementation for sequence expansion and weighting, which is the level at which reproducibility becomes achievable rather than aspirational."
+    }
+   ],
+   "proposed_direction": "Publish machine-readable protocols, complete phenotype logic with code-set versions, simulated test data that exercises the pipeline, a containerized environment and an executable reproduction report that runs end to end on the simulated data. Pair the TARGET checklist with RECORD and STROBE and with a causal risk-of-bias assessment, so that reporting, provenance and appraisal are separately satisfied. Treat the simulated test dataset as the deliverable that makes released code meaningful when the real data cannot leave the institution.",
+   "priority": "High",
+   "maturity": "Promising",
+   "tractability": 5,
+   "severity": "Emulations are being used in regulatory and guideline decisions while remaining unreproducible in their operative detail.",
+   "protocol_component": [
+    "cross-cutting",
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 124, row 'Reporting and reproducibility'",
+   "related_hint": [
+    "Registrations record the final protocol and not the alternatives that were rejected",
+    "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike"
+   ]
+  },
+  {
+   "id": "i6",
+   "title": "Calling an analysis a target trial emulation is treated as evidence about its assumption burden",
+   "category": "REG",
+   "statement": "The assumptions an analysis needs form a ladder, and each step up adds one: from describing an association, to adjusting for measured confounders, to identifying a sustained-strategy effect, to transporting that effect to another population. A paper should identify the highest step its evidence plausibly reaches. In practice the label target trial emulation is doing that work instead: an analysis that adopts the framework is read as though it had climbed the ladder, when the framework secures the temporal alignment and nothing above it. The label has become a claim about credibility rather than a description of a design, and no convention exists for stating which step a given study actually reaches.",
+   "why_open": "The framework's value is real, which is what makes the substitution durable: naming the target trial does prevent a class of self-inflicted biases, so the label is informative and is then over-read. There is no established vocabulary for the intermediate rungs, so an author wishing to be precise has to invent the terms. Reviewers and editors also use the label as a screening heuristic, which rewards using it and penalizes qualifying it.",
+   "prior_work": [
+    {
+     "cite": "Hubbard RA, Hernán MA. \"Target trial emulation\" for observational studies: potential and pitfalls. N Engl J Med 2024",
+     "doi_or_url": "10.1056/NEJMp2407586",
+     "what_it_does": "States what emulation does and does not secure, which is exactly the distinction the label erases in use."
+    },
+    {
+     "cite": "Hansford HJ, et al. Reporting of observational studies explicitly aiming to emulate randomized trials: a systematic review. JAMA Netw Open 2023",
+     "doi_or_url": "10.1001/jamanetworkopen.2023.36023",
+     "what_it_does": "Finds that 43% of 200 studies claiming to emulate a trial did not describe all key emulation components, which measures how weakly the label constrains the practice."
+    }
+   ],
+   "proposed_direction": "Publish an assumption-to-conclusion ladder with named rungs, and require every emulation to state which rung its evidence supports and what would be needed for the next one. Have journals ask for that statement rather than for the label, so that adopting the framework is reported as a design fact and credibility is argued separately. Audit a sample of published emulations against the ladder to establish the current distribution, since nobody presently knows how far the typical study reaches.",
+   "priority": "High",
+   "maturity": "Emerging",
+   "tractability": 5,
+   "severity": "The label now confers credibility it does not carry, across a fast-growing literature.",
+   "protocol_component": [
+    "cross-cutting"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md lines 126 to 132, the assumption-to-conclusion ladder",
+   "related_hint": [
+    "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error"
+   ]
+  }
+ ]
+}

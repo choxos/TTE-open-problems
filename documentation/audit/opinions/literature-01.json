@@ -1,0 +1,374 @@
+{
+ "batch_id": "literature-01",
+ "auditor": "literature",
+ "note": "The literature lens. Each claim was searched against the 1,376-record screened corpus on disk with build/lit/corpus_search.py rather than from memory, so every locator below is a record that exists in documentation/refs/systematic/records.jsonl. Where nothing was found, the vote says so and the confidence is capped at 0.6, because absence in one corpus of PubMed and PMC records is weak evidence of absence in the field.",
+ "opinions": [
+  {
+   "problem_id": "TZO-01",
+   "status_vote": "open",
+   "support_vote": "supported-with-caveat",
+   "confidence": 0.86,
+   "rationale": "The claim has more prior work behind it than the entry admits, and the work does not close it. Ferreira Guerra et al. investigate exactly the selection question for the time grid, showing that different discretizations change both the parameter and the information retained about time-dependent confounders, and evaluating cross-validated variance as a criterion for choosing one. That is a selection procedure, so the entry's flat claim that none exists is wrong. It is not an outcome-blind procedure, which is what the entry's own title asks for, so the qualified claim survives. On the empirical side the entry is understated rather than overstated: a systematic review of 14 DPP-4 inhibitor studies found grace periods unreported in 36% and ranging from 0 to 180 days when reported, with no study conducting a sensitivity analysis on the assumption. A 2026 study designating time zero five different ways in the same nirmatrelvir-ritonavir cohort supplies the sensitivity evidence the entry says the field lacks. Sperling and colleagues showed in 2014 that the optimal dynamic regime itself moves with CD4 observation frequency and grace-period length, which is a stronger version of the entry's claim and predates it by a decade. Supporting quotation retained here rather than as counter-evidence: [10.1002/pds.5071] Grace period was not reported in 5 (35.7%) studies and ranged from 0 days to 180 days when reported ... No studies conducted sensitivity analyses examining the effects of these assumptions on study findings.",
+   "weakest_true_restatement": "No procedure selects the time grid or grace period from the treatment and observation processes while outcome labels remain masked, and the empirical distribution of how far estimates move under alternatives is documented only in isolated studies rather than reported as standard practice.",
+   "resolving_work": [
+    {
+     "locator": "10.1002/sim.8710",
+     "title": "Impact of discretization of the timeline for longitudinal causal inference methods",
+     "year": 2020,
+     "what_it_resolves": "Shows that discretization changes the parameter and loses confounder information, and evaluates cross-validated variance as a data-support criterion for choosing a discretization with pooled longitudinal TMLE. This is a selection tool, so the entry must not claim none exists; it uses outcome information, so the outcome-blind claim stands.",
+     "quote": "We further investigate several tools to advise analysts in selecting a timeline discretization for use with pooled longitudinal targeted maximum likelihood estimation"
+    },
+    {
+     "locator": "10.1097/ede.0000000000000043",
+     "title": "Optimal CD4 count for initiating HIV treatment: impact of CD4 observation frequency and grace periods, and performance of dynamic marginal structural models",
+     "year": 2014,
+     "what_it_resolves": "Quantifies how the optimal dynamic regime shifts with observation frequency and grace-period length, establishing the dependence the entry describes.",
+     "quote": "Decreasing the frequency of CD4 measurements from monthly to every 3, 6, and 12 months increased the optimal regimen from a CD4 level of 350"
+    },
+    {
+     "locator": "10.1093/aje/kwaf221",
+     "title": "Impact of time zero designation on estimated COVID-19 antiviral effectiveness in observational studies",
+     "year": 2026,
+     "what_it_resolves": "Compares five time-zero designations in one cohort, which is the multiverse over time zero that the entry proposes as a direction and which therefore already has a worked example.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "GMT-01",
+   "status_vote": "partially-solved",
+   "support_vote": "supported-with-caveat",
+   "confidence": 0.79,
+   "rationale": "The general claim, that predictive cross-validation is the wrong criterion for a nuisance model whose purpose is causal, is correct and is not new. What the entry misses is that criteria other than prediction are already in use for the weight model specifically. Calibrated weights fitted with SuperLearner have been implemented and applied to longitudinal diabetes cohorts, and calibration is precisely a balance criterion rather than a prediction criterion. Super learner for weight estimation under unknown weight-model specification was studied for marginal structural models as early as 2017. So the entry's claim that no selection criterion in routine use combines prediction with balance overstates: balance-based weight fitting exists and is published. The part that survives is the combination the entry actually asks for, a single loss spanning prediction, longitudinal balance, weight dispersion and an influence-function remainder, and the absence of a default library tuned that way.",
+   "weakest_true_restatement": "No standard SuperLearner library or selection criterion combines treatment prediction with longitudinal balance, weight dispersion and influence-function remainder in one loss, although balance-calibrated weight estimation with SuperLearner exists and has been applied.",
+   "resolving_work": [
+    {
+     "locator": "10.1109/jbhi.2022.3175862",
+     "title": "Marginal structural models using calibrated weights with SuperLearner: application to type II diabetes cohort",
+     "year": 2022,
+     "what_it_resolves": "Fits marginal structural model weights with SuperLearner under a calibration criterion rather than a prediction criterion, in a longitudinal EHR setting with dynamic regimes.",
+     "quote": null
+    },
+    {
+     "locator": "10.1002/sim.7266",
+     "title": "Estimating inverse probability weights using super learner when weight-model specification is unknown in a marginal structural model",
+     "year": 2017,
+     "what_it_resolves": "Studies super learner for the weight model specifically, which is the nuisance component the entry says selection is blind for.",
+     "quote": null
+    },
+    {
+     "locator": "10.1002/sim.9568",
+     "title": "On estimation and cross-validation of dynamic treatment regimes with competing risks",
+     "year": 2022,
+     "what_it_resolves": "Treats cross-validation for dynamic treatment regimes directly, in the presence of competing risks.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "GMT-02",
+   "status_vote": "partially-solved",
+   "support_vote": "supported-with-caveat",
+   "confidence": 0.77,
+   "rationale": "The entry says general implementable identification results for dynamic regimes under irregular, treatment-dependent observation remain limited. Estimation in that setting is further along than the entry allows. Continuous-time marginal structural model weights built from a marked point process have been constructed and applied where visit times are irregular and informative and treatment history carries duration and dose. G-computation and doubly robust standardization for continuous-time data have been compared with inverse probability weighting. What has not been supplied is the general identification theorem the entry asks for, stated in filtration terms and covering within-interval effects, so the theoretical half of the claim stands while the estimation half is weaker than written.",
+   "weakest_true_restatement": "Estimators for continuous-time causal effects under irregular, treatment-dependent observation exist and have been applied; a general identification result for dynamic regimes in that setting, covering within-interval effects and stated in filtration terms, has not been established.",
+   "resolving_work": [
+    {
+     "locator": "10.1002/sim.70102",
+     "title": "Continuous-time causal inference with marked point process weights",
+     "year": 2025,
+     "what_it_resolves": "Constructs continuous-time marginal structural model weights via a marked point process precisely because primary-care visit times are irregular and informative and treatment history has duration and dose.",
+     "quote": "in primary care, visit times can be irregular and informative, and the treatment history consists of duration and doses. This can be modeled through a continuous-time marked point process."
+    },
+    {
+     "locator": "10.1177/09622802211047345",
+     "title": "G-computation and doubly robust standardisation for continuous-time data: a comparison with inverse probability weighting",
+     "year": 2021,
+     "what_it_resolves": "Compares continuous-time g-computation and doubly robust standardization against IPW, which is the estimator comparison the entry proposes as future work.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "GMT-03",
+   "status_vote": "open",
+   "support_vote": "supported",
+   "confidence": 0.68,
+   "rationale": "Nothing in the corpus reports the effective sample size alongside the nominal one as a convention, nor establishes the point at which asymptotic intervals stop covering as a function of weight tail and event rate. Work on near-positivity violations in IPTW-estimated marginal structural survival models measures the consequence, which is the closest existing treatment, and it characterizes bias rather than supplying a reporting rule. The claim is a reporting and small-sample-inference gap rather than a missing estimator, which makes it harder to refute by finding a method paper and easier to confirm by observing practice.",
+   "weakest_true_restatement": "Effective sample size after eligibility restriction and weighting is not conventionally reported alongside the nominal count, and no empirical threshold exists for when asymptotic inference stops covering in this setting.",
+   "resolving_work": [
+    {
+     "locator": "10.1002/bimj.70093",
+     "title": "Impact of near-positivity violations on IPTW-estimated marginal structural survival models with time-dependent covariates",
+     "year": 2025,
+     "what_it_resolves": "Quantifies the consequence of near-positivity for weighted survival estimation, which is the mechanism by which effective sample size collapses.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "GMT-04",
+   "status_vote": "open",
+   "support_vote": "supported-with-caveat",
+   "confidence": 0.72,
+   "rationale": "The claim that no estimator is defensible as a default is well supported by the fragmentation the corpus shows, and the proposed remedy is partly in progress. Benchmarking of data-adaptive against investigator-specified confounding adjustment exists, and a 2026 evaluation compares statistical and deep learning methods for bias in a heart failure emulation. Neither supplies the public benchmark under a common generating mechanism that the entry asks for, and neither establishes a requirement that each study compare a weighting, an outcome-modelling and a doubly robust estimator. The overstatement is small: the entry's implication that no comparative evidence exists is wrong, while its claim that no synthesis or requirement exists holds.",
+   "weakest_true_restatement": "Comparative evaluations of estimator families exist in individual papers, and there is no common benchmark, no synthesis across them, and no expectation that a study reports more than one family.",
+   "resolving_work": [
+    {
+     "locator": "10.1093/jamia/ocaf204",
+     "title": "Scalable confounding adjustment in real-world evidence: benchmarking data-adaptive and investigator-specified approaches",
+     "year": 2026,
+     "what_it_resolves": "Benchmarks adjustment strategies against one another, which is the comparison the entry says is not done.",
+     "quote": null
+    },
+    {
+     "locator": "10.1038/s41467-026-74999-6",
+     "title": "Evaluating bias in target trial emulation for heart failure across statistical and deep learning methods",
+     "year": 2026,
+     "what_it_resolves": "Compares statistical against deep learning estimation for bias within a single emulation, spanning two of the three families.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "OVL-01",
+   "status_vote": "open",
+   "support_vote": "supported-with-caveat",
+   "confidence": 0.8,
+   "rationale": "The entry's core claim, that diagnostics describe weights rather than naming which histories are unsupported, holds against the corpus. Two pieces of work sharpen rather than resolve it. A 2025 study measures the impact of near-positivity violations on IPTW-estimated marginal structural survival models with time-dependent covariates, which supplies the consequence the entry asserts. A 2026 American Journal of Epidemiology paper on target trial emulation under non-mutually exclusive assignment sets out structural pitfalls and remedies for exactly the overlap failure the entry cites. Neither produces a causal support map over histories, an unsupported-fraction statistic, or partial-identification bounds for the unsupported strata, so the specific artifacts the entry says are missing are still missing.",
+   "weakest_true_restatement": "Positivity is diagnosed through weight distributions rather than through a statement of what fraction of the target population is unsupported and which treatment histories fail, and no partial-identification bound is routinely reported for the unsupported strata.",
+   "resolving_work": [
+    {
+     "locator": "10.1093/aje/kwag014",
+     "title": "Target trial emulation under nonmutually exclusive assignment: structural pitfalls and methodological remedies",
+     "year": 2026,
+     "what_it_resolves": "Names the structural pitfalls of overlapping assignment and proposes remedies, which is the setting in which the entry's overlap failure was demonstrated.",
+     "quote": null
+    },
+    {
+     "locator": "10.1002/bimj.70093",
+     "title": "Impact of near-positivity violations on IPTW-estimated marginal structural survival models with time-dependent covariates",
+     "year": 2025,
+     "what_it_resolves": "Measures how near-positivity degrades weighted longitudinal survival estimation, supporting the entry's premise that truncation does not rescue the estimate.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "UCF-01",
+   "status_vote": "open",
+   "support_vote": "supported",
+   "confidence": 0.7,
+   "rationale": "Searching for an integrated workflow combining negative controls, proxies, instrumental variables and validation data within an emulation returned applied studies that use one of these tools, not a workflow that orders or combines them. A 2026 iScience paper shows exposure-definition sensitivity unmasking hidden confounding in a crystalloid emulation, which is a diagnostic in the family the entry describes and is a single-tool example. Proximal causal inference has been applied within an emulation for influenza vaccination and cardiovascular events, again as one method rather than as part of a standard sequence. The entry's claim is about integration and reporting convention rather than about any missing method, and nothing in the corpus supplies that.",
+   "weakest_true_restatement": "Negative controls, proximal methods, instrumental variables and validation samples are each applied within emulations individually, and no convention exists for the order in which to apply them, for reporting what each contributed, or for reconciling them when they disagree.",
+   "resolving_work": [
+    {
+     "locator": "10.1016/j.isci.2026.116584",
+     "title": "Exposure definition sensitivity unmasks hidden confounding in crystalloid target trial emulation",
+     "year": 2026,
+     "what_it_resolves": "Demonstrates one diagnostic for residual confounding inside an emulation, showing the tools are reaching applied work individually.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "UCF-02",
+   "status_vote": "open",
+   "support_vote": "supported",
+   "confidence": 0.62,
+   "rationale": "No work in the corpus reports a joint identification region over simultaneous unmeasured confounding, selection, misclassification and positivity failure in a longitudinal emulation, nor separates an identification region from a sampling interval in its reporting. Multiverse analysis of design choices is the nearest neighbor and varies design rather than bias parameters. The absence is consistent with the entry, and the confidence is capped because a partial-identification literature exists outside the eight search phrases used to build this corpus and would not have been retrieved.",
+   "weakest_true_restatement": "Sensitivity analyses in longitudinal emulations vary one violated assumption at a time, and no reporting convention separates an identification region reflecting several simultaneous violations from the sampling interval.",
+   "resolving_work": [],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "STR-01",
+   "status_vote": "partially-solved",
+   "support_vote": "supported-with-caveat",
+   "confidence": 0.75,
+   "rationale": "The treatment-versions problem has a longer literature than the entry credits. Confounding adjustment in the presence of multiple versions of treatment was worked out for an organ-transplant application in 2019, and marginal structural models for partial exposure regimes date to 2008. A 2026 iScience paper shows that changing the exposure definition unmasks confounding in an applied emulation, which is empirical evidence for the entry's premise and also evidence that the field is examining it. What remains genuinely absent is guidance for constructing defensible equivalence classes and for overlapping combination therapies, which is the constructive half of the entry rather than the diagnostic half.",
+   "weakest_true_restatement": "Estimation under multiple versions of treatment has been formalized, and there is no guidance for deciding which versions form a defensible equivalence class, nor for strategies with which a patient is simultaneously compatible.",
+   "resolving_work": [
+    {
+     "locator": "10.1007/s10654-019-00484-8",
+     "title": "The meaning of confounding adjustment in the presence of multiple versions of treatment: an application to organ transplantation",
+     "year": 2019,
+     "what_it_resolves": "Works out what adjustment means when a labeled treatment covers several versions, which the entry treats as unaddressed.",
+     "quote": null
+    },
+    {
+     "locator": "10.1093/biostatistics/kxn012",
+     "title": "Marginal structural models for partial exposure regimes",
+     "year": 2008,
+     "what_it_resolves": "Provides estimation for regimes that specify treatment only partially, which is the representation an underspecified strategy needs.",
+     "quote": null
+    },
+    {
+     "locator": "10.1016/j.isci.2026.116584",
+     "title": "Exposure definition sensitivity unmasks hidden confounding in crystalloid target trial emulation",
+     "year": 2026,
+     "what_it_resolves": "Shows empirically that the exposure definition changes the answer in an emulation, which is the consequence the entry predicts.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "OUT-01",
+   "status_vote": "open",
+   "support_vote": "supported-with-caveat",
+   "confidence": 0.74,
+   "rationale": "The methodological apparatus the entry asks for exists further than it allows. A 2026 Journal of Epidemiology paper treats causal inference from time-to-event data with dependent censoring, confounding and competing events together, and a 2025 Journal of Clinical Epidemiology paper works a trial emulation with competing risks in a surgical application. The entry's claim is nonetheless about practice rather than method: that applied emulations default to cause-specific hazards or censor at competing events without matching the estimator to the question, and that censoring at death is executed inside data preparation. Nothing in the corpus contradicts that, and the reporting requirement the entry proposes does not exist.",
+   "weakest_true_restatement": "Estimators for competing events in emulated trials exist and are being applied; applied practice still defaults to censoring at the competing event without stating the estimand that choice implies, and no reporting standard requires the justification.",
+   "resolving_work": [
+    {
+     "locator": "10.2188/jea.je20250662",
+     "title": "Beyond the hazard ratio: causal inference from time-to-event data with dependent censoring, confounding, and competing events",
+     "year": 2026,
+     "what_it_resolves": "Handles the three complications jointly, which is the analysis the entry says is not worked out.",
+     "quote": null
+    },
+    {
+     "locator": "10.1016/j.jclinepi.2025.111714",
+     "title": "Trial emulation to assess the effect of surgery on survival when there are competing risks",
+     "year": 2025,
+     "what_it_resolves": "A worked emulation in which competing risks are part of the design rather than a preprocessing step.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "SEQ-01",
+   "status_vote": "partially-solved",
+   "support_vote": "overstated",
+   "confidence": 0.85,
+   "rationale": "The entry asks for variance estimators that account for repeated participation across nested trials and for a check of their coverage against a bootstrap over persons. That work has been done. A 2025 Statistical Methods in Medical Research paper compares confidence intervals for sequential trial emulation with survival outcomes across the sandwich variance estimator, nonparametric bootstrap, jackknife and a linearized estimating function bootstrap, and finds the last has better coverage in the small-sample, low-event-rate, low-treatment-prevalence regime that motivates the design. Sequential trials and marginal structural models were compared for survival outcomes in 2023. The dependence half of the entry is therefore substantially answered and should not be published as open. The calendar-time half, that pooling across start times assumes a common effect and that trial-specific estimates are not reported, is untouched by this work and survives.",
+   "weakest_true_restatement": "Pooling across sequentially emulated trials assumes an effect common to start times that differ in treatment availability, guidelines and background risk, and trial-specific estimates are not conventionally reported alongside the pooled one.",
+   "resolving_work": [
+    {
+     "locator": "10.1177/09622802251356594",
+     "title": "Inference procedures in sequential trial emulation with survival outcomes: comparing confidence intervals based on the sandwich variance estimator, bootstrap and jackknife",
+     "year": 2025,
+     "what_it_resolves": "Directly supplies and evaluates variance estimation for sequential trial emulation, including a computationally feasible bootstrap alternative, which is what the entry asks for as future work.",
+     "quote": "the simple sandwich variance estimator is popular but conservative, while nonparametric bootstrap is computationally expensive, and a more efficient alternative, linearised estimating function (LEF) bootstrap, has not been adapted to STE"
+    },
+    {
+     "locator": "10.1002/sim.9718",
+     "title": "Causal inference in survival analysis using longitudinal observational data: sequential trials and marginal structural models",
+     "year": 2023,
+     "what_it_resolves": "Sets out the sequential-trials estimator alongside marginal structural models for survival outcomes, establishing the analysis the entry describes.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "MIS-01",
+   "status_vote": "partially-solved",
+   "support_vote": "overstated",
+   "confidence": 0.84,
+   "rationale": "The entry says standard handling constructs artificial histories and that modeling visits jointly with treatment and outcome multiplies nuisance components without a worked solution. Three separate estimator families in the corpus contradict the strong reading. A 2024 Biometrics paper proposes a multiply robust estimator for marginal structural models under irregularly spaced, covariate-driven observation times and shows it is more flexible and more efficient than the previously proposed doubly weighted estimator. A 2023 BMC Medical Research Methodology paper gives calibrated inverse probability weights for marginal structural models under irregular visits with an unmeasured confounder. A 2025 Statistics in Medicine paper builds continuous-time weights from a marked point process for the same reason. What survives is an adoption claim rather than a methods claim: these estimators exist and applied emulation pipelines do not use them, and healthcare use is still entered as a baseline confounder rather than modeled as a process.",
+   "weakest_true_restatement": "Estimators that model the observation process jointly with treatment and outcome exist in three separate families; applied emulations continue to use complete case or last observation carried forward, and healthcare use is entered as a baseline confounder rather than as a process.",
+   "resolving_work": [
+    {
+     "locator": "10.1093/biomtc/ujae065",
+     "title": "Multiply robust estimation of marginal structural models in observational studies subject to covariate-driven observation times",
+     "year": 2024,
+     "what_it_resolves": "Supplies a multiply robust estimator for exactly the setting the entry describes, and demonstrates it is more efficient than the existing doubly weighted alternative.",
+     "quote": "The estimation of a causal effect using these data not meant for research purposes is subject to confounding and irregularly-spaced covariate-driven observation times affecting the inference."
+    },
+    {
+     "locator": "10.1186/s12874-022-01831-2",
+     "title": "Estimation of marginal structural models under irregular visits and unmeasured confounder: calibrated inverse probability weights",
+     "year": 2023,
+     "what_it_resolves": "Gives calibrated weights for irregular visits with an unmeasured confounder, addressing the weight instability the entry raises.",
+     "quote": null
+    },
+    {
+     "locator": "10.1002/sim.70102",
+     "title": "Continuous-time causal inference with marked point process weights",
+     "year": 2025,
+     "what_it_resolves": "Models visits as a point process jointly with treatment, which is the direction the entry proposes.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "MER-01",
+   "status_vote": "open",
+   "support_vote": "supported",
+   "confidence": 0.71,
+   "rationale": "Searching for phenotype uncertainty propagated through an emulation returned discussions of misclassification as a listed threat and no pipeline that accepts probabilistic treatment or outcome nodes and carries the uncertainty to the final interval. Design-bias reviews name outcome misclassification among the biases to avoid without supplying the propagation. The entry's specific claim, that the interaction between differential misclassification, weighting and time-varying confounding is not handled, is consistent with what the corpus shows.",
+   "weakest_true_restatement": "Emulation pipelines threshold phenotypes to binary variables and do not propagate phenotype uncertainty into the estimated regime effect, and the interaction of differential misclassification with longitudinal weighting is not characterized.",
+   "resolving_work": [
+    {
+     "locator": "10.1136/bmjmed-2024-001280",
+     "title": "Identifying and avoiding design related biases in observational studies using the target trial framework",
+     "year": 2026,
+     "what_it_resolves": "Enumerates design-related biases including measurement, showing the problem is recognized within the framework without being handled quantitatively.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "ELG-01",
+   "status_vote": "open",
+   "support_vote": "supported-with-caveat",
+   "confidence": 0.82,
+   "rationale": "The entry says the literature on missing eligibility is small. It is small and it is larger than the one paper the entry cites. A 2026 Statistics in Medicine paper treats missingness in eligibility criteria for target trial emulation in electronic health records with survival outcomes, alongside the 2025 American Journal of Epidemiology weighting paper the entry already carries. The harder claim, that eligibility is latent rather than missing and that an absent value is consistent with both a failed criterion and an untested patient, is not addressed by either and stands.",
+   "weakest_true_restatement": "Weighting and missing-data methods for unrecorded eligibility criteria now exist in more than one paper; distinguishing a latent criterion that would have failed from one that was never assessed still requires validation data nobody has, and imputing the value and imputing eligibility have not been separated.",
+   "resolving_work": [
+    {
+     "locator": "10.1002/sim.70500",
+     "title": "Missingness in eligibility criteria for target trial emulation in EHR with survival outcomes",
+     "year": 2026,
+     "what_it_resolves": "A second and more recent direct treatment of the problem, which the entry's claim of a very small literature should acknowledge.",
+     "quote": null
+    },
+    {
+     "locator": "10.1093/aje/kwae471",
+     "title": "Adjusting for selection bias due to missing eligibility criteria in emulated target trials",
+     "year": 2025,
+     "what_it_resolves": "The weighting approach the entry already cites.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  },
+  {
+   "problem_id": "ELG-02",
+   "status_vote": "open",
+   "support_vote": "supported-with-caveat",
+   "confidence": 0.74,
+   "rationale": "The claim that nothing checks an eligibility definition for collider structure holds, and adjacent work is closer than the entry suggests. A 2026 npj Health Systems paper addresses eligibility-criteria-induced temporal selection directly, and machine-learning trial-eligibility emulation has been used to evaluate the generalizability of oncology trial results. A 2026 Frontiers in Medicine study uses emulation to evaluate eligibility criteria themselves in asthma and COPD. These evaluate the consequences of criteria rather than auditing them for collider structure before the analysis, which is what the entry proposes, so the specific artifact is still absent.",
+   "weakest_true_restatement": "No procedure audits a proposed eligibility definition for post-treatment or collider structure before the analysis runs, although the consequences of eligibility choices are now being evaluated after the fact.",
+   "resolving_work": [
+    {
+     "locator": "10.1038/s44401-026-00082-3",
+     "title": "From negative trial to positive clinical impact: mitigating eligibility criteria-induced temporal selection",
+     "year": 2026,
+     "what_it_resolves": "Treats selection induced by eligibility criteria as the object of study, which is the mechanism the entry names.",
+     "quote": null
+    },
+    {
+     "locator": "10.3389/fmed.2026.1863026",
+     "title": "Data-driven trial design: use of target trial emulation to evaluate eligibility criteria in asthma and COPD",
+     "year": 2026,
+     "what_it_resolves": "Uses emulation to evaluate eligibility criteria, showing the criteria are becoming an object of analysis rather than a fixed input.",
+     "quote": null
+    }
+   ],
+   "counter_evidence": []
+  }
+ ]
+}

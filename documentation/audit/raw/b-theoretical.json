@@ -1,0 +1,302 @@
+{
+ "slice": "seed-theoretical",
+ "source": "documentation/seed-linked.md, section 'Theoretical open problems' (table rows) and the paragraph that closes it",
+ "extracted_by": "claude-opus-5, reading the full source document",
+ "problems": [
+  {
+   "id": "t1",
+   "title": "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error",
+   "category": "PRO",
+   "statement": "Three trials are in play in any emulation and only one of them is usually named. There is the ideal trial that would answer the decision-maker's question, the target trial that the investigator specifies, and the emulation the data actually support. Specifying the target trial closely around the available data conceals the distance between the first two, and the paper reports a single estimate as though the chain were tight. What does not exist is a decomposition of the total discrepancy into its four transitions: from the ideal estimand to the feasible target estimand, from that to the identified observed-data functional, and from that to the estimator's output. Without one, a reader cannot tell whether a surprising result reflects estimation error or the fact that the question quietly changed at the first step.",
+   "why_open": "The first transition is a change of scientific question rather than a statistical error, so it has no sampling distribution and no obvious metric. Any measure of distance between estimands requires a common space in which to compare an intervention that was never implementable with one that was, and that space has to be constructed rather than estimated. The incentives also run the wrong way: making the drift explicit weakens the paper's claim without changing its number, so nothing but a reporting requirement would make anyone do it.",
+   "prior_work": [
+    {
+     "cite": "Moreno-Betancur M, et al. The ideal trial: defining causal estimands that balance relevance and feasibility in target trial emulations and actual randomized trials. arXiv 2024",
+     "doi_or_url": "https://arxiv.org/abs/2405.10026",
+     "what_it_does": "Distinguishes ideal, target and actual trials and argues that every discrepancy between them should be made explicit. It frames the problem and does not supply the decomposition."
+    },
+    {
+     "cite": "Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol 2016;183(8):758-764",
+     "doi_or_url": "10.1093/aje/kwv254",
+     "what_it_does": "Establishes the target trial as the object to be specified, which is the middle term of the three and the only one the framework requires be written down."
+    },
+    {
+     "cite": "Hansford HJ, et al. Design and implementation of observational studies emulating a target trial. JAMA Netw Open 2026",
+     "doi_or_url": "10.1001/jamanetworkopen.2025.58262",
+     "what_it_does": "Design guidance for the operational steps, acknowledging that the operational methods remain scenario dependent."
+    }
+   ],
+   "proposed_direction": "Define an estimand lineage that records each transition as a formal change in population, treatment version, outcome definition or follow-up, and require it in the protocol so it is written before the estimate exists. Quantify estimand distance through differences in intervention support and in target-population composition, which are computable from the data at hand and do not require the ideal trial to be feasible. Report the lineage next to the estimate so a reader can see which step is carrying the assumption load.",
+   "priority": "High",
+   "maturity": "Emerging",
+   "tractability": 3,
+   "severity": "A paper can be internally valid and answer a question nobody asked, and nothing in the current report distinguishes the two.",
+   "protocol_component": [
+    "cross-cutting",
+    "causal-contrast"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 79, row 'Ideal trial versus target trial versus emulated trial'",
+   "related_hint": [
+    "An unobservable protocol component produces a different, data-defined estimand rather than a noisy version of the intended one",
+    "Inference conditions on a fixed target trial that was in fact selected after seeing the data"
+   ]
+  },
+  {
+   "id": "t2",
+   "title": "Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved",
+   "category": "GMT",
+   "statement": "Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Almost every applied g-method assumes a prespecified discrete grid, and discretization can reverse temporal ordering between a treatment and an outcome that fell in the same interval, merge multiple events into one, or define an estimand that exists only relative to the chosen interval. General identification results for dynamic regimes under irregular observation, treatment-dependent visiting and within-interval effects remain limited, so the applied analyst working in continuous time has a modeling apparatus without an identification theorem to sit under it.",
+   "why_open": "In continuous time the treatment process, the visit process and the outcome process are counting processes whose intensities depend on each other, and sequential exchangeability has to be stated with respect to filtrations rather than to a fixed sequence of covariate vectors. The conditions under which a dynamic regime is identified in that setting are strictly stronger and harder to interpret than their discrete counterparts. There is also no natural sample-size asymptotics: the information about an intensity comes from event counts rather than from patients, so the usual scaling arguments do not apply cleanly.",
+   "prior_work": [
+    {
+     "cite": "Tankpinou Zoumenou H, et al. Time Partitioning in Target Trial Emulation. arXiv 2026",
+     "doi_or_url": "https://arxiv.org/abs/2603.15924",
+     "what_it_does": "Treats the partition of time as a modeling choice with consequences rather than as a convention, which is the entry point to the continuous-time question."
+    },
+    {
+     "cite": "Robins JM, Hernán MA, Brumback B. Marginal structural models and causal inference in epidemiology. Epidemiology 2000;11(5):550-560",
+     "doi_or_url": "10.1097/00001648-200009000-00011",
+     "what_it_does": "The discrete-time identification result that continuous-time work has to generalize, stated with sequential exchangeability, positivity and consistency."
+    },
+    {
+     "cite": "Goldstein BA, Bhavsar NA, Phelan M, Pencina MJ. How and when informative visit processes can bias inference when using electronic health records data for clinical research. J Am Med Inform Assoc 2019",
+     "doi_or_url": "10.1093/jamia/ocz148",
+     "what_it_does": "Establishes that the visit process in electronic health records is informative, which is the condition that makes the continuous-time problem hard rather than merely technical."
+    }
+   ],
+   "proposed_direction": "Combine marked point-process models, continuous-time structural nested models and neural ordinary differential equations, constraining the learned components to nuisance functions that the identification result actually requires, so the flexibility sits where it cannot manufacture a contrast. Study invariance of estimates across nested time grids as a routine diagnostic: an estimand defined in continuous time should be stable as the grid refines, and instability localizes the failure. State the identification conditions in filtration terms and show which of them a standard electronic health record violates.",
+   "priority": "High",
+   "maturity": "Emerging",
+   "tractability": 2,
+   "severity": "The discretization is universal and the conditions under which it is harmless are not known.",
+   "protocol_component": [
+    "follow-up",
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "ehr",
+    "linked"
+   ],
+   "source_locator": "seed-linked.md line 80, row 'Identification in continuous time'",
+   "related_hint": [
+    "No outcome-blind procedure selects the time grid or the grace period",
+    "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure"
+   ]
+  },
+  {
+   "id": "t3",
+   "title": "Emulation assumes no interference, and cloning individuals can produce joint strategies nobody could implement",
+   "category": "EST",
+   "statement": "One person's treatment can change another's outcome through infection, provider behavior, household exposure or a shared resource constraint. Target trial emulation as normally practiced assumes this does not happen. Methods under partial interference define direct and spillover effects and are well developed in their own literature, but they are rarely joined to emulation, and the join is not cosmetic: eligibility, assignment and positivity all become cluster- or network-dependent quantities. Cloning individuals independently, which is the standard device for grace periods, can assign a set of clones a joint strategy that no cluster could actually receive, so the artificial censoring is then censoring on an impossible world. The TARGET reporting guideline currently offers no cluster-trial extension.",
+   "why_open": "Under interference the estimand has to be defined through an exposure mapping, and there is no canonical mapping: own treatment plus treated-neighbor proportion is one choice among many and different choices give different, equally valid, effects. Positivity must hold for the joint neighborhood exposure, which is a far stronger requirement than individual positivity and typically fails in observed networks. Networks are also measured with error, and contagion, homophily and spillover are only weakly separable from one another even when the network is known exactly.",
+   "prior_work": [
+    {
+     "cite": "Papadogeorgou G, Mealli F, Zigler CM. Causal inference with interfering units for cluster and population level treatment allocation programs. Biometrics 2019;75(3):778-787",
+     "doi_or_url": "10.1111/biom.13049",
+     "what_it_does": "Defines direct and spillover effects for cluster and population-level allocation, one of the frameworks that would have to be joined to the emulation protocol."
+    },
+    {
+     "cite": "TARGET reporting guideline, official resources",
+     "doi_or_url": "https://target-guideline.org",
+     "what_it_does": "The reporting standard for emulations, whose stated scope is parallel-group, individually randomized target trials, so cluster designs fall outside it."
+    }
+   ],
+   "proposed_direction": "Define network target trials in which the exposure mapping is part of the protocol rather than an analysis convenience, and state the positivity condition for the joint neighborhood exposure explicitly. Develop cluster-level clone-censor-weighting so that compatibility is judged for the cluster rather than the individual, alongside network targeted learning and agent-based g-computation. Test sensitivity to network mismeasurement and to violations of partial interference by deleting edges at known rates, because a method that is correct on a perfectly observed network and silent on a noisy one is not usable on real data.",
+   "priority": "High",
+   "maturity": "Emerging",
+   "tractability": 2,
+   "severity": "Infectious disease and health-services emulations violate the no-interference assumption routinely and report as though they did not.",
+   "protocol_component": [
+    "assignment",
+    "causal-contrast"
+   ],
+   "data_setting": [
+    "registry",
+    "linked",
+    "multi-database"
+   ],
+   "source_locator": "seed-linked.md line 81, row 'Interference, spillovers and cluster-level assignment'",
+   "related_hint": [
+    "Emulation is proposed for non-pharmaceutical and policy interventions whose treatment versions and assignment units are not defined"
+   ]
+  },
+  {
+   "id": "t4",
+   "title": "Transporting an observational estimate compounds sampling assumptions on top of confounding assumptions with no accounting",
+   "category": "EST",
+   "statement": "An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Weighting, outcome modeling and doubly robust transport estimators all exist, and all of them require that the effect modifiers be measured, that the populations overlap, and that effects be conditionally exchangeable across samples. Applied transport work still mostly uses conventional sampling weights or outcome models despite the more flexible alternatives. The deeper issue is that transporting an observational estimate stacks the sampling-exchangeability assumption on top of the treatment-exchangeability assumption, and no current reporting practice shows how the two compound or which one a given discrepancy should be charged to.",
+   "why_open": "Both assumption sets are untestable and they fail in correlated ways: a health system whose case mix differs is usually also one whose confounding structure and treatment availability differ, so a single sensitivity parameter cannot represent the joint failure. Unmeasured effect modification is not detectable in the source population, since by construction it is a variable nobody measured. Combining transport with flexible representation learning risks erasing the very effect modification that transport is supposed to preserve, because predictive invariance and causal invariance are different properties.",
+   "prior_work": [
+    {
+     "cite": "Westreich D, Edwards JK, Lesko CR, Stuart E, Cole SR. Transportability of trial results using inverse odds of sampling weights. Am J Epidemiol 2017;186(8):1010-1014",
+     "doi_or_url": "10.1093/aje/kwx164",
+     "what_it_does": "Gives the inverse-odds-of-sampling weighting estimator for transporting a trial result to a target population."
+    },
+    {
+     "cite": "Manke-Reimers M, et al. When, why and how are estimated effects transported between populations? A scoping review. Eur J Epidemiol 2025",
+     "doi_or_url": "10.1007/s10654-025-01217-w",
+     "what_it_does": "Maps what applied transport studies actually do, which is where the finding that flexible estimators are underused comes from."
+    }
+   ],
+   "proposed_direction": "Develop causal representation learning for transportability that balances sites only on representations sufficient for effect modification, rather than on everything predictive, and combine it with targeted standardization and site-level random effects. Derive bounds under unmeasured effect modification and report them alongside the point estimate, so a transported number carries its own fragility. Simulate sites that differ in covariates, treatment mechanisms, baseline hazards and effect modifiers separately, so that the contribution of each source of non-transportability is measurable rather than confounded with the others.",
+   "priority": "High",
+   "maturity": "Promising",
+   "tractability": 3,
+   "severity": "Decisions are made in populations other than the one analyzed, and the compounding of assumptions is currently invisible.",
+   "protocol_component": [
+    "eligibility",
+    "causal-contrast"
+   ],
+   "data_setting": [
+    "multi-database",
+    "federated",
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 82, row 'Transportability across sites, populations and calendar time'",
+   "related_hint": [
+    "Averaging site estimates in a federated emulation can conceal that the sites emulated different trials"
+   ]
+  },
+  {
+   "id": "t5",
+   "title": "Sensitivity analyses vary one violated assumption at a time when several are violated together",
+   "category": "UCF",
+   "statement": "A conventional emulation reports a point estimate under exchangeability, positivity and correct measurement, and then a sensitivity analysis that relaxes one of them. In a longitudinal emulation on routine data all of them are doubtful simultaneously: unmeasured confounding, selection into the cohort, misclassification of exposure and outcome, and practical positivity failure all operate at once and interact. There is little theory for the joint case, so the reported uncertainty is a sampling interval around a point that is identified only under a conjunction the analysis has already conceded is false. What is missing is a way to report an identification region reflecting all the violations together, separately from the sampling interval.",
+   "why_open": "Bias parameters for different violations live on different scales and enter the estimating equations at different places, so there is no natural single-parameter family to sweep. The joint region is typically not a product of the marginal regions because the violations interact, which means the computationally convenient answer is also the wrong one. Reporting a wide identification region is also professionally costly: it makes an honest analysis look weaker than a naive one, and no journal currently requires it.",
+   "prior_work": [
+    {
+     "cite": "Hubbard RA, Hernán MA. \"Target trial emulation\" for observational studies: potential and pitfalls. N Engl J Med 2024",
+     "doi_or_url": "10.1056/NEJMp2407586",
+     "what_it_does": "Sets out the residual assumption burden that survives a correctly specified emulation, which is the set this problem asks to be handled jointly."
+    }
+   ],
+   "proposed_direction": "Construct modular bias models whose parameters describe each violation separately, then obtain the joint uncertainty region by optimization over the parameter space or by Bayesian posterior sampling with priors on each bias parameter. Report the identification region and the sampling interval as two distinct objects, so a reader can see which part of the uncertainty more data would reduce. Establish, in simulation, how far the product of marginal sensitivity analyses misstates the joint region, since that is the approximation currently in use by default.",
+   "priority": "High",
+   "maturity": "Emerging",
+   "tractability": 3,
+   "severity": "Reported uncertainty systematically understates real uncertainty, in a direction that always favors the claim.",
+   "protocol_component": [
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 83, row 'Partial identification under multiple violations'",
+   "related_hint": [
+    "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "Positivity diagnostics describe weights instead of naming which patient histories are unsupported"
+   ]
+  },
+  {
+   "id": "t6",
+   "title": "There is no theory for extrapolating successful replication of selected trials to new questions",
+   "category": "BEN",
+   "statement": "Agreement between an emulation and a randomized trial raises confidence, and disagreement can arise from emulation failure, random error, different adherence, different measurement, different populations, or a limitation of the trial itself. RCT-DUPLICATE and the 2026 concordance meta-analysis both show better agreement under closer emulation and neither shows equivalence: across 107 paired emulations and trials the effect correlation was 0.59 overall and 0.83 among the 63 pairs judged to emulate more closely. What no one has is a theory that licenses the inference from those results to a new question: how much confidence a successful replication of trial A in database D transfers to question B in database D, or to question A in database E. Publishing after the trial result is known also creates design-calibration and selective-reporting risks that the concordance statistic cannot see.",
+   "why_open": "The benchmarking set is not a random sample of questions: trials get emulated when they are recent, large, and have an accessible active comparator, which are the conditions under which emulation works best. A concordance statistic is therefore an estimate of performance on a favorable subpopulation, with no design that would identify performance elsewhere. Attributing a discrepancy requires knowing which of six candidate causes produced it, and the data that would separate them, particularly the trial's own adherence and measurement, are typically not available to the emulator.",
+   "prior_work": [
+    {
+     "cite": "Wang SV, Schneeweiss S, RCT-DUPLICATE Initiative. Emulation of randomized clinical trials with nonrandomized database analyses: results of 32 clinical trials. JAMA 2023;329(16):1376-1385",
+     "doi_or_url": "10.1001/jama.2023.4221",
+     "what_it_does": "The largest prespecified benchmarking program: 32 trials emulated in claims data with agreement reported against the trial results."
+    },
+    {
+     "cite": "Concordance between target trial emulation and randomised controlled trials: systematic review and meta-analysis. BMJ 2025",
+     "doi_or_url": "10.1136/bmj-2025-086810",
+     "what_it_does": "Pools 107 emulation-trial pairs, reporting correlation 0.59 overall and 0.83 among closer emulations, and links poorer concordance to baseline imbalance, hospital-initiated treatment and inferior outcome emulation."
+    }
+   ],
+   "proposed_direction": "Run prospective, blinded benchmarking suites in which the emulation protocol and code are frozen and registered before the trial result is revealed, which removes design calibration by construction rather than by assurance. Model concordance hierarchically by data source, clinical setting, outcome type and degree of protocol match, so the quantity estimated is a conditional expectation of agreement rather than a global rate. Treat benchmarking as calibration evidence about a data source and a design class, never as certification of a method.",
+   "priority": "Very high",
+   "maturity": "Established",
+   "tractability": 3,
+   "severity": "Benchmarking results are cited as general warrant for emulation, and the inference from them to a new question has no support.",
+   "protocol_component": [
+    "cross-cutting"
+   ],
+   "data_setting": [
+    "claims",
+    "ehr",
+    "multi-database"
+   ],
+   "source_locator": "seed-linked.md line 84, row 'What does trial-emulation concordance validate?', with the concordance figures from the executive summary at line 7",
+   "related_hint": [
+    "Replication is reported as a binary label rather than as a calibrated comparison of estimands",
+    "Data-fitness assessment is narrative and has no thresholds that would stop a study"
+   ]
+  },
+  {
+   "id": "t7",
+   "title": "Inference conditions on a fixed target trial that was in fact selected after seeing the data",
+   "category": "PRO",
+   "statement": "Eligibility thresholds, comparators, grace periods, washout windows and outcome definitions are routinely revised after investigators inspect the data. Even an investigator who never looks at a treatment effect can be influenced by outcome prevalence, by covariate-outcome associations or by which specification yields a workable sample size. Standard inferential theory conditions on a fixed target trial and takes no account of the search over candidate emulations that produced it, so the reported confidence interval has the wrong coverage for the procedure actually run. A protocol chosen by an algorithm is an estimated object with its own sampling variability, and nothing in current practice treats it as one.",
+   "why_open": "The search is usually undocumented, so even a method that corrected for it would have no record of what was searched. Selective-inference corrections exist for well-defined selection events such as variable selection under a known rule, and protocol development is not a well-defined selection event: it is a sequence of human decisions with no likelihood. Splitting the data into design and analysis halves solves the inference problem and costs precision in exactly the settings, rare treatments and rare outcomes, where precision is already the binding constraint.",
+   "prior_work": [
+    {
+     "cite": "Hansford HJ, et al. Design and implementation of observational studies emulating a target trial. JAMA Netw Open 2026",
+     "doi_or_url": "10.1001/jamanetworkopen.2025.58262",
+     "what_it_does": "Enumerates the design decisions an emulation must make, which is also the enumeration of what can be revised after seeing data."
+    },
+    {
+     "cite": "Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA 2025",
+     "doi_or_url": "10.1001/jama.2025.13350",
+     "what_it_does": "A 21-item reporting checklist for the final specification. Its purpose is transparency about what was done, not a record of what was rejected."
+    }
+   ],
+   "proposed_direction": "Divide the data into a design partition and an analysis partition, or expose only outcome-blinded metadata during protocol development, so that the search happens where it cannot contaminate inference. Develop selective-inference corrections and specification-curve estimands adapted to the emulation setting, where the selection is over protocols rather than over covariates. Require dated decision logs so that the search becomes a recorded object; a correction is impossible while the search history is unavailable even to the investigators.",
+   "priority": "High",
+   "maturity": "Emerging",
+   "tractability": 3,
+   "severity": "Every emulation involves iteration and reported coverage assumes none of it happened.",
+   "protocol_component": [
+    "cross-cutting",
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 85, row 'Data-adaptive trial specification and selective inference'",
+   "related_hint": [
+    "Registrations record the final protocol and not the alternatives that were rejected",
+    "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error"
+   ]
+  },
+  {
+   "id": "t8",
+   "title": "Flexible estimation is presented as a remedy for identification failure",
+   "category": "LRN",
+   "statement": "Identification is a property of the observed data together with the assumptions, not a property of the estimator. A neural network cannot learn a counterfactual contrast that the data and assumptions do not identify, and flexible modeling that reduces approximation error in a nuisance function can at the same time disguise unsupported extrapolation, because a smooth fit extends confidently into regions with no observations. The distinction is stated clearly in the methodological literature and is repeatedly elided in applied work, where a more flexible learner is offered as the answer to a confounding or positivity concern. There is no diagnostic in common use that separates a flexible model interpolating where data exist from the same model extrapolating where they do not.",
+   "why_open": "Extrapolation is not visible in any conventional fit statistic: a model can have excellent cross-validated loss on the observed region and be entirely unconstrained off it. The regions that matter are conditional on a growing treatment and covariate history, so the question of whether a given prediction is supported is itself high-dimensional. The professional incentive also points one way, since the flexible estimate is the one with the tighter interval.",
+   "prior_work": [
+    {
+     "cite": "Feuerriegel S, Frauen D, Melnychuk V, et al. Causal machine learning for predicting treatment outcomes. Nat Med 2024;30:958-968",
+     "doi_or_url": "10.1038/s41591-024-02902-1",
+     "what_it_does": "States that causal machine learning supports individualized effect estimation only under the same identification assumptions as conventional methods, which is the claim applied work elides."
+    },
+    {
+     "cite": "Target trial emulation under nonmutually exclusive assignment. Am J Epidemiol 2026;195(4):1045",
+     "doi_or_url": "10.1093/aje/kwaf018",
+     "what_it_does": "Demonstrates empirically that poor overlap defeats advanced adjustment, which is the concrete form the general point takes."
+    }
+   ],
+   "proposed_direction": "Require that any flexible nuisance model be paired with a support diagnostic reported for the same conditioning sets the model uses, so extrapolation is visible where it happens rather than aggregated away. Score estimators on failure awareness: whether their diagnostics correctly signal a severe positivity violation or a non-identifiable target, tested against deliberately non-identifiable simulation scenarios. Include at least one such scenario in every methods comparison, since an estimator that always returns a narrow interval is not robust if it never warns.",
+   "priority": "High",
+   "maturity": "Promising",
+   "tractability": 4,
+   "severity": "The confusion licenses precise answers to questions the data cannot answer, and it is spreading with the tooling.",
+   "protocol_component": [
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md lines 87, 136 and 189",
+   "related_hint": [
+    "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+    "Positivity diagnostics describe weights instead of naming which patient histories are unsupported"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,685 @@
+{
+ "batch": "core-02",
+ "papers": [
+  {
+   "id": "L0035",
+   "read": true,
+   "doi": "10.1002/sim.70371",
+   "title": "Caveats on Using Firth's Penalization in the Model-Based Regression Standardization for Rare Diseases",
+   "relevance": "high",
+   "one_line": "Shows the standard fix for non-convergence in rare-outcome g-computation introduces bias into the standardized estimate, and proposes two corrections.",
+   "what_was_done": "An examination of what happens when the parametric g-formula is applied to a rare outcome. With few events relative to the number of confounders, quasi-complete separation makes the logistic regression models non-convergent in a substantial share of replications, from 0.0% to 49.3% depending on sample size. Firth's penalized likelihood is the standard remedy and delivers finite coefficients, but it shrinks predicted probabilities toward 0.5, so the predicted and observed event rates diverge and the standardized marginal estimate is biased even though the regression coefficients are well behaved. The paper demonstrates this on surgical site infections in orthopedic surgery, proposes two ad hoc corrections, Firth's logistic regression with an intercept correction and with an added covariate, evaluates both against propensity score approaches in simulation, and applies the result to the association between surgical site infection and smoking status in a clinical database.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "GMT-03",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is the entry's regime studied directly: what happens to a longitudinal marginal estimator when the informative stratum is small. Non-convergence reaches 49.3% of replications, and the standard remedy fixes the coefficients while biasing the marginal quantity the analysis reports. The paper supplies two corrections and a comparison against propensity score methods, which addresses one estimator in this regime rather than establishing where asymptotic inference fails generally.",
+     "quote": "in rare disease settings, the small number of observed events relative to the number of covariates can lead to (quasi-)complete separation, resulting in non-convergent estimates in the regression models",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Firth's penalization is selected on the regression-fitting criterion, where it works, and the causal quantity it feeds is biased as a result because the penalty shrinks predicted probabilities toward 0.5. That is precisely the entry's claim that a nuisance model chosen on its own fitting criterion can be the wrong choice for the estimator it serves, demonstrated rather than argued.",
+     "quote": "While effective for estimating regression coefficients, Firth's method introduces bias into model-based regression standardization because of its tendency to shrink the predicted probabilities to 0.5, leading to discrepancies between the predicted and observed event rates.",
+     "locator": "Abstract"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0036",
+   "read": true,
+   "doi": "10.1186/s13063-026-09708-1",
+   "title": "Applying a hypothetical strategy to the intercurrent event of non-adherence with the parametric g-formula: a post hoc secondary analysis of the MET-PREVENT trial",
+   "relevance": "high",
+   "one_line": "Targets a hypothetical-strategy estimand for non-adherence in a trial with the parametric g-formula, then runs a probabilistic bias analysis on the adherence measurement itself.",
+   "what_was_done": "A post hoc secondary analysis of the MET-PREVENT randomized placebo-controlled trial, 70 participants, targeting an estimand that handles non-adherence by a hypothetical strategy. The authors treat this as a mediation problem: randomized treatment is the exposure, adherence the mediator, there is exposure-mediator interaction, and mediator-outcome confounders such as gastrointestinal symptoms are caused by the exposure. The parametric g-formula estimates the controlled direct effect of metformin on 4-metre walk speed, 0.072 m/s with a bootstrap interval from minus 0.292 to 0.445, against the trial's original per-protocol estimate of 0.023. The authors attribute the difference to collider-stratification bias in the original per-protocol analysis, which conditioned on adherence, and set out the four backdoor paths on which adherence is a collider. A probabilistic bias analysis then varies the misclassification of adherence, since observed adherence came from returned tablet counts rather than actual consumption, under several scenarios because the true extent is unknown.",
+   "future_research": [
+    {
+     "gap": "A dynamic intervention on adherence that permits non-adherence when participant safety is compromised, rather than setting everyone to adhere throughout",
+     "kind": "stated",
+     "quote": "One strategy would have been to conceive of a dynamic intervention on adherence that allows for non-adherence when participant safety is compromised at any point during follow-up",
+     "locator": "Limitations"
+    },
+    {
+     "gap": "Performance of the parametric g-formula at small sample sizes, where coverage is suboptimal in the few studies that have looked",
+     "kind": "stated",
+     "quote": "Few studies have evaluated the performance of the parametric g-formula estimator in small sample sizes (n ≤ 100).",
+     "locator": "Limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MER-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is the propagation the entry says emulation pipelines do not do: the adherence variable is treated as a mismeasured proxy for true adherence, a probabilistic bias analysis is run across several misclassification scenarios because the true extent is unknown, and the conclusion is stated in terms of what the estimate and its interval would have been under true adherence. The measurement uncertainty reaches the reported result rather than being discarded at thresholding.",
+     "quote": "sensitivity analyses indicated that the greater the extent of misclassification, the more the CDE may be estimated with bias (the estimate would have been closer to the null if true adherence had been collected and used in the parametric g-formula analysis) and with over-optimistic precision",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The paper names its estimand, a controlled direct effect under a hypothetical strategy on non-adherence, states what it means in words, and reports it against the trial's intention-to-treat and per-protocol effects so a reader can see the three are different quantities. That is the estimand statement the entry asks for, executed.",
+     "quote": "the average controlled direct effect (CDE) of metformin (versus placebo) on 4-m walk speed, which is interpreted as the average treatment effect under the hypothetical scenario that all trial participants adhered to assigned treatment",
+     "locator": "Abstract, methods"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The controlled direct effect sets every participant to adhere throughout, which the authors say is unrealistic because a real intervention would permit discontinuation on a safety event. The strategy actually estimated is therefore not the strategy anyone would implement, and the gap is bridged by an argument that the safety events are rare rather than by defining the strategy correctly.",
+     "quote": "A limitation of the CDE is that all participants are always set to adhere through some conceivable intervention. This may not be realistic as interventions should allow treatment to be discontinued at any point when a participant experiences a clinical event that jeopardises their safety.",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "ELG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper works out that conditioning on adherence, which is what a conventional per-protocol analysis does, induces a noncausal association because adherence is a collider on four backdoor paths. That is the entry's mechanism, demonstrated on a real analysis whose published estimate differs from the corrected one, and it was found by drawing the graph rather than by any check the analysis pipeline performs.",
+     "quote": "limiting the analysis to adherers only induces a noncausal association between treatment assignment and the outcome through the baseline covariates and number of GI adverse events because adherence is a collider on four backdoor paths through GI adverse events",
+     "locator": "Strengths"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper reviews what is known about the parametric g-formula at small sample sizes and finds coverage around 90 to 92 percent rather than 95, driven by model-based standard errors underestimating the empirical one, and worsening as unpredictive covariates are added. That is the entry's claim that asymptotic inference becomes unreliable, with the two studies that have measured where.",
+     "quote": "their results indicate that whilst the estimator had a mean bias close to zero, but there was suboptimal coverage (approximately 90% at either sample size), which was due to the model-based standard errors underestimating the empirical standard error",
+     "locator": "Limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0037",
+   "read": true,
+   "doi": "10.1093/biostatistics/kxag014",
+   "title": "Causal estimands and identification of time-varying effects in nonstationary time series from N-of-1 mobile device studies",
+   "relevance": "high",
+   "one_line": "Defines short- and long-term causal estimands for nonstationary N-of-1 time series and introduces a positivity validation plot showing which treatment regimes are identifiable.",
+   "what_was_done": "New causal estimands for multivariate time series in N-of-1 studies, quantifying total and controlled direct effects of time-varying exposures in the short and long term and the pattern of change over time, with identifiability assumptions and a g-formula estimator that accounts for exposure-outcome and outcome-covariate feedback. The g-formula is embedded in a state space model so that neither stationary time series nor static treatment effects need be assumed. The method is applied to a multi-year smartphone study of patients with bipolar disorder, estimating the dynamic effect of phone-based communication on mood, and finds substantial heterogeneity in treatment effects over time and across individuals. Two graphical tools, an impulse impact plot and a step response plot, display the long-term impact, and a third, a positivity validation plot, evaluates which treatment regimes are identifiable at all. A simulation-based strategy then derives personalized recommendations under a realistic constraint of at most three interventions a week.",
+   "future_research": [
+    {
+     "gap": "Sensitivity analysis for unmeasured confounding in this setting, possibly using the negative controls naturally available in time series data",
+     "kind": "stated",
+     "quote": "Further work is needed to develop sensitivity analysis strategies to address unmeasured confounding. Specifically, it would be of interest to leverage the negative controls that are naturally available in time series data to detect violations of the no unmeasured confounding assumption",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Pooling across multiple individuals for more generalizable inference than the N-of-1 framework supports",
+     "kind": "stated",
+     "quote": "across multiple individuals for more generalizable and robust inferences in future work.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The positivity validation plot is exactly the artifact the entry says is missing: a diagnostic that reports which treatment regimes are identifiable rather than summarizing weights. The authors introduce it because positivity in observational time series cannot be secured the traditional way, by randomization or by studying few time points, so the support question has to be answered directly.",
+     "quote": "We propose a new diagnostic tool – the positivity validation plot – that evaluate the spectrum of treatment regimes that might be identifiable, representing valuable contribution to the field of causal inference in time series data.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-02",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is identification for time-varying effects without assuming stationarity, in data measured at high frequency, with a g-formula estimator inside a state space model that handles feedback between exposure, outcome and covariates. It addresses the intensively-measured half of the entry's setting, and it works in discrete series from devices rather than in the irregular treatment-dependent observation the entry is about.",
+     "quote": "We assume neither static treatment effects nor stationary time series, and the identification strategy can be applied to both randomized trials and observational studies where the treatment assignments are confounded.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The paper defines its estimands explicitly as short- and long-term total and controlled direct effects, and builds two plots, impulse impact and step response, whose purpose is to communicate how an effect accumulates rather than to compress it into one number. That is the reporting the entry asks for, in a setting where a single summary would be plainly inadequate.",
+     "quote": "We introduce graphical tools, specifically the impulse impact plot and step response plot, to facilitate the illustration of the long-term impact of exposures over time.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The authors name negative controls as the tool that could detect violations of no unmeasured confounding here, and say developing that is future work. The tool exists, the setting makes it naturally available, and it is still not part of the workflow, which is the entry's claim about integration rather than availability.",
+     "quote": "The assumption of no unmeasured confounding is untestable and a key challenge in the application and interpretation of our approach.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "LRN-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The analysis finds substantial heterogeneity in treatment effects both over time within a person and across people, in a design where each person is their own study. Heterogeneity that large means a population-average estimate describes few individuals, and the paper's own remedy, pooling across individuals, is listed as future work.",
+     "quote": "This analysis reveals the substantial heterogeneity in treatment effects over extended length of follow-up and across individuals in an N-of-1 framework",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0039",
+   "read": true,
+   "doi": "10.1093/biomtc/ujaf191",
+   "title": "Individual causal effect estimation accounting for latent disease state modification",
+   "relevance": "high",
+   "one_line": "Recovers a latent disease state from mobile health data and treats it as an effect modifier and confounder, then names precisely what remains unidentified when the confounder is inferred rather than measured.",
+   "what_was_done": "Two hidden Markov models for N-of-1 causal estimation in which a latent disease state, recovered from longitudinal mobile health data, acts as an effect modifier between exposure and outcome and, under the hypothesized graph, also as a confounder of that relationship. The models accommodate missing data by single imputation or by multiple imputation, with a blocked bootstrap for inference; a Bayesian equivalent in Stan handles missingness comparably but fails to achieve adequate coverage. Simulations show unbiased estimation of the contemporaneous average individual causal effect and adequate bootstrap coverage. Applied to the Bipolar Longitudinal Study, the models recover disease states where data and variability suffice and find no discernible effect of digital socialization on sleep duration. The authors set out where the methods fail: short follow-up under roughly 300 time points, high missingness, low variability, and numerical underflow when many observed variables descend from the latent state.",
+   "future_research": [
+    {
+     "gap": "Extending proximal causal inference to a time series setting to address unmeasured confounding formally",
+     "kind": "stated",
+     "quote": "In addition, it would be of interest to extend the proximal causal inference framework to a time series setting to formally address this limitation",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "Extending methods robust to nonstationarity, such as state space modeling, to settings with underlying latent states",
+     "kind": "stated",
+     "quote": "Further work is needed to extend methods that are robust to violations to stationarity, such as state space modeling, to a setting with underlying latent states.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "Bootstrap or asymptotic inference for complex hidden Markov models on multivariate time series with a latent state",
+     "kind": "stated",
+     "quote": "More work is needed to identify the ideal method for performing a bootstrap with a multivariate time series with an underlying latent state or to develop asymptotic inference results for complex HMMs.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper's own confounder is latent and inferred rather than measured, and the authors state that adjusting for a predicted latent state should reduce bias relative to ignoring it while leaving open how much latent confounding can be handled this way and under what conditions the effect stays identified. That is the entry's claim about tools that address residual confounding under assumptions nobody can check, stated by authors about their own construction.",
+     "quote": "more work generally is needed to examine the extent to which latent confounding can be handled through latent state prediction, and under what assumptions the effect of interest would still be identifiable",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Missingness is assumed ignorable and the authors state it may well not be in mobile health data, where non-response is plausibly a function of the state being measured. Extensions incorporating an informative missingness mechanism are named as needed rather than available, and the choice between single and multiple imputation is made on computational grounds.",
+     "quote": "We additionally assume that the missingness is ignorable. It is possible in mobile health studies that the missingness is not at random, and extensions of our proposed methods incorporating a hypothesized informative missing mechanism are needed.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "LRN-04",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The paper's premise is the entry's: an intervention's effect varies with an underlying state, so a single average describes nobody. It recovers the modifier from data rather than assuming subgroups, and it reports where the recovery fails, short follow-up, high missingness, low variability, which is the subgroup-support reporting the entry asks for.",
+     "quote": "We also identify in the application the limitations to the proposed methods when there is short follow-up, a high rate of missing data, or lack of variability in the observed data.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Estimation rests on stationarity conditional on the latent states, which the authors say may be violated in mobile health studies, and the robust alternatives they name have not been extended to the latent-state setting. The time-series structure is assumed rather than identified, which is the discretization and process-assumption problem in a high-frequency setting.",
+     "quote": "However, the stationarity assumption conditional on latent states may be violated in some mobile health studies.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0040",
+   "read": true,
+   "doi": "10.1093/biomtc/ujaf176",
+   "title": "Long-term memory effects of an incremental blood pressure intervention in a mortal cohort",
+   "relevance": "high",
+   "one_line": "Estimates an incremental blood pressure intervention over 15 years and reports both etiological and prognostic effects, so a change in memory cannot be confused with a change in mortality.",
+   "what_was_done": "A 15-year analysis in the Betula prospective aging cohort of an intervention reducing systolic blood pressure in hypertensive individuals, targeting episodic memory. The authors argue that previous work cannot distinguish an effect on memory from an effect on mortality because it does not account for altered mortality rates, and so report two estimates: a prognostic effect in the mortal cohort, where outcomes are truncated after death, and an etiological effect in the always-survivor principal stratum, those alive under both the natural course and the intervention. Estimation uses an extended g-formula with a Bayesian semi-parametric approach, soft BART component models and a new sparsity-inducing Dirichlet prior exploiting the longitudinal structure, compared in simulation against other Bayesian tree ensembles. The intervention is incremental and threshold-based rather than deterministic. Identification of the always-survivor effect is partial and rests on stochastic monotonicity rather than monotonicity, with sensitivity parameters supplied for that unverifiable assumption. No significant prognostic or etiological effect was found at any age. An R package, GcompBART, is released.",
+   "future_research": [
+    {
+     "gap": "Incorporating more baseline covariates than age as survival-predictive covariates for partial identification of the always-survivor effect",
+     "kind": "stated",
+     "quote": "However, a limitation with proposed principal stratification approach is that we only included age as a survivalpredictive covariate for partial identification of the SAIE.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Death is treated as the thing that makes the outcome undefined rather than as a censoring event, and the paper reports two distinct estimands, prognostic in the mortal cohort and etiological in the always-survivor stratum, because they answer different questions and previous work conflated them. That is the estimand-matched handling of a competing event the entry says applied work defaults away from, with both estimands reported rather than one chosen silently.",
+     "quote": "A limitation with previous research on the potential risk reduction of such interventions is that they do not properly account for the reduction of mortality rates. Hence, one can only speculate whether the effect is due to changes in memory or changes in mortality.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The intervention is an incremental threshold shift rather than a deterministic assignment, which is the modified-policy route the entry proposes for strategies the data cannot support, applied here over 15 years of cohort data. It is one application rather than a general treatment of support, and it does not report which histories fail.",
+     "quote": "we propose a Bayesian semi-parametric estimation approach for an incremental threshold intervention, using the extended G-formula",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The always-survivor effect is only partially identified, and the paper says so, supplying sensitivity parameters for the stochastic monotonicity assumption rather than reporting a point estimate under an assumption it concedes is unverifiable. That is the separation of an identification region from sampling uncertainty the entry asks for, for one violation rather than jointly.",
+     "quote": "Our approach relies on the less strong stochastic monotonicity assumption and uses sensitivity parameters that allow researcher to investigate sensitivity of results to this unverifiable assumption.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The identification assumptions include missing at random conditional on survival for the outcome, the treatment and the time-varying confounders, stated explicitly as a fourth condition alongside consistency, conditional exchangeability and sequential positivity. Naming the missingness assumption as an identification condition rather than handling it in preprocessing is the practice the entry says is absent.",
+     "quote": "Additionally, we assume: C4, missing at random conditional on survival (MARS) for the outcome, treatment, and time-varying confounders.",
+     "locator": "Section 2"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The method ships as a named R package with a public repository and the web appendices carry the assumptions, the identification argument and the computational detail. That is the level of release the entry says applied emulations do not reach, achieved here by a methods paper.",
+     "quote": "The R package GcompBART is available on https://github.com/m4ryjo/GcompBART",
+     "locator": "Supplementary materials"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0041",
+   "read": true,
+   "doi": "10.1177/00220345251367878",
+   "title": "Addressing Selection and Confounding Biases in Dental Claims Data: A Causal Inference Perspective",
+   "relevance": "high",
+   "one_line": "Shows that requiring both dental and medical insurance coverage conditions on a collider, and that seven published studies all adjusted for confounding while none addressed it.",
+   "what_was_done": "A methodological critique of periodontal and systemic disease research in claims databases. Restricting an analysis to individuals holding both dental and medical insurance conditions on a variable that is a common effect, creating a collider structure that biases the estimated effect of periodontal treatment on systemic outcomes. The paper distinguishes confounding, from common causes, from selection bias, from common effects, and uses directed acyclic graphs to identify each. A numerical example shows the selection bias can not only distort but reverse the apparent direction of the association, producing contradictory clinical recommendations. A review of seven studies published between 2019 and 2025 across several countries found the same pattern in all of them: extensive confounding adjustment and no treatment of the selection mechanism inherent in the dual-coverage requirement. Three recommendations follow: routine use of DAGs to model the selection mechanism, inverse probability of selection weighting when data on the nonselected exist, and transparent reporting of the potential bias with sensitivity analyses.",
+   "future_research": [
+    {
+     "gap": "Correction for selection into the analysis sample requires data on the nonselected, which claims databases restricted by coverage do not contain",
+     "kind": "implied",
+     "quote": "application of appropriate correction methods such as IPSW when data on nonselected individuals are available",
+     "locator": "Conclusions"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "ELG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "This is the entry's mechanism identified in a real eligibility criterion: requiring dual insurance coverage is an eligibility condition built from healthcare access, and it is a collider rather than a confounder. Seven published studies applied it, all adjusted for confounding, and none treated the selection, which is precisely the entry's claim that nothing in the workflow checks an eligibility definition for this structure.",
+     "quote": "While analytical approaches vary in sophistication, all share a fundamental characteristic: extensive attention to confounding adjustment with systematic neglect of selection bias mechanisms inherent in dual coverage requirements.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The bias arises from the structure of the data source itself: a claims database records the people whose insurance covers the service, so the analytic population is defined by coverage rather than by clinical eligibility. The paper shows this can reverse the direction of the estimated effect, which is a fitness failure of the source for the question rather than an analytic error.",
+     "quote": "selection bias introduced by conditioning on dual coverage status can not only distort effect estimates but also potentially reverse the apparent direction of causal relationships between periodontal interventions and systemic outcomes",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The recommendation is that the selection mechanism be modeled explicitly with a DAG and that the potential bias impact be reported transparently with sensitivity analyses. That such basic reporting has to be recommended, in a field where seven consecutive studies omitted it, supports the entry's claim that no standard panel distinguishes what was checked from what was not.",
+     "quote": "transparent reporting of the potential bias impact on effect estimates, including sensitivity analyses where feasible",
+     "locator": "Conclusions"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0042",
+   "read": true,
+   "doi": "10.3760/cma.j.cn121090-20250612-00284",
+   "title": "[Methodological appraisal of statistical approaches to evaluating the impact of time-dependent events on survival outcomes]",
+   "relevance": "high",
+   "one_line": "Applies five approaches to time-dependent events on 4,361 transplant patients and reports what each one is biased by, not only how it performs.",
+   "what_was_done": "A methodological appraisal using the CIBMTR GV18-03 cohort of 4,361 patients aged 40 or over with acute myeloid leukemia or myelodysplastic syndrome who received an HLA 8/8 matched sibling donor transplant between 2008 and 2017, examining the effect of chronic graft-versus-host disease on overall survival. Five approaches were applied to the same question: chronic GVHD as a baseline fixed covariate, as a time-dependent covariate, as a time-dependent event through landmarking, as a transition in a multi-state model, and as an exposure in the parametric g-formula. The paper reports each approach's rationale, strengths, limitations and applicable scenarios alongside its estimate. The fixed-covariate approach is prone to immortal time bias; the time-dependent covariate partially corrects it and is vulnerable to informative censoring and to instability from the small early-onset group; landmarking is simple and depends on a predefined landmark and cannot accommodate events after it; the multi-state model describes dynamic transitions; and the g-formula handles time-dependent events and time-dependent confounders together and suits population-level effects of specified exposure strategies.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Five approaches to one question on one cohort of 4,361 patients, each reported with what makes it biased rather than only what it returns. That is the comparison the entry says nothing requires, and the paper's conclusion is precisely the entry's position: the choice must be justified against the objective rather than defaulted to.",
+     "quote": "Researchers should select the appropriate method based on their specific study objectives to ensure that the estimation of the impact of time-dependent events on outcomes is both statistically valid and clinically meaningful.",
+     "locator": "Abstract, conclusion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Landmarking is reported as simple and as dependent on a predefined landmark time that the analysis cannot choose and that determines which events are visible at all: events after the landmark are outside the analysis. The choice sits upstream of the estimator and the paper reports it as a property of the method rather than as a quantity anything selects.",
+     "quote": "Method 3 was straightforward but dependent on a predefined landmark time point and unable to account for cGVHD occurring after this point.",
+     "locator": "Abstract, results"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The time-dependent covariate approach is reported as unstable because the early-onset chronic GVHD group is too small, in a cohort of 4,361. The binding constraint is the size of the informative stratum rather than the nominal cohort, which is the entry's claim.",
+     "quote": "Method 2 partially corrected this bias but was vulnerable to informative censoring and estimation instability due to insufficient sample sizes in the early-onset cGVHD group.",
+     "locator": "Abstract, results"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The multi-state model is included as one of the five approaches and is credited with describing the dynamic clinical transitions that a single time-to-event contrast collapses. That is the estimator matched to a question about intermediate events, presented alongside the alternatives rather than as the default.",
+     "quote": "Method 4 allowed for a comprehensive description of the impact of time-dependent events on survival prognosis by modeling dynamic clinical transitions.",
+     "locator": "Abstract, results"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0043",
+   "read": true,
+   "doi": "10.2147/CLEP.S486869",
+   "title": "Modelling Asthma Treatment Dynamics: Insights from the g-Formula",
+   "relevance": "high",
+   "one_line": "Validates the g-formula against observed data by asking whether its natural-course simulation reproduces real asthma treatment trajectories, and it does.",
+   "what_was_done": "A drug utilization study in the Dutch IADB dispensing database testing whether the parametric g-formula can reproduce observed treatment trajectories rather than only estimate a counterfactual. The natural-course simulation was compared against the empirical data on switching: 76.0% simulated against 76.9% observed switching at all, 8.3 against 7.9 months to first switch, and 2.3 switches on average in both. Subgroup differences in switching were then estimated for age, sex and chronic treatment for atopic disease, cardiovascular disease, peptic ulcer and reflux, and mental health problems. The authors argue the longitudinal g-formula suits this because a change at baseline cascades through all later time points, unlike multi-state or decision-tree models which rely on Markov assumptions. Limitations: no diagnostic information, so dispensed medication proxies disease; treatment step 5 was dropped because fewer than 1% ever reached it; baseline variables were held constant so subgroup comparisons are conditional on baseline differences the analysis does not adjust away.",
+   "future_research": [
+    {
+     "gap": "Whether the g-formula's trajectory prediction transfers from the population level to the individual level, given large within-individual differences between scenarios",
+     "kind": "stated",
+     "quote": "As the focus of this study was to apply the g-formula to predict treatment trajectories at the population level, further research would be needed if this method were to be applied for making predictions on the individual level.",
+     "locator": "Limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The natural-course simulation is a check on the nuisance models that does not require the counterfactual: if the g-formula's simulated trajectories do not reproduce the observed ones, the models are wrong regardless of predictive loss. That is a diagnostic of the kind the entry says is missing from selection, and here it is reported against observed switching rates, timing and counts rather than assumed.",
+     "quote": "In this real-world drug utilization study, we found that natural course simulations using the parametric g-formula were successful in approximating empirical asthma treatment trajectories.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Disease is defined by dispensed medication because the database holds no diagnoses, and the authors name misclassification as the consequence without propagating it. The exposure and the disease definition are the same variable, which is the phenotype problem the entry describes in its sharpest form.",
+     "quote": "Due to the nature of the data, no diagnostic information was available, meaning that we had to use dispensed medication as a proxy for disease, which may result in possible misclassification.",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "An entire treatment step was dropped from the model because fewer than 1% of patients ever reached it, and the authors note that these are the patients with severe uncontrolled asthma who would show the most distinct behavior. The stratum that carries the most information about the question is the one the effective sample cannot support.",
+     "quote": "the analyses did not include step 5 separately (represented by triple therapy and/or biologics), because of the frequency of this step (n=17 at start and reached by less than 1% of patients ever during the study period) seemed too low to accurately predict the switching behavior to and from step 5",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "LRN-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Baseline variables were held constant across subgroups, so a null subgroup difference does not mean the subgroups are alike: their baseline treatment steps differ and the analysis does not adjust for that. The authors state this makes precise clinical implications for specific comorbidities hard to draw, which is the subgroup-support problem the entry describes.",
+     "quote": "In particular, potential differences in treatment steps at baseline make it challenging to define more precise clinical implications or personalized treatment strategies for patients with specific comorbidities, highlighting a need for further research.",
+     "locator": "Limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0044",
+   "read": true,
+   "doi": "10.1177/09622802251316971",
+   "title": "G-formula with multiple imputation for causal inference with incomplete data",
+   "relevance": "high",
+   "one_line": "Implements the g-formula through Bayesian synthetic multiple imputation so missing data and counterfactual simulation happen in one procedure, removing the bootstrap.",
+   "what_was_done": "A method paper joining the parametric g-formula to multiple imputation, on the observation that the two are routinely needed together and it is unclear how to combine them. By treating the counterfactual simulation as synthetic-data imputation, missing values and counterfactuals are generated within one coherent Bayesian procedure, and the synthetic multiple imputation variance estimator replaces the nonparametric bootstrap that standard g-formula implementations require for inference. A simulation study and an application to the UK Cystic Fibrosis Registry show reliable inference with a small Monte Carlo sample size and around 50 imputations, against the large Monte Carlo samples and large bootstrap counts existing simulation-based implementations need. An R package, gFormulaMI, interfaces with mice. The discussion sets out three things the approach does not currently do: pooled-across-time model fitting as the Stata and R g-formula packages implement, which the authors do not believe is possible in standard imputation software; dynamic regimes, which they describe how to extend to; and the iterative conditional expectations variant, which avoids specifying the full confounder distribution and admits closed-form variance estimation.",
+   "future_research": [
+    {
+     "gap": "Pooled-across-time-point model fitting under the imputation approach, which standard imputation software cannot currently express",
+     "kind": "stated",
+     "quote": "Although this approach could be implemented via the MI approach we have outlined, we do not believe it is possible using standard imputation software such as mice in R.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Extension to dynamic regimes and to more general causal structures specified by a DAG",
+     "kind": "stated",
+     "quote": "While our focus in this paper has been on static treatment regimes, G-formula can be used to estimate the effects of dynamic treatment regimes",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MIS-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This addresses the missing-data half of the entry directly, and the paper's motivation is that the combination was undefined rather than merely unused. It also names the alternative that existing software takes, complete-case fits per model as in gfoRmula, and states the assumption that route requires and why it can be more plausible than missing at random under intermittent missingness plus dropout. It does not address an informative visit process, which is the harder part of the entry.",
+     "quote": "In longitudinal data settings missing data are a common issue, which are often handled using multiple imputation, but it is unclear how G-formula and multiple imputation should be combined.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "SFW-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The bootstrap is the variance route the entry says is correct in principle and often prohibitive, and this replaces it with a synthetic multiple imputation variance estimator needing around 50 imputations and a smaller Monte Carlo sample. That is a scalable correct default for the g-formula, though not for the cloning and sequence expansion the entry is about, so it addresses the computational half of the problem in a neighbouring design.",
+     "quote": "Moreover, it avoids the need to use bootstrapping for inference, which is particularly attractive in the context of combining MI for missing data with G-formula for causal inference.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The paper notes that the standard Monte Carlo g-formula requires a choice of factorisation for the joint distribution of the time-varying confounders at each time point, and that the iterative conditional expectations variant avoids it and is potentially less prone to misspecification. That is a nuisance-model specification choice with no selection criterion attached, made silently in every standard implementation.",
+     "quote": "This makes it potentially less prone to model misspecification, particularly in the case of several time-varying confounders, where the standard approach requires a choice of factorisation to be made to specify the distribution of the time-varying confounders at each time point.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The method ships as an R package interfacing with an existing imputation package rather than as a description, which is the route by which a method becomes reproducible in operative detail. The entry's claim is about applied emulations rather than method papers, so this bears on the supply side of it.",
+     "quote": "we have developed an R package gFormulaMI that interfaces with the mice package to perform the required data manipulation steps, estimate mean outcomes under each treatment regime of interest, and calculate the synthetic MI variance estimator",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0045",
+   "read": true,
+   "doi": "10.1007/s10985-025-09652-3",
+   "title": "A flexible Bayesian g-formula for causal survival analyses with time-dependent confounding",
+   "relevance": "high",
+   "one_line": "Replaces the g-formula's full time-varying confounder models with a scalar longitudinal balancing score fitted by BART, and reports where it beats and loses to influence-function estimators.",
+   "what_was_done": "A general class of g-formulas for discrete-time survival data with binary time-varying treatments, introducing a longitudinal balancing score. The minimum sufficient version of that score is shown to be the joint propensity and censoring score, a single scalar per period summarizing all time-varying confounders, which removes the need to model each confounder's distribution and therefore removes the factorisation choice the standard approach requires. Each component model is fitted with Bayesian Additive Regression Trees to reduce misspecification bias, with posterior sampling algorithms given separately for static and dynamic strategies. Simulations show the BART estimators improve on misspecified parametric estimators, and become less biased and more efficient than augmented inverse probability weighting and targeted maximum likelihood only at later periods as more streaming information accumulates. The authors state plainly that their estimators do not solve an efficient influence function and so do not share the properties of double machine learning or TMLE, and that the asymptotic theory of BART has open questions which leaves the frequentist properties of these estimators unsettled.",
+   "future_research": [
+    {
+     "gap": "Systematic sensitivity analysis for unmeasured baseline and time-varying confounding under this implementation",
+     "kind": "stated",
+     "quote": "an important direction for future investigation is to develop systematic sensitivity strategies to assess the impact under unmeasured baseline and time-varying confounding",
+     "locator": "Discussion, future research"
+    },
+    {
+     "gap": "Extension to continuous time-varying treatments, where the longitudinal joint score depends on a conditional density in each period",
+     "kind": "stated",
+     "quote": "The finite-sample performance and practice considerations of the new gformula with a continuous time-varying treatment are an important direction for future research.",
+     "locator": "Discussion, future research"
+    },
+    {
+     "gap": "Incorporating BART as the learner for the nuisance functions of an efficient influence function, to combine flexibility with rate-robustness",
+     "kind": "stated",
+     "quote": "A promising future direction is to incorporate BART as a data-adaptive method to learn the nuisance functions of the efficient influence function tailored to the target causal estimand.",
+     "locator": "Discussion, future research"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This addresses the nuisance-model half of the entry from a different direction: instead of a criterion for selecting among learners, it reduces what has to be modeled to one scalar per period, removing the factorisation choice. It also reports what flexible learners do and do not buy, citing simulations where singly robust g-formula estimators with machine learning did not improve on misspecified parametric models and both were improved by double machine learning or TMLE, and finding BART competitive only at later periods.",
+     "quote": "the coarsest or minimum sufficient longitudinal balancing score, without any tailoring variables, is the joint propensity and censoring score, which is a low-dimensional summary in each period for all time-varying confounders",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "LRN-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper states directly that its flexible Bayesian estimators do not solve an efficient influence function and so lack the guarantees of double machine learning or targeted learning, and that BART's asymptotic theory has open questions leaving the frequentist properties of the causal estimators unsettled. Flexibility is bought and the inferential guarantee is not, which is the entry's distinction, stated by the authors about their own method.",
+     "quote": "while allowing for flexible estimation of nuisance parameters, when grounded in a frequentist statistical model, the proposed BART estimators do not solve an efficient influence function or share the corresponding properties of double machine learning (DML) or TMLE methods",
+     "locator": "Discussion, future research"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Sequential ignorability is not verifiable from the observed data and no sensitivity strategy exists for this implementation, so the reported posterior reflects sampling uncertainty under an assumption the authors say cannot be checked. They name the point-treatment and parametric-g-formula sensitivity work that would have to be extended, which is the entry's claim that joint treatment of the violations is not standard.",
+     "quote": "Although the sequential ignorability assumption is not verifiable from the observed data alone, an important direction for future investigation is to develop systematic sensitivity strategies to assess the impact under unmeasured baseline and time-varying confounding.",
+     "locator": "Discussion, future research"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Extending the method to a continuous time-varying treatment would make the balancing score depend on a conditional density in each period, which the authors flag as needing further computational work and finite-sample study. Continuous treatments are the setting where deterministic strategies are least supported, and the estimator class the entry proposes for it is not yet available here.",
+     "quote": "the longitudinal joint score may now depend on the conditional density of the continuous treatment in each period and would necessitate additional computational considerations",
+     "locator": "Discussion, future research"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0046",
+   "read": true,
+   "doi": "10.1007/s40471-024-00348-0",
+   "title": "A Review of Causal Inference Methods for Estimating the Effects of Exposure Change",
+   "relevance": "high",
+   "one_line": "Compares structural cumulative mean models, marginal structural models and the parametric g-formula for exposure change, and names what each is biased by.",
+   "what_was_done": "A review of causal inference methods for questions about exposure change, where the incident exposure is unobserved or ill-defined, aimed at fields outside pharmacoepidemiology where these methods are not widely used. It compares structural cumulative mean models, marginal structural models fitted by inverse probability weighting or by time-dependent propensity score matching, and the parametric g-formula, and sets out for each what makes it biased rather than only how it performs. Structural cumulative mean models are efficient and familiar and are biased when effect heterogeneity is misspecified; marginal structural models stay unbiased under unspecified heterogeneity provided the exposure model is right, and are less efficient even with stabilized weights; time-dependent matching controls the time scale nonparametrically and restricts the sample to matched observations, affecting generalizability. The parametric g-formula suffers g-null bias, meaning it will reject a true null of no effect at any time, which recent work characterizes as a guarantee of some misspecification bias that can occur under non-null effects too, so overly parsimonious specifications should be avoided. Doubly robust combinations are named as the mitigation.",
+   "future_research": [
+    {
+     "gap": "Wider adoption of causal inference methods for exposure change outside pharmacoepidemiology, where their application is limited",
+     "kind": "stated",
+     "quote": "However, their application outside the field of pharmacoepidemiology is limited.",
+     "locator": "Abstract, recent findings"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is the synthesis across estimator families the entry says does not exist, for the exposure-change question: a table of what each method assumes, what makes it biased, and what it costs in efficiency, with the doubly robust combinations that mitigate misspecification. It covers one class of question rather than emulation generally, and it compares by argument rather than on a common benchmark.",
+     "quote": "The MSM via IPW method can be less prone to model misspecification than the NICE approach of the parametric g-formula method, as only the exposure model is needed.",
+     "locator": "Comparison of methods"
+    },
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "G-null bias is a property of the parametric g-formula under exposure-confounder feedback that no predictive criterion detects: the estimator rejects a true null of no effect, and recent work reads it as a guarantee of some misspecification bias present even under non-null effects. The only stated remedy is to avoid parsimonious specifications, which is a judgment rather than a selection rule.",
+     "quote": "G-null bias means that the parametric g-formula method will reject the hypothesis that the exposure (at any time) does not have an effect on the outcome even if this hypothesis is true.",
+     "locator": "Comparison of methods"
+    },
+    {
+     "problem_id": "EST-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Time-dependent propensity score matching buys nonparametric control of the time scale at the cost of restricting the sample to observations with an available match, which the review says may affect generalizability. The analytic choice changes the population the estimate refers to, and the review notes it without a transport step.",
+     "quote": "However, the restriction of the study sample to observations with an available match may affect generalizability.",
+     "locator": "Comparison of methods"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The review's motivating case is a question where the first or incident exposure is unobserved or not well defined, which is the strategy-definition problem in a different guise: the analyst has to construct the exposure contrast rather than read it off the data, and the review's contribution is helping investigators conceive the question rather than supplying a rule for it.",
+     "quote": "Causal inference methods can help investigators answer questions about exposure change when the first or incident exposure is unobserved or not well defined.",
+     "locator": "Abstract, purpose of review"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0051",
+   "read": true,
+   "doi": "10.1186/s12874-024-02437-6",
+   "title": "Addressing treatment switching in the ALTA-1L trial with g-methods: exploring the impact of model specification",
+   "relevance": "high",
+   "one_line": "Re-analyses a trial with two g-methods across many specifications, and finds the trial's single published sensitivity analysis sits near the extreme of the resulting range.",
+   "what_was_done": "A re-analysis of the phase 3 ALTA-1L trial, where control-arm patients switched to the experimental drug, using both inverse probability of censoring weighting and the parametric g-formula to estimate the effect of always treating with brigatinib against always treating with crizotinib. Both were run across many model specifications and weight truncation levels. IPCW gave cumulative hazard ratios from 0.38 to 0.73 and risk ratios from 0.52 to 0.79; the g-formula gave cumulative hazard ratios from 0.61 to 0.72 and risk ratios from 0.71 to 0.79. The trial's own published IPCW sensitivity analysis reported 0.50, and the estimated intention-to-treat effect was 0.82. The authors conclude the intention-to-treat effect understated the benefit by 10 to 45 percentage points under IPCW and 10 to 20 under the g-formula, and that a single analysis can be an outlier within the range of defensible ones. The paper closes with a seven-step checklist covering weight reporting, truncation levels, natural-course comparison, and explicit comparison of the two estimator families.",
+   "future_research": [
+    {
+     "gap": "Sharing synthetic data to overcome the barrier to sharing trial data for methodological re-analysis",
+     "kind": "implied",
+     "quote": "synthetic data to overcome the limitation of sharing the",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is the requirement the entry asks for, executed: two estimator families targeting the same contrast, each across many specifications, reported together, with a checklist item saying explicitly to compare them and how to read agreement and disagreement. It also supplies the entry's justification empirically, since the published single specification sits near the edge of the range the same data support.",
+     "quote": "Our analyses underscore the importance of performing sensitivity analyses, as the result from a single analysis could potentially stand as an outlier in a whole range of sensitivity analyses.",
+     "locator": "Abstract, conclusion"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The entry's rewritten claim is that reduced separation between treatment histories moves the estimate by an amount that depends on the switching mechanism, and that this is not reported. Here it is quantified on a real trial: the intention-to-treat effect understates the benefit by 10 to 45 percentage points depending on method and specification. The direction and size are recovered only by re-analysis, which is the reporting gap the entry names.",
+     "quote": "Our results consistently indicated that our estimated ITT effect estimate (cHR: 0.82 (0.51,1.22) may have underestimated brigatinib's benefit by around 10-45 percentage points (using IPCW) and 10-20 percentage points (using the parametric g-formula) across a wide range of model choices.",
+     "locator": "Abstract, conclusion"
+    },
+    {
+     "problem_id": "PRO-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The trial published one IPCW sensitivity analysis, 0.50, and this re-analysis shows the defensible range runs from 0.38 to 0.73. The reported interval around the single published number takes no account of the specification search that produced it, which is the entry's claim, demonstrated on a registered phase 3 trial rather than argued.",
+     "quote": "Their sensitivity analysis using Inverse Probability of Censoring Weights (IPCW), reported a Hazard Ratio (HR) of 0.50 (95% CI, 0.28-0.87), while their initial ITT analysis estimated an HR of 0.81 (0.53-1.22).",
+     "locator": "Abstract, background"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Truncation is described as a bias-variance trade in which bias rises as the weights are truncated harder, and positivity is checked by asking whether the probability of switching reaches 1 within levels of a confounder. That check is a support question rather than a weight summary, which is what the entry asks for, and it appears in a checklist rather than in any standard.",
+     "quote": "addressing the large weights with a range of truncations has a bias-variance trade-off where the bias increases and the variance decreases as the weights become more truncated",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Variable selection was performed among candidate confounders because the trial was too small to adjust for all of them, and the authors state this may violate exchangeability. The nuisance-model selection step is made for sample-size reasons and its consequence for the causal estimate is acknowledged rather than measured, which is the entry's claim about selection criteria.",
+     "quote": "The exchangeability assumption may be violated to some extent in our analyses, as we performed variable selection (among a set of possible confounders based on expert domain knowledge) in the nuisance function models due to the limited sample size of the trial.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The seven-step checklist is close to the assumption panel the entry asks for: report the weight distribution, report every truncation level, compare the natural course against the observed data, name the five assumptions both estimators share, and report divergent sensitivity results transparently. It is one paper's checklist for one design rather than an adopted standard, and it separates what can be inspected from what must be assumed.",
+     "quote": "IPCW and parametric g-formula both operate under the following five different assumptions: no unmeasured confounding, positivity, consistency, correct model specification, and no measurement error",
+     "locator": "Checklist, step 6"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}

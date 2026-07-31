@@ -1,0 +1,728 @@
+{
+ "batch": "core-01",
+ "papers": [
+  {
+   "id": "L0001",
+   "read": true,
+   "doi": "10.1097/EDE.0000000000001730",
+   "title": "Comparing PCSK9 Monoclonal Antibody Treatment Strategies Following Myocardial Infarction Using Negative Control Outcomes: A Target Trial Emulation Study",
+   "relevance": "high",
+   "one_line": "Uses ten negative control outcomes across three databases to conclude that the comparative effectiveness study should not be run, and reports what negative controls could not establish.",
+   "what_was_done": "Clone-censor-weight emulation across three United States databases, Optum Clinformatics, MarketScan and Medicare, contrasting PCSK9 monoclonal antibody initiation within one year of myocardial infarction against no initiation. Initiation was rare: 0.7% in MarketScan, 0.4% in the other two. Rather than estimating the clinical effect, the study estimated three-year counterfactual risk differences for ten negative control outcomes chosen by an expert panel to probe distinct bias mechanisms. Several were far from null, including fracture at minus 8.1 percentage points, decubitus ulcer at minus 7.7, influenza vaccination at minus 9.3 and cancer at minus 3.6, with similar patterns in all three databases, and ezetimibe use and LDL testing remained unbalanced between strategies. The authors conclude the comparative effectiveness study would be biased and should not proceed in these data with this approach.",
+   "future_research": [
+    {
+     "gap": "Whether g-computation or doubly robust estimators with machine learning achieve balance where flexible weighting did not",
+     "kind": "stated",
+     "quote": "Other approaches, such as G-computation or doubly robust estimators with machine learning, could result in better balance and may be used in future studies.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Combining negative control exposures with negative control outcomes, which the authors avoided because the methods are under development and their accuracy unclear",
+     "kind": "stated",
+     "quote": "we did not control for bias using both negative control exposures and outcomes as these methods are currently under development and their accuracy is unclear",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is the fullest use of negative controls inside an emulation in this batch, ten outcomes chosen by an expert panel to probe distinct mechanisms, run across three databases. It also states the limits precisely: the controls detected bias and could not quantify it, and their associations cannot all be attributed to bias since a PCSK9 and cancer link has been suggested. That is the entry's claim that the tools exist separately without a convention for what each one buys or how to combine them, and the paper declines to combine negative control exposures with outcomes because those methods are not settled.",
+     "quote": "While we were able to detect potential bias and residual confounding using negative control outcomes, we could not estimate the magnitude of the bias.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is a published negative fitness assessment, which the entry says does not exist as a citable result: the authors ran the diagnostic, found the data could not support the question, and published that instead of an effect estimate. The criterion was the behavior of negative controls rather than a prespecified threshold, so it demonstrates the outcome the entry wants without the stop rule the entry asks for.",
+     "quote": "A comparative effectiveness study of these treatments using the current approach would likely bias results due to the low number of PCSK9 mAb initiators.",
+     "locator": "Abstract, conclusion"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Death is treated as a censoring event rather than a competing event, justified in one clause by the etiologic nature of the study with two citations and no statement of the estimand that choice implies. That is precisely the entry's claim about an identifying decision executed as a routine step.",
+     "quote": "Due to the etiologic nature of this study, we treated death as a censoring event rather than a competing event.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Covariate imbalance persisted even after flexibility was added to the models, in a setting where the treated group is 0.4% to 0.7% of the cohort. The paper's remedy is to suggest other estimators rather than to report which patient histories have no support for the initiation strategy, which is the diagnostic the entry says is missing.",
+     "quote": "Even after incorporating flexibility in the models, covariate imbalance persisted in the current analysis.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "LDL cholesterol, the variable that determines who is prescribed a PCSK9 inhibitor, is stated to be poorly captured in the claims databases used. The confounder most likely to drive treatment selection is the one the data measure worst.",
+     "quote": "Also, some key covariates, such as LDL-C measurements, are not well captured in the claims databases used for this study.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The authors state the results may not transport because prescribing, costs and prior authorization rules differ elsewhere and would change treatment selection. The transport barrier is the health system's rules rather than case mix, and no transport analysis is attempted.",
+     "quote": "results may not be generalizable to other populations, particularly because prescribing, costs, and authorization rules are different in other populations, which may lead to different treatment selection considerations",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0002",
+   "read": true,
+   "doi": "10.1002/cam4.70461",
+   "title": "De-Mystifying the Clone-Censor-Weight Method for Causal Research Using Observational Data: A Primer for Cancer Researchers",
+   "relevance": "high",
+   "one_line": "ISPE-endorsed primer on clone-censor-weight that also names, in its own limitations, four of the gaps this registry carries.",
+   "what_was_done": "A narrative review plus visual primer on the clone-censor-weight method, endorsed by the International Society for Pharmacoepidemiology. The authors searched PubMed and EMBASE for observational studies published January 2010 to February 2023 that applied CCW, screened 25 articles for full-text review, excluded 7 that did not apply CCW or were outside cancer, set aside 5 conceptual pieces, and extracted from 13 applied cancer studies. Ten of the 13 appeared since 2020. Seven of the 13 compared CCW against a conventional analysis such as a time-varying Cox model, and results often differed depending on the strength of the specific biases. The paper then works through cloning, artificial censoring and weighting on a lung cancer surgery example with a 182-day grace period, and on an esophageal cancer example with two sequential grace periods of 7 days and 6 months. It closes with implementation considerations and limitations, several of which are stated as open problems rather than as caveats.",
+   "future_research": [
+    {
+     "gap": "Formalizing the effect estimated by a strategy defined as initiate within a window, when the effect depends on when in the window treatment starts",
+     "kind": "stated",
+     "quote": "This issue may not be of major concern when grace periods are short, but further research is needed to describe and formalize these complex treatment effects.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "Statistical packages and standardized reporting tools for clone-censor-weight",
+     "kind": "stated",
+     "quote": "further efforts should include the development of statistical packages that facilitate broader implementation of the CCW method and standardized tools for reporting methodological choices made while implementing CCW.",
+     "locator": "Discussion, additional considerations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper states directly that a strategy of the form initiate X before time t may be ill-defined because many adherence patterns satisfy it, that the effect estimate's interpretation is then unclear if the effect depends on initiation timing, and that formalizing this needs further research. That is the entry's claim about equivalence classes of treatment versions, made by the primer that teaches the method.",
+     "quote": "some treatment strategies, particularly those defined by “initiate intervention X prior to time t,” may be ill-defined, as there are several possible ways to be adherent to a given strategy",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The primer explicitly does not discuss how to choose the time unit, and lists the grace period's length among the things clinical input has to supply rather than the data. Both are the entry's claim: neither quantity is selected by a procedure, and the primer that teaches the method leaves the choice to judgment.",
+     "quote": "Third, we did not discuss the selection of time units for each of the specified example studies. Time can be discretized by various units (e.g., days, weeks, months) and the decision of the unit may be influenced by, for example, the length of the grace period and the precision of data available",
+     "locator": "Discussion, additional considerations"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper says diagnostics for time-varying confounding adjustment are still emerging, describes the one simplified approach in use, standardized mean differences at the end of the grace period, and then names a specific defect in it: patients who have the event before the grace period ends never enter the balance metric. That is the entry's claim that no standard panel exists and that what is reported is partial in ways the reader cannot see.",
+     "quote": "However, this method is imperfect, as individuals who experience the event prior to the end of the grace period are not included in the balance metrics.",
+     "locator": "Section 3, weighting component"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper names near-positivity as a limitation of CCW specifically, describing the mechanism the entry describes: covariate combinations leaving few or no individuals in an exposure group, producing large unstable weights. Its remedy is weight stabilization or an outcome-model approach, neither of which reports which histories are unsupported.",
+     "quote": "the CCW method can be quite sensitive to near violations of the positivity assumption, where certain combinations of confounding variables may lead to few individuals (of even none) remaining in a particular exposure group, rendering the weights to be large and unstable",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "SFW-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The primer states the requirement the entry says is often ignored, that inference must account for correlation between clones of the same person, and names three routes: the bootstrap, a robust variance estimator, and M-estimation. It does not address the scale problem or the uncertainty from estimated weights under flexible nuisance models, which is the part of the entry that survives.",
+     "quote": "bootstrapping or a robust variance estimator must be used when generating 95% confidence intervals to preserve and account for the correlation between clones of the same person. M-estimation can alternatively be used.",
+     "locator": "Section 3, end"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper calls for statistical packages and for standardized tools for reporting the methodological choices made while implementing CCW, and separately encourages authors to share analytic code, on the grounds that this would improve transparency and reproducibility. That the primer has to ask is the entry's claim.",
+     "quote": "These kinds of tools would enhance the transparency and reproducibility of studies implementing the method. We further encourage researchers to share their analytic code (e.g., R, Stata, SAS) on publicly available platforms",
+     "locator": "Discussion, additional considerations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0003",
+   "read": true,
+   "doi": "10.1002/pds.70354",
+   "title": "Methodological Challenges of Emulating a Target Trial to Assess Effectiveness of Timing of PCSK9 Inhibitor Treatment Initiation Post Myocardial Infarction",
+   "relevance": "high",
+   "one_line": "A clone-censor-weight emulation that reports its own failure to achieve balance, and names when to evaluate balance as an unanswered question about the method.",
+   "what_was_done": "A clone-censor-weight emulation in 38,627 Swedish myocardial infarction episodes, 2015 to 2021, followed three years, contrasting initiation of a PCSK9 inhibitor within 12 months against non-initiation. Only 561 episodes, 1.5%, initiated within 12 months, and initiators were younger with higher baseline LDL cholesterol. Residual bias was assessed with covariate balance metrics and with several qualitatively different negative control outcomes. The method removed immortal time bias and failed to achieve adequate covariate balance, because censoring was heavy and strongly associated with the covariates. Multiple weight truncation levels were explored; the choice traded covariate balance against effective sample size, and truncation at the 99.9th percentile was chosen on that basis. A sensitivity analysis using a simpler non-cloned model showed similar residual imbalance, which the authors read as evidence that the small, highly selected treatment group rather than the method was the cause.",
+   "future_research": [
+    {
+     "gap": "Practical guidance for clone-censor-weight when the treated group is small and highly imbalanced, which is the normal case for a newly introduced treatment",
+     "kind": "stated",
+     "quote": "But practical guidance is needed to address problems that arise from small, highly imbalanced groups, which is common with most newly introduced treatments.",
+     "locator": "Abstract, conclusions"
+    },
+    {
+     "gap": "When to evaluate covariate balance in a cloned and censored design",
+     "kind": "stated",
+     "quote": "One unanswered question about the CCW method is when to evaluate balance.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper names the timing of balance assessment as an unanswered question about the method, then has to argue for its own choice, checking after the treat-sooner period ends. Together with the same gap surfacing independently in the ISPE primer, this is direct evidence for the entry's claim that no standard diagnostic panel exists and that what a report shows is an author's choice rather than a convention.",
+     "quote": "One unanswered question about the CCW method is when to evaluate balance.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper is a worked instance of the entry's claim about truncation. Weights became extreme, truncation was applied at several levels, and the choice was explicitly a trade of covariate balance against effective sample size rather than a route to identification, with the authors noting truncation can introduce residual bias. Balance was never achieved, and the paper reports that rather than the estimate.",
+     "quote": "A common approach to mitigate extreme weights is truncation; however, this can introduce additional residual bias",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Effective sample size is used here as an explicit criterion for choosing the truncation level, which is the reporting the entry says is not conventional. It is used to make one analytic decision rather than reported alongside the nominal count at each follow-up time, so it demonstrates the practice without establishing it.",
+     "quote": "the choice of truncation level involved a trade-off between covariate balance and effective sample size",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Negative control outcomes are used inside an emulation to assess residual bias, several of them chosen to be qualitatively different, which is one of the tools the entry says exist separately and are not routine. It is a single-tool application rather than the estimand-aligned joint model the entry asks for, and the paper does not say what the negative controls would have licensed had they been clean.",
+     "quote": "We assessed the performance of a CCW estimator in a study comparing a rarely and selectively followed protocol—early initiation of a PCSK9i—against non-or late initiators following MI, using several NCOs.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The 12-month cut defining the two strategies is acknowledged as open to discussion and is to be settled by knowledge of the biological system rather than by any procedure over the data, which is the entry's claim.",
+     "quote": "the choice of defining the groups based on treatment before the specific Day 365 may be discussed; such strategies will have to be formulated with knowledge of the biological systems under study",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [
+    {
+     "proposed_title": "No convention fixes when covariate balance is assessed in a cloned and censored design",
+     "category": "REG",
+     "statement": "In a clone-censor-weight analysis every clone is balanced at baseline by construction, and imbalance appears progressively as clones are artificially censored. A balance metric therefore has no natural time at which to be computed, and the time chosen determines what it shows. Assessing at the end of the grace period excludes everyone who had the event before it; assessing at baseline shows the perfect balance that cloning guarantees and tests nothing; assessing at the end of follow-up mixes artificial with classical censoring. No convention picks one, and published analyses do not always say which they used.",
+     "why_open": "The quantity being diagnosed changes with the assessment time rather than being estimated more or less precisely, so there is no criterion internal to the data. The person-time distributions in the two arms differ by construction under cloning, which means a single time cannot be equally informative for both. And any choice excludes some patients from the metric, so the diagnostic is partial at every time.",
+     "quote": "One unanswered question about the CCW method is when to evaluate balance.",
+     "checked_against_index": "REG-02 is the closest: it says no standard diagnostic panel exists and that testable diagnostics are not separated from untestable assumptions. This is narrower and specific to cloned designs, where the metric's value is a function of the assessment time rather than of the analysis quality, and two independent papers in this batch raise it as an open question by name. It could reasonably be folded into REG-02 as a named component rather than registered separately."
+    }
+   ],
+   "registry_errata": []
+  },
+  {
+   "id": "L0004",
+   "read": true,
+   "doi": "10.3389/fmed.2024.1362192",
+   "title": "Methodological biases in observational hospital studies of COVID-19 treatment effectiveness: pitfalls and potential",
+   "relevance": "high",
+   "one_line": "Demonstrates on one hospital cohort that different methodological biases shift the treatment effect in different directions, with immortal time shifting it more than confounding.",
+   "what_was_done": "A demonstrative reanalysis of a single-center hospital COVID-19 cohort, comparing standard analytic approaches against an emulated trial to show how each methodological bias moves the estimate. The paper reviews evidence that immortal time contributes more to the shift than confounding in at least one earlier ovarian cancer comparison, and that model-first approaches failed to reach the randomized benchmark on the same data source where the target trial framework did. It argues for competing risk analysis reporting cumulative incidence for heterogeneous endpoints, citing an ECMO emulation that treated discharge alive as a competing event rather than as censoring. It reports hazard ratios throughout while stating that risk differences and risk ratios would be preferable, and states that time-updated prognostic covariates were unavailable, leaving the analysis open to time-dependent confounding.",
+   "future_research": [
+    {
+     "gap": "Reporting cumulative incidence for all clinically important endpoints rather than a single outcome with the rest censored",
+     "kind": "stated",
+     "quote": "A competing risk analysis that reports cumulative incidence for heterogeneous outcomes could be particularly beneficial.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OUT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper has to argue that competing events should be reported as cumulative incidence rather than censored, and cites a single emulation as the example of doing so. Treating discharge alive as a competing event rather than a censoring event is presented as a choice worth noting, which is the entry's claim that the decision is made silently and is not conventional.",
+     "quote": "Their study defined discharge alive as a competing event for in-hospital death rather than a censoring event.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper reports hazard ratios as its summary measure and states in its own limitations that risk differences and risk ratios would be preferable and easier to interpret clinically. A methods paper about avoiding bias reports the measure it says is the wrong one, for comparability across models, which is the reporting convention the entry describes.",
+     "quote": "Fourth, we reported HRs as a summary measure to facilitate comparisons among the various regression models. Such summary effect measures as risk differences and risk ratios are preferable to hazards and are easier to interpret clinically",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The paper's finding is that different analytic approaches move the estimate in different directions on one dataset, and that the size of the immortal-time shift depends on the immortal period's length, the exposed proportion, the event rate and the follow-up length. The choice of approach is therefore consequential in a way no single reported estimate discloses.",
+     "quote": "That study also demonstrated that various methodological biases can significantly shift the treatment effect measure in different directions. Our analysis led to similar conclusions.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Time-updated prognostic covariates were unavailable, which the paper states leaves it open to time-dependent confounding because treatment after baseline depends on changing prognosis. The remedy it names, incorporating time-dependent characteristics into the weight models, requires the observations the data do not contain.",
+     "quote": "In our analysis, data on time-updated prognostic covariates were not available, which makes our study susceptible to time-dependent confounding bias.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The statistical code for a demonstrative methods paper is available only on request to the corresponding author, and the data are not publicly available. A paper whose contribution is the comparison of analytic approaches is therefore not rerunnable, which is the entry's claim about operative detail.",
+     "quote": "Statistical code is available from the corresponding author upon request.",
+     "locator": "Data availability statement"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0005",
+   "read": true,
+   "doi": "10.3390/life13030777",
+   "title": "Target Trial Emulation Using Hospital-Based Observational Data: Demonstration and Application in COVID-19",
+   "relevance": "high",
+   "one_line": "Emulation with a two-day grace period extended to competing risks, reporting the estimate under alternative grace periods and showing that censoring at the competing event overestimates cumulative incidence.",
+   "what_was_done": "A demonstrative emulation in hospitalized COVID-19 patients using clone-censor-weight with a two-day grace period and inverse probability of censoring weights, extended to a competing risks framework in which discharge alive is a competing event for in-hospital death rather than a censoring event. Cause-specific hazards and cumulative event probabilities were reported for both endpoints. The estimate was recomputed under one-day and three-day grace periods with no material difference. A naive Kaplan-Meier analysis censoring at the competing event overestimated the 30-day cumulative probability of in-hospital death in both arms. The authors state their contrast is an intention-to-treat effect rather than per-protocol, because adherence after the grace period was not modeled, and that time-varying confounding remains because time-updated prognostic covariates were unavailable and baseline confounders were assumed fixed within the grace period.",
+   "future_research": [
+    {
+     "gap": "Per-protocol estimation in this design, which needs adherence information, time-updated covariates and methods for time-varying confounding such as g-estimation",
+     "kind": "stated",
+     "quote": "Evaluating dynamic treatment exposures and per-protocol effect estimation requires information on adherence, data availability on time-updated covariates, and the application of complex analytical approaches for time-varying confounders, such as g-estimation-based methods",
+     "locator": "Limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The paper shows empirically what the entry asserts, that censoring at the competing event is an identifying decision rather than data cleaning: doing so overestimated the cumulative incidence of the primary outcome in both arms. It then reports the alternatives and states that the choice depends on the research question and on whether the outcome is desirable or undesirable, which is the reasoning the entry says is skipped.",
+     "quote": "in our naïve analysis, we showed that censoring patients at the time of the competing event leads to an overestimation of cumulative incidence probabilities for the primary outcome of both treatment groups",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The estimate is reported under one-, two- and three-day grace periods, which is the multiverse the entry proposes, on a small scale. The paper reports no significant difference across them and supplies no rule for the choice, and the two-day period was itself chosen partly to limit time-varying confounding rather than on clinical grounds.",
+     "quote": "Our results were also compared with the grace period's different choices, that is, the one- and three-day grace periods, which revealed no significant differences",
+     "locator": "Results"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper states that its contrast is an intention-to-treat effect and that it could not be interpreted as per-protocol, because adherence after the grace period was not modeled. A clone-censor-weight design is widely read as delivering a per-protocol contrast, and here it does not, which is exactly the misreading the entry describes and this paper avoids only by saying so explicitly.",
+     "quote": "Due to these shortcomings, we were unable to interpret treatment effects as per-protocol effects",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Time-varying confounding is stated to remain because time-updated prognostic covariates were unavailable, and the design response was to shorten the grace period and to assume baseline confounders were fixed within it. That assumption is made because the observations are missing, not because it is believed.",
+     "quote": "Second, time-varying confounding remained underestimated due to the lack of information on time-updated prognostic covariates.",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Discharge alive is used as a proxy for recovery, justified by low readmission and post-discharge mortality rates elsewhere rather than validated in these data, and the authors note that had post-discharge survival been available the competing-risk machinery would have been unnecessary. The endpoint is defined by what the data source stops recording.",
+     "quote": "In our study, we assumed that hospital discharge would serve as a valid proxy for recovering from the disease.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0006",
+   "read": true,
+   "doi": "10.1016/j.jclinepi.2025.111714",
+   "title": "Trial emulation to assess the effect of surgery on survival when there are competing risks, with application to patients with thoracic aortic aneurysms",
+   "relevance": "high",
+   "one_line": "Extends clone-censor-weight to cause-specific cumulative incidence under competing risks, and reports a grace-period sensitivity analysis across five lengths.",
+   "what_was_done": "Clone-censor-weight applied to the ETTAA prospective cohort of 886 patients recruited 2014 to 2018 and linked to UK national hospital and mortality data, contrasting open or endovascular repair within 12 months against no surgery within 12 months. Competing risks were handled by estimating cause-specific cumulative incidence rather than censoring at the competing event: 7-year survival was 57.4% under universal surgery against 49.9% under none, with the benefit attributable to an 8.7 percentage point reduction in aneurysm-related death and no detectable effect on other-cause death. Results were reported across grace periods of 3, 6, 9, 12 and 18 months and across sensitivity analyses including unlimited weights, exclusion of conservatively managed patients, and multiple imputation of missing confounders. Balance was reported as daily standardized mean differences across follow-up rather than at a single time.",
+   "future_research": [
+    {
+     "gap": "Combining a detailed prospective cohort with large electronic health record data to gain precision without losing the variables the record lacks",
+     "kind": "stated",
+     "quote": "Combining ETTAA with EHR using methods such as constrained nonparametric maximum likelihood or empirical Bayes may provide deeper insight",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Extending clone-censor-weight to time-varying confounders such as aneurysm diameter, or jointly modeling growth and mortality",
+     "kind": "stated",
+     "quote": "We did not have access to time-varying confounders beyond ETTAA, in particular, aneurysm diameter. Should these measures become available, they can be accommodated by expanding the CCW method or by jointly modeling growth and mortality",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is the estimand-matched handling of competing events the entry says applied work defaults away from. Deaths from other causes are treated as a competing risk and reported as a separate cumulative incidence rather than censored, and the paper reports the contrast for the composite, the cause of interest and the competing cause separately. It is one worked application rather than the reporting requirement the entry asks for, and it does not address recurrent events under sustained strategies.",
+     "quote": "We found benefit of giving all patients surgery within 12 months in reducing aneurysm-related deaths while treating deaths from other causes as a competing risk.",
+     "locator": "Conclusion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The paper reports the estimate under grace periods of 3, 6, 9, 12 and 18 months rather than under one, which is the multiverse over the grace period the entry proposes, executed. It does not supply a rule for selecting the grace period, and it presents the alternatives as a sensitivity analysis of one estimand rather than as distinct strategies, which is the framing the audit corrected in this entry.",
+     "quote": "sensitivity to model assumptions (no limits on weights, exclusion of conservative management patients, imputation of 9 or 10 key variables) and grace period (GP) of 3, 6, 9, 12, and 18 months",
+     "locator": "Figure 4 caption"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper explains that surgery was tractable here because it is a single intervention whose first stage dates the strategy, and states that interventions with a duration, intermittent prescriptions or preoperative preparation need more careful definition of the estimand and the grace periods. That is the entry's claim, stated as the reason this application worked and others will not.",
+     "quote": "Interventions with a treatment duration (eg, medication), intermittent prescriptions, or specific preoperative preparation require more careful definition of the estimand and related grace periods [31e34].",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Patients with no planned surgery could have been excluded under positivity and were kept, and excluding them changed non-aneurysm mortality in the no-surgery clones. The positivity decision is made by argument about who could have been accepted for surgery elsewhere, and its consequence is visible only because the authors ran it both ways, which is the support question the entry says is not reported.",
+     "quote": "Patients without planned surgery would be unlikely to enter a target trial, and we could have excluded them from analysis under the positivity assumption.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The same deaths were classified as aneurysm-related about half the time by study sites and about a quarter of the time through record follow-up, and the outcome of interest is the cause-specific one. The paper states plainly that this inconsistency may bias the estimates, and no correction is applied. Aneurysm size, the determinant of intervention timing, is absent from the record entirely.",
+     "quote": "During ETTAA, sites were more likely to classify deaths as aneurysm-related (about half) compared to EHR follow-up (a quarter). Inconsistencies in cause-of-death reporting between observational studies and EHR may lead to biased estimates of aneurysm-related mortality.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper states that this analysis could not be reproduced in record data because aneurysm size sits in radiology reports rather than structured fields, and that without it the comparison would be invalid. That is a fitness judgment about a data source and a protocol jointly, reached and published, and it is reached in prose rather than against any criterion.",
+     "quote": "Without this data, addressing differences in aneurysm size between surgery and control groups from EHR is not possible, potentially invalidating comparative analyses.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0007",
+   "read": true,
+   "doi": "10.1186/s12874-023-02001-8",
+   "title": "Target trial emulation with multi-state model analysis to assess treatment effectiveness using clinical COVID-19 data",
+   "relevance": "high",
+   "one_line": "Combines clone-censor-weight with a five-state multi-state model so competing events and the ICU intermediate state are estimated rather than censored.",
+   "what_was_done": "A demonstrative emulation in 501 patients hospitalized with COVID-19 at a single center. Clone-censor-weight with a 5-day grace period and inverse probability of censoring weights handled immortal time and the selection created by artificial censoring, and a five-state multi-state model then estimated the effect on clinical severity at day 30 measured on a 5-point ordinal scale, with in-hospital death and discharge alive as distinct endpoints and ICU admission as an intermediate state. Weighted cause-specific hazards and transition probabilities were reported per arm alongside a proportional odds ratio, and results were summarized as stacked probability plots. The authors state that the 5-day grace period was chosen for illustration and that in a real study its length should follow clinical relevance, that only baseline covariates were used, and that the proportional odds summary carries an interpretive limitation for which rates and restricted length of stay in each state would be preferable.",
+   "future_research": [
+    {
+     "gap": "Extending the combined emulation and multi-state approach to time-varying treatments and to more clinical states",
+     "kind": "stated",
+     "quote": "Our framework could be extended to evaluate the effectiveness of time-varying treatments and to consider additional clinical states in the multi-state model.",
+     "locator": "Conclusions"
+    },
+    {
+     "gap": "Alternative target parameters to the proportional odds ratio, such as rates and restricted length of stay in each state",
+     "kind": "stated",
+     "quote": "alternative target parameters, which allow for a better understanding and interpretation of results such as rates, ratios, and restricted length of stay in each state, could be presented",
+     "locator": "Limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "A multi-state model is used so that in-hospital death and discharge alive are separate endpoints and ICU admission is an intermediate state, rather than one outcome with the rest censored. This is the estimator matched to the causal question that the entry says applied work defaults away from, worked through with weighted cause-specific hazards and transition probabilities per arm. It handles one design and does not address recurrent events under sustained strategies.",
+     "quote": "Extending the emulated target trial approach to multi-state model analysis complements treatment effectiveness analysis by gaining information on competing events.",
+     "locator": "Abstract, conclusions"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The grace period is set to 5 days for illustration, and the paper states that in a clinical study the length should be defined by clinical relevance. It cites two sources for that instruction and neither supplies a procedure, which is the entry's claim about where the choice is made.",
+     "quote": "Second, we chose a 5-day grace period for illustrative purposes, whereas in clinical studies the length of a grace period should be defined according to clinical relevance",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The reported summary is a proportional odds ratio whose validity rests on the proportional odds assumption, and the paper names that as the principal limitation of interpretation while listing the alternatives it did not report. The estimand a reader can act on is not the one the analysis is best able to support.",
+     "quote": "However, this summary parameter requires proportional odds assumption, and entails the principal limitation of interpretation",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "ELG-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Patients with missing prognostic covariates were excluded from the main analysis, with imputation only as an additional analysis, and the paper points to the specific difficulty of incomplete data on the variables that determine eligibility. That is the entry's problem, cited rather than addressed.",
+     "quote": "It is advised to consider limitations related to missing data in a target trial and possible approaches, especially when data is incomplete on the variables determining eligibility criteria",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Only baseline covariates were used, with post-baseline severity acknowledged as available in principle and left out, and the paper warns that time-dependent covariates require appropriate methods and cautious interpretation. The demonstration therefore shows the design without the time-varying adjustment the design exists to permit.",
+     "quote": "Third, for demonstrative purposes, we included only baseline covariates, but post-baseline time-varying covariates of clinical severity could be considered. However, the effects of time-dependent covariates should be interpreted with caution and require appropriate method use",
+     "locator": "Limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0009",
+   "read": true,
+   "doi": "10.1093/ije/dyaa223",
+   "title": "Versatility of the clone-censor-weight approach: response to \"trial emulation in the presence of immortal-time bias\"",
+   "relevance": "medium",
+   "one_line": "Letter classifying the causal questions cloning is for into grace periods, static time-related strategies and dynamic strategies, with published examples of each.",
+   "what_was_done": "A letter responding to the Maringe tutorial, proposing that clone-censor-weight applications fall into three categories and giving published examples of each. The first is a grace period between meeting eligibility and initiating treatment, such as surgery within six months of a cancer diagnosis, hormone treatment within three months of relapse, or statin initiation within six months of diagnosis. The second is a static strategy that is itself time-related, such as the interval between denosumab injections or the frequency of HIV monitoring among the virally suppressed. The third is a dynamic strategy initiated when a time-varying variable crosses a threshold, for which the letter cites Cain and colleagues emulating 31 arms defined by 31 different CD4 thresholds, where most individuals had data consistent with more than one strategy and therefore contributed to more than one arm.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The letter's own classification turns on how time enters the strategy definition, and its examples make the entry's point concretely: a patient can be simultaneously consistent with many labeled strategies, and in the 31-arm CD4 example that is the normal case rather than an edge case. It classifies the questions and does not supply a rule for which versions belong in one arm.",
+     "quote": "Cain et al. described 31 different CD4 thresholds, emulating an RCT with 31 arms. Since most individuals had data consistent with more than one strategy, they contributed to more than one arm, thus necessitating cloning.",
+     "locator": "Letter body"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Each of the letter's grace-period examples names a different length, six months, three months, six months, for different clinical questions, and the letter's requirement is only that the grace period be correctly assigned rather than that its length be derived from anything. The variation across examples is the entry's claim about the choice being made outside the analysis.",
+     "quote": "In each example, the grace period needs to be correctly assigned, using the clone-censor-weight approach, to avoid immortal time bias.",
+     "locator": "Letter body"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0010",
+   "read": true,
+   "doi": "10.5435/JAAOS-D-25-00721",
+   "title": "Surgical Fixation Versus Cast Immobilization for Adults With Bicortical Scaphoid Fractures: A Target Trial Emulation of the SWIFFT Trial",
+   "relevance": "high",
+   "one_line": "Emulates a UK trial in Chinese hospital records with a 14-day grace period, reports intention-to-treat and per-protocol side by side, and reports following the TARGET guideline.",
+   "what_was_done": "A clone-censor-weight emulation of the SWIFFT randomized trial using electronic health record data from three Chinese tertiary teaching hospitals, contrasting surgical fixation against cast immobilization for minimally displaced scaphoid waist fractures with a 14-day grace period from time zero. Both intention-to-treat and per-protocol estimates are reported for every outcome: the primary DASH difference at 52 weeks was minus 4.2 under intention-to-treat and minus 4.0 under per-protocol, with the paper noting that a 4.2-point difference sits below most minimal clinically important difference thresholds while lower proposed thresholds of 7 to 10 points would bring it nearer relevance. Crossover was substantial, with 18.1% of the cast arm ultimately requiring surgery, mostly for nonunion detected between 12 and 26 weeks. Reporting followed the TARGET guideline, and a supplementary table compares the emulated population with the original trial population as a transportability check.",
+   "future_research": [
+    {
+     "gap": "Longer-term data in this population, since 52 weeks may miss late complications such as screw-related arthritis",
+     "kind": "stated",
+     "quote": "Sixth, the 52-week follow-up may be insufficient to capture late complications such as screw-related arthritis.",
+     "locator": "Limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "This is an applied emulation reporting against the TARGET guideline, which is the reporting standard the entry says the label substitutes for. It states the design fact and does not state which identification requirements it argues, assumes or diagnoses, so it demonstrates the checklist being adopted rather than the separate statement of requirements the entry asks for.",
+     "quote": "Reporting followed the TARGET guideline.",
+     "locator": "Strengths and limitations"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Nearly one in five patients in the cast arm crossed to surgery, mostly between 12 and 26 weeks, and the paper reports that number as a clinical finding rather than as a property of the contrast. The intention-to-treat and per-protocol estimates are close, minus 4.2 against minus 4.0, so the crossover's effect on the contrast is visible only because both were reported, which the entry says is not conventional.",
+     "quote": "Critically, nearly one in five conservatively treated patients (18.1%) ultimately required surgery, predominantly for nonunion",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The emulated population is compared with the original trial population in a supplementary table and transportability is claimed from the similarity. That is the comparison the entry says is rarely made, done informally: it compares composition rather than modeling transport, and it concludes transportability from a similar direction of effect rather than from measured effect modifiers.",
+     "quote": "The comparison with the original SWIFFT population (Supplementary Table 7, https://links.lww.com/JAAOS/B609) demonstrated transportability across healthcare systems.",
+     "locator": "Strengths and limitations"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The primary outcome is a proxy: DASH stands in for the trial's PRWE instrument, and the record does not capture cast type or precise cast duration at trial fidelity. The comparator arm is therefore defined by what the record contains rather than by the trial protocol, in a benchmarking study whose value depends on that correspondence.",
+     "quote": "First, we used the DASH as a proxy for the PRWE.",
+     "locator": "Limitations"
+    },
+    {
+     "problem_id": "BEN-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The study reads agreement in direction with the trial as evidence that a large practice difference, traditional medicine coprescribing in about half the cohort, does not matter to the comparison. That inference from concordance on one endpoint to the irrelevance of an unmeasured difference is the extrapolation the entry says nothing licenses.",
+     "quote": "Whether this influences healing biology remains uncertain, but the similar direction of treatment effects between our cohort and the SWIFFT population suggests that TCM coprescribing does not meaningfully alter the surgery-versus-cast comparison.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0011",
+   "read": true,
+   "doi": "10.1158/1055-9965.EPI-22-0495",
+   "title": "The Timing, the Treatment, the Question: Comparison of Epidemiologic Approaches to Minimize Immortal Time Bias in Real-World Data Using a Surgical Oncology Example",
+   "relevance": "high",
+   "one_line": "Runs five analytic approaches on one question and a plasmode simulation, and finds the three unbiased ones still disagree because they estimate different things.",
+   "what_was_done": "Five analytic approaches to immortal time were applied to the same question, surgical resection and mortality in 24,329 women with incident metastatic breast cancer in the National Cancer Database, 2013 to 2016, 24% of whom underwent resection: dichotomous exposure, dichotomous excluding immortal time, time-varying exposure, landmark analysis, and clone-censor-weight. A plasmode simulation with a known null truth then measured the bias of each. In the real data the hazard ratio ranged from 0.54 for the naive dichotomous exposure to 0.86 to 0.88 for clone-censor-weight, with time-varying exposure and landmark at 0.66 to 0.68. In the simulation the three immortal-time-aware methods were unbiased, 0.003 to 0.016 on the log scale, while dichotomous exposure was biased by 0.177 and dichotomous with exclusion by 0.074. The authors attribute the residual disagreement among the three unbiased methods to their targeting different estimands.",
+   "future_research": [
+    {
+     "gap": "Sensitivity analyses over the treatment assessment window, since the window changes the causal effect and the target population",
+     "kind": "stated",
+     "quote": "Choice of the treatment assessment window also changes the causal effect being estimated and the population of inference (i.e., the target population)",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is the comparison the entry says nothing requires: five approaches on one question, with a plasmode simulation giving a known truth. It establishes the entry's premise quantitatively, since the estimates range from 0.54 to 0.88 in the same data and three methods that are all unbiased in simulation still disagree. It addresses one question in one database, so it does not supply the common benchmark or the synthesis the entry asks for.",
+     "quote": "It is important to note that the hazard ratios using the clone-censor-weight approach (8-month: HR, 0.86, 12-month: HR, 0.88) were higher than the hazard ratios using time-varying exposures (8-month: HR, 0.67, 12-month: HR, 0.66) and landmark analysis (8-month: HR, 0.68, 12-month: HR, 0.67).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper reports three hazard ratios side by side, notes they differ, and explains that the methods produce different estimands. The comparison is only interpretable because these authors say so; nothing in the presentation of any one of those hazard ratios would tell a reader which estimand it is, which is the entry's claim.",
+     "quote": "While all three of these approaches can be used to address immortal time bias, they produce different estimands, which may explain the differences in findings.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The paper states that the treatment assessment window changes both the causal effect and the target population, and that the window must be set by clinical expertise with sensitivity analyses over alternatives. That is the entry's claim in both halves: no data-driven procedure selects it, and varying it is varying the question rather than the specification.",
+     "quote": "In all of the approaches that incorporate a treatment assessment window, clinical expertise should be used to determine the treatment assessment window and/or landmark, and sensitivity analyses using different windows (or landmarks) should be conducted to ensure the cut point doesn't impact results.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Landmark analysis is noted to draw inference for a less generalizable population because it conditions on surviving the landmark, and the treatment assessment window is said to change the population of inference. Both are the transportability question arising from an analytic choice rather than from a decision about where the answer will be used, and the paper reports the estimates without a transport step.",
+     "quote": "landmark analyses draw inference for a less generalizable study population since they restrict to survivors of the landmark period",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0013",
+   "read": true,
+   "doi": "10.1093/ije/dyaa225",
+   "title": "Reply to: Versatility of the clone-censor-weight approach: response to \"trial emulation in the presence of immortal-time bias\"",
+   "relevance": "medium",
+   "one_line": "Authors' reply accepting the three-category classification and insisting the same protocol specification steps apply to all three.",
+   "what_was_done": "The tutorial authors reply to the classification letter, accepting the three categories and characterizing what distinguishes them: in the first the delay between study entry and initiation reflects real-life constraints while the causal question is about the treatment rather than its timing; in the second timing is the causal question but is defined relative to the start of follow-up regardless of how individual characteristics evolve; in the third timing is defined relative to time-varying events, which is what makes those strategies dynamic. They then argue the specification steps do not differ across the three, and that the ideal trial, the inclusion criteria and the causal contrast must be made explicit in every case.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The reply's whole argument is that explicit specification of the ideal trial and the causal contrast is what separates a defensible emulation from an ill-defined observational study, and it has to be argued in a letter rather than pointed at as a requirement. That an author group has to insist on it is evidence for the entry's claim that nothing requires the specification to be stated.",
+     "quote": "The definition of the ideal trial, inclusion criteria, causal contrasts of interests, etc. should always be made explicit. As highlighted in our original article, a clear presentation of the target trial of interest is paramount to avoid ill-defined observational studies.",
+     "locator": "Reply body"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The reply notes that in all three categories a grace period has to be defined to reflect the interval during which treatment may be received under each arm's definition. It is the definition of the arm, not a nuisance parameter, and the reply supplies no procedure for setting it.",
+     "quote": "In all three categories, grace period(s) need to be defined to reflect different intervals of time during which treatment may be received following each arm's specific definition.",
+     "locator": "Reply body"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0038",
+   "read": true,
+   "doi": "10.1002/sim.70425",
+   "title": "A Path-Specific Effect Approach to Mediation Analysis With Time-Varying Mediators and Time-to-Event Outcomes Accounting for Competing Risks",
+   "relevance": "medium",
+   "one_line": "Extends the mediational g-formula to competing risks by treating the pathway through the competing event as a nested mediator, and reports survival probability differences rather than hazards.",
+   "what_was_done": "A new estimator for longitudinal mediation with a time-to-event outcome in the presence of competing risks, for the case where the exposure is not separable and both the outcome and the mediator are nonterminal events. The pathway through the competing event is treated as an additional mediator nested within the longitudinal mediator of interest, and the effects are defined through the mediational g-formula with a stated algorithm. A simulation study and an application to the Strong Heart Study follow, evaluating whether the blood pressure trajectory across three visits mediates the association of arsenic and cadmium with time to cardiovascular disease, in a setting with 46.3% deaths. The authors report a 20-year survival probability difference on the grounds that it has a causal interpretation, in contrast to a difference in hazards, and note that power to detect competing risks may be insufficient when the number of time points is large.",
+   "future_research": [
+    {
+     "gap": "Extension to multistate models so the event of interest and death can be treated as a composite, increasing power and enabling recurrent events",
+     "kind": "stated",
+     "quote": "An extension to multistate models [28], in which our primary event of interest (CVD, in this case) and death could be considered as a composite event, represents relevant future work in order to increase power, minimize the loss of granularity and enable the consideration of recurrent events.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "Sensitivity analysis for unmeasured mediator-outcome confounding in the longitudinal mediator and survival outcome setting",
+     "kind": "stated",
+     "quote": "The extension of existing sensitivity analysis methods for mediator-outcome unmeasured confounders to the setting of longitudinal mediators and survival outcomes represents relevant future work.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This supplies a formal treatment of competing events for a case the existing framework did not cover, mediation with a nonseparable exposure and a nonterminal mediator, by making the competing pathway an explicit part of the estimand rather than a censoring rule. It also reports a survival probability difference rather than a hazard difference on the grounds of causal interpretability. It does not cover recurrent events under sustained strategies, which the authors name as future work.",
+     "quote": "Formal definitions and considerations for causal effects in the presence of competing risks have been published, but not for the mediation analysis setting when the exposure is not separable and both the outcome and the mediator are nonterminal events.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The authors name stochastic interventions as the response to possible positivity or consistency violations, describing them as allowing reasonable interventions within each subject's own exposure range. That is the entry's proposed direction, recommended as future work rather than executed, and the paper's own analysis uses deterministic interventions.",
+     "quote": "In settings in which positivity or consistency violations might exist, an interesting approach is to consider stochastic interventions, instead of deterministic (or fixed) interventions for the exposure.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "GMT-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Death indicators are modeled at discrete time points rather than as time to event, which the authors state may introduce error from not knowing when the event actually happened, and power to detect competing risks falls as the number of time points grows. Both are the discretization cost the entry describes, reported by the authors as a limitation of their own discrete-time formulation.",
+     "quote": "First, we consider discrete time points for death indicators, rather than modeling death as time-to-event, which might potentially lead to some measurement errors due to not being able to incorporate the exact time in which the event happened.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The paper's sensitivity analysis for unmeasured mediator-outcome confounding does not exist for this setting and is named as future work, so the analysis reports an interval that assumes away the violation it acknowledges. That is the entry's claim about reported uncertainty covering only sampling error.",
+     "quote": "Finally, the assumption of no unmeasured confounding is not verifiable in practice in observational studies [29]. Thus, the results of this study need to be interpreted with caution.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}

@@ -1,0 +1,208 @@
+{
+ "slice": "seed-conceptual",
+ "source": "documentation/seed-linked.md, the executive summary, 'Scope and conceptual map' with its estimand table, and the method-comparison guide",
+ "extracted_by": "claude-opus-5, reading the full source document",
+ "problems": [
+  {
+   "id": "c1",
+   "title": "An unobservable protocol component produces a different, data-defined estimand rather than a noisy version of the intended one",
+   "category": "PRO",
+   "statement": "The canonical protocol has seven linked components: eligibility, treatment strategies, assignment, follow-up, outcomes, causal contrast and analysis plan. Conceptual specification and operational realization are distinct, and when a required component cannot be observed the analyst does not obtain a mismeasured version of the intended effect. They obtain a different effect, defined by what the data can express. A criterion that cannot be verified is dropped and the population changes; a strategy that cannot be distinguished from its neighbor is merged and the contrast changes; an outcome that is only partly captured redefines the endpoint. Nothing in current reporting requires that substitution to be named, so the paper states the intended estimand and reports the substituted one.",
+   "why_open": "The substitution happens component by component during implementation, often in code rather than in prose, and by the time results exist there is no artifact recording which component was compromised. Naming the substituted estimand requires a language for partially specified interventions that does not yet exist in a usable form. There is also a reasonable disagreement underneath: some substitutions are innocuous refinements and others change the question, and no criterion separates them.",
+   "prior_work": [
+    {
+     "cite": "Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol 2016;183(8):758-764",
+     "doi_or_url": "10.1093/aje/kwv254",
+     "what_it_does": "Establishes the seven components and the requirement to map each to the data, which is the framework within which the substitution becomes visible."
+    },
+    {
+     "cite": "Moreno-Betancur M, et al. The ideal trial: defining causal estimands that balance relevance and feasibility in target trial emulations and actual randomized trials. arXiv 2024",
+     "doi_or_url": "https://arxiv.org/abs/2405.10026",
+     "what_it_does": "Argues that discrepancies between the ideal, target and actual trials should be made explicit, which is the general case of this specific substitution."
+    },
+    {
+     "cite": "Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026",
+     "doi_or_url": "10.1038/s41746-026-02563-z",
+     "what_it_does": "Works through the operational realization of each component against record data, which is where the substitutions occur in practice."
+    }
+   ],
+   "proposed_direction": "Require a component-by-component mapping table in which each of the seven components carries its conceptual specification, its operational realization, and a statement of what changed between them. Where a component cannot be realized, require the substituted estimand to be written out rather than the intended one, so that the paper's headline quantity is the one estimated. Develop criteria, tested against benchmarking data, for which substitutions historically preserved agreement with the corresponding trial and which did not.",
+   "priority": "Very high",
+   "maturity": "Promising",
+   "tractability": 4,
+   "severity": "It is the most common way an emulation answers a question other than the one it states.",
+   "protocol_component": [
+    "cross-cutting"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 34",
+   "related_hint": [
+    "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error",
+    "Eligibility criteria built from healthcare-use variables can induce selection through colliders"
+   ]
+  },
+  {
+   "id": "c2",
+   "title": "Convergence of treatment in the comparator arm attenuates the observational intention-to-treat analogue with follow-up length",
+   "category": "CNF",
+   "statement": "The observational analogue of an intention-to-treat effect contrasts assigning initiation now against not initiating now. Two things then happen that do not happen in a randomized trial. Assignment is confounded, so the contrast requires baseline adjustment to mean anything. And the comparator group does not stay untreated: patients assigned to no initiation now frequently initiate later, so with longer follow-up the two strategies converge and the estimated effect attenuates toward the null for reasons that have nothing to do with the treatment's efficacy. The attenuation is a function of the follow-up horizon and of local prescribing behavior, and it is rarely reported as such, so an emulation with long follow-up and a null result cannot be distinguished from one where the treatment does not work.",
+   "why_open": "The convergence is a real feature of the strategy contrast rather than a bias to be removed, so it cannot be adjusted away without changing to a per-protocol estimand that carries its own assumptions. Reporting it requires publishing the treatment trajectories in both arms over follow-up, which most papers do not, and the rate of convergence depends on the health system and calendar period rather than on anything intrinsic. There is also no convention for choosing the horizon at which the contrast is still meaningful.",
+   "prior_work": [
+    {
+     "cite": "Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol 2016;183(8):758-764",
+     "doi_or_url": "10.1093/aje/kwv254",
+     "what_it_does": "Defines the observational analogues of the intention-to-treat and per-protocol effects and states what each requires."
+    },
+    {
+     "cite": "Cain LE, Robins JM, Lanoy E, Logan R, Costagliola D, Hernán MA. Using observational data to emulate a randomized trial of dynamic treatment-switching strategies. Int J Epidemiol 2016;45(6):2038-2049",
+     "doi_or_url": "10.1093/ije/dyv295",
+     "what_it_does": "Handles later initiation and switching explicitly through dynamic strategies, which is the design response to convergence."
+    }
+   ],
+   "proposed_direction": "Report the cumulative incidence of initiation in both arms over follow-up alongside the effect estimate, so a reader can see how far the strategies remained distinct. Prefer strategy contrasts that name the later initiation explicitly, such as initiate now versus initiate on a stated clinical trigger, over an open-ended no-initiation arm that the data will not sustain. Quantify by simulation how much attenuation a given convergence rate produces at each horizon, so that a null result can be read against the convergence that was observed rather than against an assumption of none.",
+   "priority": "High",
+   "maturity": "Established",
+   "tractability": 4,
+   "severity": "It biases toward the null in a way that reads as a negative finding.",
+   "protocol_component": [
+    "treatment-strategies",
+    "causal-contrast",
+    "follow-up"
+   ],
+   "data_setting": [
+    "claims",
+    "ehr",
+    "registry"
+   ],
+   "source_locator": "seed-linked.md line 52, the estimand table row for the baseline assignment analogue",
+   "related_hint": [
+    "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "No procedure defines clinically defensible equivalence classes of treatment versions"
+   ]
+  },
+  {
+   "id": "c3",
+   "title": "Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals",
+   "category": "SEQ",
+   "statement": "Sequential emulation exploits repeated eligibility: a new trial is emulated at each decision point, and a person who is eligible at many points contributes to many trials. This uses the data better than a single baseline emulation and it introduces three complications together. The same person appears in many nested trials, so the observations are dependent in a way the pooled analysis must handle. Trials begun at different calendar times occur under different treatment availability, guidelines and background risk, so calendar time confounds the pooled contrast unless it is modeled. And a person's later eligibility is itself a consequence of earlier untreated survival, which links the trials causally rather than merely statistically. The efficiency gain is real and it is what makes these complications easy to overlook.",
+   "why_open": "Pooling across trials requires an assumption that the effect is common across start times, which is exactly what calendar-time variation in practice makes doubtful, and testing it costs the efficiency the design was adopted for. The dependence is induced by the design rather than present in the data, so it has no natural clustering variable other than the person. Later eligibility conditional on earlier survival is a selection process, and whether it is innocuous depends on the outcome model being correct, which is the thing under test.",
+   "prior_work": [
+    {
+     "cite": "Caniglia EC, et al. Emulating target trials to avoid immortal time bias: an application to antibiotic initiation. Epidemiology 2023",
+     "doi_or_url": "10.1097/EDE.0000000000001601",
+     "what_it_does": "A worked sequential emulation showing how repeated decision points remove immortal time bias in a setting where treatment can begin at many times."
+    },
+    {
+     "cite": "Su L, et al. TrialEmulation: an R package to emulate target trials for causal analysis of observational time-to-event data. arXiv 2024",
+     "doi_or_url": "https://arxiv.org/abs/2402.12083",
+     "what_it_does": "Implements the sequence expansion and censoring weights that the design requires, and documents the data expansion it produces."
+    }
+   ],
+   "proposed_direction": "Model calendar time explicitly as an effect modifier rather than adjusting it away, and report the trial-specific estimates alongside the pooled one so that a pooled effect resting on incompatible start times is visible. Derive variance estimators that account for repeated participation by the same person across nested trials, and check their coverage against a bootstrap over persons. Establish whether the efficiency gain survives the correct variance treatment, since the case for the design rests on a comparison that has usually been made under the naive variance.",
+   "priority": "High",
+   "maturity": "Promising",
+   "tractability": 4,
+   "severity": "Sequential emulation is becoming the default for treatments that can start at any time, and its dependence structure is routinely ignored.",
+   "protocol_component": [
+    "eligibility",
+    "assignment",
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "claims",
+    "ehr",
+    "registry"
+   ],
+   "source_locator": "seed-linked.md line 298, the method-comparison row for sequential trial emulation, with the sequential-trial sources at line 330",
+   "related_hint": [
+    "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "No outcome-blind procedure selects the time grid or the grace period"
+   ]
+  },
+  {
+   "id": "c4",
+   "title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+   "category": "GMT",
+   "statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population and discards information, with an estimand that is often left unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust and computationally heavy and sensitive to practical positivity. A study reporting one of these reports a number whose dependence on that choice is unknown, and nothing requires that at least one weighting, one outcome-modeling and one doubly robust estimator be compared on the same data.",
+   "why_open": "Comparing estimators multiplies the analysis cost and can produce disagreement that the paper then has to explain, which is a strong disincentive. There is no accepted way to report disagreement between estimators: it is neither a sensitivity analysis in the usual sense nor a robustness check, since the estimators target the same estimand under different nuisance assumptions. Simulation evidence comparing them is also fragmented across papers with different generating mechanisms, so no synthesis exists that would justify a default.",
+   "prior_work": [
+    {
+     "cite": "Robins JM, Hernán MA, Brumback B. Marginal structural models and causal inference in epidemiology. Epidemiology 2000;11(5):550-560",
+     "doi_or_url": "10.1097/00001648-200009000-00011",
+     "what_it_does": "The reference for weighted estimation of regime effects, one of the three families a comparison would have to include."
+    },
+    {
+     "cite": "ltmle: Longitudinal Targeted Maximum Likelihood Estimation. CRAN",
+     "doi_or_url": "https://cran.r-project.org/package=ltmle",
+     "what_it_does": "Implements longitudinal TMLE, IPTW and g-computation in one place, which makes the three-family comparison feasible in a single analysis."
+    },
+    {
+     "cite": "lmtp: Non-Parametric Causal Effects of Feasible Interventions Based on Modified Treatment Policies. CRAN",
+     "doi_or_url": "https://cran.r-project.org/package=lmtp",
+     "what_it_does": "Implements targeted and sequentially doubly robust estimators for point and longitudinal modified treatment policies."
+    },
+    {
+     "cite": "Su L, et al. TrialEmulation: an R package to emulate target trials for causal analysis of observational time-to-event data. arXiv 2024",
+     "doi_or_url": "https://arxiv.org/abs/2402.12083",
+     "what_it_does": "Provides the sequence-of-trials implementation with intention-to-treat and per-protocol analyses."
+    }
+   ],
+   "proposed_direction": "Require that every emulation compare at least one weighting method, one outcome-modeling method and one doubly robust method, document the causal estimand each actually targets, and report the three estimates together. Build a public benchmark with realistic observation processes and missingness on which the families can be compared under a common generating mechanism, so that the fragmented simulation evidence becomes a synthesis. Score methods on failure awareness as well as on bias and coverage: an estimator that returns a narrow interval in a deliberately non-identifiable scenario has failed the test that matters most.",
+   "priority": "High",
+   "maturity": "Established",
+   "tractability": 5,
+   "severity": "The estimator choice is one of the largest unreported sources of variation between studies of the same question.",
+   "protocol_component": [
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md lines 288 to 303, the method-comparison guide, and line 343",
+   "related_hint": [
+    "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+    "Flexible estimation is presented as a remedy for identification failure"
+   ]
+  },
+  {
+   "id": "c5",
+   "title": "Emulation is proposed for non-pharmaceutical and policy interventions whose treatment versions and assignment units are not defined",
+   "category": "PRO",
+   "statement": "Interference, combination therapies, multiple treatment versions and non-pharmaceutical interventions all violate the two-arm, individually assigned, well-defined-intervention assumptions that the standard emulation protocol makes. Non-pharmaceutical and policy interventions are the sharpest case: the intervention is delivered to a place or an organization rather than a person, its content varies by implementer, its timing is gradual rather than dated, and there is often no version of not receiving it that is comparable. Emulation is nonetheless being applied to such questions, with the protocol components filled in by analogy. What is missing is a statement of which protocol components a policy intervention can actually satisfy and what estimand results when several cannot.",
+   "why_open": "A well-defined intervention is a requirement of the causal framework and not of the emulation framework specifically, so this is inherited rather than introduced, and the emulation literature has no special claim on solving it. The assignment unit for a policy is usually a jurisdiction, which reduces the effective sample to the number of jurisdictions and makes the analysis a small-n problem regardless of how many patients it contains. Version variation is intrinsic to implementation rather than incidental, so the consistency assumption fails by construction rather than by accident.",
+   "prior_work": [
+    {
+     "cite": "Papadogeorgou G, Mealli F, Zigler CM. Causal inference with interfering units for cluster and population level treatment allocation programs. Biometrics 2019;75(3):778-787",
+     "doi_or_url": "10.1111/biom.13049",
+     "what_it_does": "Provides the estimand framework for cluster and population-level allocation, which is the setting a policy emulation is in whether or not it says so."
+    },
+    {
+     "cite": "Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol 2016;183(8):758-764",
+     "doi_or_url": "10.1093/aje/kwv254",
+     "what_it_does": "States the well-defined-intervention requirement that policy questions strain, and the protocol components a policy emulation has to fill."
+    }
+   ],
+   "proposed_direction": "Write protocol templates for cluster and policy target trials in which the assignment unit, the exposure mapping and the treatment-version class are explicit components rather than assumed, and state which components a given policy question can satisfy. Where versions cannot be unified, define the estimand over the observed distribution of versions and say so, rather than naming an intervention that no jurisdiction implemented. Establish minimum unit counts for credible inference at the jurisdiction level, since a study with millions of patients and eleven jurisdictions has eleven units of assignment.",
+   "priority": "Medium-high",
+   "maturity": "Emerging",
+   "tractability": 3,
+   "severity": "Policy emulations are published with individual-level precision and jurisdiction-level information.",
+   "protocol_component": [
+    "treatment-strategies",
+    "assignment"
+   ],
+   "data_setting": [
+    "registry",
+    "linked",
+    "multi-database"
+   ],
+   "source_locator": "seed-linked.md line 20, the executive summary priority row for complex interventions",
+   "related_hint": [
+    "Emulation assumes no interference, and cloning individuals can produce joint strategies nobody could implement",
+    "No procedure defines clinically defensible equivalence classes of treatment versions"
+   ]
+  }
+ ]
+}

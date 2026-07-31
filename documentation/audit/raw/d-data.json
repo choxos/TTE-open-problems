@@ -1,0 +1,300 @@
+{
+ "slice": "seed-data",
+ "source": "documentation/seed-linked.md, section 'Data-related open problems' (table rows) and the paragraph that closes it",
+ "extracted_by": "claude-opus-5, reading the full source document",
+ "problems": [
+  {
+   "id": "d1",
+   "title": "An unrecorded eligibility criterion is indistinguishable from a criterion that was met",
+   "category": "ELG",
+   "statement": "Trial eligibility is assessed at a screening visit; a database records what a clinician happened to order. Restricting an emulation to patients with complete eligibility information therefore selects on laboratory testing, clinical documentation and specialist access, which differ systematically from the excluded patients. Weighting methods for missing eligibility have recently been developed and the literature remains small. The harder version of the problem is that eligibility is latent rather than merely missing: an absent creatinine value is consistent both with a patient who would have failed the criterion and with one who was never tested, and the missingness itself may depend on treatment anticipation or on the impending outcome.",
+   "why_open": "Missing-at-random conditional on the recorded history is not credible here, because the recording decision is a clinical judgment informed by exactly the severity that predicts the outcome. Distinguishing latent eligibility from missing measurement requires a validation source in which the criterion was assessed for everyone, and such sources are rare and rarely representative. Imputing the value and imputing eligibility are different operations with different targets, and the literature has not separated them.",
+   "prior_work": [
+    {
+     "cite": "Benz L, et al. Adjusting for selection bias due to missing eligibility criteria in emulated target trials. Am J Epidemiol 2025",
+     "doi_or_url": "10.1093/aje/kwae471",
+     "what_it_does": "Develops weighting for missing eligibility information in emulated trials, the first direct treatment of the problem."
+    },
+    {
+     "cite": "Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026",
+     "doi_or_url": "10.1038/s41746-026-02563-z",
+     "what_it_does": "Sets out how each protocol component, eligibility included, is realized against record-level data and where the realization is partial."
+    }
+   ],
+   "proposed_direction": "Model true eligibility and its observation jointly, using validation records where a criterion was assessed for everyone to anchor the measurement model. Compare multiple imputation, inverse-probability-of-eligibility weighting, doubly robust selection correction and partial-identification bounds on the same data, since they make different assumptions and currently no one knows which are tolerable. Report the eligible population under each approach alongside the effect estimate, because a method that changes who is in the trial has changed the estimand and should be read that way.",
+   "priority": "High",
+   "maturity": "Emerging",
+   "tractability": 4,
+   "severity": "Complete-case eligibility is the default in applied emulation and it selects on care intensity.",
+   "protocol_component": [
+    "eligibility"
+   ],
+   "data_setting": [
+    "ehr",
+    "linked",
+    "claims"
+   ],
+   "source_locator": "seed-linked.md line 106, row 'Missing eligibility information'",
+   "related_hint": [
+    "Eligibility criteria built from healthcare-use variables can induce selection through colliders",
+    "Phenotypes enter emulations as error-free binary variables"
+   ]
+  },
+  {
+   "id": "d2",
+   "title": "Phenotypes enter emulations as error-free binary variables",
+   "category": "MER",
+   "statement": "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care received outside the system may be incompletely captured. Methods for outcome misclassification in electronic health records increasingly use validation samples and probabilistic phenotypes. Emulation pipelines almost universally do not: a phenotype is thresholded to a binary variable at the start and treated as truth thereafter. Differential misclassification then interacts with weighting and with time-varying confounding in ways that are not intuitive, because an error in the exposure at one time propagates into the weights at every later time, and no standard analysis propagates the phenotype uncertainty at all.",
+   "why_open": "The interaction is genuinely nonlinear: misclassification in a time-varying confounder both biases the weight and changes which patients are censored, so the bias does not decompose into a measurement part and a confounding part. Validation samples that would calibrate the phenotype are usually convenience samples from one site, and transporting a sensitivity and specificity across sites is itself an untested transport claim. Propagating uncertainty end to end also requires the whole pipeline to accept probabilistic inputs, which most implementations cannot.",
+   "prior_work": [
+    {
+     "cite": "Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026",
+     "doi_or_url": "10.1038/s41746-026-02563-z",
+     "what_it_does": "Describes validation-sample and probabilistic phenotype approaches to outcome misclassification in record-based studies."
+    },
+    {
+     "cite": "Benz L, et al. Adjusting for selection bias due to missing eligibility criteria in emulated target trials. Am J Epidemiol 2025",
+     "doi_or_url": "10.1093/aje/kwae471",
+     "what_it_does": "Shows the shape of a validation-anchored correction for one protocol component, which is the template a phenotype correction would follow."
+    }
+   ],
+   "proposed_direction": "Develop validation-subsample targeted learning, Bayesian latent-class g-formula models and pipelines that accept probabilistic treatment and outcome nodes rather than thresholded ones, so phenotype uncertainty is propagated to the final interval rather than discarded at the first step. Simulate sensitivity and specificity from 0.70 to 0.99 with differential misclassification odds ratios from 1 to 4, and report the bias in the estimated regime effect rather than in the phenotype, since the phenotype's accuracy is not what the study claims. Establish how large a validation sample has to be before the correction is worth its variance cost.",
+   "priority": "Very high",
+   "maturity": "Promising",
+   "tractability": 4,
+   "severity": "Every record-based emulation rests on phenotypes and almost none of them carry their error forward.",
+   "protocol_component": [
+    "eligibility",
+    "treatment-strategies",
+    "outcome"
+   ],
+   "data_setting": [
+    "ehr",
+    "claims",
+    "linked"
+   ],
+   "source_locator": "seed-linked.md line 107, row 'Exposure, outcome and covariate misclassification'",
+   "related_hint": [
+    "An unrecorded eligibility criterion is indistinguishable from a criterion that was met",
+    "Common data models harmonize structure without guaranteeing that the same variable means the same thing"
+   ]
+  },
+  {
+   "id": "d3",
+   "title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+   "category": "MIS",
+   "statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so record-based covariate histories are irregular and selectively missing in a way that carries clinical information. Missing-at-random conditional on the recorded history can therefore fail precisely because the recording is itself informative. Standard handling, and last observation carried forward in particular, constructs an artificial history in which a patient's state is asserted to be unchanged over an interval during which the absence of measurement was itself evidence about their state.",
+   "why_open": "Conditioning on having been observed can open a collider path, so the natural fix makes a different bias, and choosing between them requires knowing the structure that is in question. Inverse-intensity-of-visit weights are unstable when visit rates vary by an order of magnitude across patients, which they do. Modeling the visit process jointly with treatment and outcome multiplies the nuisance components and therefore the positivity requirements, so the more faithful model can be the less identifiable one.",
+   "prior_work": [
+    {
+     "cite": "Goldstein BA, Bhavsar NA, Phelan M, Pencina MJ. How and when informative visit processes can bias inference when using electronic health records data for clinical research. J Am Med Inform Assoc 2019",
+     "doi_or_url": "10.1093/jamia/ocz148",
+     "what_it_does": "Establishes when the visit process biases inference in record-based studies and characterizes the mechanism."
+    },
+    {
+     "cite": "Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026",
+     "doi_or_url": "10.1038/s41746-026-02563-z",
+     "what_it_does": "Places the observation process among the operational constraints an emulation must handle rather than among its data-cleaning steps."
+    }
+   ],
+   "proposed_direction": "Model visits as recurrent events or point processes jointly with treatment and outcome, and compare complete case, last observation carried forward, multiple imputation, inverse-intensity weighting and joint latent-state targeted learning on data generated with a known, treatment-dependent visiting mechanism. Include healthcare use as a process in the causal diagram rather than as a baseline confounder, so that conditioning decisions can be read off the graph. Report visit-weight dispersion and the calibration of the predicted visit intensity, since an uncalibrated intensity model produces weights that look like adjustment and are noise.",
+   "priority": "Very high",
+   "maturity": "Emerging",
+   "tractability": 3,
+   "severity": "It affects every time-varying covariate in every record-based emulation and the default handling is known to be wrong.",
+   "protocol_component": [
+    "follow-up",
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "ehr",
+    "linked"
+   ],
+   "source_locator": "seed-linked.md line 108, row 'Informative observation and healthcare utilization'",
+   "related_hint": [
+    "Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved",
+    "Phenotypes enter emulations as error-free binary variables"
+   ]
+  },
+  {
+   "id": "d4",
+   "title": "Common data models harmonize structure without guaranteeing that the same variable means the same thing",
+   "category": "DTA",
+   "statement": "Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within a site. Multi-source linked databases are associated with better emulation of trials, which makes the linkage decisions consequential rather than administrative. Common data models solve the structural half of this and do not guarantee semantic or causal equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications.",
+   "why_open": "Semantic drift is invisible in the analytic dataset: the column is populated and the values are in range. Detecting it requires the mapping history and a comparison across extracts, both of which are usually discarded once the analytic file is built. Linkage error is also non-random, correlating with the same social and health-system factors that predict treatment and outcome, so it is a confounded measurement error rather than noise.",
+   "prior_work": [
+    {
+     "cite": "Concordance between target trial emulation and randomised controlled trials: systematic review and meta-analysis. BMJ 2025",
+     "doi_or_url": "10.1136/bmj-2025-086810",
+     "what_it_does": "Finds that closer design emulation and better outcome emulation predict agreement with trials, and that claims-based emulations tended to underestimate trial effects, which is where data provenance becomes measurable."
+    },
+    {
+     "cite": "Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026",
+     "doi_or_url": "10.1038/s41746-026-02563-z",
+     "what_it_does": "Sets out the operational mapping from source fields to protocol components, the level at which provenance would have to be recorded."
+    }
+   ],
+   "proposed_direction": "Maintain provenance graphs from source field to analytic variable and publish them with the study, so a reader can see which code set produced an outcome and when it changed. Run phenotype invariance and temporal-drift checks as standard diagnostics, and report leave-one-source-out analyses so the contribution of each linked source to the estimate is visible. Carry probabilistic linkage weights into the causal estimator rather than resolving links to a hard match, which turns linkage uncertainty into interval width instead of hidden bias.",
+   "priority": "High",
+   "maturity": "Promising",
+   "tractability": 4,
+   "severity": "Linkage and coding decisions change the cohort and the outcome, and neither is recoverable from the published paper.",
+   "protocol_component": [
+    "eligibility",
+    "outcome",
+    "follow-up"
+   ],
+   "data_setting": [
+    "linked",
+    "registry",
+    "claims",
+    "multi-database"
+   ],
+   "source_locator": "seed-linked.md line 109, row 'Data linkage, provenance and temporal drift'",
+   "related_hint": [
+    "Phenotypes enter emulations as error-free binary variables",
+    "Data-fitness assessment is narrative and has no thresholds that would stop a study"
+   ]
+  },
+  {
+   "id": "d5",
+   "title": "Learned embeddings from clinical text can carry post-treatment information into a baseline adjustment set",
+   "category": "LRN",
+   "statement": "Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. The risk is specific: a learned representation of a clinical note is a dense summary of everything in the note, which can include post-treatment information, the identity of the site, the behavior of the treating clinician and protected characteristics. Adjusting for such a representation is adjusting for an object whose causal role is unknown and probably mixed, and the usual justification, that more information reduces confounding, does not hold when part of that information is a descendant of treatment.",
+   "why_open": "The causal role of an embedding dimension is not interpretable, so the standard remedy of inspecting the adjustment set does not apply. Temporal leakage is easy to introduce and hard to detect, because a note timestamped before treatment can still describe a treatment decision already made. Restricting to pre-assignment text limits the leak but does not eliminate it, and no test distinguishes a representation that encodes prognosis from one that encodes the treatment that was about to be given.",
+   "prior_work": [
+    {
+     "cite": "Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026",
+     "doi_or_url": "10.1038/s41746-026-02563-z",
+     "what_it_does": "Proposes natural language processing for eligibility extraction and phenotyping within an emulation framework."
+    },
+    {
+     "cite": "Feuerriegel S, Frauen D, Melnychuk V, et al. Causal machine learning for predicting treatment outcomes. Nat Med 2024;30:958-968",
+     "doi_or_url": "10.1038/s41591-024-02902-1",
+     "what_it_does": "Sets the boundary between predictive performance and causal validity that high-dimensional adjustment repeatedly crosses."
+    }
+   ],
+   "proposed_direction": "Use temporally locked encoders trained only on pre-assignment text, and audit the resulting representations for treatment leakage by testing whether the embedding predicts the assigned treatment better than the structured pre-assignment covariates do. Prefer interpretable proxy sets, or an explicit proximal role in which the proxy's function is stated, over indiscriminate adjustment for a high-dimensional representation. Report what the embedding was allowed to see, in dates rather than in prose, because that is the claim on which its validity rests.",
+   "priority": "High",
+   "maturity": "Emerging",
+   "tractability": 3,
+   "severity": "Text-derived adjustment is being adopted quickly and the failure mode improves apparent balance while adding bias.",
+   "protocol_component": [
+    "assignment",
+    "eligibility"
+   ],
+   "data_setting": [
+    "ehr"
+   ],
+   "source_locator": "seed-linked.md line 110, row 'Unstructured text and multimodal proxies'",
+   "related_hint": [
+    "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "Flexible estimation is presented as a remedy for identification failure"
+   ]
+  },
+  {
+   "id": "d6",
+   "title": "Generative models are evaluated on distributional fidelity and used for causal work",
+   "category": "SFW",
+   "statement": "Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation practice does not match the use. A model optimized for marginal or temporal fidelity can reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those quantities appears in the loss. Privacy mechanisms compound this by suppressing rare patterns, and rare patterns are often exactly the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and current benchmarks do not test whether it is.",
+   "why_open": "Causal fidelity is not identifiable from the observed data the generator was trained on: two structural models that agree on every observational distribution can disagree on every interventional one. Evaluating it therefore requires a gold-standard structural model rather than a real dataset, which changes the object being validated. Privacy and causal fidelity are also in direct tension, since the mechanisms that protect rare individuals remove the rare strata that carry the overlap.",
+   "prior_work": [
+    {
+     "cite": "Shi, et al. Generating high-fidelity privacy-conscious synthetic patient data for causal effect estimation with multiple treatments. Front Artif Intell 2022",
+     "doi_or_url": "10.3389/frai.2022.918813",
+     "what_it_does": "Builds synthetic patient generation aimed specifically at causal effect estimation with multiple treatments, which is where the fidelity question becomes sharp."
+    }
+   ],
+   "proposed_direction": "Create causally annotated synthetic trials in which both observed and counterfactual outcomes are generated from a known structural model, so that interventional distributions have a ground truth to be scored against. Evaluate generative models on intervention response error, average and conditional effect fidelity, positivity preservation and disclosure risk, not only on distributional similarity. State as a standing rule that synthetic-effect estimates are not clinical evidence, and confine synthetic data to code development, power planning and method benchmarking.",
+   "priority": "Medium-high",
+   "maturity": "Emerging",
+   "tractability": 4,
+   "severity": "The misuse is easy, the evaluation gap is invisible, and the output looks like data.",
+   "protocol_component": [
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 111, row 'Synthetic data and generative trial models'",
+   "related_hint": [
+    "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations"
+   ]
+  },
+  {
+   "id": "d7",
+   "title": "Large databases yield small effective samples after eligibility, comparator restriction and weighting",
+   "category": "GMT",
+   "statement": "A database of millions can carry very little information about a specific target trial once strict eligibility, active-comparator restriction and weighting have been applied, and extreme weights reduce the effective sample size much further than the nominal count suggests. Conventional asymptotic inference then becomes unreliable, most sharply for rare competing events and for subgroup effects, which are precisely the quantities decision-makers ask about. Papers continue to report the nominal number of patients, which for a weighted longitudinal analysis is not the quantity that governs the variance.",
+   "why_open": "The effective sample size is estimator-specific and time-varying in a longitudinal analysis, so there is no single number to report and no convention for which to choose. Small-sample corrections in this setting have to account for the estimated weights as well as the outcome model, and that theory is thin. There is also no incentive to report a number that shrinks a study's apparent size by an order of magnitude.",
+   "prior_work": [
+    {
+     "cite": "Robins JM, Hernán MA, Brumback B. Marginal structural models and causal inference in epidemiology. Epidemiology 2000;11(5):550-560",
+     "doi_or_url": "10.1097/00001648-200009000-00011",
+     "what_it_does": "Introduces the weighted estimator whose variance is governed by the weight distribution rather than by the record count."
+    },
+    {
+     "cite": "lmtp: Non-Parametric Causal Effects of Feasible Interventions Based on Modified Treatment Policies. CRAN",
+     "doi_or_url": "https://cran.r-project.org/package=lmtp",
+     "what_it_does": "Targets shifted rather than deterministic interventions, which is one of the routes to keeping the effective sample size usable."
+    }
+   ],
+   "proposed_direction": "Investigate Bayesian hierarchical g-computation, targeted shrinkage, exact or permutation-based inference, outcome-adaptive case-control sampling and cross-site borrowing for the regime where the effective sample is small. Require that the effective sample size be reported alongside the nominal one at each follow-up time, so a reader sees the information actually available. Establish by simulation the point at which asymptotic intervals stop covering, as a function of the weight tail and the event rate, so the reporting threshold is empirical rather than conventional.",
+   "priority": "Medium-high",
+   "maturity": "Promising",
+   "tractability": 4,
+   "severity": "Nominal size is what gets reported and effective size is what determines whether the interval means anything.",
+   "protocol_component": [
+    "analysis-plan",
+    "eligibility"
+   ],
+   "data_setting": [
+    "claims",
+    "ehr",
+    "registry"
+   ],
+   "source_locator": "seed-linked.md line 112, row 'Rare treatments, outcomes and small effective samples'",
+   "related_hint": [
+    "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "Variance estimation after cloning and sequence expansion has no scalable, correct default"
+   ]
+  },
+  {
+   "id": "d8",
+   "title": "Eligibility criteria built from healthcare-use variables can induce selection through colliders",
+   "category": "ELG",
+   "statement": "An eligibility criterion is a conditioning statement, and conditioning on a variable that is a common effect of treatment and outcome opens a path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables such as a required prior visit, a recorded baseline laboratory value or a minimum enrollment period, all of which can be descendants of the treatment decision or of early disease. Nothing in the current workflow checks an eligibility definition for this property, and the reporting checklist asks what the criteria were rather than what conditioning on them does.",
+   "why_open": "Whether a criterion is a collider depends on the causal structure, which is what the study is trying to learn, so the check cannot be purely empirical. Graph-learning algorithms recover only a Markov equivalence class and are further limited by latent confounding, so they can flag candidates and cannot certify. Removing a criterion also changes the target population, which means the correction has a cost that must be argued clinically rather than statistically.",
+   "prior_work": [
+    {
+     "cite": "Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol 2016;183(8):758-764",
+     "doi_or_url": "10.1093/aje/kwv254",
+     "what_it_does": "Requires eligibility to be specified as a trial would specify it, which is the discipline that makes the collider question askable at all."
+    },
+    {
+     "cite": "Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA 2025",
+     "doi_or_url": "10.1001/jama.2025.13350",
+     "what_it_does": "Requires the eligibility criteria and their emulation to be reported, without requiring an assessment of the selection they induce."
+    }
+   ],
+   "proposed_direction": "Build a causal-discovery eligibility auditor that uses graph learning and temporal rules to flag proposed criteria that are post-treatment, that are colliders, or that encode healthcare use, and treat its output as advisory input to a domain review rather than as an automatic exclusion. Evaluate it on generated graphs with known structure, scoring collider-warning sensitivity, false-positive rate, expert agreement and, most importantly, whether acting on the warnings reduces bias. Never allow an algorithm to define eligibility by maximizing the apparent treatment effect, since that is a search over estimands dressed as a design step.",
+   "priority": "Medium-high",
+   "maturity": "Speculative",
+   "tractability": 3,
+   "severity": "Selection induced at eligibility is invisible downstream and no diagnostic looks for it.",
+   "protocol_component": [
+    "eligibility"
+   ],
+   "data_setting": [
+    "ehr",
+    "claims",
+    "linked"
+   ],
+   "source_locator": "seed-linked.md line 114, the paragraph on eligibility-criterion auditing",
+   "related_hint": [
+    "An unrecorded eligibility criterion is indistinguishable from a criterion that was met",
+    "An unobservable protocol component produces a different, data-defined estimand rather than a noisy version of the intended one"
+   ]
+  }
+ ]
+}

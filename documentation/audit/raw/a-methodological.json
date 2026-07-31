@@ -1,0 +1,249 @@
+{
+ "slice": "seed-methodological",
+ "source": "documentation/seed-linked.md, section 'Methodological open problems' (table rows) and the paragraph that closes it",
+ "extracted_by": "claude-opus-5, reading the full source document",
+ "problems": [
+  {
+   "id": "m1",
+   "title": "No outcome-blind procedure selects the time grid or the grace period",
+   "category": "TZO",
+   "statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act: when eligibility is assessed, when treatment is assigned, and when follow-up begins. It also has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as a schedule of study visits. Clone-censor-weight and sequential emulation both handle the misalignment itself, but neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring is applied; a fine interval produces high-dimensional nuisance models and unstable weights. What does not exist is a procedure that selects either quantity from the treatment and observation processes alone, without touching outcome information, together with a reported measure of how far the estimate would have moved under the alternatives.",
+   "why_open": "The choice is made before any model is fitted, so no model can price it. Selecting the grid or the grace period by fit to the outcome is the one move that would turn it into a statistical problem, and it is exactly the move that induces selection. The clinically meaningful interval is a property of the disease and of the care process rather than of the data, and no purely data-driven criterion recovers it. Published emulations overwhelmingly report a single specification, so the field also lacks the empirical distribution of how much the answer depends on it.",
+   "prior_work": [
+    {
+     "cite": "Hernán MA, Sauer BC, Hernández-Díaz S, Platt R, Shrier I. Specifying a target trial prevents immortal time bias and other self-inflicted injuries in observational analyses. J Clin Epidemiol 2016",
+     "doi_or_url": "10.1016/j.jclinepi.2016.04.014",
+     "what_it_does": "Names the misalignment of eligibility, assignment and follow-up as the source of immortal time bias and shows that specifying the trial removes it. Treats the grace period as given rather than as a quantity to be selected."
+    },
+    {
+     "cite": "Cain LE, Robins JM, Lanoy E, Logan R, Costagliola D, Hernán MA. Using observational data to emulate a randomized trial of dynamic treatment-switching strategies. Int J Epidemiol 2016;45(6):2038-2049",
+     "doi_or_url": "10.1093/ije/dyv295",
+     "what_it_does": "Works an emulation with grace periods and dynamic switching strategies, establishing the design but not a criterion for the grace period's length."
+    },
+    {
+     "cite": "Maringe C, Benitez Majano S, Exarchakou A, et al. Reflection on modern methods: trial emulation in the presence of immortal-time bias. Int J Epidemiol 2020;49(5):1719-1729",
+     "doi_or_url": "10.1093/ije/dyaa057",
+     "what_it_does": "A worked clone-censor-weight example that makes the artificial censoring and its weights explicit."
+    },
+    {
+     "cite": "Tankpinou Zoumenou H, et al. Time Partitioning in Target Trial Emulation. arXiv 2026",
+     "doi_or_url": "https://arxiv.org/abs/2603.15924",
+     "what_it_does": "Identifies inappropriate time partitioning as an unresolved problem in its own right rather than an implementation detail."
+    }
+   ],
+   "proposed_direction": "Build an adaptive time-grid emulation in which intervals are chosen from treatment and visit intensities while outcome labels remain masked, and require a multiverse over plausible time-zero and grace-period definitions rather than one convenient specification. Compare landmarking, sequential trials, continuous-time g-computation, counting-process marginal structural models and clone-censor-weighting on the same generated data, scoring the proportion of within-interval ordering conflicts alongside bias and coverage. Make grid invariance a reported diagnostic: an estimate that moves materially between nested grids is evidence that the discretization is doing work the protocol never authorized.",
+   "priority": "Very high",
+   "maturity": "Emerging",
+   "tractability": 4,
+   "severity": "The choice is made in every emulation, it is usually unreported, and the estimate depends on it.",
+   "protocol_component": [
+    "eligibility",
+    "assignment",
+    "follow-up"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 66, row 'Time zero, grace periods and temporal resolution'",
+   "related_hint": [
+    "No procedure defines clinically defensible equivalence classes of treatment versions",
+    "Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals",
+    "Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved"
+   ]
+  },
+  {
+   "id": "m2",
+   "title": "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+   "category": "GMT",
+   "statement": "Marginal structural models, the parametric g-formula, g-estimation and longitudinal targeted learning all identify sustained-regime effects under sequential exchangeability and positivity, and all of them require nuisance models for treatment, censoring and outcome. When those nuisance models are fitted by machine learning, the model that predicts treatment best is not the model that produces the best causal estimate: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Standard cross-validation selects on prediction loss and is blind to all three. No selection criterion in routine use combines treatment prediction with longitudinal balance, weight dispersion and an estimate of the influence-function remainder, and no default library is tuned for the causal objective rather than the predictive one.",
+   "why_open": "The causal loss is not computable from the data the way a predictive loss is: the counterfactual contrast the estimator targets is never observed, so the quantity one would like to cross-validate against does not exist as a label. Balance and weight-dispersion criteria are computable but are not losses in the decision-theoretic sense and can be optimized by learners that fit poorly. Sequential double robustness is proved under conditions that do not obviously hold when the observation process in electronic health records is itself informative, so the theory that would justify a criterion is incomplete precisely where the data are hardest.",
+   "prior_work": [
+    {
+     "cite": "Robins JM, Hernán MA, Brumback B. Marginal structural models and causal inference in epidemiology. Epidemiology 2000;11(5):550-560",
+     "doi_or_url": "10.1097/00001648-200009000-00011",
+     "what_it_does": "Introduces marginal structural models and inverse probability weighting for time-varying confounding affected by prior treatment. The nuisance models are parametric and their selection is not addressed."
+    },
+    {
+     "cite": "Feuerriegel S, Frauen D, Melnychuk V, et al. Causal machine learning for predicting treatment outcomes. Nat Med 2024;30:958-968",
+     "doi_or_url": "10.1038/s41591-024-02902-1",
+     "what_it_does": "Sets out what causal machine learning can and cannot do, and states that individualized effect estimation rests on the same identification assumptions as conventional methods."
+    },
+    {
+     "cite": "ltmle: Longitudinal Targeted Maximum Likelihood Estimation. CRAN",
+     "doi_or_url": "https://cran.r-project.org/package=ltmle",
+     "what_it_does": "Implements longitudinal TMLE, IPTW and g-computation, and accepts a SuperLearner library whose selection is left to the analyst."
+    }
+   ],
+   "proposed_direction": "Construct SuperLearner libraries whose loss combines treatment prediction with longitudinal standardized differences, weight dispersion and an estimate of the influence-function remainder, and evaluate whether that criterion selects models with lower causal bias than predictive cross-validation on the same data. Compare weighted marginal structural models, sequentially doubly robust estimators, longitudinal TMLE and Bayesian g-computation under deliberate misspecification of each nuisance component in turn. Cross-fit at the patient level rather than the record level, and report the empirical standard error ratio and convergence failures alongside bias, because an estimator that fails to converge on a fifth of replicates is not competitive at any bias.",
+   "priority": "Very high",
+   "maturity": "Promising",
+   "tractability": 4,
+   "severity": "Machine-learned nuisance models are now the default in longitudinal causal analysis and the selection step is where the bias enters.",
+   "protocol_component": [
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "ehr",
+    "claims",
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 67, row 'Time-varying confounding and treatment-confounder feedback'",
+   "related_hint": [
+    "Flexible estimation is presented as a remedy for identification failure",
+    "No estimator is defensible as a default, and no study is required to show that its choice mattered"
+   ]
+  },
+  {
+   "id": "m3",
+   "title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+   "category": "OVL",
+   "statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail, which reduces variance, changes the implicit estimand and can leave substantial bias in place. What the diagnostic does not report is the quantity a reader needs: what fraction of the target population has no support for the strategy under study, which histories are the unsupported ones, and what estimand remains identified once they are set aside. A 2026 study of non-mutually exclusive assignment found that poor overlap defeated adjustment methods that were otherwise well specified, which is the failure mode a weight histogram is least able to show.",
+   "why_open": "Practical positivity is a property of a conditional density over a growing history, so with more than a handful of time points the object to be diagnosed is high-dimensional and cannot be plotted. Truncation is attractive precisely because it converts an identification failure into a variance reduction, which reads as a modelling improvement rather than as a change of question. There is also no agreed target: reporting the unsupported fraction requires deciding what counts as support, and any threshold is a decision about the estimand that nobody currently has to state.",
+   "prior_work": [
+    {
+     "cite": "Target trial emulation under nonmutually exclusive assignment. Am J Epidemiol 2026;195(4):1045",
+     "doi_or_url": "10.1093/aje/kwaf018",
+     "what_it_does": "Shows that poor overlap can defeat advanced adjustment methods, in a setting where assignment to strategies is not mutually exclusive."
+    },
+    {
+     "cite": "lmtp: Non-Parametric Causal Effects of Feasible Interventions Based on Modified Treatment Policies. CRAN",
+     "doi_or_url": "https://cran.r-project.org/package=lmtp",
+     "what_it_does": "Implements modified treatment policies and stochastic interventions for binary, categorical, continuous and multivariate treatments with censored outcomes and competing risks, which is the estimand class that restores positivity."
+    }
+   ],
+   "proposed_direction": "Replace deterministic interventions that the data cannot support with modified treatment policies, incremental propensity-score interventions or stochastic initiation rules, and state the trade in the paper rather than in the weight truncation. Report a causal support map over patient histories: the fraction of the target population with adequate support, which histories fail, and the estimand that survives. Derive partial-identification bounds for the unsupported strata, and set overlap-aware eligibility criteria before any outcome analysis so that restricting the population is a design decision with a date rather than a result.",
+   "priority": "Very high",
+   "maturity": "Promising",
+   "tractability": 4,
+   "severity": "A precise estimate produced by extrapolation into regions with no data is not evidence, and nothing in the standard report distinguishes it from one that is.",
+   "protocol_component": [
+    "treatment-strategies",
+    "causal-contrast"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md lines 68 and 73",
+   "related_hint": [
+    "Flexible estimation is presented as a remedy for identification failure",
+    "Large databases yield small effective samples after eligibility, comparator restriction and weighting",
+    "Sensitivity analyses vary one violated assumption at a time when several are violated together"
+   ]
+  },
+  {
+   "id": "m4",
+   "title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+   "category": "UCF",
+   "statement": "Specifying a target trial prevents the temporal biases an analyst inflicts on themselves; it does not create randomization. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurements all reduce residual confounding without guaranteeing exchangeability. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, exist separately and are not part of any standard emulation workflow: there is no agreed order in which to apply them, no convention for reporting what each one bought, and no accepted way to combine their answers when they disagree. Covariate balance continues to be reported as though it bore on unmeasured confounding, which it does not.",
+   "why_open": "Each of these tools identifies under assumptions that are themselves untestable and that differ from one another, so combining them is not a matter of adding evidence but of reconciling incompatible identification stories. A negative control shares only some of the confounding mechanisms of the primary outcome, and how much is not knowable from the data. Proximal methods need proxies satisfying completeness-type conditions that cannot be checked, and weak proxies produce unstable estimates that look like precision loss rather than assumption failure. Validation subsamples are rarely random, which imports a second selection problem into the correction for the first.",
+   "prior_work": [
+    {
+     "cite": "Hubbard RA, Hernán MA. \"Target trial emulation\" for observational studies: potential and pitfalls. N Engl J Med 2024",
+     "doi_or_url": "10.1056/NEJMp2407586",
+     "what_it_does": "States plainly that emulation removes design-induced bias and leaves confounding, which is the boundary this problem sits on."
+    },
+    {
+     "cite": "Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol 2016;183(8):758-764",
+     "doi_or_url": "10.1093/aje/kwv254",
+     "what_it_does": "The foundational framework: it specifies the seven protocol components and their observational mapping, and locates confounding outside what the framework itself resolves."
+    }
+   ],
+   "proposed_direction": "Develop a proximal emulation in which treatment-inducing and outcome-inducing proxies are declared in the protocol alongside the negative controls, and estimate the primary effect under the proximal identification conditions as well as the conventional ones. Report the conventional estimate next to E-values, bias functions, Rosenbaum-style sensitivity models, tipping-point analyses and priors on unmeasured confounding, all keyed to the same estimand so the reader sees one quantity under several assumption sets. Establish, by simulation, how far negative-control calibration transfers when the control shares only part of the confounding structure, because that is the assumption the method makes and never states.",
+   "priority": "Very high",
+   "maturity": "Promising",
+   "tractability": 3,
+   "severity": "This is the assumption on which every emulation ultimately rests and the one the framework does nothing to secure.",
+   "protocol_component": [
+    "assignment",
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 69, row 'Residual and unmeasured confounding'",
+   "related_hint": [
+    "Sensitivity analyses vary one violated assumption at a time when several are violated together",
+    "Learned embeddings from clinical text can carry post-treatment information into a baseline adjustment set"
+   ]
+  },
+  {
+   "id": "m5",
+   "title": "No procedure defines clinically defensible equivalence classes of treatment versions",
+   "category": "STR",
+   "statement": "A per-protocol effect requires censoring at deviation and weighting for the informative censoring that censoring creates. Beneath that mechanics sits a question the mechanics assume away: what counts as the same treatment. Real treatments differ by dose, route, provider, formulation, combination and adherence pattern, and two regimens sharing a label may not satisfy consistency. Clone-censor-weight handles the case where baseline assignment is genuinely ambiguous, at the cost of data expansion, artificial censoring and sensitivity to the censoring model, but it takes the strategy definition as given. There is no guidance for constructing defensible equivalence classes of treatment versions, and none for overlapping combination therapies where a patient is simultaneously compatible with more than one labeled strategy.",
+   "why_open": "Consistency is an assumption about the world rather than about the data, so no amount of data adjudicates whether two versions are the same treatment. The clinical judgment that would adjudicate it is specific to the drug, the indication and the era, which makes a general criterion the wrong shape for the problem. Making the versions explicit also multiplies the strategies, and each additional strategy costs positivity, so the honest specification is often the one the data cannot support.",
+   "prior_work": [
+    {
+     "cite": "Gaber CE, Ghazarian AA, Strassle PD, et al. De-mystifying the clone-censor-weight method for causal research using observational data. Cancer Med 2024",
+     "doi_or_url": "10.1002/cam4.70461",
+     "what_it_does": "A didactic account of cloning, artificial censoring and censoring weights, including the computational cost and the sensitivity to the censoring model."
+    },
+    {
+     "cite": "Cain LE, Robins JM, Lanoy E, Logan R, Costagliola D, Hernán MA. Using observational data to emulate a randomized trial of dynamic treatment-switching strategies. Int J Epidemiol 2016;45(6):2038-2049",
+     "doi_or_url": "10.1093/ije/dyv295",
+     "what_it_does": "Defines dynamic switching strategies precisely enough to emulate, which is the closest existing template for specifying what a strategy includes."
+    },
+    {
+     "cite": "lmtp: Non-Parametric Causal Effects of Feasible Interventions Based on Modified Treatment Policies. CRAN",
+     "doi_or_url": "https://cran.r-project.org/package=lmtp",
+     "what_it_does": "Supports continuous and multivariate treatments, which is the representation a dose-and-adherence strategy needs."
+    }
+   ],
+   "proposed_direction": "Use hierarchical treatment ontologies and latent treatment-version models so that the equivalence class is an explicit, versioned object rather than an implicit one, and estimate the joint effect of initiation, dose and adherence through longitudinal modified treatment policies rather than through a single binary strategy. Use causal discovery only to generate hypotheses about which versions are consequential; final strategy definitions must stay clinically specified, because a version set chosen to maximize the apparent effect is a result rather than a design. Quantify, by simulation, how much bias a wrong equivalence class induces relative to the positivity cost of the correct one, since that trade is the actual decision.",
+   "priority": "High",
+   "maturity": "Emerging",
+   "tractability": 3,
+   "severity": "Consistency failures are invisible in the output: the estimate is precise and the estimand is not the one named.",
+   "protocol_component": [
+    "treatment-strategies",
+    "causal-contrast"
+   ],
+   "data_setting": [
+    "claims",
+    "ehr",
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 70, row 'Adherence, switching, discontinuation and multiple treatment versions'",
+   "related_hint": [
+    "No outcome-blind procedure selects the time grid or the grace period",
+    "Emulation is proposed for non-pharmaceutical and policy interventions whose treatment versions and assignment units are not defined"
+   ]
+  },
+  {
+   "id": "m6",
+   "title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+   "category": "OUT",
+   "statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations nonetheless default to cause-specific hazards or censor competing events without matching the estimator to the causal question, and recurrent and terminal events are seldom modeled jointly. The step where an analyst censors follow-up at death is an identifying decision that selects among these estimands, and it is normally executed silently inside data preparation, where no reviewer sees it as a decision at all.",
+   "why_open": "The estimands differ in what they assume rather than in what they fit, so a wrong choice produces a well-behaved analysis of the wrong quantity and nothing downstream flags it. Separable effects require decomposing a treatment into components whose separate effects are meaningful, which is a substantive claim about the drug that most applied settings cannot support. Recurrent-event and terminal-event models are available but their combination with sustained-strategy emulation is not worked out, so the analyst choosing correctly on competing risks may have no estimator for the regime they wanted.",
+   "prior_work": [
+    {
+     "cite": "ICH E9(R1) addendum on estimands and sensitivity analysis in clinical trials",
+     "doi_or_url": "https://www.ema.europa.eu/en/ich-e9-statistical-principles-clinical-trials-scientific-guideline",
+     "what_it_does": "Requires explicit specification of the strategy for each intercurrent event, which is the discipline that the emulation literature has not yet inherited."
+    },
+    {
+     "cite": "lmtp: Non-Parametric Causal Effects of Feasible Interventions Based on Modified Treatment Policies. CRAN",
+     "doi_or_url": "https://cran.r-project.org/package=lmtp",
+     "what_it_does": "Supports censored outcomes and competing risks for modified treatment policies, one of the few implementations where the competing event is part of the estimand rather than a preprocessing step."
+    }
+   ],
+   "proposed_direction": "Prespecify the estimand as a cumulative incidence, a restricted mean event-free time or a recurrent-event contrast, and name the intercurrent-event strategy for each competing event before the analysis. Compare multistate g-computation, joint frailty models, separable effects and recurrent-event targeted learning on data generated with a known competing-event structure, so the cost of the default is measured rather than asserted. Require that any censoring at a competing event be justified in the protocol as an identifying choice, with the estimand it implies stated, which turns a data-cleaning line into a reviewable claim.",
+   "priority": "High",
+   "maturity": "Established",
+   "tractability": 4,
+   "severity": "The default is silent, common, and changes the question rather than the precision.",
+   "protocol_component": [
+    "outcome",
+    "causal-contrast",
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "any"
+   ],
+   "source_locator": "seed-linked.md line 71, row 'Competing events, recurrent outcomes and informative censoring'",
+   "related_hint": [
+    "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible"
+   ]
+  }
+ ]
+}
