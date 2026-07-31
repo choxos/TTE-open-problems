@@ -43,11 +43,12 @@ function frontMatter(text) {
 }
 
 function main() {
-  if (!existsSync(PROBLEMS)) {
-    console.error('No problems/ directory. Run build/render_site.mjs first.')
-    process.exit(1)
-  }
-  const files = readdirSync(PROBLEMS).filter((f) => f.endsWith('.qmd'))
+  // An absent problems/ and an empty problems/ are the same state, because git does not track
+  // an empty directory: a fresh clone of a repository whose registry is still empty has no
+  // problems/ at all. Both are handled together below.
+  const files = existsSync(PROBLEMS)
+    ? readdirSync(PROBLEMS).filter((f) => f.endsWith('.qmd'))
+    : []
   if (!files.length) {
     // An empty registry is the state before the first audit has run, and the
     // site is expected to build and deploy in that state. Only treat it as a
