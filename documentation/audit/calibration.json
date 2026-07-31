@@ -174,11 +174,12 @@
   {
    "ref": "F",
    "type": "PROVENANCE",
-   "claim": "Any claim whose only support is one of the seven source references that could not be resolved.",
+   "claim": "Any claim whose only support is a source reference that resolves to nothing, or whose cited work does not say what the entry attributes to it.",
    "expected_verdict": "unverifiable",
-   "ground_truth": "documentation/audit/seed-citations.json marks seven of the 35 source references with \"confidence\": \"none\". They sit behind publisher pages that block automated access and no search result matched their prose context.",
+   "ground_truth": "documentation/audit/seed-citations.json now resolves all 35 source references to a DOI, an arXiv id or a named guidance document; seven of them were unresolvable before the harvest made the corpus searchable and were resolved by taking the DOI's redirect and checking it lands on the exact URL the source cited. The fixture therefore tests the rule rather than a current instance: an entry resting on a reference nobody has read must not ship as confirmed open.",
    "ground_truth_file": "documentation/audit/seed-citations.json",
-   "why_it_is_a_fixture": "An entry resting only on a reference nobody has read must not ship as confirmed open. This is the fixture that keeps the unresolved references from leaking into the catalog as though they were checked."
+   "why_it_is_a_fixture": "An entry resting only on a reference nobody has read must not ship as confirmed open. The seven originally unresolved references were resolved rather than cited unread, so this fixture currently has no instance in the registry. It is kept because the next source document will have its own unresolvable citations, and because a fixture that only exists while it is failing is not a fixture.",
+   "currently_instantiated": false
   }
  ]
 }
