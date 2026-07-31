@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Turns the canonical registry into batched prompt files for the two external auditors.
+// Turns the canonical registry into batched prompt files for the external auditors.
 //
 // The auditors are slow (minutes per call), so problems are batched. Batches are grouped
 // by category: a batch of related problems shares context, and one failed call loses six
@@ -14,6 +14,12 @@ import { fileURLToPath } from 'node:url'
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const AUDIT = join(ROOT, 'documentation/audit')
 const CANONICAL = join(AUDIT, 'canonical/problems.json')
+
+// The roster, in one place. run_external_auditors.sh dispatches on these names and
+// adjudicate.mjs weights majorities by how many of them actually returned an opinion,
+// so a name added here without a header below fails loudly rather than silently
+// shrinking every majority.
+const EXTERNAL_AUDITORS = ['codex', 'grok', 'glm']
 
 const sizeArg = process.argv.indexOf('--size')
 const BATCH_SIZE = sizeArg > -1 ? Number(process.argv[sizeArg + 1]) : 6
@@ -236,7 +242,7 @@ function main() {
     }
   }
 
-  for (const auditor of ['codex', 'grok', 'glm']) {
+  for (const auditor of EXTERNAL_AUDITORS) {
     const dir = join(AUDIT, 'auditors', auditor, 'prompts')
     mkdirSync(dir, { recursive: true })
     mkdirSync(join(AUDIT, 'auditors', auditor, 'out'), { recursive: true })
@@ -251,7 +257,7 @@ function main() {
     }
   }
 
-  console.log(`${problems.length} problems -> ${batches.length} batches of <=${BATCH_SIZE}, x2 auditors = ${batches.length * 2} CLI calls`)
+  console.log(`${problems.length} problems -> ${batches.length} batches of <=${BATCH_SIZE}, x${EXTERNAL_AUDITORS.length} auditors (${EXTERNAL_AUDITORS.join(', ')}) = ${batches.length * EXTERNAL_AUDITORS.length} CLI calls`)
   console.log('Batches:', batches.map((b) => `${b.id}(${b.problems.length})`).join(' '))
 }
 
