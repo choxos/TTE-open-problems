@@ -1,0 +1,535 @@
+{
+ "batch": "core-11",
+ "papers": [
+  {
+   "id": "L0241",
+   "read": true,
+   "doi": "10.1093/ije/dyae176",
+   "title": "Illustrating the structures of bias from immortal time using directed acyclic graphs.",
+   "relevance": "high",
+   "one_line": "Identifies misalignment of exposure allocation and eligibility as the single cause of immortal time, resolves the resulting bias into confounding by survival or selection on survival, and shows that excluding the immortal period does not remove either.",
+   "what_was_done": "Immortal time bias has been named many ways and warned against for decades without a systematic account of its causes and structures. Using the question of whether winning a Nobel Prize prolongs lifespan, the paper illustrates how immortal time arises and draws the resulting bias structures as directed acyclic graphs with time-varying variables. Its central claim is that there is one fundamental cause, misalignment of exposure allocation and eligibility, arising either from using post-eligibility information to define exposure or from using post-exposure information to define eligibility. The two structures that follow are distinct: confounding by survival until exposure allocation, and selection bias from selecting on survival until eligibility. Two further results follow from the graphs. Excluding the immortal time from follow-up, which is the common repair, does not fully remove either the confounding or the selection bias, because the structure is not created by counting person-time and is not removed by recounting it. And the presence of competing risks can worsen the bias. The recommended remedies are aligning baseline, exposure allocation and eligibility, and excluding individuals with prior exposure. The paper discusses how these structures are shared across pharmacoepidemiologic designs.",
+   "future_research": [
+    {
+     "gap": "Solutions are offered where possible, which leaves cases where the structures are present and no remedy is given.",
+     "kind": "implied",
+     "quote": "We discuss how these structures are shared by different study designs in pharmacoepidemiology and provide solutions, where possible, to address the bias.",
+     "locator": "Abstract, Methods"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The entry says nothing outcome-blind selects the timing an emulation must fix. This supplies the structural reason alignment is the right target: immortal time has one cause, misalignment of exposure allocation and eligibility, and it produces confounding or selection depending on which direction the misalignment runs. Reading the bias as a structure rather than as miscounted person-time also yields a result the counting view misses, that excluding the immortal period leaves the bias in place. What it does not supply is a procedure for the cases where alignment is impossible, or for the grace period and the time grid.",
+     "quote": "The fundamental cause of immortal time is misalignment of exposure allocation and eligibility. Specifically, immortal time arises from using post-eligibility information to define exposure or using post-exposure information to define eligibility.",
+     "locator": "Conclusion"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Competing risks are shown to make the bias worse rather than to interact with it neutrally, so an analysis that censors at a competing event and separately corrects the immortal time has not addressed either problem in isolation. The graphs make the interaction visible, and the paper offers no remedy for the combination beyond the alignment it recommends for the timing alone.",
+     "quote": "Excluding immortal time from follow-up does not fully address this confounding or selection bias, and the presence of competing risks can worsen the bias.",
+     "locator": "Abstract, Results"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0246",
+   "read": true,
+   "doi": "10.1186/s12874-024-02396-y",
+   "title": "The hazard of using the Poisson model to cope with immortal time bias in the case of time-varying hazard.",
+   "relevance": "high",
+   "one_line": "Simulation showing that the Poisson model, a standard remedy for immortal time, gives biased exposure effects whenever the outcome risk trends over time, with the direction of bias set by the direction of the trend.",
+   "what_was_done": "A time-dependent analysis by Poisson or Cox regression is the usual way to prevent immortal time bias, but the Poisson model assumes a constant event rate. Survival times were simulated from Weibull distributions with the shape parameter set so the hazard was constant, decreasing or increasing, with a dichotomous time-varying exposure allowing at most one switch from unexposed to exposed, and the Poisson model was fitted to recover the exposure effect. Five results follow. The estimate is already biased after minor departures from a constant hazard. The bias is not marginal: the exposure effect can be amplified, reduced, masked or reversed. Its direction is predictable, with the Poisson estimate below the truth when risk declines over time and above it when risk rises. This holds regardless of the true exposure effect. And the magnitude grows with the prevalence of exposure and with the time to exposure. A companion real-world pregnancy analysis illustrates the consequence: the Poisson model suggested more than a 50 percent increased risk of neonatal outcomes with antibiotic use, where a meta-analysis of trials finds none, and the Cox model found no association for one outcome. The recommended repair is to adjust for the trend by splitting follow-up into intervals of constant rate, which requires choosing the number and the boundaries of those intervals.",
+   "future_research": [
+    {
+     "gap": "Choosing how many follow-up intervals to use and where their boundaries fall is acknowledged as difficult and no procedure is given.",
+     "kind": "stated",
+     "quote": "the model should adjust for the trend in outcome risk by identifying intervals of follow-up time in which the event rate is constant; however, the choice of the number of intervals as well as the position of the endpoints of each interval could be challenging [ 25 ]",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "The simulations assume no confounding, a fixed exposure effect, one switch from unexposed to exposed, and no competing risks.",
+     "kind": "stated",
+     "quote": "Finally, more complex real-world scenarios, such as competing risks, were not explored in our study.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "One of the two standard remedies for immortal time carries an assumption unrelated to timing, a constant hazard, and violating it slightly is enough to amplify, mask or reverse the exposure effect. The direction is predictable from the trend in outcome risk, which means a reader who knows the disease can often say which way an estimate is wrong and cannot recover the right one. In the applied example the two remedies disagreed and only the Cox result matched randomized evidence.",
+     "quote": "Second, the bias introduced using the Poisson model is not marginal since the exposure effect may be amplified, reduced, masked, or even reversed.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The recommended repair replaces one timing decision with another: splitting follow-up into intervals within which the rate can be taken as constant, with the number of intervals and their boundaries left to the analyst and acknowledged as challenging. The grid is therefore chosen against the behavior of the outcome hazard, which is exactly the quantity a study is trying to estimate the effect on.",
+     "quote": "Therefore, a careful assessment of intervals of follow-up time in which the outcome risk is constant is essential to fit the Poisson model.",
+     "locator": "Conclusion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0249",
+   "read": true,
+   "doi": "10.1289/ehp13891",
+   "title": "Using Parametric g-Computation for Time-to-Event Data and Distributed Lag Models to Identify Critical Exposure Windows for Preterm Birth: An Illustrative Example Using PM2.5 in a Retrospective Birth Cohort Based in Eastern Massachusetts (2011-2016).",
+   "relevance": "high",
+   "one_line": "Unifies parametric g-computation for survival data with distributed lag models so that an environmental exposure averaged over pregnancy no longer encodes the length of pregnancy, halving the estimated number of preterm births prevented.",
+   "what_was_done": "Studies of air pollution and preterm birth usually treat prematurity as binary and assign each pregnancy its average exposure over gestation, which makes both exposure and outcome functions of how long the pregnancy lasted. The paper shows this is immortal time bias with an unusual property: because pollutants have seasonal and secular trends, a preterm and a term pregnancy conceived in the same season receive systematically different averages, and the direction of the resulting spurious association flips with the season of conception. The proposed g-survival-DLM approach fits a separate distributed lag model in each weekly risk set within a parametric g-computation for survival, so that gestational age cannot predict the exposure value and the effects of exposure in specific gestational weeks remain estimable. Applied to 9,403 deliveries at one Boston hospital from 2011 to 2016, with 762 preterm births at 8.1 percent and weekly median PM2.5 near 7 micrograms per cubic meter, a hypothetical 20 percent weekly reduction changed the cumulative risk at week 36 by minus 0.009, with an interval of minus 0.034 to 0.007, about 86 fewer preterm births. The traditional approach applied to the same data gave 176, roughly double. Weeks 5 to 20 appeared to be the critical window. R syntax is provided.",
+   "future_research": [
+    {
+     "gap": "The approach removes immortal time and leaves live birth bias, since fetuses had to survive to week 28 to enter the first risk set.",
+     "kind": "stated",
+     "quote": "Because of this, although our approach prevents ITB, there is still “prevalent-user bias” also called “live birth bias” 37 in this specific context, in that, fetuses needed to have survived to week 28 to be even considered in the first risk set (i.e., we are implicitly conditioning on no pregnancy loss). 37",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Splines constraining the lag-response can oversmooth at the ends, so the estimates for the earliest and latest weeks need caution.",
+     "kind": "stated",
+     "quote": "the use of natural splines to constrain the distributed lag function can lead to potential oversmoothing near the ends of the lag-response. 25",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The entry says nothing outcome-blind selects the timing, and this identifies a case where the exposure definition itself encodes the outcome: an average over follow-up is a function of how long follow-up lasted. The fix is structural rather than a tuning parameter, comparing pregnancies within each weekly risk set so gestational age cannot predict exposure, and it changes the answer by a factor of two. The direction of the bias here depends on the season of conception and the exposure's own trend, which the paper notes makes it unlike the usual immortal time.",
+     "quote": "That is, exposure assignment is made using information that occurs after baseline (i.e., the length of follow-up), which creates a misalignment between exposure assignment and “time zero” 9 , 10",
+     "locator": "Introduction"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Averaging exposure over the whole pregnancy assigns the same value to two people with entirely different exposure histories, which the paper points out is a problem because the timing of exposure is likely to matter. The distributed lag machinery lets the effect differ between someone exposed in weeks 10 to 20 and someone exposed in weeks 20 to 30 with the same average, which is a partitioning of the exposure into versions rather than a procedure for deciding which versions belong together.",
+     "quote": "Such an analysis would conflate the risks of two individuals with the same average exposure but very different exposure histories throughout pregnancy, which is potentially problematic because the timing of exposure is likely important.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The paper argues that even a time-varying hazard ratio would not show when an effect manifests, because each week-specific estimate conditions on having survived to that week, so susceptible individuals are continuously depleted. Its own reporting is cumulative risk by follow-up week under a named intervention instead. The quantity that survival studies in this literature usually report is therefore not the quantity the question calls for, and the substitution is argued rather than conventional.",
+     "quote": "Even if we were to plot the time-varying HR, it would still be hard to identify when the effect manifests due to the built-in selection bias of the HR, whereby susceptible individuals are continually depleted from the original population when moving through pregnancy",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0254",
+   "read": true,
+   "doi": "10.1016/j.deman.2023.100193",
+   "title": "Addressing common sources of bias in studies of new-onset type 2 diabetes following COVID that use electronic health record data.",
+   "relevance": "high",
+   "one_line": "Works through misclassification, selection, surveillance, immortal time and confounding in electronic health record studies of diabetes after COVID, where published estimates of excess risk span 11 to 276 percent.",
+   "what_was_done": "Estimates of the association between prior COVID infection and new-onset type 2 diabetes come almost entirely from electronic health record cohorts and range from 11 to 276 percent excess risk, a spread the viewpoint attributes partly to bias. Five sources are worked through with the mechanism made specific to this question. Misclassification of prevalent diabetes runs in both directions: people who tested positive for COVID had more prior outpatient visits, 23 against 19 in one Veterans Affairs cohort, so prevalent diabetes was more likely to have been detected and excluded from that group, biasing the association downward, while prevalent diabetes also predicts testing positive, so unrecognized cases may be more common in the positive group, biasing upward. Immortal time arises because being in the COVID group requires surviving to the diagnosis date while the comparison group has no such condition, and a design that starts follow-up at the pandemic declaration puts that interval in the denominator for the infected only. Two remedies are given: a time-lagged approach removing the initial period from both groups with index dates matched on the distribution of follow-up time in the infected group, or a time-dependent Cox model with COVID as a time-varying variable, with non-cardiovascular death as a competing risk. Confounding by differential access to care is the mechanism that would produce a spurious association through greater opportunity for detection.",
+   "future_research": [
+    {
+     "gap": "The relative sizes of the two opposing misclassification biases in the existing literature are unknown.",
+     "kind": "stated",
+     "quote": "The relative impacts of these two forms of misclassification of prevalent diabetes in existing research on diabetes following COVID are unknown.",
+     "locator": "Selection and misclassification"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The outcome here is detected diabetes, and detection requires a glucose test, which requires a visit. The viewpoint shows the visit process differs by exposure before the study starts, 23 against 19 outpatient visits in the prior year, and that this shifts both who is excluded as prevalent and who is counted as incident. The observation process is not a nuisance around the outcome; it partly constitutes it, and no adjustment listed addresses that.",
+     "quote": "In EHR cohorts, it is not feasible to require that all individuals undergo glucose testing prior to enrollment; thus, for many participants, prior glucose status is not known and accurately determining who does and does not have prevalent diabetes at the start of the study can be difficult.",
+     "locator": "Selection and misclassification"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A design that seems natural, follow everyone from the pandemic declaration and compare those who caught COVID against those who did not, makes the infected immortal until their diagnosis date. The proposed repair requires matching index dates on the distribution of follow-up time in the infected group, that is, choosing the unexposed clock from the exposed group's observed timing, which is a construction rather than a rule the data supply.",
+     "quote": "To ensure consistency between groups, individuals with and without COVID would need to be matched on an index date, ideally informed by the distribution of follow-up time in the COVID group.",
+     "locator": "Immortal time bias"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Whether someone already had diabetes at baseline is a phenotype inferred from records that were never designed to establish it, and the viewpoint shows the error is differential by exposure and can bias the estimate in either direction depending on which mechanism dominates. Neither direction is quantified in the existing literature, so the error enters as an acknowledged unknown rather than as a propagated quantity.",
+     "quote": "If this form of bias is present, relatively more individuals with recently detected prevalent diabetes may be excluded from the COVID-positive group compared to the COVID-negative group, leading to a biased underestimate of the association between COVID and diabetes incidence.",
+     "locator": "Selection and misclassification"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0257",
+   "read": true,
+   "doi": "10.3389/fcvm.2023.1270608",
+   "title": "Analysis of immortal-time effect in post-infarction ventricular septal defect.",
+   "relevance": "medium",
+   "one_line": "Shows that the apparent survival benefit of closing a post-infarction ventricular septal defect, a hazard ratio of 0.13 under a time-fixed analysis, disappears entirely under a time-varying one.",
+   "what_was_done": "Post-infarction ventricular septal defect carries high mortality, and observational studies have compared surgical or transcatheter closure against conservative management using time-fixed analyses. This retrospective cohort of 80 patients at one Mexican tertiary center comprised 26 surgical closures, 20 transcatheter closures and 34 managed conservatively. The groups differed sharply at presentation: patients not closed had high-risk characteristics, developed the defect fastest after infarction, at a median of 2.0 against 4.0 days, and arrived at hospital fastest, at 0.8 against 5.0 to 6.0 days, while the median time from infarction to closure was 22.0 days. In-hospital mortality was 88.2 percent without closure against 50 and 35 percent with surgical and transcatheter closure. A time-fixed Cox analysis gave hazard ratios of 0.13 for both closure routes, with intervals of 0.05 to 0.31 and 0.04 to 0.36. A time-varying analysis gave 0.95 and 0.88, with intervals spanning one. The paper reads the difference as immortal time bias: the interval between infarction and closure is time during which a patient must survive to be classified as closed. It also reports that closure within 14 days carried a 2.57-fold higher mortality risk, consistent with registry evidence that early repair is worse.",
+   "future_research": [
+    {
+     "gap": "The role of mechanical circulatory support and of early transplantation in very high-risk cases is unstudied and would need the same time-dependent treatment.",
+     "kind": "stated",
+     "quote": "On the way forward, it will be important to establish the role of the distinct mechanical circulatory support devices and also consider the heart transplant as an early option in patients with very high-risk post-AMI VSD, for which, until now there is limited information and the application of time-dependent variable analysis, this could give a true value in the treatment of these patients ( 24 , 25 ).",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A hazard ratio of 0.13 becomes 0.95 in the same 80 patients when the exposure is made time-varying. The interval at issue is a median of 22 days from infarction to closure in a condition whose untreated mortality approaches 90 percent, so almost the whole apparent benefit is the requirement to survive long enough to be operated on. Nothing in the time-fixed output signals this, and the comparison is a standard one in this literature.",
+     "quote": "However, when employing a time-varying method, this association was not observed (HR = 0.95, 95% CI 0.45–1.98, P  = 0.90, and HR 0.88, 95% CI 0.41–1.87, P  = 0.74, for surgery and transcatheter closure, respectively).",
+     "locator": "Abstract, Results"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Correcting the timing leaves the reason for the timing untouched. Patients who were never closed presented within a day of infarction with high-risk features and developed the defect fastest, while those closed arrived five days later with better hemodynamics and were repaired at three weeks. Waiting is both the treatment strategy and a marker of being well enough to wait, and the time-varying analysis separates the person-time without separating those two.",
+     "quote": "These results align with earlier observations indicating a management selection bias and the confounding effects of survivorship bias, with delayed repair likely due to a more stable and fibrotic myocardium but also due to survival bias because the patients who are most likely to die early are removed from the analyses ( 16 ).",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0259",
+   "read": true,
+   "doi": "10.1002/mpr.1983",
+   "title": "Are early post-discharge physician contacts associated with 30-day psychiatric re-hospitalisation? A nationwide claims data based retrospective cohort study in Austria free of immortal time bias.",
+   "relevance": "medium",
+   "one_line": "Estimates the association between early post-discharge physician contact and 30-day psychiatric readmission with contacts as time-dependent covariates, and cautions against a causal reading because severity was unmeasured.",
+   "what_was_done": "Studies of whether early outpatient contact prevents psychiatric readmission have either ignored the time-dependent nature of the contact or avoided the problem by studying late readmissions only. This retrospective cohort used nationwide Austrian claims data for 10,689 adults discharged from acute psychiatric wards, followed for 30 days, with post-discharge psychiatric and general practitioner contacts entered as time-dependent covariates in Cox models. Within 30 days, 17.3 percent saw an office psychiatrist and 68.5 percent saw a general practitioner, with three in four of the latter contacts occurring in the first week; 13.6 percent were readmitted. A first physician contact was associated with a reduced readmission rate, hazard ratio 0.77 with an interval of 0.69 to 0.87, with similar contributions from general practitioners and psychiatrists. The time-dependent handling let early readmissions stay in the analysis, which the paper notes are a substantial fraction of the total and are omitted from the published registry studies it lists. The conclusion is explicitly cautious: disease severity was unavailable, lower severity could raise both access to services and the chance of staying out of hospital, and an Australian study found the opposite direction because teams selected high-risk patients for early follow-up. The paper criticizes the causal language used in the titles of comparable studies.",
+   "future_research": [
+    {
+     "gap": "Stronger causal claims would need a target trial approach and confounder information the claims data do not contain.",
+     "kind": "stated",
+     "quote": "could allow for stronger causal claims, but would rely on more detailed information on potential confounders, which is not available in our data set",
+     "locator": "Section 4.2"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The published literature on this question deals with the timing problem by studying late readmissions instead, which removes the bias by removing the outcome of interest. Early readmissions are a substantial share of the total, so the design convention has kept the question that matters out of the evidence base rather than answering it wrongly.",
+     "quote": "This approach allowed to include also early re‐hospitalisations, which are a substantial fraction of total re‐hospitalisations, but are omitted in published registry‐based retrospective cohort studies on the association of early post‐discharge ambulatory contacts with psychiatric re‐hospitalisation",
+     "locator": "Section 4.2"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Removing the timing bias leaves the substantive one: severity is not in claims data, it plausibly drives both whether a patient reaches an outpatient clinician and whether they are readmitted, and a cited Australian study found the reverse association because clinicians selected high-risk patients for early follow-up. The paper's response is to withhold the causal reading, which is honest and is not a measurement of the residual.",
+     "quote": "A lower severity of the illness at baseline could have been related to both, a higher ability to access services and a reduced re‐hospitalisation rate",
+     "locator": "Section 4.2"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0261",
+   "read": true,
+   "doi": "10.1093/aje/kwad135",
+   "title": "Immortal Time Bias With Time-Varying Exposures in Environmental Epidemiology: A Case Study in Lung Cancer Survival.",
+   "relevance": "high",
+   "one_line": "Shows that encoding attained follow-up into exposure through averages, minimums or maximums creates immortal time in environmental studies, and that a discrete-time analysis removes an apparent effect of air pollution on lung cancer survival along with its apparent modification by stage.",
+   "what_was_done": "Immortal time bias is rarely discussed in environmental epidemiology, where exposure is often summarized over the follow-up period. Under the target trial framework the paper formalizes the problem as a misalignment between the start of follow-up and treatment assignment, occurring whenever attained duration of follow-up is encoded into the exposure by taking a minimum, maximum or average. It applies a discrete-time analysis, using monthly exposure over follow-up, to lung cancer cases in the California Cancer Registry from 2000 to 2010, adjusting for age, sex, relationship status, race and ethnicity, treatment in the first six months, histology, month and year of diagnosis and socioeconomic quintile. The naive approach, using average exposure over follow-up, reproduced estimates similar in magnitude to published studies, in one of which hazard ratios per standard deviation of average PM2.5 were 1.38, 1.26 and 1.10 for localized, regional and distant disease. The discrete-time analysis found little evidence that post-diagnosis exposure affects survival, and the apparent modification by stage disappeared. The paper attributes the bias to the strong downward trend in PM2.5 over the study period, which makes longer follow-up mechanically produce lower averages, and attributes the apparent stage gradient to larger differences in survival time among localized cases.",
+   "future_research": [
+    {
+     "gap": "Doubly robust and matched estimators could handle time-varying exposure and confounding more flexibly in this setting and were not used.",
+     "kind": "stated",
+     "quote": "Note that alternative analytical strategies could\nhave been used to flexibly handle time-varying exposures\nand confounders in a discrete-time setting, such as doubly\nrobust approaches including augmented inverse probability\nof treatment weighting or doubly matched estimators\n(30).",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Any summary of exposure over follow-up carries the length of follow-up inside it, so a study that assigns each person their average exposure has made the outcome a determinant of the exposure. Here the trend in the pollutant supplies the direction: falling concentrations mean longer survivors get lower averages, which manufactures a hazard ratio above one. Correcting it removes both the effect and its apparent modification by disease stage, so a substantive subgroup finding was an artifact of differential follow-up length.",
+     "quote": "This misalignment can occur when attained duration\nof follow-up is encoded into treatment assignment using minimums, maximums, or averages.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Published estimates in this literature are hazard ratios per standard deviation of an average exposure over follow-up, a quantity that names no intervention and whose definition depends on how long each person was observed. The paper proposes these estimates are driven by the bias, which means the numbers being reported and interpreted correspond to no causal contrast at all.",
+     "quote": "We propose that these effect\nestimates are probably driven by ITB.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0262",
+   "read": true,
+   "doi": "10.1186/s12874-023-02000-9",
+   "title": "Implementation of the trial emulation approach in medical research: a scoping review.",
+   "relevance": "high",
+   "one_line": "Scoping review of 38 explicit trial emulations to February 2021, cataloguing which statistical methods were used against confounding, immortal time and selection bias, and finding sequential emulation in 29 percent and cloning in 16 percent.",
+   "what_was_done": "Embase, Medline and Web of Science were searched from inception to 25 February 2021 for explicit trial emulation studies, returning 617 records of which 38 were eligible. Most were in cardiology, infectious diseases or oncology, and most used electronic health record or cohort data, with only one mentioning unstructured record data. For baseline confounding the commonest approach was conditioning on the confounders, 18 of 49 instances at 37 percent; for selection bias it was inverse probability of censoring weighting, 7 of 20 at 35 percent; for per-protocol effects of sustained strategies the studies used g-methods, specifically weighting and the parametric g-formula. For immortal time, 21 studies at 55 percent assigned individuals to strategies at the start of follow-up from data available then, 11 at 29 percent used sequential trial emulation, and 6 at 16 percent used cloning. The review explains each: sequential emulation lets a non-initiator enter a later trial as an initiator, so the same person contributes to several trials and the variance estimator must be adjusted, while yielding more precision than a single trial; cloning is used when strategies cannot be distinguished at baseline, creates copies assigned to each strategy, censors at deviation and reweights, estimates only the per-protocol effect, and can carry a grace period whose length is chosen from real-world clinical scenarios. It notes that many emulations do not label themselves as such and that reporting varies.",
+   "future_research": [
+    {
+     "gap": "Whether record data are fit for emulation at all turns on data quality, which the review names as the main open concern.",
+     "kind": "stated",
+     "quote": "The main concern is the quality of EHRs/EMRs data.",
+     "locator": "Future directions"
+    },
+    {
+     "gap": "Trial emulations are not consistently labeled as such, so the literature cannot be enumerated.",
+     "kind": "stated",
+     "quote": "Future trial emulations work should clearly label themselves as such going forward, both in their abstracts and throughout their papers.",
+     "locator": "Limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "SEQ-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The entry says the dependence created by repeated participation is concealed by the efficiency gain. This review states both halves together: the same individuals contribute to multiple emulated trials so the variance estimators must be adjusted, and the sequence is expected to be more precise than a single trial because of the extra data. It is a review statement of what the design requires rather than a method for doing it, and the calendar-time half of the entry, that trials begun at different times may differ in more than timing, is not raised.",
+     "quote": "It should be noted, however, that since the same individuals might contribute to multiple emulated trials, the variance estimators must be adjusted for appropriately.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Where a person is eligible at several times, the review states there are two unbiased options, take one eligible time point or take them all through a sequence of trials, without a rule for choosing between them. The grace period in the cloning approach is likewise set from clinical scenarios such as hospital delays before surgery, and the review notes that a longer grace period increases the number of eligible individuals, which ties the choice to sample size.",
+     "quote": "This is a predefined time period of the follow-up during which treatment initiation can happen and its length is chosen based on real-world clinical scenarios (e.g. hospital delays before surgery).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The review found that not all emulations state they used the framework, and that those that did tended to publish the protocol table showing how each component was emulated while others did not. Whether a reader can see what was assumed therefore depends on an author's stylistic choice, which the review has to recommend rather than assume.",
+     "quote": "As a general remark, it should be noted that not all trial emulation studies we reviewed have mentioned explicitly using the ‘target trial’ framework, or if they did use it, have not reported the use of it clearly.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Cloning is used precisely because the strategies cannot be told apart at baseline, and the grace period is the device that makes them distinguishable later. Its length is set from clinical convention and it changes who is eligible, so the boundary between one strategy and another is drawn by a parameter with no principled setting rather than by any clinical account of which treatment versions belong together.",
+     "quote": "As regards the cloning approach, it is used when the treatment strategies of the individuals are unknown at baseline.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0264",
+   "read": true,
+   "doi": "10.1007/s00432-023-04915-8",
+   "title": "Competing risks analysis of external versus internal radiation in patients with hepatocellular carcinoma after controlling for immortal time bias.",
+   "relevance": "medium",
+   "one_line": "Compares external against internal radiation for hepatocellular carcinoma in registry data with both immortal time controlled and competing risks modeled, and finds the competing risk analysis and the Cox analysis disagree.",
+   "what_was_done": "Cohort studies of liver cancer face both immortal time and competing causes of death. Using Surveillance, Epidemiology and End Results data from 2004 to 2015, the study compared external against internal radiotherapy for hepatocellular carcinoma using a Fine-Gray competing risk model after excluding immortal time, and built a nomogram for cancer-specific death. Treatment allocation was strongly related to stage: better differentiated, smaller, node-negative and non-metastatic tumors received internal radiation, and stage IV patients more often received external. After adjustment there was no significant difference in cancer-specific death between the two, with a hazard ratio of 1.098 and an interval of 0.874 to 1.380, and no difference within any stage stratum, although point estimates fell from stage I to IV. The multivariable Cox analysis of the same data disagreed, favoring internal radiation, which the paper attributes to competing events comprising 24 percent of the total, above the 10 percent it cites as the threshold beyond which conventional methods give significant bias. Excluding immortal time also raised the estimated cumulative risks substantially, from 36.75 and 32.61 percent to 54.64 and 49.07 percent at one year. The time from diagnosis to treatment was restricted to under six months. Radiotherapy dose and regimen are absent from the registry.",
+   "future_research": [
+    {
+     "gap": "Regimen and dose of radiotherapy are absent from the registry, so the comparison cannot be refined beyond the external against internal contrast.",
+     "kind": "stated",
+     "quote": "Due\nto the lack of information on specific regimens and doses\nof radiotherapy in the SEER database, we were unable to\nexplore the prognostic value of these further classifications\nof radiotherapy.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Competing deaths are modeled rather than censored, and the consequence is reported: a Cox analysis of the same data favors internal radiation while the competing risk analysis finds no difference, with competing events at 24 percent of the total. The paper states a threshold, above roughly 10 percent, beyond which the conventional treatment misestimates the hazard ratio. That is a decision rule of sorts, though it is a rule about when the estimator misbehaves rather than about which causal effect the subdistribution contrast represents.",
+     "quote": "When\nthe proportion of competing events (24.00% in this study)\nis more than 10% the traditional methods can result in significant bias.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Excluding the immortal time moved the one-year cumulative death risk from 36.75 to 54.64 percent in one arm and from 32.61 to 49.07 in the other, so roughly half again as much absolute risk. The comparison between arms was unaffected, which means the correction changes what the study says about prognosis without changing what it says about treatment, and a reader of the uncorrected version would have taken the absolute risks at face value.",
+     "quote": "Without controlling the immortal time bias, the results\nstill showed no difference in prognosis between internal and\nexternal radiotherapy, but this would underestimate the CSD\nof patients receiving radiotherapy.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The two arms are categories of radiation modality with no dose or regimen recorded, so external radiotherapy covers conformal and stereotactic delivery at unrecorded doses and internal covers radioembolization variants. The paper acknowledges the versions cannot be separated, and the choice between modalities in practice is described as empirical and stage-driven.",
+     "quote": "Currently, the choice of a single radiation regimen based\non patient condition remains empirical(Tong et al. 2021);",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0267",
+   "read": true,
+   "doi": "10.1038/s41416-023-02187-0",
+   "title": "Immortal-time bias in older vs younger age groups: a simulation study with application to a population-based cohort of patients with colon cancer.",
+   "relevance": "high",
+   "one_line": "Simulates how the magnitude of immortal time bias varies with age through the probability of early death and treatment delay, then applies four remedies including target trial emulation to English colon cancer data and finds their estimates not comparable to each other.",
+   "what_was_done": "Immortal time bias grows with the chance of dying before treatment, which grows with age, so the same design flaw can distort comparisons between age groups differently. Simulations compared a time-fixed exposure model against three remedies, time-varying exposure, delayed entry and landmark analysis, and showed the bias larger among older patients as their probability of early death rose or as treatment was delayed; all three remedies corrected it. The methods were then applied to patients aged 50 to 74 and 75 to 84 with stage IV colon cancer in the CORECT-R resource, estimating the effect of surgery on one-year overall survival, with the applied analysis conducted in the emulated target trial framework as a fourth approach. All the remedies gave smaller surgery effects than the time-fixed model, and the effects were similar between age groups, contrary to the simulation, which the paper suggests may reflect older patients both dying sooner and being operated on earlier so the two influences cancel. The landmark analysis gave higher survival because it excludes patients dying in the first six months, and gave a larger surgery effect in the older group, which the paper attributes to selection of the fittest. R scripts for every method are published.",
+   "future_research": [
+    {
+     "gap": "Confounders that matter for this comparison, patient fitness, geriatric conditions, social support and care provider, are absent from the registry.",
+     "kind": "stated",
+     "quote": "Indeed, we regret the lack of information about patients’ fitness, geriatric conditions, social support, or care providers which play the role of confounder in the relationship between surgery and survival.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Emergency and elective surgery were not distinguished, although emergency presentation is more common in older patients and predicts poor survival.",
+     "kind": "stated",
+     "quote": "Also, we did not make the distinction between emergency surgery and elective surgery.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Four accepted remedies for the same bias target different quantities, and the paper states that their point estimates cannot be compared. Time-varying exposure and delayed entry give the effect of surgery on survival from diagnosis; landmark analysis gives survival conditional on reaching the landmark, in a different sample; the emulated trial gives the effect from diagnosis at the time surgery might be indicated. Which question is being answered depends on the correction chosen, and the correction is usually reported as a technical detail.",
+     "quote": "However, this framework estimates the effect of surgery from diagnosis, at the time at which surgery might be indicated while other methods estimate the effect of surgery once received, precluding direct comparisons of estimates between all methods.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The magnitude of the bias is shown by simulation to depend on the distribution of early death and the distribution of treatment timing, so the same uncorrected design distorts two subgroups of one study by different amounts. A comparison across age groups can therefore be wrong even when each group's estimate is wrong in the same direction, and nothing in the reported output reveals the differential.",
+     "quote": "In simulations, the magnitude of ITB was larger among older patients when their probability of early death increased or treatment was delayed.",
+     "locator": "Abstract, Results"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The landmark remedy buys its validity by discarding everyone who died in the first six months, which in stage IV colon cancer is a large share of the cohort and the share most relevant to the question. The estimate that results is larger in the older group, which the paper reads as selection of the fittest rather than as a real age difference, so the information lost is exactly the information the comparison needed.",
+     "quote": "The greater effect of surgery in older patients than in younger adults observed using the landmark analysis may be explained by the selection of the fittest patients as they had to be alive 6 months after diagnosis to be included in the analysis.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0269",
+   "read": true,
+   "doi": "10.1016/j.canep.2023.102323",
+   "title": "A systematic review of methodological considerations in time to diagnosis and treatment in colorectal cancer research.",
+   "relevance": "high",
+   "one_line": "Reviews 130 studies of diagnostic and treatment intervals in colorectal cancer, finding arbitrary categorization of intervals in 83 percent, immortal time bias in 46 percent of survival studies, and confounding by indication in 56 percent.",
+   "what_was_done": "Research on whether faster diagnosis and treatment improve colorectal cancer outcomes has been hard to synthesize because of varied methods. Four databases were searched with no date limit, and 130 papers published between 1965 and 2021 assessing any interval up to treatment against any outcome were included, with methodological and statistical features extracted. Arbitrary categorization of the interval predictor appeared in 107 papers, 83 percent; 65, 50 percent, made no adjustment for confounders, and 40 of the 65 that did adjust gave no justification for the covariates included, 62 percent. Immortal time bias was introduced in 37 of the 80 papers using survival as an outcome, 46 percent, and confounding by indication in 73, 56 percent. The review works out why stage is so difficult here: stage is an intermediate on the pathway from interval length to survival for intervals occurring before staging, so adjusting for it introduces bias, while for intervals occurring entirely after staging is known it can act as a confounder and should be adjusted. Which case applies depends on when stage was measured, which the studies largely did not report. Confounding by indication produces a U-shaped interval-outcome association, which the review argues means the association should be modeled nonlinearly rather than by excluding short intervals; that was recognized as early as 1994 and rarely done.",
+   "future_research": [
+    {
+     "gap": "Reporting guidelines and a domain-specific risk of bias tool do not exist for this field and would be needed for the evidence to be synthesizable.",
+     "kind": "stated",
+     "quote": "The development of reporting guidelines and domain-specific risk of bias tools may aid in ensuring future research can reliably contribute to recommendations regarding optimal timing and strengthen the evidence base.",
+     "locator": "Abstract"
+    },
+    {
+     "gap": "What effect the immortal time bias present in nearly half the survival studies has on the evidence base is unknown.",
+     "kind": "stated",
+     "quote": "The effect of introducing immortal-time\nbias into a substantial portion of the evidence base in this area is unclear.",
+     "locator": "Section 4.5"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Nearly half the survival studies in a sixty-year literature carry immortal time, which arises here because the interval being studied ends at treatment while survival is measured from an earlier point, so the two windows overlap. One justification the review found for accepting this was avoidance of lead time bias, that is, one timing bias was traded against another, and it notes that in this literature the lead time mechanism is obscure since no screening studies were included.",
+     "quote": "The avoidance of\nlead time bias was raised as a justification for introducing immortal time\nbias and was noted in Neal (2009) as a methodological concern in\nresearch on intervals [2].",
+     "locator": "Section 4.5"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The review could not determine how prevalent the problems were, because the studies did not report when key events occurred, in a field whose entire subject is timing. Whether adjusting for stage was correct or introduced bias depends on when stage was measured, and that was not reported, so the reader cannot tell which of two opposite errors a given study made.",
+     "quote": "The under reporting of\nwhen stage was measured led to a reduced ability to determine how\nprevalent these concerns were in this review, however it is clear that a\nmore in-depth understanding of the role of disease stage in the causal\npathway is required.",
+     "locator": "Section 4.4"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Confounding by indication in this field produces a U-shaped association between interval length and outcome, since the sickest patients are both treated fastest and do worst. The devices used against it, excluding very short intervals, controlling for emergency presentation and symptom burden, leave residual confounding, and the review's own suggestion is to model the nonlinearity rather than to remove the confounding, which concedes that the shape rather than the estimate is what can be recovered.",
+     "quote": "However, it is likely that these\nmethods introduce residual confounding, by not fully controlling for the\n‘indication’.",
+     "locator": "Section 4.2"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0271",
+   "read": true,
+   "doi": "10.1164/rccm.202207-1301le",
+   "title": "Antifibrotics and Reduced Mortality in Idiopathic Pulmonary Fibrosis: Immortal Time Bias.",
+   "relevance": "high",
+   "one_line": "Reviews all 14 observational studies of antifibrotics and mortality in idiopathic pulmonary fibrosis and finds every one of them defines exposure and follow-up in a way that produces immortal time bias, behind a pooled 38 percent mortality reduction.",
+   "what_was_done": "Meta-analyses of randomized trials of pirfenidone and nintedanib disagree about mortality, some finding no benefit for either drug, others finding it for one and not the other. Observational studies, by contrast, consistently report large reductions. The letter searched MEDLINE and Embase to January 2022 for all observational studies of any antifibrotic reporting mortality in this disease and found 14, whose pooled relative risk of all-cause mortality with use against nonuse was 0.62, with an interval of 0.56 to 0.69. Every one of the 14 used definitions of exposure and follow-up that create immortal time, and the forest plot separates them by whether the immortal period was misclassified as exposed or excluded from the analysis. The letter distinguishes the two mechanisms, sets out why a patient must be alive at treatment initiation and is therefore immortal until then, and argues that studies with critical risk of bias should be excluded from any synthesis rather than pooled. Two remedies are named: a time-dependent definition of exposure in a Cox model, and the prevalent new-user design, which matches initiators to nonusers at the same point in the disease course. The authors of the 14 studies are urged to repeat their analyses.",
+   "future_research": [
+    {
+     "gap": "The 14 published estimates cannot currently be used as evidence and would have to be reanalyzed by their authors before the question can be answered observationally.",
+     "kind": "stated",
+     "quote": "The authors of these 14 publications are urged to repeat the analysis of their studies using such revised approaches that avoid immortal time bias.",
+     "locator": "Conclusions"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Fourteen of fourteen studies in a clinical question with no trial answer share the same design flaw, and their pooled estimate, a 38 percent mortality reduction, is the evidence base clinicians have. The failure is not rare or subtle: it follows from defining exposure by treatment received during follow-up, which is how these studies are ordinarily built, and it took a dedicated review to find that none had avoided it.",
+     "quote": "We found that all 14 studies used definitions of exposure and follow-up that lead to immortal time bias.",
+     "locator": "The Observational Studies"
+    },
+    {
+     "problem_id": "BEN-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The observational literature and the trial literature disagree about the same drugs, and the letter's diagnosis is that the disagreement is design rather than population: observational studies that properly avoided the bias in related questions found little or no effect. Pooling fourteen studies that share a bias produces a tight confidence interval around a biased estimate, which is what a synthesis reports when concordance is judged without accounting for how the estimands were constructed.",
+     "quote": "The observational studies reporting significantly decreased mortality with antifibrotic use cannot at this time be used as reliable evidence because all were affected by immortal time bias.",
+     "locator": "Conclusions"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}
