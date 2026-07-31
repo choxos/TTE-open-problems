@@ -347,6 +347,59 @@
   ]
  },
  {
+  "id": "ELG-03",
+  "category": "ELG",
+  "title": "No procedure bounds the bias a comparator sampling scheme introduces before the study is run",
+  "statement": "An emulation without an active comparator often builds its reference arm by drawing matched comparators from a population registry. Three schemes are in use: sampling with replacement, sampling without replacement in random order, and sampling without replacement in chronological order. They are not interchangeable. Sampling without replacement in random order conditions on the future, because a comparator consumed by a later-diagnosed patient was necessarily alive at that later date and is thereby removed from the pool available to an earlier one; this is the immortal time mechanism operating on the comparator arm rather than on the treated. Sampling without replacement in chronological order fails instead by exhaustion, leaving almost a fifth of a 347,882 patient heart failure cohort unmatched at five comparators per patient and returning a reference arm skewed young once unmatched patients are dropped. Which failure dominates, and in which direction, depends on the sampling ratio and on the comparators' own outcome risk: at one comparator per patient the three schemes nearly coincide, and at five per patient in an elderly cohort they do not. No procedure bounds the resulting bias from quantities available before the analysis, so the scheme is picked by convention and its consequences are read off afterward, one dataset at a time.",
+  "why_open": "The bias is a property of the joint distribution of index dates, comparator survival and pool depletion, so it cannot be recovered from the sampled cohort alone: the counterfactual is the comparison cohort that a different scheme would have produced, and only one scheme is ever run. The magnitude is setting-specific rather than universal, and the one empirical demonstration that exists is confined to a single national registry, one disease and two outcomes, with its own report stating that it does not quantify the differences in general. The literature cannot supply the missing calibration either, because most published studies using this design do not report which scheme they used. Nor is it a matter of adjustment after the fact: the scheme is executed during cohort construction, before any model is fitted, so no estimator downstream can price a choice that has already determined who is in the comparison arm.",
+  "prior_work": [
+   {
+    "cite": "Heide-Jorgensen U, et al. Sampling strategies for selecting general population comparison cohorts. Clin Epidemiol 2018;10:1325-1337",
+    "doi_or_url": "10.2147/CLEP.S164456",
+    "what_it_does": "Compares the three schemes against index cohorts whose true outcome rates are known by construction, shows sampling without replacement in random order inflates comparator outcome rates when comparators are at substantial risk, and states that it does not provide a way to quantify the differences in general."
+   },
+   {
+    "cite": "Suissa S. Immortal time bias in pharmacoepidemiology. Am J Epidemiol 2008;167(4):492-499",
+    "doi_or_url": "10.1093/aje/kwm324",
+    "what_it_does": "Characterizes the conditioning-on-the-future mechanism for the treated arm, which is the same mechanism that acts here on comparator availability, without treating comparator sampling as a site where it can arise."
+   },
+   {
+    "cite": "Hernan MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol 2016;183(8):758-764",
+    "doi_or_url": "10.1093/aje/kwv254",
+    "what_it_does": "Requires the comparator to be specified as a trial would specify it, which makes the question askable but does not reach the sampling procedure that realizes it."
+   },
+   {
+    "cite": "Arnold K, Antunes L, Coles B, et al. Application of the target trial emulation framework to external comparator studies. Front Drug Saf Regul 2024",
+    "doi_or_url": "10.3389/fdsfr.2024.1380568",
+    "what_it_does": "Applies the protocol components to externally constructed comparison arms, where the same construction step sits, and addresses eligibility and time zero rather than the order in which eligible comparators are consumed."
+   },
+   {
+    "cite": "Cashin AG, Hansford HJ, Hernan MA, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA 2025",
+    "doi_or_url": "10.1001/jama.2025.13350",
+    "what_it_does": "Requires the comparator and its emulation to be reported; it does not require the sampling scheme that produced the comparison cohort, which is the item whose absence makes the published literature uninformative here."
+   }
+  ],
+  "proposed_direction": "Derive the bias in the comparator hazard as a function of the three quantities an analyst knows before sampling: the sampling ratio, the size of the eligible pool relative to the index cohort within matching strata, and the comparator baseline hazard. The random-order case is tractable analytically, since depletion of the pool by later index dates is a known selection on survival, and it should yield a bound rather than a point correction. Simulate across sampling ratios and comparator risk to locate where the schemes separate, using the design in which index-cohort rates are known by construction so that error is measurable rather than inferred. Make the scheme, the ratio, and the count of unmatched index patients reportable items, since a scheme that leaves a fifth of patients unmatched has changed the study population and not only the reference arm. Sampling with replacement avoids both failures at the cost of dependence between observations, so quantify what that dependence costs in variance and settle whether it is the default.",
+  "priority": "Medium-high",
+  "maturity": "Emerging",
+  "tractability": 4,
+  "severity": "The reference arm's outcome rate is set by a construction step nothing downstream can see.",
+  "protocol_component": null,
+  "data_setting": null,
+  "source": {
+   "slice": "reading",
+   "raw_id": "core-16/L0311",
+   "locator": "proposed by the paper reader on L0311, accepted by the second reviewer"
+  },
+  "_group": "ELG",
+  "related": [
+   "ELG-01",
+   "ELG-02",
+   "TZO-01",
+   "OVL-01"
+  ]
+ },
+ {
   "id": "EST-01",
   "category": "EST",
   "title": "Emulation assumes no interference, and cloning individuals can produce joint strategies nobody could implement",
