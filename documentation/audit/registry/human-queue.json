@@ -1461,22 +1461,22 @@
      "problem_id": "LRN-01",
      "status_vote": "open",
      "support_vote": "supported",
-     "confidence": 0.76,
-     "rationale": "Automated translation from study design to executable emulation code exists, and agentic authoring of OMOP concept sets from natural language is now being attempted, so the systems the entry describes are real and multiplying. Nothing in the corpus supplies the validation regime the entry asks for: no typed intermediate representation, no temporal-logic validation, no synthetic test patients constructed to distinguish the correct reading of a temporal condition from the plausible wrong one, and no dual sign-off requirement. The gap between capability and validation is the claim, and the corpus shows only the capability half.",
-     "weakest_true_restatement": "Systems that translate study designs into executable cohort and analysis code exist and are being extended to concept-set authoring; no validation regime treats their output as untrusted, and temporal-logic errors that change the estimand would not be caught.",
+     "confidence": 0.71,
+     "rationale": "The corpus contains a growing body of flexible estimation inside emulations, including ensemble-learning marginal structural models and deep learning comparisons, and it contains no support diagnostic reported alongside a flexible nuisance model and no methods comparison that includes a deliberately non-identifiable scenario. A 2026 Nature Communications paper evaluates bias across statistical and deep learning methods in a heart failure emulation, which is the comparison the entry wants and does not include a non-identifiable arm. Failure awareness as a scored property does not appear anywhere.",
+     "weakest_true_restatement": "Flexible estimators are applied within emulations without an accompanying support diagnostic, and no published methods comparison scores whether an estimator's diagnostics correctly signal a non-identifiable target.",
      "resolving_work": [
       {
-       "locator": "10.1093/jamiaopen/ooag131",
-       "title": "From study design to executable code: automating target trial emulation with large language models",
+       "locator": "10.1038/s41467-026-74999-6",
+       "title": "Evaluating bias in target trial emulation for heart failure across statistical and deep learning methods",
        "year": 2026,
-       "what_it_resolves": "Builds the translation the entry is concerned about, which establishes the capability without supplying the validation.",
+       "what_it_resolves": "Compares flexible against conventional estimation for bias inside an emulation, which is the nearest existing test and does not include a non-identifiable scenario.",
        "quote": null
       },
       {
-       "locator": "10.64898/2026.06.02.26354704",
-       "title": "Agentic authoring of OMOP concept sets from natural language",
+       "locator": "10.1002/bimj.70133",
+       "title": "Estimate time-varying exposure effects via ensemble learning-based marginal structural model",
        "year": 2026,
-       "what_it_resolves": "Extends automation to phenotype definition, which is the component where a silent error changes the cohort.",
+       "what_it_resolves": "Applies ensemble learning to the weight model in a longitudinal setting, which is where the extrapolation concern applies.",
        "quote": null
       }
      ],
@@ -1532,6 +1532,156 @@
      "supported": 2,
      "overstated": 1,
      "supported-with-caveat": 1
+    },
+    "dissent": [
+     {
+      "auditor": "literature",
+      "axis": "support",
+      "verdict": "supported",
+      "evidence": [
+       {
+        "locator": "10.1038/s41467-026-74999-6",
+        "title": "Evaluating bias in target trial emulation for heart failure across statistical and deep learning methods",
+        "year": 2026,
+        "what_it_resolves": "Compares flexible against conventional estimation for bias inside an emulation, which is the nearest existing test and does not include a non-identifiable scenario.",
+        "quote": null
+       },
+       {
+        "locator": "10.1002/bimj.70133",
+        "title": "Estimate time-varying exposure effects via ensemble learning-based marginal structural model",
+        "year": 2026,
+        "what_it_resolves": "Applies ensemble learning to the weight model in a longitudinal setting, which is where the extrapolation concern applies.",
+        "quote": null
+       }
+      ],
+      "rationale": "The corpus contains a growing body of flexible estimation inside emulations, including ensemble-learning marginal structural models and deep learning comparisons, and it contains no support diagnostic reported alongside a flexible nuisance model and no methods comparison that includes a deliberately non-identifiable scenario. A 2026 Nature Communications paper evaluates bias across statistical and deep learning methods in a heart failure emulation, which is the comparison the entry wants and does not include a non-identifiable arm. Failure awareness as a scored property does not appear anywhere.",
+      "addressed_by": null
+     }
+    ],
+    "human_review_required": true
+   },
+   "dissent": "literature dissented (supported): The corpus contains a growing body of flexible estimation inside emulations, including ensemble-learning marginal structural models and deep learning comparisons, and it contains no support diagnostic reported alongside a flexible nuisance model and no methods comparison that includes a deliberately non-identifiable scenario. A 2026 Nature Communications paper evaluates bias across statistical and deep learning methods in a heart failure emulation, which is the comparison the entry wants and does not include a non-identifiable arm. Failure awareness as a scored property does not appear anywhere."
+  },
+  "verdict": "confirmed-open",
+  "verdict_rationale": "Auditors agreed the problem is open and no counterevidence surfaced."
+ },
+ {
+  "id": "LRN-02",
+  "category": "LRN",
+  "title": "Automated protocol translation can change the estimand while producing valid code",
+  "statement": "Systems now translate trial descriptions into cohort definitions or analysis code, and natural language processing extracts eligibility information from unstructured notes. The failure mode of these systems is not that they crash. It is that they silently substitute a different estimand: mistranslating a temporal condition, resolving an ambiguous eligibility phrase to the wrong operationalization, or emitting code that is syntactically valid and causally invalid. None of these failures is visible in the output, which is a working pipeline returning a plausible number. What is missing is a validation regime that treats generated code as an untrusted artifact rather than as a productivity gain.",
+  "why_open": "Temporal logic is where these systems fail and where testing is hardest: the difference between treatment before eligibility assessment and treatment after it is one word in the specification and one join condition in the code, and both readings execute. There is no reference answer to test against, because the correct cohort is precisely what the pipeline was built to produce. Evaluating on downstream effect estimates is circular, since a wrong cohort with a plausible effect passes.",
+  "prior_work": [
+   {
+    "cite": "Kim, et al. From study design to executable code: automating target trial emulation with large language models. JAMIA Open 2026",
+    "doi_or_url": "10.1093/jamiaopen/ooag131",
+    "what_it_does": "Builds the translation from study design to executable emulation code, which is the system whose failure modes this problem concerns."
+   },
+   {
+    "cite": "Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026",
+    "doi_or_url": "10.1038/s41746-026-02563-z",
+    "what_it_does": "Specifies the operational mapping from protocol component to record-level definition, which is the interface a compiler would have to respect."
+   }
+  ],
+  "proposed_direction": "Treat automation as a constrained compiler with three stages: a human-authored causal specification, a typed intermediate representation, and data-source-specific code generated from it. Require unit tests over synthetic test patients constructed so that each temporal condition has a patient that distinguishes the correct reading from the plausible wrong one, plus temporal-logic validation of the intermediate representation. Require dual human sign-off on the specification and on the generated cohort counts, and publish both, so the artifact under review is the specification rather than the number.",
+  "priority": "High",
+  "maturity": "Emerging",
+  "tractability": 4,
+  "severity": "These systems scale one analyst's error to every study that uses them.",
+  "protocol_component": [
+   "cross-cutting",
+   "eligibility"
+  ],
+  "data_setting": [
+   "ehr",
+   "claims"
+  ],
+  "source": {
+   "slice": "seed-practical",
+   "raw_id": "p5",
+   "locator": "seed-linked.md line 97, row 'Automation, large language models and executable phenotyping'"
+  },
+  "_group": "LRN",
+  "related": [
+   "ELG-01",
+   "SFW-03"
+  ],
+  "audit": {
+   "opinions": [
+    {
+     "problem_id": "LRN-02",
+     "status_vote": "open",
+     "support_vote": "supported",
+     "confidence": 0.76,
+     "rationale": "Automated translation from study design to executable emulation code exists, and agentic authoring of OMOP concept sets from natural language is now being attempted, so the systems the entry describes are real and multiplying. Nothing in the corpus supplies the validation regime the entry asks for: no typed intermediate representation, no temporal-logic validation, no synthetic test patients constructed to distinguish the correct reading of a temporal condition from the plausible wrong one, and no dual sign-off requirement. The gap between capability and validation is the claim, and the corpus shows only the capability half.",
+     "weakest_true_restatement": "Systems that translate study designs into executable cohort and analysis code exist and are being extended to concept-set authoring; no validation regime treats their output as untrusted, and temporal-logic errors that change the estimand would not be caught.",
+     "resolving_work": [
+      {
+       "locator": "10.1093/jamiaopen/ooag131",
+       "title": "From study design to executable code: automating target trial emulation with large language models",
+       "year": 2026,
+       "what_it_resolves": "Builds the translation the entry is concerned about, which establishes the capability without supplying the validation.",
+       "quote": null
+      },
+      {
+       "locator": "10.64898/2026.06.02.26354704",
+       "title": "Agentic authoring of OMOP concept sets from natural language",
+       "year": 2026,
+       "what_it_resolves": "Extends automation to phenotype definition, which is the component where a silent error changes the cohort.",
+       "quote": null
+      }
+     ],
+     "counter_evidence": [],
+     "auditor": "literature"
+    },
+    {
+     "problem_id": "LRN-02",
+     "status_vote": "open",
+     "support_vote": "overstated",
+     "confidence": 0.97,
+     "rationale": "Executable code can silently change eligibility, time zero, assignment, follow-up, or the resulting estimand, so the core risk is real. However, it is false that such errors are necessarily invisible or that no reference answer can exist. Independently authored specifications, expert-labeled records, hand-coded reference implementations, differential testing, and synthetic boundary-case patients can provide component-level or end-to-end reference answers. The report's own proposed synthetic-patient tests contradict the categorical no-reference-answer claim. Agreement of a downstream effect estimate is insufficient evidence of semantic correctness, but evaluating against an external randomized benchmark is not literally circular. Typed intermediate representations and temporal tests reduce risk without proving semantic equivalence for every real-world mapping. No package capability claim is present.",
+     "weakest_true_restatement": "Automated protocol translation can produce validly executing code that implements a different estimand. Full gold-standard cohorts may be unavailable for some real datasets, but semantic fidelity can still be tested against independently specified protocols, expert annotations, reference implementations, and synthetic temporal boundary cases; downstream numerical plausibility alone does not validate the translation.",
+     "resolving_work": [],
+     "counter_evidence": [],
+     "auditor": "codex"
+    },
+    {
+     "problem_id": "LRN-02",
+     "status_vote": "open",
+     "support_vote": "supported",
+     "confidence": 0.71,
+     "rationale": "Kim et al. (JAMIA Open 2026; THESEUS) and Wang et al. (npj Digit Med 2026) build or specify automated protocol-to-code and operational EHR mappings; they are the systems whose silent estimand-shift risk the problem names, not fixes of that risk. Lee et al. (JMIR Med Inform 2025) validate LLM-generated trial-criteria queries for functional correctness, which is partial operational testing but not temporal-logic unit tests that distinguish treatment-before versus treatment-after eligibility. Girshovitz, Zeltzer, and Gilad-Bachrach (arXiv:2607.21173, 2026) propose ARA: structured protocol intermediate form, SCM synthetic failure scenarios, and adversarial validation so that silent success is replaced by visible protocol or diagnostic failure. That is closely aligned with the report direction, yet it is a proposal with a small econometric-style benchmark; it does not establish a standard validation regime for TTE automation, dual human sign-off on specification and cohort counts, or synthetic patients that isolate each temporal join. Guidance (TARGET 2025 reporting; FDA/EMA RWE documents) addresses transparency of human-designed emulations, not untrusted machine-generated code. No CRAN or GitHub merge was found that ships a constrained TTE compiler with temporal unit tests. Silent estimand substitution under syntactically valid pipelines remains open.",
+     "weakest_true_restatement": null,
+     "resolving_work": [],
+     "counter_evidence": [],
+     "auditor": "grok"
+    },
+    {
+     "problem_id": "LRN-02",
+     "status_vote": "open",
+     "support_vote": "supported",
+     "confidence": 0.9,
+     "rationale": "The claim is internally consistent and correctly identifies the silent estimand substitution as a structural risk in automated translation. The reasons given for it being open (lack of reference answers, circularity of downstream evaluation) strongly support the claim. The scope is appropriate and the severity is proportionate to the cost of a wrong estimand.",
+     "weakest_true_restatement": null,
+     "resolving_work": [],
+     "counter_evidence": [],
+     "auditor": "glm"
+    }
+   ],
+   "adjudication": {
+    "rule_version": "adjudicate.v2",
+    "status": "open",
+    "support": "supported-with-caveat",
+    "decision_path": [
+     "R5:default-open",
+     "R9:substantiated-overstatement(n=1/4):codex"
+    ],
+    "status_tally": {
+     "open": 4
+    },
+    "support_tally": {
+     "supported": 3,
+     "overstated": 1
     },
     "dissent": [
      {
@@ -1609,34 +1759,12 @@
    "opinions": [
     {
      "problem_id": "LRN-03",
-     "status_vote": "partially-solved",
-     "support_vote": "supported-with-caveat",
-     "confidence": 0.75,
-     "rationale": "Subgroup estimation inside emulations is being done carefully in places the entry does not credit. A 2026 European Journal of Epidemiology paper extends a CONFIRM emulation to subgroups explicitly, a 2026 Alzheimer's and Dementia paper estimates heterogeneous statin effects on dementia with causal machine learning inside an emulation, and a 2026 Epidemiology paper nests a target study within a target trial specifically to evaluate intervention effects on disparities, which is the equity question the entry raises. What remains is the reporting requirement: none of these establishes that subgroup-specific data support and calibration must be reported alongside every subgroup effect, and none tests whether the emulation's assumptions differ across groups.",
-     "weakest_true_restatement": "Subgroup and heterogeneous-effect estimation within emulations is developing, including a framework aimed at disparities; no requirement exists to report subgroup-specific overlap and calibration, or to test whether identification assumptions hold equally across groups.",
-     "resolving_work": [
-      {
-       "locator": "10.1097/ede.0000000000002024",
-       "title": "Nesting a target study within a target trial: a framework for evaluating intervention effects on disparities",
-       "year": 2026,
-       "what_it_resolves": "Provides a framework for the equity question the entry raises, within the emulation setting.",
-       "quote": null
-      },
-      {
-       "locator": "10.1007/s10654-026-01379-1",
-       "title": "A target trial emulation of the CONFIRM study with an extension to subgroups",
-       "year": 2026,
-       "what_it_resolves": "A worked subgroup extension of an emulation, showing the practice exists.",
-       "quote": null
-      },
-      {
-       "locator": "10.1002/alz.71178",
-       "title": "The heterogeneous treatment effects of statins on dementia: a target trial emulation with causal machine learning",
-       "year": 2026,
-       "what_it_resolves": "Applies causal machine learning for heterogeneity inside an emulation, which is the combination the entry describes as hazardous.",
-       "quote": null
-      }
-     ],
+     "status_vote": "open",
+     "support_vote": "supported",
+     "confidence": 0.6,
+     "rationale": "A search for treatment leakage, temporal locking or auditing of learned representations used as adjustment sets returned nothing in the screened corpus. The claim is therefore unrefuted and weakly evidenced: the corpus is built from target trial and g-method phrases, and work on representation leakage would most likely appear in machine learning venues that none of the eight phrases reaches. The vote is open at the confidence ceiling this project sets for searched-and-found-nothing.",
+     "weakest_true_restatement": "No published emulation audits a text-derived representation used for adjustment for post-treatment information, and no convention states what window of text an encoder was permitted to see.",
+     "resolving_work": [],
      "counter_evidence": [],
      "auditor": "literature"
     },
@@ -1697,209 +1825,54 @@
    "adjudication": {
     "rule_version": "adjudicate.v2",
     "status": "partially-solved",
-    "support": "overstated",
+    "support": "contested",
     "decision_path": [
-     "R3:partially-solved(n=2/4)",
-     "R8:overstated-majority(n=3/4)"
+     "R3:partially-solved(n=1/4)",
+     "R7:counter-and-support-both-present"
     ],
     "status_tally": {
-     "partially-solved": 2,
-     "open": 2
+     "open": 3,
+     "partially-solved": 1
     },
     "support_tally": {
-     "supported-with-caveat": 1,
+     "supported": 1,
      "overstated": 3
     },
     "dissent": [
      {
-      "auditor": "literature",
+      "auditor": "grok",
       "axis": "support",
-      "verdict": "supported-with-caveat",
+      "verdict": "overstated",
       "evidence": [
        {
-        "locator": "10.1097/ede.0000000000002024",
-        "title": "Nesting a target study within a target trial: a framework for evaluating intervention effects on disparities",
-        "year": 2026,
-        "what_it_resolves": "Provides a framework for the equity question the entry raises, within the emulation setting.",
-        "quote": null
+        "locator": "arXiv:2601.02400",
+        "quote": "If treatment leakage exists, then using the text to adjust for confounding will lead to post-treatment (collider) bias, because the text also contains information about the treatment."
        },
        {
-        "locator": "10.1007/s10654-026-01379-1",
-        "title": "A target trial emulation of the CONFIRM study with an extension to subgroups",
-        "year": 2026,
-        "what_it_resolves": "A worked subgroup extension of an emulation, showing the practice exists.",
-        "quote": null
+        "locator": "https://aclanthology.org/2022.naacl-main.413/",
+        "title": "Conceptualizing Treatment Leakage in Text-based Causal Inference",
+        "year": 2022,
+        "what_it_resolves": "Defines treatment leakage when text used for confounding adjustment also carries treatment signal, including leakage from pre-assignment future-referencing language; establishes the identification and estimation problem the agenda restates.",
+        "quote": "In this article, we define the treatment-leakage problem, and discuss the identification as well as the estimation challenges it raises."
        },
        {
-        "locator": "10.1002/alz.71178",
-        "title": "The heterogeneous treatment effects of statins on dementia: a target trial emulation with causal machine learning",
+        "locator": "arXiv:2601.02400",
+        "title": "Detecting and Mitigating Treatment Leakage in Text-Based Causal Inference: Distillation and Sensitivity Analysis",
         "year": 2026,
-        "what_it_resolves": "Applies causal machine learning for heterogeneity inside an emulation, which is the combination the entry describes as hazardous.",
-        "quote": null
+        "what_it_resolves": "Provides formal statistical definitions of treatment leakage plus automatic and semi-automatic distillers and leakage sensitivity analysis so that text representations can be purged or stress-tested for treatment-predictive content before adjustment.",
+        "quote": "Despite growing recognition of this issue, no systematic methods exist for identifying and mitigating treatment leakage in text-as-confounder applications. This paper addresses this gap through three contributions."
        }
       ],
-      "rationale": "Subgroup estimation inside emulations is being done carefully in places the entry does not credit. A 2026 European Journal of Epidemiology paper extends a CONFIRM emulation to subgroups explicitly, a 2026 Alzheimer's and Dementia paper estimates heterogeneous statin effects on dementia with causal machine learning inside an emulation, and a 2026 Epidemiology paper nests a target study within a target trial specifically to evaluate intervention effects on disparities, which is the equity question the entry raises. What remains is the reporting requirement: none of these establishes that subgroup-specific data support and calibration must be reported alongside every subgroup effect, and none tests whether the emulation's assumptions differ across groups.",
+      "rationale": "The report frames embedding adjustment as an open risk without naming the literature that already defines and partially remediates it. Daoud, Jerzak, and Johansson (NAACL 2022) formalize treatment leakage when text is used as a confounder proxy, including leakage from pre-assignment documents that anticipate treatment. Daoud, Johansson, and Jerzak (arXiv:2601.02400, late 2025/2026) add formal definitions, four distillation methods (similarity passage removal, distant-supervision passage classification, salient-feature removal, iterative nullspace projection), and simulation plus empirical sensitivity analysis; they explicitly address the paradox that pre-timestamped text can still encode treatment. That is real prior art for detection and mitigation, not mere restatement. Residual openness remains for clinical TTE: methods are not standard in EHR phenotyping pipelines; Wang et al. (2026) still promote NLP for eligibility without a required leakage audit; temporal locking plus formal comparison of embedding-versus-structured treatment prediction is recommended in the agenda and only partially operationalized outside medicine. Sensitivity and distillation quantify or reduce leakage; they do not make an embedding's causal role fully interpretable dimension-by-dimension. The problem is therefore partially solved in the text-as-confounder literature and still under-adopted in clinical emulation practice.",
       "addressed_by": null
      }
     ],
     "human_review_required": true
    },
-   "dissent": "literature dissented (supported-with-caveat): Subgroup estimation inside emulations is being done carefully in places the entry does not credit. A 2026 European Journal of Epidemiology paper extends a CONFIRM emulation to subgroups explicitly, a 2026 Alzheimer's and Dementia paper estimates heterogeneous statin effects on dementia with causal machine learning inside an emulation, and a 2026 Epidemiology paper nests a target study within a target trial specifically to evaluate intervention effects on disparities, which is the equity question the entry raises. What remains is the reporting requirement: none of these establishes that subgroup-specific data support and calibration must be reported alongside every subgroup effect, and none tests whether the emulation's assumptions differ across groups."
+   "dissent": "grok dissented (overstated): The report frames embedding adjustment as an open risk without naming the literature that already defines and partially remediates it. Daoud, Jerzak, and Johansson (NAACL 2022) formalize treatment leakage when text is used as a confounder proxy, including leakage from pre-assignment documents that anticipate treatment. Daoud, Johansson, and Jerzak (arXiv:2601.02400, late 2025/2026) add formal definitions, four distillation methods (similarity passage removal, distant-supervision passage classification, salient-feature removal, iterative nullspace projection), and simulation plus empirical sensitivity analysis; they explicitly address the paradox that pre-timestamped text can still encode treatment. That is real prior art for detection and mitigation, not mere restatement. Residual openness remains for clinical TTE: methods are not standard in EHR phenotyping pipelines; Wang et al. (2026) still promote NLP for eligibility without a required leakage audit; temporal locking plus formal comparison of embedding-versus-structured treatment prediction is recommended in the agenda and only partially operationalized outside medicine. Sensitivity and distillation quantify or reduce leakage; they do not make an embedding's causal role fully interpretable dimension-by-dimension. The problem is therefore partially solved in the text-as-confounder literature and still under-adopted in clinical emulation practice."
   },
-  "verdict": "overstated",
-  "verdict_rationale": "3 independent auditors judged the claim as stated too strong. Embeddings whose input window is not demonstrably prior to treatment assignment and the underlying treatment decision can carry post-treatment or decision-related information into a nominal baseline adjustment set. Validity therefore requires auditable content provenance and causal timing. Treatment predictiveness alone neither establishes nor rules out leakage, and a proximal interpretation requires explicit proxy roles and additional identification conditions."
- },
- {
-  "id": "LRN-04",
-  "category": "LRN",
-  "title": "Subgroup effects are estimated where overlap is worst, and the groups with worst overlap are often the protected ones",
-  "statement": "Causal forests and meta-learners estimate heterogeneous treatment effects, and they inherit every identification assumption of the base analysis without relaxing any of them. Subgroup discovery adds three specific hazards: confounding that varies by subgroup, multiplicity across the many subgroups a flexible learner implicitly examines, and limited overlap within small strata. Apparent heterogeneity can therefore reflect differential measurement, differential healthcare access or model extrapolation rather than differential biology. The distributional problem is that the groups with the least data and the poorest overlap are frequently the protected groups whose effects the analysis was undertaken to examine, so the least reliable estimates carry the most weight in interpretation.",
-  "why_open": "Overlap within a subgroup is a property of the data that cannot be improved by a better estimator, and restricting to regions with adequate overlap changes which subgroups can be reported at all. Distinguishing effect modification from differential measurement requires validation data within each subgroup, which is rarer where the subgroup is smaller. Honest sample splitting costs precision in exactly the strata that are already imprecise.",
-  "prior_work": [
-   {
-    "cite": "Feuerriegel S, Frauen D, Melnychuk V, et al. Causal machine learning for predicting treatment outcomes. Nat Med 2024;30:958-968",
-    "doi_or_url": "10.1038/s41591-024-02902-1",
-    "what_it_does": "States that causal machine learning supports individualized effect estimation only under the same identification assumptions as conventional methods, which is the constraint subgroup analyses routinely ignore."
-   },
-   {
-    "cite": "Target trial emulation under nonmutually exclusive assignment. Am J Epidemiol 2026;195(4):1045",
-    "doi_or_url": "10.1093/aje/kwaf018",
-    "what_it_does": "Shows overlap defeating advanced adjustment, which is the mechanism by which a subgroup estimate fails."
-   }
-  ],
-  "proposed_direction": "Use honest sample splitting, restrict conditional effect estimation to regions with adequate overlap, and apply hierarchical shrinkage across subgroups so that small strata borrow rather than assert. Report subgroup-specific data support, calibration and uncertainty next to every subgroup effect, so that a wide, poorly supported estimate cannot be read as a finding. Evaluate not only whether benefit varies across groups but whether the emulation's assumptions vary across them, since differential measurement and differential access are alternative explanations for the same pattern.",
-  "priority": "High",
-  "maturity": "Promising",
-  "tractability": 4,
-  "severity": "Subgroup findings drive individualized recommendations and are least reliable where they are most consequential.",
-  "protocol_component": [
-   "causal-contrast",
-   "analysis-plan"
-  ],
-  "data_setting": [
-   "ehr",
-   "claims",
-   "any"
-  ],
-  "source": {
-   "slice": "seed-interpretation",
-   "raw_id": "i3",
-   "locator": "seed-linked.md line 122, row 'Treatment-effect heterogeneity and fairness'"
-  },
-  "_group": "LRN",
-  "related": [
-   "LRN-01",
-   "OVL-01"
-  ],
-  "audit": {
-   "opinions": [
-    {
-     "problem_id": "LRN-04",
-     "status_vote": "open",
-     "support_vote": "supported",
-     "confidence": 0.71,
-     "rationale": "The corpus contains a growing body of flexible estimation inside emulations, including ensemble-learning marginal structural models and deep learning comparisons, and it contains no support diagnostic reported alongside a flexible nuisance model and no methods comparison that includes a deliberately non-identifiable scenario. A 2026 Nature Communications paper evaluates bias across statistical and deep learning methods in a heart failure emulation, which is the comparison the entry wants and does not include a non-identifiable arm. Failure awareness as a scored property does not appear anywhere.",
-     "weakest_true_restatement": "Flexible estimators are applied within emulations without an accompanying support diagnostic, and no published methods comparison scores whether an estimator's diagnostics correctly signal a non-identifiable target.",
-     "resolving_work": [
-      {
-       "locator": "10.1038/s41467-026-74999-6",
-       "title": "Evaluating bias in target trial emulation for heart failure across statistical and deep learning methods",
-       "year": 2026,
-       "what_it_resolves": "Compares flexible against conventional estimation for bias inside an emulation, which is the nearest existing test and does not include a non-identifiable scenario.",
-       "quote": null
-      },
-      {
-       "locator": "10.1002/bimj.70133",
-       "title": "Estimate time-varying exposure effects via ensemble learning-based marginal structural model",
-       "year": 2026,
-       "what_it_resolves": "Applies ensemble learning to the weight model in a longitudinal setting, which is where the extrapolation concern applies.",
-       "quote": null
-      }
-     ],
-     "counter_evidence": [],
-     "auditor": "literature"
-    },
-    {
-     "problem_id": "LRN-04",
-     "status_vote": "open",
-     "support_vote": "overstated",
-     "confidence": 0.96,
-     "rationale": "Conditional and subgroup effects require the relevant consistency, conditional exchangeability, and positivity conditions within the target subgroups; flexible estimators do not create missing support. However, multiplicity is specifically a problem when adaptively discovered subgroups or contrasts are selected and interpreted inferentially, not an automatic defect of every conditional-effect estimator. Whether protected groups have the poorest overlap is an empirical, dataset-specific claim that must be demonstrated rather than presumed. Validation data are one way to distinguish effect modification from differential measurement, but the categorical requirement is too strong because additional measurement models or identifying assumptions may also be used. Honest estimation, shrinkage, and overlap restriction can improve inference, but shrinkage does not restore identification and restriction changes the target population. Causal-effect calibration is also not directly observable and must be defined through identifiable group-level contrasts or external validation. No package capability claim is present.",
-     "weakest_true_restatement": "Subgroup and conditional-effect analyses require subgroup-specific assessment of exchangeability, measurement validity, positivity, and uncertainty. Adaptive subgroup selection requires selection-aware inference, and overlap restriction changes the target population. Protected-group support problems must be shown in the actual data, while shrinkage can stabilize estimates but cannot repair nonidentification or differential measurement.",
-     "resolving_work": [],
-     "counter_evidence": [],
-     "auditor": "codex"
-    },
-    {
-     "problem_id": "LRN-04",
-     "status_vote": "open",
-     "support_vote": "supported-with-caveat",
-     "confidence": 0.7,
-     "rationale": "Feuerriegel et al. (2024) again bind individualized causal ML to classical identification assumptions; that supports the problem's premise without solving subgroup practice. Tools already recommended in the agenda exist in partial form: honest sample splitting in causal forests (Wager and Athey lineage), propensity trimming and common-support restriction, and various hierarchical or shrinkage approaches to unstable strata. Recent applied causal-forest work still documents poor within-stratum overlap and relies on post hoc trimming (e.g., 2025 Scientific Reports-style pipelines). What remains open is the joint operational problem the statement names: subgroup and protected-group HTE is often the scientific target; those strata systematically have the worst overlap and measurement quality; and there is no adopted standard that reports subgroup-specific data support, calibration, and differential assumption plausibility next to every CATE so that a poorly supported protected-group estimate cannot be read as a finding. Overlap is a data property no estimator repairs. Fairness-aware HTE and group-bias CATE work is active on arXiv and conference tracks but has not certified subgroup effects under differential access and measurement. Status remains open; the caveat is that honesty, trimming, and shrinkage are available components, not a field solution to protected-stratum extrapolation.",
-     "weakest_true_restatement": null,
-     "resolving_work": [],
-     "counter_evidence": [],
-     "auditor": "grok"
-    },
-    {
-     "problem_id": "LRN-04",
-     "status_vote": "open",
-     "support_vote": "supported",
-     "confidence": 0.9,
-     "rationale": "The claim is internally consistent and correctly identifies that overlap is a property of the data that cannot be fixed by the estimator, and that this disproportionately affects protected groups. The reasons given for it being open logically support the claim. The scope and severity are proportionate to the real-world cost of misinterpreting subgroup effects.",
-     "weakest_true_restatement": null,
-     "resolving_work": [],
-     "counter_evidence": [],
-     "auditor": "glm"
-    }
-   ],
-   "adjudication": {
-    "rule_version": "adjudicate.v2",
-    "status": "open",
-    "support": "supported-with-caveat",
-    "decision_path": [
-     "R5:default-open",
-     "R9:substantiated-overstatement(n=1/4):codex"
-    ],
-    "status_tally": {
-     "open": 4
-    },
-    "support_tally": {
-     "supported": 2,
-     "overstated": 1,
-     "supported-with-caveat": 1
-    },
-    "dissent": [
-     {
-      "auditor": "literature",
-      "axis": "support",
-      "verdict": "supported",
-      "evidence": [
-       {
-        "locator": "10.1038/s41467-026-74999-6",
-        "title": "Evaluating bias in target trial emulation for heart failure across statistical and deep learning methods",
-        "year": 2026,
-        "what_it_resolves": "Compares flexible against conventional estimation for bias inside an emulation, which is the nearest existing test and does not include a non-identifiable scenario.",
-        "quote": null
-       },
-       {
-        "locator": "10.1002/bimj.70133",
-        "title": "Estimate time-varying exposure effects via ensemble learning-based marginal structural model",
-        "year": 2026,
-        "what_it_resolves": "Applies ensemble learning to the weight model in a longitudinal setting, which is where the extrapolation concern applies.",
-        "quote": null
-       }
-      ],
-      "rationale": "The corpus contains a growing body of flexible estimation inside emulations, including ensemble-learning marginal structural models and deep learning comparisons, and it contains no support diagnostic reported alongside a flexible nuisance model and no methods comparison that includes a deliberately non-identifiable scenario. A 2026 Nature Communications paper evaluates bias across statistical and deep learning methods in a heart failure emulation, which is the comparison the entry wants and does not include a non-identifiable arm. Failure awareness as a scored property does not appear anywhere.",
-      "addressed_by": null
-     }
-    ],
-    "human_review_required": true
-   },
-   "dissent": "literature dissented (supported): The corpus contains a growing body of flexible estimation inside emulations, including ensemble-learning marginal structural models and deep learning comparisons, and it contains no support diagnostic reported alongside a flexible nuisance model and no methods comparison that includes a deliberately non-identifiable scenario. A 2026 Nature Communications paper evaluates bias across statistical and deep learning methods in a heart failure emulation, which is the comparison the entry wants and does not include a non-identifiable arm. Failure awareness as a scored property does not appear anywhere."
-  },
-  "verdict": "confirmed-open",
-  "verdict_rationale": "Auditors agreed the problem is open and no counterevidence surfaced."
+  "verdict": "unverifiable",
+  "verdict_rationale": "Auditors disagreed and the disagreement was evidence-bearing on both sides."
  },
  {
   "id": "MER-01",
