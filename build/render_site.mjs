@@ -509,131 +509,6 @@ ${cat.blurb}
 // because "this problem cannot be settled by a simulation" is itself a finding
 // about the problem, and a queue shown without them reads as though the other
 // 226 entries were simply not got to yet.
-function studiesPage(queue, index) {
-  // index is keyed by problem, and one study appears under every problem it
-  // bears on, so listing it directly would show the same study several times.
-  const entries = Object.entries(index).filter(([, s]) => !s.secondary)
-  const alsoOn = {}
-  for (const [pid, s] of Object.entries(index)) {
-    if (s.secondary) (alsoOn[s.primary_problem] ||= []).push(pid)
-  }
-  const done = entries.filter(([, s]) => s.status === 'complete')
-  const active = entries.filter(([, s]) => s.status !== 'complete')
-  const link = (id) => {
-    const t = REGISTRY_INDEX[id]
-    return t ? `[${id}](problems/${t.filename})` : id
-  }
-
-  const out = [`---
-title: "Studies"
-subtitle: ${y(`Closing the catalog, one problem a week`)}
-toc: true
----
-
-The catalog records what is open. This is the attempt to close some of it: one study a
-week, each aimed at a single entry, taken in priority order.
-
-Scope is population-adjusted indirect comparison only, meaning MAIC, STC, ML-NMR, ML-UMR
-and NMI. Standard network meta-analysis is out of scope because it does not adjust for
-population differences, which is where these problems live.
-
-`, '']
-
-  if (done.length) {
-    out.push('## Completed', '')
-    for (const [pid, s] of done) {
-      out.push(`### ${link(pid)} — ${s.title}`, '')
-      if (alsoOn[pid]?.length) {
-        out.push(`Also bears on ${alsoOn[pid].map(link).join(', ')}.`, '')
-      }
-      out.push(`**Question.** ${s.question}`, '')
-      out.push(`**Answer.** ${s.answer}`, '')
-      out.push(`**What it does not answer.** ${s.not_answered}`, '')
-      // Keys match FORMATS in build/studies/publish.py, where Markdown is 'gfm'.
-  const dl = Object.entries({ pdf: 'PDF', gfm: 'Markdown', odt: 'OpenDocument' })
-        .filter(([k]) => s.downloads?.[k])
-        .map(([k, l]) => `[${l}](/${s.downloads[k]})`).join(' · ')
-      if (dl) out.push(`Read it: ${dl}`, '')
-    }
-  } else {
-    out.push('## Completed', '', 'None yet. The first study is under way.', '')
-  }
-
-  if (active.length) {
-    out.push('## Under way', '')
-    out.push('::: {.table-scroll}', '', '| Problem | Study | Status |', '|---|---|---|')
-    for (const [pid, s] of active) {
-      out.push(`| ${link(pid)} | ${s.title} | ${s.status} |`)
-    }
-    out.push('', ':::', '')
-  }
-
-  out.push(
-    '## How a problem gets chosen', '',
-    'Not every open problem can be settled by a study, and the difference is not cosmetic.',
-    'A simulation can measure bias, coverage and error rates, and it can show how badly a',
-    'known nonidentification bites at realistic sample sizes. It cannot establish that a',
-    'package is missing, that clinicians misread a plot, that a field under-reports',
-    'something, or that a quantity is unidentifiable in principle. Those need software, a',
-    'case study, a meta-research corpus, or a proof.',
-    '',
-    `Every one of the ${Object.values(queue.excluded || {}).reduce((a, b) => a + b, 0) + (queue.queue?.length || 0)} catalog entries was judged on both questions separately,`,
-    'by an external model, before the program started: is this a population-adjustment',
-    'problem, and what kind of study would settle it. The queue below is the intersection.',
-    '',
-    '::: {.table-scroll}', '', '| Why an entry is not in the program | n |', '|---|---:|'
-  )
-  for (const [k, n] of Object.entries(queue.excluded || {}).sort((a, b) => b[1] - a[1])) {
-    out.push(`| ${k} | ${n} |`)
-  }
-  out.push('', ':::', '')
-
-  out.push(
-    '## The queue', '',
-    `${queue.queue?.length || 0} problems, in order. This is an ordering, not a schedule:`,
-    'a study that turns out to answer two entries closes both, and a study whose design',
-    'review finds it would answer a neighbouring question rather than the stated one gets',
-    'sent back before it is run.',
-    '',
-    '::: {.table-scroll}', '',
-    '| # | Problem | Methods | Study | Answers | Feasibility | Catalog priority |',
-    '|---|---|---|---|---|---|---|'
-  )
-  for (const [i, r] of (queue.queue || []).entries()) {
-    out.push(
-      `| ${i + 1} | ${link(r.id)} ${r.title} | ${(r.methods || []).join(', ') || '—'} ` +
-        `| ${r.study_type} | ${r.answerable} | ${r.feasibility ?? '—'}/5 | ${r.priority} |`
-    )
-  }
-  out.push('', ':::', '')
-
-  out.push(
-    '## What each study has to do', '',
-    'Simulation studies follow ADEMP: aims, data-generating mechanisms, estimands, methods,',
-    'performance measures ([Morris, White and Crowther 2019](https://doi.org/10.1002/sim.8086)).',
-    'Two rules follow from it and are enforced rather than encouraged.',
-    '',
-    'Every performance measure carries a Monte Carlo standard error.',
-    ':   A bias of 0.02 is uninterpretable without knowing whether the Monte Carlo error is',
-    '    0.001 or 0.03. The replicate count is derived in the protocol from a target Monte',
-    '    Carlo standard error, not chosen because it is a round number.',
-    '',
-    'Failed replicates are results.',
-    ':   A method that converges on 60% of replicates and is unbiased on those is not an',
-    '    unbiased method. Convergence is reported for every method in every scenario.',
-    '',
-    'The protocol is committed before the run.',
-    ':   It fixes the design and states in advance what result would count as showing the',
-    '    problem is real and what would count as showing it is not. The commit that adds it',
-    '    is the timestamp.',
-    '',
-    'Code, protocols and results are at',
-    '[github.com/choxos/ITC-open-problems/tree/main/studies](https://github.com/choxos/TTE-open-problems/tree/main/studies).',
-    ''
-  )
-  return out.join('\n')
-}
-
 function chronologyPage(tl, gaps) {
   const rows = tl.problems || []
   const link = (id) => {
@@ -818,10 +693,9 @@ function main() {
     writeFileSync(join(CATEGORIES_DIR, `${cat.slug}.qmd`), categoryPage(cat, mine))
   }
 
-  const queue = readJson(join(ROOT, 'studies/queue.json'), { queue: [], excluded: {} })
-  if (queue.queue?.length) {
-    writeFileSync(join(ROOT, 'studies.qmd'), studiesPage(queue, STUDIES))
-  }
+  // The simulation-study program is not part of this phase. When it starts, its page
+  // generator comes back with it; a half-ported one carrying another project's scope
+  // statement is worse than none.
 
   if (timeline.problems?.length) {
     writeFileSync(join(ROOT, 'chronology.qmd'), chronologyPage(timeline, gapChron))
