@@ -44,8 +44,8 @@ differently again.
   in areas this theme set does not cover at all. Forcing those onto the nearest
   theme is worse than leaving them out, because it manufactures a recurrence that
   nobody actually asserted.
-- Do not label a gap by the paper's topic. A cardiology NMA can name a gap about
-  heterogeneity priors; the theme is the heterogeneity prior, not cardiology.
+- Do not label a gap by the paper's topic. A cardiology emulation can name a gap
+  about grace-period choice; the theme is the grace period, not cardiology.
 
 Give a `confidence` of `high`, `medium` or `low`. Use `low` when two themes fit
 about equally, and name the runner-up in `also`.

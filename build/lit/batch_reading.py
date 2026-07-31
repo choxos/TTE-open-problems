@@ -2,9 +2,10 @@
 """Split the consolidated library into reading batches for the paper-reader agents.
 
 Ordering is by how much a paper is likely to bear on the registry, not
-alphabetically: the population-adjustment literature first, then component
-methods, then the general network meta-analysis corpus, which is the largest and
-the thinnest per paper. Batches are written as small JSON files so each agent
+alphabetically: the narrow method-name sets first (clone-censor-weight, the
+g-formula, marginal structural models, immortal time bias), then the target
+trial emulation literature, then the broad `target trial` set, which is the
+largest and the thinnest per paper. Batches are written as small JSON files so each agent
 gets an explicit file list and an explicit output path, and so a batch can be
 re-run without disturbing the others.
 

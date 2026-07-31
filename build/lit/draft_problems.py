@@ -5,19 +5,18 @@ A proposal is a paragraph a paper-reader wrote and an independent reviewer
 accepted. A registry entry is a different object: it states the problem for
 someone who has read none of the papers, says why it is open rather than merely
 unsolved, lists what has been tried with real citations, proposes a direction,
-and carries the trail that lets a reader check all of it. The 232 existing
-entries were written that way and the new ones have to match, or the catalog
-becomes two catalogs.
+and carries the trail that lets a reader check all of it. The existing entries
+were written that way and the new ones have to match, or the catalog becomes two
+catalogs.
 
 So the proposals are drafted into entries by agents that see the full evidence
 behind each cluster and the existing entries in the same category, and the ids
 are assigned here rather than by the agents, because an id has to be unique
 across the registry and no single agent can see all of it.
 
-Sixteen clusters carry a `merge_into` from the reviewer: it judged them part of
-an existing problem rather than a new one. Those do not become entries. They
-become additions to the entry they belong to, which is the whole point of having
-asked.
+Some clusters carry a `merge_into` from the reviewer: it judged them part of an
+existing problem rather than a new one. Those do not become entries. They become
+additions to the entry they belong to, which is the whole point of having asked.
 
 Usage:
   python3 build/lit/draft_problems.py --build --batches 12

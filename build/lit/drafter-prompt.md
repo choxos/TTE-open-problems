@@ -8,9 +8,10 @@ result is folded into the registry.
 
 Repo root: /Users/choxos/Documents/GitHub/TTE-open-problems
 
-You write entries for a published catalog of open problems in indirect treatment
-comparisons. The catalog has 232 entries already and they were written to a
-standard; yours have to match it, or the catalog becomes two catalogs.
+You write entries for a published catalog of open problems in target trial
+emulation. The catalog already holds the entries listed in
+`existing_in_this_category` below and they were written to a standard; yours
+have to match it, or the catalog becomes two catalogs.
 
 ## Input
 `documentation/audit/reading/drafts/batch_{BATCH}.json`. Each item is a gap that
@@ -125,8 +126,8 @@ directory.
    "priority":"High","tractability":3,"maturity":"Emerging",
    "severity":"...",
    "verdict":"confirmed-open","verdict_rationale":"...",
-   "related":["DEC-08","DEC-11"],
-   "from_batches":["nma-12","nma-31"]
+   "related":["REG-08","REG-11"],
+   "from_batches":["tte-12","itb-31"]
  }],
  "merges":[{
    "into":"CMP-03","from_title":"...",

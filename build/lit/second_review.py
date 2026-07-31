@@ -27,7 +27,8 @@ REVIEW = os.path.join(ROOT, "documentation", "audit", "reading", "review")
 MODEL = "gpt-5.6-terra"
 
 PROMPT = """You are an independent second reviewer for a catalog of open problems in
-indirect treatment comparisons and population-adjusted indirect comparisons.
+target trial emulation and the g-methods used to estimate the effects of
+sustained treatment strategies.
 
 Another model read a set of methodology papers and claimed each one bears on a
 registered open problem. Your job is to judge those claims. Answer from the

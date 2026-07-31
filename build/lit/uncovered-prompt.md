@@ -7,9 +7,9 @@ for how the payload is built and how the result is folded in.
 
 Repo root: /Users/choxos/Documents/GitHub/TTE-open-problems
 
-You assess candidate gaps for a published catalog of open problems in indirect
-treatment comparisons. The catalog has 331 entries and they were written to a
-standard.
+You assess candidate gaps for a published catalog of open problems in target
+trial emulation. The registry index below holds every entry, and they were
+written to a standard.
 
 These candidates are weaker evidence than anything already in the catalog. They
 were not proposed by anyone who read a paper and argued for them. They came from
@@ -27,16 +27,15 @@ assessor that promotes all of its candidates has not assessed them.
    Each has the absence as the labellers described it, how many named it, and
    the `evidence_gaps`: the actual future-research sentences behind it, each
    with the paper, its year, a verbatim quote and a locator.
-2. `documentation/audit/reading/uncovered/registry-index.json` — **all 331**
-   current entries with id, title, category, verdict and the opening of each
+2. `documentation/audit/reading/uncovered/registry-index.json` — **every**
+   current entry with id, title, category, verdict and the opening of each
    statement. Read all of it.
 
 ## Step 1, and most candidates should die here: is it still missing?
 
-The labellers ran against 232 registered problems plus 115 accepted proposals.
-Those proposals have since been written into entries, and their authors retitled
-and rescoped many of them while checking sources. A candidate can have been
-absorbed by that work.
+The labellers ran against the registry as it stood before the accepted proposals
+were drafted into entries, and their authors retitled and rescoped many of them
+while checking sources. A candidate can have been absorbed by that work.
 
 Search the registry index properly. Match by substance, not title words: an
 entry filed under a different category, or named differently, can still be the

@@ -55,11 +55,11 @@ PER_BATCH = 2          # these payloads carry a whole audit trail plus dozens of
 MAX_FINDINGS = 40      # newest first; the tail repeats the head
 
 PROMPT = """You are adjudicating whether to reverse an earlier verdict in a catalog of open
-problems in indirect treatment comparisons.
+problems in target trial emulation.
 
 Each problem below was closed by an earlier audit as `overstated` (the underlying
 issue is real but the claim as written was too strong) or `not-supported` (the
-claim could not be substantiated). A later full-text reading of 687 papers then
+claim could not be substantiated). A later full-text reading of {N_PAPERS} papers then
 produced findings asserting the problem is open.
 
 That is usually not a contradiction. A closure normally concedes a residual: it
@@ -169,7 +169,11 @@ def build():
     n = 0
     for i in range(0, len(items), PER_BATCH):
         n += 1
-        json.dump({"batch": f"{n:02d}", "items": items[i:i + PER_BATCH]},
+        # n_papers travels with the payload so the prompt can state the real
+        # size of the reading that produced these findings. Typing it into the
+        # prompt would make it a number that is right once.
+        json.dump({"batch": f"{n:02d}", "n_papers": len(lib),
+                   "items": items[i:i + PER_BATCH]},
                   open(os.path.join(OUT, f"{n:02d}.json"), "w", encoding="utf8"),
                   indent=1, ensure_ascii=False)
     print(f"{len(items)} reopen candidates in {n} batches")
@@ -185,7 +189,8 @@ def run_one(bid, timeout=2400):
     payload = json.load(open(os.path.join(OUT, f"{bid}.json"), encoding="utf8"))
     cmd = ["codex", "exec", "-m", MODEL, "-c", "model_reasoning_effort=high",
            "-s", "read-only", "--skip-git-repo-check", "--ignore-rules",
-           PROMPT + json.dumps(payload["items"], ensure_ascii=False, indent=1)]
+           PROMPT.replace("{N_PAPERS}", str(payload.get("n_papers", "the"))) +
+           json.dumps(payload["items"], ensure_ascii=False, indent=1)]
     try:
         p = subprocess.run(cmd, capture_output=True, timeout=timeout,
                            stdin=subprocess.DEVNULL)

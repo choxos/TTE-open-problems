@@ -10,10 +10,10 @@ They are only candidates. Unlike the proposals that became entries, these have
 had no reading and no second review: nobody checked the papers behind them, and
 nobody asked whether they are a gap for the field or a to-do for those authors.
 There is also a specific reason they might already be wrong. The labellers ran
-against 232 registered problems plus 115 accepted proposals, and those proposals
-have since been drafted into entries that were retitled and rescoped as their
-authors checked the sources. A candidate can have been absorbed by that work
-without anyone noticing.
+against the registry as it stood before the accepted proposals were drafted into
+entries, and those entries were retitled and rescoped as their authors checked
+the sources. A candidate can have been absorbed by that work without anyone
+noticing.
 
 So each goes out with the evidence behind it and the whole current registry, and
 the first question is not "is this a good problem" but "is it still missing".

@@ -133,23 +133,10 @@ def main():
 
 
     # ---- 2. citations -----------------------------------------------------
-    p = by_id.get("DIS-16")
-    if p:
-        hit = False
-        for w in p.get("prior_work") or []:
-            if "10.1186/s12874-022-01792-6" in (w.get("doi_or_url") or ""):
-                old = w["cite"]
-                w["cite"] = DIS16_CITE
-                note(p, "citation", f"corrected attribution: {old!r} -> "
-                     f"{DIS16_CITE!r}",
-                     "CrossRef resolves this DOI to Hu, Wang, Ye and O'Connor, "
-                     "'Using information from network meta-analyses to optimize "
-                     "the power and sample allocation of a subsequent trial with "
-                     "a new treatment'.")
-                log.append("citation      DIS-16 attribution corrected")
-                hit = True
-        if not hit:
-            log.append("CITATION MISS DIS-16: DOI not found in prior_work")
+    # The sibling project also carried a hand-written attribution fix here, keyed to one of
+    # its own entry ids and to one DOI. It is not portable and it referenced a constant that
+    # no longer exists, so it is not carried over; the year and surname corrections below are
+    # driven by citation-check.json and apply to whatever the check actually finds.
 
     rows = json.load(open(os.path.join(REGISTRY, "citation-check.json"),
                           encoding="utf8"))

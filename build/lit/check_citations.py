@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Check every citation in the registry against what its DOI actually points at.
 
-A reader found DIS-16 crediting "Nikolakopoulou et al. 2022" for a paper whose
-DOI resolves to Hu, Wang, Ye and O'Connor. Nothing in the pipeline could have
-caught that: the readers report on whether a problem is open, not on whether the
-registry cites correctly, and a plausible name attached to a real DOI reads as
-sound to everyone downstream.
+In the sibling project a reader found an entry crediting one group for a paper
+whose DOI resolves to an entirely different set of authors. Nothing in the
+pipeline could have caught that: the readers report on whether a problem is
+open, not on whether the registry cites correctly, and a plausible name attached
+to a real DOI reads as sound to everyone downstream.
 
 The failure mode is misattribution, not fabrication. The DOI resolves, the paper
 exists, and the described work is real; only the names and the year are wrong.
@@ -95,9 +95,10 @@ def crossref(doi, cache, refresh=False):
 # Citations here read "Authors, Title, Journal Year", so the capitalised word
 # next to the year is the journal, not a person. Authors only ever sit at the
 # front, and only an opening run punctuated as a name list attributes the work to
-# anyone: "Ren, Ren, Welton & Strong" and "Nikolakopoulou et al." do, while
-# "Mode of Delivery Ontology" and "CONSORT 2025 statement" do not. Requiring that
-# punctuation is what keeps a title from being read as a misattribution.
+# anyone: "Hernán, Sauer, Hernández-Díaz & Platt" and "Maringe et al." do, while
+# "Observational Medical Outcomes Partnership" and "TARGET 2025 statement" do
+# not. Requiring that punctuation is what keeps a title from being read as a
+# misattribution.
 NAME = r"[A-ZÀ-Þ][A-Za-zÀ-ÿ'’\-]{2,}"
 OPENS_WITH_AUTHORS = re.compile(
     rf"^\s*({NAME})(?=\s*,\s*{NAME}|\s*&|\s+et\s+al\.?|\s+and\s+{NAME})")

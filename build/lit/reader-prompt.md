@@ -11,8 +11,9 @@ one, and report evidence
 against a registry of open problems. You do NOT edit the registry or the site.
 
 ## Inputs
-1. `documentation/audit/problems-index.md` — the compact index of 232 registered
-   open problems (id, verdict, priority, title, one-line gist). Read this FIRST.
+1. `documentation/audit/problems-index.md` — the compact index of every
+   registered open problem (id, verdict, priority, title, one-line gist). Read
+   this FIRST, all of it; the file states how many entries it holds.
 2. `documentation/audit/reading/batch_{BATCH}.json` — your assigned papers, each
    with an id and a path to its PDF or JATS XML.
 
@@ -72,9 +73,9 @@ and say so in `what_was_done`.
    credited to the wrong paper, a capability attributed to software that its own
    documentation disclaims, a result described inaccurately. Record these in
    `registry_errata`. They are not findings and not new problems, and without
-   their own channel they are simply lost. One is already confirmed this way:
-   DIS-16 credited a paper to Nikolakopoulou et al. that is in fact by Hu, Wang,
-   Ye and O'Connor.
+   their own channel they are simply lost. The sibling project confirmed one this
+   way: an entry credited a paper to authors who had not written it, and the DOI
+   it cited resolved to a different group entirely.
 
 ## Standards
 - Quote the evidence. Every claim about a paper needs a short verbatim quote plus
@@ -106,7 +107,7 @@ scratch directory, since the session scratchpad is shared with other readers.
   "future_research":[{"gap":"...","kind":"stated|implied","quote":"verbatim","locator":"discussion / p. 12"}],
   "problems":[{"problem_id":"CMP-01","effect":"resolves|partially-addresses|supports-open|contradicts","confidence":"high|medium|low","evidence":"2-3 sentences","quote":"verbatim","locator":"section 4.2 / p. 7"}],
   "new_problems":[{"proposed_title":"...","category":"PRO|ELG|TZO|STR|EST|CNF|GMT|OVL|UCF|MER|MIS|OUT|SEQ|DTA|BEN|REG|SFW|LRN","statement":"...","why_open":"...","quote":"verbatim","checked_against_index":"closest existing ids rejected, and why"}],
-  "registry_errata":[{"problem_id":"DIS-16","kind":"misattribution|wrong-year|misdescribed|software-capability","what_the_registry_says":"...","what_is_actually_true":"...","quote":"verbatim from the paper","confidence":"high|medium|low"}]
+  "registry_errata":[{"problem_id":"TZO-03","kind":"misattribution|wrong-year|misdescribed|software-capability","what_the_registry_says":"...","what_is_actually_true":"...","quote":"verbatim from the paper","confidence":"high|medium|low"}]
 }]}
 ```
 
