@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strategies remains limited, and no reporting standard requires the censoring decision to be justified as an identifying assumption rather than executed inside data preparation.">
 
-<title>Unmeasured confounding, negative controls &amp; bias analysis – Open Problems in Target Trial Emulation</title>
+<title>Censoring at death is applied as data cleaning rather than as an identifying assumption – Open Problems in Target Trial Emulation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +31,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -73,69 +72,11 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-cat-unmeasured-confounding .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-pid','listing-title','listing-priority','listing-verdict','listing-maturity','listing-prank',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-pid-sort'] },{ data: ['listing-title-sort'] },{ data: ['listing-prank-sort'] }],
-      
-      searchColumns: ["listing-pid","listing-title","listing-priority","listing-verdict","listing-maturity"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-cat-unmeasured-confounding'] = new List('listing-cat-unmeasured-confounding', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
-<body class="nav-fixed fullcontent quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -444,17 +385,40 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#statement" id="toc-statement" class="nav-link active" data-scroll-target="#statement">Statement</a></li>
+  <li><a href="#why-it-is-open" id="toc-why-it-is-open" class="nav-link" data-scroll-target="#why-it-is-open">Why it is open</a></li>
+  <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
+  <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
+  <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
+  <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Unmeasured confounding, negative controls &amp; bias analysis</h1>
-<p class="subtitle lead">2 open problems</p>
-</div>
+<h1 class="title">Censoring at death is applied as data cleaning rather than as an identifying assumption</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Outcomes, competing events &amp; the time scale</div>
+    <div class="quarto-category">High priority</div>
+    <div class="quarto-category">Unverifiable</div>
+  </div>
+  </div>
 
+<div>
+  <div class="description">
+    Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strategies remains limited, and no reporting standard requires the censoring decision to be justified as an identifying assumption rather than executed inside data preparation.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -469,125 +433,89 @@ window.Quarto = {
 </header>
 
 
-<p>Exchangeability is the assumption nobody can check. E-values, negative controls, empirical calibration, proximal methods and instruments: what each rules out, and what it leaves standing.</p>
-<div id="listing-cat-unmeasured-confounding" class="quarto-listing quarto-listing-container-table">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-    <select id="listing-cat-unmeasured-confounding-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-cat-unmeasured-confounding'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-      <option value="" disabled="" selected="" hidden="">Order By</option>
-      <option value="index" data-direction="asc">Default</option>
-      <option value="listing-pid-sort" data-direction="asc">
-        ID
-      </option>
-      <option value="listing-title-sort" data-direction="asc">
-        Problem
-      </option>
-      <option value="listing-prank-sort" data-direction="asc">
-        prank (Low to High)
-      </option>
-      <option value="listing-prank-sort" data-direction="desc">
-        prank (High to Low)
-      </option>
-      <option value="listing-verdict" data-direction="asc">
-        Verdict
-      </option>
-      <option value="listing-maturity" data-direction="asc">
-        Maturity
-      </option>
-    </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
+<div class="problem-meta">
+<p><span class="problem-id">OUT-01</span> <span class="verdict verdict-unverifiable">Unverifiable</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-established">Established</span> <span class="chip">Tractability 4/5</span></p>
 </div>
-<table class="quarto-listing-table table table-hover">
+<section id="statement" class="level2">
+<h2 class="anchored" data-anchor-id="statement">Statement</h2>
+<p>Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strategies remains limited, and no reporting standard requires the censoring decision to be justified as an identifying assumption rather than executed inside data preparation.</p>
+</section>
+<section id="why-it-is-open" class="level2">
+<h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
+<p>The estimands differ in what they assume rather than in what they fit, so a wrong choice produces a well-behaved analysis of the wrong quantity and nothing downstream flags it. Separable effects require decomposing a treatment into components with separately meaningful effects, which is a substantive claim about the drug that most applied settings cannot support. The combination of recurrent and terminal events with sustained-strategy emulation is not worked out in available software, so an analyst who chooses correctly on competing risks may have no estimator for the regime they wanted.</p>
+</section>
+<section id="what-has-been-tried" class="level2">
+<h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
+<div class="table-scroll">
+<table class="caption-top table">
 <thead>
-<tr>
-
-<th>
-<a class="sort" data-sort="listing-pid-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">ID</a>
-</th>
-
-<th>
-<a class="sort" data-sort="listing-title-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Problem</a>
-</th>
-
-<th>
-Priority
-</th>
-
-<th>
-<a class="sort" data-sort="listing-verdict" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Verdict</a>
-</th>
-
-<th>
-<a class="sort" data-sort="listing-maturity" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Maturity</a>
-</th>
-
-<th>
-<a class="sort" data-sort="listing-prank-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">prank</a>
-</th>
-
+<tr class="header">
+<th>Work</th>
+<th>What it contributes</th>
 </tr>
 </thead>
-<tbody class="list">
-
-<tr data-index="0" data-categories="VW5tZWFzdXJlZCUyMGNvbmZvdW5kaW5nJTJDJTIwbmVnYXRpdmUlMjBjb250cm9scyUyMCUyNiUyMGJpYXMlMjBhbmFseXNpcyUyQ1ZlcnklMjBoaWdoJTIwcHJpb3JpdHklMkNVbnZlcmlmaWFibGU=" data-listing-file-modified-sort="1785470519828" data-listing-reading-time-sort="10" data-listing-word-count-sort="1955" data-listing-prank-sort="1" data-listing-pid-sort="UCF-01" data-listing-title-sort="Negative controls, proxies and validation data are not integrated into a standard emulation workflow" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="../problems/UCF-01-negative-controls-proxies-and-validation-data-are-not-integr.html" class="pid listing-pid">UCF-01</a>
-</td>
-<td>
-<a href="../problems/UCF-01-negative-controls-proxies-and-validation-data-are-not-integr.html" class="title listing-title">Negative controls, proxies and validation data are not integrated into a standard emulation workflow</a>
-</td>
-<td>
-<span class="listing-priority">Very high</span>
-</td>
-<td>
-<span class="listing-verdict">Unverifiable</span>
-</td>
-<td>
-<span class="listing-maturity">Promising</span>
-</td>
-<td>
-<span class="listing-prank">1</span>
-</td>
-
+<tbody>
+<tr class="odd">
+<td><a href="https://www.ema.europa.eu/en/ich-e9-statistical-principles-clinical-trials-scientific-guideline">ICH E9(R1) addendum on estimands and sensitivity analysis in clinical trials</a></td>
+<td>Requires explicit specification of the strategy for each intercurrent event, which is the discipline that the emulation literature has not yet inherited.</td>
 </tr>
-
-<tr data-index="1" data-categories="VW5tZWFzdXJlZCUyMGNvbmZvdW5kaW5nJTJDJTIwbmVnYXRpdmUlMjBjb250cm9scyUyMCUyNiUyMGJpYXMlMjBhbmFseXNpcyUyQ0hpZ2glMjBwcmlvcml0eSUyQ1VudmVyaWZpYWJsZQ==" data-listing-file-modified-sort="1785470519829" data-listing-reading-time-sort="10" data-listing-word-count-sort="1888" data-listing-prank-sort="2" data-listing-pid-sort="UCF-02" data-listing-title-sort="Sensitivity analyses vary one violated assumption at a time when several are violated together" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="../problems/UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.html" class="pid listing-pid">UCF-02</a>
-</td>
-<td>
-<a href="../problems/UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.html" class="title listing-title">Sensitivity analyses vary one violated assumption at a time when several are violated together</a>
-</td>
-<td>
-<span class="listing-priority">High</span>
-</td>
-<td>
-<span class="listing-verdict">Unverifiable</span>
-</td>
-<td>
-<span class="listing-maturity">Emerging</span>
-</td>
-<td>
-<span class="listing-prank">2</span>
-</td>
-
+<tr class="even">
+<td><a href="https://cran.r-project.org/package=lmtp">lmtp: Non-Parametric Causal Effects of Feasible Interventions Based on Modified Treatment Policies. CRAN</a></td>
+<td>Supports censored outcomes and competing risks for modified treatment policies, one of the few implementations where the competing event is part of the estimand rather than a preprocessing step.</td>
 </tr>
-
 </tbody>
 </table>
-<div class="listing-no-matching d-none">No matching items</div>
 </div>
-<p><a href="../catalog.html">Back to the full catalog</a></p>
+</section>
+<section id="probable-solution-or-research-direction" class="level2">
+<h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
+<p>Prespecify the estimand as a cumulative incidence, a restricted mean event-free time or a recurrent-event contrast, and name the intercurrent-event strategy for each competing event in the protocol. Require that any censoring at a competing event be justified as an identifying assumption, with the intervention it corresponds to stated and its conditions argued, which turns a data-cleaning line into a reviewable claim. Compare multistate g-computation, joint frailty models, separable effects and recurrent-event targeted learning on data generated with a known competing-event structure, and build the joint recurrent-and-terminal case for sustained strategies, which is the gap in available implementations.</p>
+</section>
+<section id="verification" class="level2">
+<h2 class="anchored" data-anchor-id="verification">Verification</h2>
+<div class="verification-trail">
+<p><strong>Verdict.</strong> Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.</p>
+<p><strong>The source said.</strong> “Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations nonetheless default to cause-specific hazards or censor competing events without matching the estimator to the causal question, and recurrent and terminal events are seldom modeled jointly. The step where an analyst censors follow-up at death is an identifying decision that selects among these estimands, and it is normally executed silently inside data preparation, where no reviewer sees it as a decision at all.”</p>
+<p><strong>What was wrong with it.</strong> Censoring at a competing event does not select or identify an estimand. It changes the observed-data analysis, and it supports a hypothetical elimination estimand only when that intervention is well defined and its identification conditions hold. Calling the censoring step the choice of estimand was the wrong description of what it does.</p>
+<p><strong>Dissent.</strong> literature dissented (open): The methodological apparatus the entry asks for exists further than it allows. A 2026 Journal of Epidemiology paper treats causal inference from time-to-event data with dependent censoring, confounding and competing events together, and a 2025 Journal of Clinical Epidemiology paper works a trial emulation with competing risks in a surgical application. The entry’s claim is nonetheless about practice rather than method: that applied emulations default to cause-specific hazards or censor at competing events without matching the estimator to the question, and that censoring at death is executed inside data preparation. Nothing in the corpus contradicts that, and the reporting requirement the entry proposes does not exist. codex dissented (overstated): The central warning is valid and potentially high severity: handling death or another intercurrent event is part of defining the estimand, and total, controlled direct, and separable effects answer different questions. The entry is nevertheless conceptually imprecise. An estimand is defined by its counterfactual outcomes and contrast; identification assumptions are separate. Simply censoring at death does not select or identify one of those causal effects. Depending on the analysis, it can instead produce a cause-specific risk-set quantity or an unidentified hypothetical contrast. The claims that censoring is normally silent and that recurrent and terminal events are seldom modeled jointly are empirical frequency claims not established by the cited package source. Pinned lmtp source exports lmtp_tmle, lmtp_sdr, and lmtp_survival; accepts longitudinal treatment, censoring, and competing-risk nodes; incorporates competing-event status in its recursion; and tests two treatment times with two competing-risk times. Pinned gfoRmula source exports gformula_survival and static and implements sustained intervention risks with an explicit competing-event model and an option governing whether that event is treated as censoring. These implementations address competing risks under longitudinal strategies, but neither exposes an explicit joint recurrent-event and terminal-event estimand. The narrower implementation and protocol gap therefore remains. grok dissented (supported-with-caveat): Inverted-prior search shows the methodological core of OUT-01 is older and better equipped than a pure ‘open’ label implies, while the applied silence problem remains. Young, Stensrud, Tchetgen Tchetgen and Hernán (2020) already formalize that treating a competing event as censoring selects a controlled-direct-effect style question rather than a total-effect cumulative incidence, so the ‘identifying assumption vs data cleaning’ distinction is settled in the causal competing-risks literature. Software already embeds that choice for sustained or feasible longitudinal interventions: gfoRmula documents explicit options for competing events under time-varying treatment strategies, and lmtp implements time-to-event outcomes with competing risks for modified treatment policies, including a later ‘total effect’ option in version 1.5.0 (citing Díaz, Hoffman and Hejazi). Janvin, Young, Ryalen and Stensrud (2024) formalize causal estimands for recurrent events with and without a terminal competing event. None of that fully closes OUT-01 as stated. Applied primers still describe censor-at-death plus Fine-Gray sensitivity as common practice (Terman et al., 2025). ICH E9(R1) still governs trials more tightly than routine emulation protocols; TARGET (2025) improves TTE reporting generally but does not by itself force an intercurrent-event strategy for death the way E9(R1) does for trials. Separable effects remain a substantive product claim, not a software switch. Joint recurrent-plus-terminal estimation under longitudinal confounding is advancing (Prosepe et al., 2025 multistate g-computation; D’Alessio et al., 2026 arXiv g-computation for recurrent and semi-competing events with time-varying actions) but those are method papers and proposals, not field-wide defaults or head-to-head evaluations of multistate g-computation, joint frailty, separable effects and recurrent-event targeted learning on a known competing-event DGP. Net: estimator and formal estimand machinery for competing death under many sustained strategies exist; silent preprocessing and incomplete recurrent/terminal tooling keep the problem only partially solved. Queries run included competing risks/censoring at death in target trial emulation; intercurrent events in RWE/TTE; separable effects software; multistate g-computation sustained strategies; lmtp/gfoRmula/gfoRmulaICE NEWS and CRAN; TARGET 2025 checklist coverage; arXiv/medRxiv 2024–2026; Janvin recurrent competing; Díaz LMTP competing risks.</p>
+<dl>
+<dt>Literature and prior-art check</dt>
+<dd>
+<strong>open / supported-with-caveat.</strong> The methodological apparatus the entry asks for exists further than it allows. A 2026 Journal of Epidemiology paper treats causal inference from time-to-event data with dependent censoring, confounding and competing events together, and a 2025 Journal of Clinical Epidemiology paper works a trial emulation with competing risks in a surgical application. The entry’s claim is nonetheless about practice rather than method: that applied emulations default to cause-specific hazards or censor at competing events without matching the estimator to the question, and that censoring at death is executed inside data preparation. Nothing in the corpus contradicts that, and the reporting requirement the entry proposes does not exist. Cites 10.2188/jea.je20250662: Handles the three complications jointly, which is the analysis the entry says is not worked out.. Cites 10.1016/j.jclinepi.2025.111714: A worked emulation in which competing risks are part of the design rather than a preprocessing step..
+</dd>
+<dt>GPT-5.6 Sol, technical and source-code lens</dt>
+<dd>
+<strong>partially-solved / overstated.</strong> The central warning is valid and potentially high severity: handling death or another intercurrent event is part of defining the estimand, and total, controlled direct, and separable effects answer different questions. The entry is nevertheless conceptually imprecise. An estimand is defined by its counterfactual outcomes and contrast; identification assumptions are separate. Simply censoring at death does not select or identify one of those causal effects. Depending on the analysis, it can instead produce a cause-specific risk-set quantity or an unidentified hypothetical contrast. The claims that censoring is normally silent and that recurrent and terminal events are seldom modeled jointly are empirical frequency claims not established by the cited package source. Pinned lmtp source exports lmtp_tmle, lmtp_sdr, and lmtp_survival; accepts longitudinal treatment, censoring, and competing-risk nodes; incorporates competing-event status in its recursion; and tests two treatment times with two competing-risk times. Pinned gfoRmula source exports gformula_survival and static and implements sustained intervention risks with an explicit competing-event model and an option governing whether that event is treated as censoring. These implementations address competing risks under longitudinal strategies, but neither exposes an explicit joint recurrent-event and terminal-event estimand. The narrower implementation and protocol gap therefore remains. Cites CRAN:lmtp@1.5.4: The pinned NAMESPACE exports lmtp_tmle, lmtp_sdr, and lmtp_survival. The source accepts treatment variables ordered over time together with censoring and competing-risk indicators, and its fidelity test applies repeated treatment and competing-risk nodes. This supplies estimators for cumulative incidence under longitudinal treatment policies, but not an explicit joint recurrent-terminal contrast.. Cites CRAN:gfoRmula@1.1.1: The pinned NAMESPACE exports gformula_survival and static. The source models competing events and implements never-treat and always-treat interventions across follow-up, resolving ordinary sustained-strategy competing-risk estimation while leaving explicit recurrent-terminal estimands unaddressed..
+</dd>
+<dt>Grok 4.5, recency lens</dt>
+<dd>
+<strong>partially-solved / supported-with-caveat.</strong> Inverted-prior search shows the methodological core of OUT-01 is older and better equipped than a pure ‘open’ label implies, while the applied silence problem remains. Young, Stensrud, Tchetgen Tchetgen and Hernán (2020) already formalize that treating a competing event as censoring selects a controlled-direct-effect style question rather than a total-effect cumulative incidence, so the ‘identifying assumption vs data cleaning’ distinction is settled in the causal competing-risks literature. Software already embeds that choice for sustained or feasible longitudinal interventions: gfoRmula documents explicit options for competing events under time-varying treatment strategies, and lmtp implements time-to-event outcomes with competing risks for modified treatment policies, including a later ‘total effect’ option in version 1.5.0 (citing Díaz, Hoffman and Hejazi). Janvin, Young, Ryalen and Stensrud (2024) formalize causal estimands for recurrent events with and without a terminal competing event. None of that fully closes OUT-01 as stated. Applied primers still describe censor-at-death plus Fine-Gray sensitivity as common practice (Terman et al., 2025). ICH E9(R1) still governs trials more tightly than routine emulation protocols; TARGET (2025) improves TTE reporting generally but does not by itself force an intercurrent-event strategy for death the way E9(R1) does for trials. Separable effects remain a substantive product claim, not a software switch. Joint recurrent-plus-terminal estimation under longitudinal confounding is advancing (Prosepe et al., 2025 multistate g-computation; D’Alessio et al., 2026 arXiv g-computation for recurrent and semi-competing events with time-varying actions) but those are method papers and proposals, not field-wide defaults or head-to-head evaluations of multistate g-computation, joint frailty, separable effects and recurrent-event targeted learning on a known competing-event DGP. Net: estimator and formal estimand machinery for competing death under many sustained strategies exist; silent preprocessing and incomplete recurrent/terminal tooling keep the problem only partially solved. Queries run included competing risks/censoring at death in target trial emulation; intercurrent events in RWE/TTE; separable effects software; multistate g-computation sustained strategies; lmtp/gfoRmula/gfoRmulaICE NEWS and CRAN; TARGET 2025 checklist coverage; arXiv/medRxiv 2024–2026; Janvin recurrent competing; Díaz LMTP competing risks. Cites doi:10.1002/sim.8471: Makes explicit that defining competing events as censoring is an identifying choice among total, controlled direct and related counterfactual estimands, not a neutral cleaning step; this is the conceptual backbone of OUT-01.. Cites doi:10.1007/s10985-023-09606-7: Provides identification and estimation for survival under competing risks with longitudinal modified treatment policies, so competing death is part of the estimand rather than only a preprocessing censor code for feasible sustained-style interventions.. Cites cran:lmtp: Released R software that natively supports time-to-event outcomes with competing risks for MTPs/dynamic rules; NEWS for 1.5.0 adds estimation of the total effect under competing risks, reducing the incentive to censor death before fitting.. Cites doi:10.1016/j.patter.2020.100008: Implements parametric g-formula for sustained treatment strategies with documented options for handling competing events, covering the sustained-strategy case the agenda flags as missing when analysts stay inside cause-specific Cox pipelines.. Cites doi:10.1007/s10985-023-09594-8: Formalizes several causal estimands for recurrent event settings with and without competing terminal events, partially addressing the report’s claim that recurrent and terminal structure is not worked out at the estimand level.. Cites doi:10.1002/sim.70061: Combines multistate models with g-computation for causal effects of treatment-delay strategies, showing multistate g-computation for longitudinal treatment timing is an active, published method stream rather than a blank spot.. Cites arxiv:2603.10169: Proposes g-computation algorithms for time-varying actions with recurrent and semi-competing events; progress on the exact joint structure OUT-01 says is missing, but still a method proposal rather than a completed evaluation suite or standard package default.. Cites doi:10.3389/fphar.2024.1223858: Shows joint use of ICH-style estimands (including intercurrent-event strategies) with target trial emulation in observational external-control work, partial inheritance of E9(R1) discipline into emulation design..
+</dd>
+<dt>glm</dt>
+<dd>
+<strong>open / supported.</strong> The statement is internally consistent and proportionate. It accurately characterizes a well-known methodological tension in causal inference and target trial emulation: handling competing events (like death) via censoring during data preparation implicitly imposes an identifying assumption and selects an estimand, often without explicit protocol-level justification. The reason given for the problem being open—that estimands differ in their assumptions and a mismatched choice yields a well-behaved but wrong analysis without downstream flags—logically supports the assertion that this remains an open issue in applied practice. The scope is appropriate, addressing current applied practice rather than asserting a structural impossibility.
+</dd>
+<dt>Decision path</dt>
+<dd>
+<code>R3:partially-solved(n=2/4) → R7:counter-and-support-both-present(support=1/counter=1)</code>
+</dd>
+</dl>
+</div>
+</section>
+<section id="related-problems" class="level2">
+<h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
+<div class="related-links">
+<ul>
+<li><a href="../problems/EST-03-a-hazard-ratio-is-reported-where-the-estimand-was-a-weighted.html">EST-03 — A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible</a></li>
+</ul>
+</div>
+</section>
+<section id="source" class="level2">
+<h2 class="anchored" data-anchor-id="source">Source</h2>
+<p>Extracted from the source document at seed-linked.md line 71, row ‘Competing events, recurrent outcomes and informative censoring’ (seed-methodological).</p>
 
 
-
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1016,7 +944,7 @@ Priority
 </div>   
     <div class="nav-footer-center">
 <p>Every entry carries a verification verdict. See <a href="../methods.html">How this was verified</a>.</p>
-<div class="toc-actions"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p><a href="https://github.com/choxos/TTE-open-problems">Source</a></p>
 </div>

@@ -482,14 +482,15 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="the-audit" class="level2">
 <h2 class="anchored" data-anchor-id="the-audit">The audit</h2>
-<p>Every problem carries a set of atomic, falsifiable claims extracted from the source. Those claims, not the prose around them, are what was tested.</p>
+<p>Every problem was assessed as a whole statement rather than decomposed into atomic claims, because the statements are written to be falsifiable in one piece: each names a specific thing that does not exist. Four auditors assessed each entry independently, and each returned two votes, one on whether the problem is still open and one on whether the claim as written is faithful and proportionate, together with the weakest version of the claim they would still defend. Those weakest restatements are what the published statement was rewritten to.</p>
 <section id="literature-verification" class="level3">
 <h3 class="anchored" data-anchor-id="literature-verification">Literature verification</h3>
-<p>For each problem, an agent with web and PubMed access checked that each cited work actually supports the claim attributed to it, and searched for later work that would resolve or narrow the problem.</p>
+<p>For each problem, every cited work was checked to confirm it supports the claim attributed to it, and the screened corpus on this site was searched for later work that would resolve or narrow the problem. The search ran against the 1,376 records held locally rather than against recall, so every locator in a verification opinion is a record that exists in the collection and can be opened. Where the search found nothing, the opinion says so and its confidence is capped, because absence from one corpus of PubMed and PMC records is weak evidence of absence in the field.</p>
 </section>
 <section id="adversarial-refutation" class="level3">
 <h3 class="anchored" data-anchor-id="adversarial-refutation">Adversarial refutation</h3>
-<p>A second agent was instructed to <em>refute</em> the proposition that the problem is open, and to default to “not open” when uncertain. Asking an agent to confirm a claim and asking it to break the claim produce different results; only the second is informative.</p>
+<p>The adversarial lens is one of the independent auditors rather than a separate pass. It is given an inverted prior: assume the problem has already been solved, and go find who solved it. Asking a model to confirm a claim and asking it to break the claim produce different results, and only the second is informative.</p>
+<p>The sibling project this pipeline was ported from declares a separate refuting auditor in its adjudication rule that casts no opinions, which leaves one guard in that rule permanently inert. Rather than reproduce a lens that is named and does not run, the roster here names only auditors that vote, and the rule counts only those.</p>
 </section>
 <section id="independent-external-auditors" class="level3">
 <h3 class="anchored" data-anchor-id="independent-external-auditors">Independent external auditors</h3>
@@ -499,7 +500,7 @@ ul.task-list li input[type="checkbox"] {
 <li>a <strong>recency and prior-art lens</strong>, which adopts an inverted prior. It assumes each problem has already been solved and goes looking for who solved it, because an agenda that lists a solved problem as open is the most damaging error this site can make: the people most likely to read it are the people who solved it;</li>
 <li>a <strong>third independent lens</strong> on the same claims, so that a majority is a majority of more than two.</li>
 </ul>
-<p>Each entry’s page lists the auditors that voted on it. Coverage is not uniform, because external models run out of quota mid-run; where an entry was reached by fewer auditors, the page says so rather than presenting a thinner audit as an equal one.</p>
+<p>Each entry’s page lists the auditors that voted on it. Coverage is not uniform. External models run out of quota mid-run, and one of them intermittently returns a well-formed but empty verdict for a batch, answering in about a hundred tokens where a real assessment takes several thousand. Those batches are detected and re-run rather than counted as complete, and the ones that stay empty after a re-run leave the entry adjudicated by fewer auditors. Where that happened the page says so, rather than presenting a thinner audit as an equal one, and every majority rule is taken over the auditors that actually voted on that entry.</p>
 </section>
 <section id="adjudication" class="level3">
 <h3 class="anchored" data-anchor-id="adjudication">Adjudication</h3>

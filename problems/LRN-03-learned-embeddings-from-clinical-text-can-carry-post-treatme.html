@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. A learned representation of a clinical note is a dense summary of everything in the note, which can include the site, the treating clinician’s behavior, protected characteristics and information about a treatment decision already made. An embedding whose input window is not demonstrably prior to both the assignment and the decision behind it can therefore carry post-treatment content into a nominal baseline adjustment set, and a timestamp preceding assignment does not establish that it does not. Formal treatment-leakage methods and text distillation exist and are not standard practice in emulations, and no routine test certifies that a representation encodes prognosis rather than the treatment that was about to be given.">
 
-<title>Unmeasured confounding, negative controls &amp; bias analysis – Open Problems in Target Trial Emulation</title>
+<title>Learned embeddings from clinical text can carry post-treatment information into a baseline adjustment set – Open Problems in Target Trial Emulation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +31,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -73,69 +72,11 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-cat-unmeasured-confounding .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-pid','listing-title','listing-priority','listing-verdict','listing-maturity','listing-prank',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-pid-sort'] },{ data: ['listing-title-sort'] },{ data: ['listing-prank-sort'] }],
-      
-      searchColumns: ["listing-pid","listing-title","listing-priority","listing-verdict","listing-maturity"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-cat-unmeasured-confounding'] = new List('listing-cat-unmeasured-confounding', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
-<body class="nav-fixed fullcontent quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -444,17 +385,40 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#statement" id="toc-statement" class="nav-link active" data-scroll-target="#statement">Statement</a></li>
+  <li><a href="#why-it-is-open" id="toc-why-it-is-open" class="nav-link" data-scroll-target="#why-it-is-open">Why it is open</a></li>
+  <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
+  <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
+  <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
+  <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Unmeasured confounding, negative controls &amp; bias analysis</h1>
-<p class="subtitle lead">2 open problems</p>
-</div>
+<h1 class="title">Learned embeddings from clinical text can carry post-treatment information into a baseline adjustment set</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Machine learning, high-dimensional adjustment &amp; automated emulation</div>
+    <div class="quarto-category">High priority</div>
+    <div class="quarto-category">Unverifiable</div>
+  </div>
+  </div>
 
+<div>
+  <div class="description">
+    Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. A learned representation of a clinical note is a dense summary of everything in the note, which can include the site, the treating clinician’s behavior, protected characteristics and information about a treatment decision already made. An embedding whose input window is not demonstrably prior to both the assignment and the decision behind it can therefore carry post-treatment content into a nominal baseline adjustment set, and a timestamp preceding assignment does not establish that it does not. Formal treatment-leakage methods and text distillation exist and are not standard practice in emulations, and no routine test certifies that a representation encodes prognosis rather than the treatment that was about to be given.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -469,125 +433,90 @@ window.Quarto = {
 </header>
 
 
-<p>Exchangeability is the assumption nobody can check. E-values, negative controls, empirical calibration, proximal methods and instruments: what each rules out, and what it leaves standing.</p>
-<div id="listing-cat-unmeasured-confounding" class="quarto-listing quarto-listing-container-table">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-    <select id="listing-cat-unmeasured-confounding-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-cat-unmeasured-confounding'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-      <option value="" disabled="" selected="" hidden="">Order By</option>
-      <option value="index" data-direction="asc">Default</option>
-      <option value="listing-pid-sort" data-direction="asc">
-        ID
-      </option>
-      <option value="listing-title-sort" data-direction="asc">
-        Problem
-      </option>
-      <option value="listing-prank-sort" data-direction="asc">
-        prank (Low to High)
-      </option>
-      <option value="listing-prank-sort" data-direction="desc">
-        prank (High to Low)
-      </option>
-      <option value="listing-verdict" data-direction="asc">
-        Verdict
-      </option>
-      <option value="listing-maturity" data-direction="asc">
-        Maturity
-      </option>
-    </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
+<div class="problem-meta">
+<p><span class="problem-id">LRN-03</span> <span class="verdict verdict-unverifiable">Unverifiable</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 3/5</span></p>
 </div>
-<table class="quarto-listing-table table table-hover">
+<section id="statement" class="level2">
+<h2 class="anchored" data-anchor-id="statement">Statement</h2>
+<p>Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. A learned representation of a clinical note is a dense summary of everything in the note, which can include the site, the treating clinician’s behavior, protected characteristics and information about a treatment decision already made. An embedding whose input window is not demonstrably prior to both the assignment and the decision behind it can therefore carry post-treatment content into a nominal baseline adjustment set, and a timestamp preceding assignment does not establish that it does not. Formal treatment-leakage methods and text distillation exist and are not standard practice in emulations, and no routine test certifies that a representation encodes prognosis rather than the treatment that was about to be given.</p>
+</section>
+<section id="why-it-is-open" class="level2">
+<h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
+<p>The causal role of an embedding dimension is not interpretable, so the standard remedy of inspecting an adjustment set does not apply. Predictiveness of treatment is the obvious test and settles nothing: a genuinely prognostic representation predicts treatment through confounding by indication, and a leaking one predicts it directly. Restricting to pre-assignment text bounds the leak without eliminating it, because a note written before treatment can describe a decision already taken, and validity therefore rests on auditable content provenance rather than on timing metadata.</p>
+</section>
+<section id="what-has-been-tried" class="level2">
+<h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
+<div class="table-scroll">
+<table class="caption-top table">
 <thead>
-<tr>
-
-<th>
-<a class="sort" data-sort="listing-pid-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">ID</a>
-</th>
-
-<th>
-<a class="sort" data-sort="listing-title-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Problem</a>
-</th>
-
-<th>
-Priority
-</th>
-
-<th>
-<a class="sort" data-sort="listing-verdict" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Verdict</a>
-</th>
-
-<th>
-<a class="sort" data-sort="listing-maturity" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Maturity</a>
-</th>
-
-<th>
-<a class="sort" data-sort="listing-prank-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">prank</a>
-</th>
-
+<tr class="header">
+<th>Work</th>
+<th>What it contributes</th>
 </tr>
 </thead>
-<tbody class="list">
-
-<tr data-index="0" data-categories="VW5tZWFzdXJlZCUyMGNvbmZvdW5kaW5nJTJDJTIwbmVnYXRpdmUlMjBjb250cm9scyUyMCUyNiUyMGJpYXMlMjBhbmFseXNpcyUyQ1ZlcnklMjBoaWdoJTIwcHJpb3JpdHklMkNVbnZlcmlmaWFibGU=" data-listing-file-modified-sort="1785470519828" data-listing-reading-time-sort="10" data-listing-word-count-sort="1955" data-listing-prank-sort="1" data-listing-pid-sort="UCF-01" data-listing-title-sort="Negative controls, proxies and validation data are not integrated into a standard emulation workflow" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="../problems/UCF-01-negative-controls-proxies-and-validation-data-are-not-integr.html" class="pid listing-pid">UCF-01</a>
-</td>
-<td>
-<a href="../problems/UCF-01-negative-controls-proxies-and-validation-data-are-not-integr.html" class="title listing-title">Negative controls, proxies and validation data are not integrated into a standard emulation workflow</a>
-</td>
-<td>
-<span class="listing-priority">Very high</span>
-</td>
-<td>
-<span class="listing-verdict">Unverifiable</span>
-</td>
-<td>
-<span class="listing-maturity">Promising</span>
-</td>
-<td>
-<span class="listing-prank">1</span>
-</td>
-
+<tbody>
+<tr class="odd">
+<td><a href="https://doi.org/10.1038/s41746-026-02563-z">Wang, et al.&nbsp;An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026</a></td>
+<td>Proposes natural language processing for eligibility extraction and phenotyping within an emulation framework.</td>
 </tr>
-
-<tr data-index="1" data-categories="VW5tZWFzdXJlZCUyMGNvbmZvdW5kaW5nJTJDJTIwbmVnYXRpdmUlMjBjb250cm9scyUyMCUyNiUyMGJpYXMlMjBhbmFseXNpcyUyQ0hpZ2glMjBwcmlvcml0eSUyQ1VudmVyaWZpYWJsZQ==" data-listing-file-modified-sort="1785470519829" data-listing-reading-time-sort="10" data-listing-word-count-sort="1888" data-listing-prank-sort="2" data-listing-pid-sort="UCF-02" data-listing-title-sort="Sensitivity analyses vary one violated assumption at a time when several are violated together" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="../problems/UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.html" class="pid listing-pid">UCF-02</a>
-</td>
-<td>
-<a href="../problems/UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.html" class="title listing-title">Sensitivity analyses vary one violated assumption at a time when several are violated together</a>
-</td>
-<td>
-<span class="listing-priority">High</span>
-</td>
-<td>
-<span class="listing-verdict">Unverifiable</span>
-</td>
-<td>
-<span class="listing-maturity">Emerging</span>
-</td>
-<td>
-<span class="listing-prank">2</span>
-</td>
-
+<tr class="even">
+<td><a href="https://doi.org/10.1038/s41591-024-02902-1">Feuerriegel S, Frauen D, Melnychuk V, et al.&nbsp;Causal machine learning for predicting treatment outcomes. Nat Med 2024;30:958-968</a></td>
+<td>Sets the boundary between predictive performance and causal validity that high-dimensional adjustment repeatedly crosses.</td>
 </tr>
-
 </tbody>
 </table>
-<div class="listing-no-matching d-none">No matching items</div>
 </div>
-<p><a href="../catalog.html">Back to the full catalog</a></p>
+</section>
+<section id="probable-solution-or-research-direction" class="level2">
+<h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
+<p>Use temporally locked encoders trained on content demonstrably prior to both the assignment and the treatment decision, and publish the provenance of that window in dates and document types rather than in prose. Adopt the existing treatment-leakage tests and text distillation methods rather than treating predictiveness as a diagnostic, and where a representation is used as a proxy, state the proximal role and the identification conditions it requires. Prefer interpretable proxy sets over indiscriminate adjustment for a high-dimensional representation whose causal role cannot be argued.</p>
+</section>
+<section id="verification" class="level2">
+<h2 class="anchored" data-anchor-id="verification">Verification</h2>
+<div class="verification-trail">
+<p><strong>Verdict.</strong> Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.</p>
+<p><strong>The source said.</strong> “Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. The risk is specific: a learned representation of a clinical note is a dense summary of everything in the note, which can include post-treatment information, the identity of the site, the behavior of the treating clinician and protected characteristics. Adjusting for such a representation is adjusting for an object whose causal role is unknown and probably mixed, and the usual justification, that more information reduces confounding, does not hold when part of that information is a descendant of treatment.”</p>
+<p><strong>What was wrong with it.</strong> Two corrections. A timestamp preceding assignment is not sufficient: what matters is that the input window is demonstrably prior to both the assignment and the underlying treatment decision, which is a provenance requirement rather than a date check. And the entry’s proposed test, whether the embedding predicts treatment better than structured covariates do, neither establishes nor rules out leakage. Formal treatment-leakage methods and text distillation exist without being standard.</p>
+<p><strong>Dissent.</strong> grok dissented (overstated): The report frames embedding adjustment as an open risk without naming the literature that already defines and partially remediates it. Daoud, Jerzak, and Johansson (NAACL 2022) formalize treatment leakage when text is used as a confounder proxy, including leakage from pre-assignment documents that anticipate treatment. Daoud, Johansson, and Jerzak (arXiv:2601.02400, late 2025/2026) add formal definitions, four distillation methods (similarity passage removal, distant-supervision passage classification, salient-feature removal, iterative nullspace projection), and simulation plus empirical sensitivity analysis; they explicitly address the paradox that pre-timestamped text can still encode treatment. That is real prior art for detection and mitigation, not mere restatement. Residual openness remains for clinical TTE: methods are not standard in EHR phenotyping pipelines; Wang et al.&nbsp;(2026) still promote NLP for eligibility without a required leakage audit; temporal locking plus formal comparison of embedding-versus-structured treatment prediction is recommended in the agenda and only partially operationalized outside medicine. Sensitivity and distillation quantify or reduce leakage; they do not make an embedding’s causal role fully interpretable dimension-by-dimension. The problem is therefore partially solved in the text-as-confounder literature and still under-adopted in clinical emulation practice.</p>
+<dl>
+<dt>Literature and prior-art check</dt>
+<dd>
+<strong>open / supported.</strong> A search for treatment leakage, temporal locking or auditing of learned representations used as adjustment sets returned nothing in the screened corpus. The claim is therefore unrefuted and weakly evidenced: the corpus is built from target trial and g-method phrases, and work on representation leakage would most likely appear in machine learning venues that none of the eight phrases reaches. The vote is open at the confidence ceiling this project sets for searched-and-found-nothing.
+</dd>
+<dt>GPT-5.6 Sol, technical and source-code lens</dt>
+<dd>
+<strong>open / overstated.</strong> An embedding derived from content observed after treatment assignment or after the clinical treatment decision can encode descendants of treatment and make baseline adjustment invalid. The risk is conditional on the source content and causal timing, not on representation learning or opacity by itself. A deterministic embedding of genuinely baseline variables remains baseline, and site or protected characteristics are not automatically invalid adjustment variables. Individual embedding dimensions need not be causally interpretable if the provenance and causal roles of their inputs are defensible. The proposed treatment-prediction test is not a valid leakage diagnostic: stronger prediction of assigned treatment can arise from additional legitimate confounder information, instruments, or actual leakage, and the test cannot distinguish these explanations. Likewise, merely declaring an embedding a proximal proxy is insufficient without valid proxy roles and the associated identifying conditions. No package capability claim is present.
+</dd>
+<dt>Grok 4.5, recency lens</dt>
+<dd>
+<strong>partially-solved / overstated.</strong> The report frames embedding adjustment as an open risk without naming the literature that already defines and partially remediates it. Daoud, Jerzak, and Johansson (NAACL 2022) formalize treatment leakage when text is used as a confounder proxy, including leakage from pre-assignment documents that anticipate treatment. Daoud, Johansson, and Jerzak (arXiv:2601.02400, late 2025/2026) add formal definitions, four distillation methods (similarity passage removal, distant-supervision passage classification, salient-feature removal, iterative nullspace projection), and simulation plus empirical sensitivity analysis; they explicitly address the paradox that pre-timestamped text can still encode treatment. That is real prior art for detection and mitigation, not mere restatement. Residual openness remains for clinical TTE: methods are not standard in EHR phenotyping pipelines; Wang et al.&nbsp;(2026) still promote NLP for eligibility without a required leakage audit; temporal locking plus formal comparison of embedding-versus-structured treatment prediction is recommended in the agenda and only partially operationalized outside medicine. Sensitivity and distillation quantify or reduce leakage; they do not make an embedding’s causal role fully interpretable dimension-by-dimension. The problem is therefore partially solved in the text-as-confounder literature and still under-adopted in clinical emulation practice. Cites https://aclanthology.org/2022.naacl-main.413/: Defines treatment leakage when text used for confounding adjustment also carries treatment signal, including leakage from pre-assignment future-referencing language; establishes the identification and estimation problem the agenda restates.. Cites arXiv:2601.02400: Provides formal statistical definitions of treatment leakage plus automatic and semi-automatic distillers and leakage sensitivity analysis so that text representations can be purged or stress-tested for treatment-predictive content before adjustment..
+</dd>
+<dt>glm</dt>
+<dd>
+<strong>open / overstated.</strong> The claim correctly identifies the risk of post-treatment leakage in learned embeddings. However, the assertion that ‘no test distinguishes’ a representation encoding prognosis from one encoding treatment is an overstatement of impossibility when it means that no standard or easily applicable test exists. It is a claim about current practice wearing the language of impossibility.
+</dd>
+<dt>Decision path</dt>
+<dd>
+<code>R3:partially-solved(n=1/4) → R7:counter-and-support-both-present(support=1/counter=1)</code>
+</dd>
+</dl>
+</div>
+</section>
+<section id="related-problems" class="level2">
+<h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
+<div class="related-links">
+<ul>
+<li><a href="../problems/LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.html">LRN-01 — Flexible estimation is presented as a remedy for identification failure</a></li>
+<li><a href="../problems/UCF-01-negative-controls-proxies-and-validation-data-are-not-integr.html">UCF-01 — Negative controls, proxies and validation data are not integrated into a standard emulation workflow</a></li>
+</ul>
+</div>
+</section>
+<section id="source" class="level2">
+<h2 class="anchored" data-anchor-id="source">Source</h2>
+<p>Extracted from the source document at seed-linked.md line 110, row ‘Unstructured text and multimodal proxies’ (seed-data).</p>
 
 
-
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1016,7 +945,7 @@ Priority
 </div>   
     <div class="nav-footer-center">
 <p>Every entry carries a verification verdict. See <a href="../methods.html">How this was verified</a>.</p>
-<div class="toc-actions"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p><a href="https://github.com/choxos/TTE-open-problems">Source</a></p>
 </div>

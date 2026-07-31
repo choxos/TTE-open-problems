@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="description" content="Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends on a latent state needs further identifying assumptions or a sensitivity analysis. Applied emulations continue to use complete case or last observation carried forward, and enter healthcare use as a baseline confounder rather than as a process.">
 
-<title>Unmeasured confounding, negative controls &amp; bias analysis – Open Problems in Target Trial Emulation</title>
+<title>The visit process is treated as a nuisance to be imputed rather than as part of the causal structure – Open Problems in Target Trial Emulation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +31,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -73,69 +72,11 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-cat-unmeasured-confounding .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-pid','listing-title','listing-priority','listing-verdict','listing-maturity','listing-prank',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-pid-sort'] },{ data: ['listing-title-sort'] },{ data: ['listing-prank-sort'] }],
-      
-      searchColumns: ["listing-pid","listing-title","listing-priority","listing-verdict","listing-maturity"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-cat-unmeasured-confounding'] = new List('listing-cat-unmeasured-confounding', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 </head>
 
-<body class="nav-fixed fullcontent quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
     const toggleBodyColorMode = (bsSheetEl) => {
       const mode = bsSheetEl.getAttribute("data-mode");
       const bodyEl = window.document.querySelector("body");
@@ -444,17 +385,40 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#statement" id="toc-statement" class="nav-link active" data-scroll-target="#statement">Statement</a></li>
+  <li><a href="#why-it-is-open" id="toc-why-it-is-open" class="nav-link" data-scroll-target="#why-it-is-open">Why it is open</a></li>
+  <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
+  <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
+  <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
+  <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Unmeasured confounding, negative controls &amp; bias analysis</h1>
-<p class="subtitle lead">2 open problems</p>
-</div>
+<h1 class="title">The visit process is treated as a nuisance to be imputed rather than as part of the causal structure</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Missing data, censoring &amp; loss to follow-up</div>
+    <div class="quarto-category">Very high priority</div>
+    <div class="quarto-category">Unverifiable</div>
+  </div>
+  </div>
 
+<div>
+  <div class="description">
+    Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends on a latent state needs further identifying assumptions or a sensitivity analysis. Applied emulations continue to use complete case or last observation carried forward, and enter healthcare use as a baseline confounder rather than as a process.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -469,125 +433,112 @@ window.Quarto = {
 </header>
 
 
-<p>Exchangeability is the assumption nobody can check. E-values, negative controls, empirical calibration, proximal methods and instruments: what each rules out, and what it leaves standing.</p>
-<div id="listing-cat-unmeasured-confounding" class="quarto-listing quarto-listing-container-table">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-    <select id="listing-cat-unmeasured-confounding-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-cat-unmeasured-confounding'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-      <option value="" disabled="" selected="" hidden="">Order By</option>
-      <option value="index" data-direction="asc">Default</option>
-      <option value="listing-pid-sort" data-direction="asc">
-        ID
-      </option>
-      <option value="listing-title-sort" data-direction="asc">
-        Problem
-      </option>
-      <option value="listing-prank-sort" data-direction="asc">
-        prank (Low to High)
-      </option>
-      <option value="listing-prank-sort" data-direction="desc">
-        prank (High to Low)
-      </option>
-      <option value="listing-verdict" data-direction="asc">
-        Verdict
-      </option>
-      <option value="listing-maturity" data-direction="asc">
-        Maturity
-      </option>
-    </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="Filter">
-    </div>
+<div class="problem-meta">
+<p><span class="problem-id">MIS-01</span> <span class="verdict verdict-unverifiable">Unverifiable</span> <span class="chip chip-priority-very-high">Very high priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 3/5</span></p>
 </div>
-<table class="quarto-listing-table table table-hover">
+<section id="statement" class="level2">
+<h2 class="anchored" data-anchor-id="statement">Statement</h2>
+<p>Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends on a latent state needs further identifying assumptions or a sensitivity analysis. Applied emulations continue to use complete case or last observation carried forward, and enter healthcare use as a baseline confounder rather than as a process.</p>
+</section>
+<section id="why-it-is-open" class="level2">
+<h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
+<p>The remaining methodological case is the one that matters most in practice: visiting driven by a latent severity the record does not contain, which no observation model can condition on. Weight instability is driven by small conditional observation probabilities and by intensity-model misspecification, and calibration of the intensity model does not validate it, so the diagnostic available does not settle whether the weights are trustworthy. The larger gap is adoption rather than method, and adoption is slow because modeling the visit process multiplies the nuisance components and therefore the positivity requirements, so the more faithful model can be the less identifiable one.</p>
+</section>
+<section id="what-has-been-tried" class="level2">
+<h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
+<div class="table-scroll">
+<table class="caption-top table">
 <thead>
-<tr>
-
-<th>
-<a class="sort" data-sort="listing-pid-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">ID</a>
-</th>
-
-<th>
-<a class="sort" data-sort="listing-title-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Problem</a>
-</th>
-
-<th>
-Priority
-</th>
-
-<th>
-<a class="sort" data-sort="listing-verdict" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Verdict</a>
-</th>
-
-<th>
-<a class="sort" data-sort="listing-maturity" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">Maturity</a>
-</th>
-
-<th>
-<a class="sort" data-sort="listing-prank-sort" onclick="if (this.classList.contains('sort-asc')) { this.classList.add('sort-desc'); this.classList.remove('sort-asc') } else { this.classList.add('sort-asc'); this.classList.remove('sort-desc')} return false;">prank</a>
-</th>
-
+<tr class="header">
+<th>Work</th>
+<th>What it contributes</th>
 </tr>
 </thead>
-<tbody class="list">
-
-<tr data-index="0" data-categories="VW5tZWFzdXJlZCUyMGNvbmZvdW5kaW5nJTJDJTIwbmVnYXRpdmUlMjBjb250cm9scyUyMCUyNiUyMGJpYXMlMjBhbmFseXNpcyUyQ1ZlcnklMjBoaWdoJTIwcHJpb3JpdHklMkNVbnZlcmlmaWFibGU=" data-listing-file-modified-sort="1785470519828" data-listing-reading-time-sort="10" data-listing-word-count-sort="1955" data-listing-prank-sort="1" data-listing-pid-sort="UCF-01" data-listing-title-sort="Negative controls, proxies and validation data are not integrated into a standard emulation workflow" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="../problems/UCF-01-negative-controls-proxies-and-validation-data-are-not-integr.html" class="pid listing-pid">UCF-01</a>
-</td>
-<td>
-<a href="../problems/UCF-01-negative-controls-proxies-and-validation-data-are-not-integr.html" class="title listing-title">Negative controls, proxies and validation data are not integrated into a standard emulation workflow</a>
-</td>
-<td>
-<span class="listing-priority">Very high</span>
-</td>
-<td>
-<span class="listing-verdict">Unverifiable</span>
-</td>
-<td>
-<span class="listing-maturity">Promising</span>
-</td>
-<td>
-<span class="listing-prank">1</span>
-</td>
-
+<tbody>
+<tr class="odd">
+<td><a href="https://doi.org/10.1093/jamia/ocz148">Goldstein BA, Bhavsar NA, Phelan M, Pencina MJ. How and when informative visit processes can bias inference when using electronic health records data for clinical research. J Am Med Inform Assoc 2019</a></td>
+<td>Establishes when the visit process biases inference in record-based studies and characterizes the mechanism.</td>
 </tr>
-
-<tr data-index="1" data-categories="VW5tZWFzdXJlZCUyMGNvbmZvdW5kaW5nJTJDJTIwbmVnYXRpdmUlMjBjb250cm9scyUyMCUyNiUyMGJpYXMlMjBhbmFseXNpcyUyQ0hpZ2glMjBwcmlvcml0eSUyQ1VudmVyaWZpYWJsZQ==" data-listing-file-modified-sort="1785470519829" data-listing-reading-time-sort="10" data-listing-word-count-sort="1888" data-listing-prank-sort="2" data-listing-pid-sort="UCF-02" data-listing-title-sort="Sensitivity analyses vary one violated assumption at a time when several are violated together" onclick="href = this.querySelector('a').getAttribute('href');
- if (href) { window.location=href ; return false; }">
-<td>
-<a href="../problems/UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.html" class="pid listing-pid">UCF-02</a>
-</td>
-<td>
-<a href="../problems/UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.html" class="title listing-title">Sensitivity analyses vary one violated assumption at a time when several are violated together</a>
-</td>
-<td>
-<span class="listing-priority">High</span>
-</td>
-<td>
-<span class="listing-verdict">Unverifiable</span>
-</td>
-<td>
-<span class="listing-maturity">Emerging</span>
-</td>
-<td>
-<span class="listing-prank">2</span>
-</td>
-
+<tr class="even">
+<td><a href="https://doi.org/10.1093/biomtc/ujae065">Multiply robust estimation of marginal structural models in observational studies subject to covariate-driven observation times. Biometrics 2024</a></td>
+<td>Supplies a multiply robust estimator for irregularly spaced, covariate-driven observation times, more flexible and more efficient than the existing doubly weighted alternative.</td>
 </tr>
-
+<tr class="odd">
+<td><a href="https://doi.org/10.1186/s12874-022-01831-2">Estimation of marginal structural models under irregular visits and unmeasured confounder: calibrated inverse probability weights. BMC Med Res Methodol 2023</a></td>
+<td>Gives calibrated weights for irregular visits in the presence of an unmeasured confounder.</td>
+</tr>
+<tr class="even">
+<td><a href="https://doi.org/10.1002/sim.70102">Continuous-time causal inference with marked point process weights. Stat Med 2025</a></td>
+<td>Builds continuous-time weights from a marked point process because primary-care visit times are irregular and informative and treatment history carries duration and dose.</td>
+</tr>
 </tbody>
 </table>
-<div class="listing-no-matching d-none">No matching items</div>
 </div>
-<p><a href="../catalog.html">Back to the full catalog</a></p>
+</section>
+<section id="probable-solution-or-research-direction" class="level2">
+<h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
+<p>Adopt the estimators that exist rather than defaulting to complete case or last observation carried forward, and state which assumption the chosen one requires: conditionally independent visiting, or a latent-state model with its own identifying conditions. Model visits as recurrent events or point processes jointly with treatment and outcome, and include healthcare use in the causal diagram as a process so conditioning decisions can be read off the graph. Report the dispersion of the observation weights and the conditional observation probabilities rather than the marginal visit rate, and pair a latent-state analysis with a sensitivity analysis, since calibration of an intensity model is not validation of it.</p>
+</section>
+<section id="verification" class="level2">
+<h2 class="anchored" data-anchor-id="verification">Verification</h2>
+<div class="verification-trail">
+<p><strong>Verdict.</strong> Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.</p>
+<p><strong>The source said.</strong> “Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so record-based covariate histories are irregular and selectively missing in a way that carries clinical information. Missing-at-random conditional on the recorded history can therefore fail precisely because the recording is itself informative. Standard handling, and last observation carried forward in particular, constructs an artificial history in which a patient’s state is asserted to be unchanged over an interval during which the absence of measurement was itself evidence about their state.”</p>
+<p><strong>What was wrong with it.</strong> Estimators that model the observation process jointly with treatment and outcome exist in three separate families, so the entry’s implication that the analyst has no principled option was wrong. Two further corrections: inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds, and weight instability comes from small conditional observation probabilities and misspecification rather than from marginal visit-rate heterogeneity on its own.</p>
+<p><strong>Dissent.</strong> literature dissented (overstated): The entry says standard handling constructs artificial histories and that modeling visits jointly with treatment and outcome multiplies nuisance components without a worked solution. Three separate estimator families in the corpus contradict the strong reading. A 2024 Biometrics paper proposes a multiply robust estimator for marginal structural models under irregularly spaced, covariate-driven observation times and shows it is more flexible and more efficient than the previously proposed doubly weighted estimator. A 2023 BMC Medical Research Methodology paper gives calibrated inverse probability weights for marginal structural models under irregular visits with an unmeasured confounder. A 2025 Statistics in Medicine paper builds continuous-time weights from a marked point process for the same reason. What survives is an adoption claim rather than a methods claim: these estimators exist and applied emulation pipelines do not use them, and healthcare use is still entered as a baseline confounder rather than modeled as a process. grok dissented (supported-with-caveat): Inverted-prior search finds methods that put the visit process in the causal or estimating structure, so the problem is not open as a pure absence of methodology. It is not fully solved either: the report’s hard tradeoffs remain live, and the comparative evaluation it proposes has not been delivered for sustained-strategy target trial emulation under a known, treatment-dependent visiting mechanism.</p>
+<p>Cited works first. Goldstein et al.&nbsp;(JAMIA 2019; 10.1093/jamia/ocz148) characterize when informative visits bias EHR association analyses; that paper diagnoses the mechanism and does not close it. Wang et al.&nbsp;(npj Digit Med 2026; 10.1038/s41746-026-02563-z) elevate the observation process to an operational constraint on whether an EHR can realize a target trial protocol element. Secondary commentary on that paper treats the contribution as specification-versus-realization discipline, not as a solved estimator. Both strengthen the claim that the issue is still on the agenda; neither resolves identification or estimation under treatment-dependent visiting.</p>
+<p>Prior art that treats visits as structure rather than pure nuisance: (i) inverse-intensity-of-visit (IIW) theory and software for irregular longitudinal data (Pullenayegum line; CRAN IrregLong with Cox visit-intensity weights and IIW-GEE), still actively refined in 2025 on visit-model variable selection and selection of patients with no follow-up; (ii) parametric g-formula software that models a random measurement or visit process jointly with covariates for sustained strategies (gfoRmula’s visitprocess argument: visit indicators attached to intermittently measured confounders, with last-measured values and a cap on consecutive missed visits); (iii) Kalia et al.&nbsp;(BMC Med Res Methodol 2023; 10.1186/s12874-022-01831-2), calibrated inverse probability weights for marginal structural models under irregular visits, with Monte Carlo evaluation; (iv) Kalia et al.&nbsp;(Stat Med 2025; 10.1002/sim.70102), continuous-time MSM weights factored as visit intensity times dose (marked point process) on primary-care EHR for cumulative SGLT-2i exposure and recurrent UTI, explicitly motivated by informative visit timing. Coulombe et al.&nbsp;(Stat Methods Med Res 2023) combine inverse intensity of visit weights with individualized treatment rules in longitudinal observational data, which is related but not full sustained-strategy TTE.</p>
+<p>What remains open, and why a full solved vote fails. IIW and continuous-time visit weights still require sequential positivity for the visit intensity and can be unstable when intensities vary sharply across patients; Kalia 2025 itself discusses extreme weights, stabilization, and constrained optimal weights, not elimination of the variance problem the report flags. Joint visit–treatment–outcome models still multiply nuisance components and positivity requirements; that structural cost is not removed by packaging. gfoRmula’s visit process assumes a discrete grid and a correctly specified visit model, and still encodes non-visit intervals via last measured values, so it does not by itself refute the LOCF critique for continuous-time EHR generation. No 2024–2026 paper or package release was found that runs the report’s proposed horse race (complete case, LOCF, MI, IIW, joint latent-state targeted learning) on data generated with a known treatment-dependent visiting mechanism in a sustained-strategy TTE design. Method proposals and single-setting applications therefore count as partial, not full, resolution.</p>
+<p>Package and guidance scan. IrregLong and gfoRmula implement visit or measurement process handling; TrialEmulation, lmtp, ltmle, WeightIt, MatchIt, cobalt, ipw, adjustedCurves, riskRegression, zEpid, causallib, lifelines, and scikit-survival did not surface merged work that closes this gap for informative EHR visit processes under sustained strategies. 2025–2026 RWE guidances (FDA RWE, EMA/HMA registry, ICH E9(R1), TARGET, HARPER/STaRT-RWE, ENCePP, ISPE, NICE) frame data-generation and missingness issues at a high level; none was found that settles a preferred causal handling of informative visits for TTE.</p>
+<p>Caveat on the claim as stated. Applied TTE and EHR pipelines still often grid time and carry forward or impute under MAR, so the nuisance framing is still a fair description of common practice. The methodological literature has long refused that framing, so a reader who only knows IIW, gfoRmula visitprocess, or continuous-time marked point process MSMs would find the absolute statement overstated. The agenda item that remains is comparative, practical, and identification-theoretic under realistic visit heterogeneity, not the invention of the first joint visit model.</p>
+<p>Queries run (among others): Goldstein informative visit JAMIA 2019; Wang operational TTE npj Digit Med 2026; informative visit process inverse intensity EHR TTE 2024–2026; joint modeling visit process treatment outcome causal; site:arxiv.org informative visit inverse intensity; gfoRmula/lmtp/TrialEmulation visit process; CRAN IrregLong; Kalia MSM irregular visits; Kalia continuous-time marked point process 2025; Pullenayegum IIW 2025 Biometrics; Coulombe ITR IIV; FDA/EMA/TARGET visit observation process TTE.</p>
+<dl>
+<dt>Literature and prior-art check</dt>
+<dd>
+<strong>partially-solved / overstated.</strong> The entry says standard handling constructs artificial histories and that modeling visits jointly with treatment and outcome multiplies nuisance components without a worked solution. Three separate estimator families in the corpus contradict the strong reading. A 2024 Biometrics paper proposes a multiply robust estimator for marginal structural models under irregularly spaced, covariate-driven observation times and shows it is more flexible and more efficient than the previously proposed doubly weighted estimator. A 2023 BMC Medical Research Methodology paper gives calibrated inverse probability weights for marginal structural models under irregular visits with an unmeasured confounder. A 2025 Statistics in Medicine paper builds continuous-time weights from a marked point process for the same reason. What survives is an adoption claim rather than a methods claim: these estimators exist and applied emulation pipelines do not use them, and healthcare use is still entered as a baseline confounder rather than modeled as a process. Cites 10.1093/biomtc/ujae065: Supplies a multiply robust estimator for exactly the setting the entry describes, and demonstrates it is more efficient than the existing doubly weighted alternative.. Cites 10.1186/s12874-022-01831-2: Gives calibrated weights for irregular visits with an unmeasured confounder, addressing the weight instability the entry raises.. Cites 10.1002/sim.70102: Models visits as a point process jointly with treatment, which is the direction the entry proposes..
+</dd>
+<dt>GPT-5.6 Sol, technical and source-code lens</dt>
+<dd>
+<strong>open / overstated.</strong> The central problem is technically real. When visit or test ordering depends on treatment and on an unobserved current prognostic state, missingness need not be at random given recorded history; LOCF then replaces an unknown trajectory with a constant one. Identification remains open without additional structural assumptions, external measurements, or sensitivity parameters. Several supporting claims are too broad. Conditioning on observation opens a collider path only under particular causal structures. Inverse-intensity weights require conditional independent observation, correct intensity models, and observation positivity; heterogeneity in marginal visit rates, even by an order of magnitude, does not by itself make the weights unstable. Joint modeling adds nuisance models and identifying assumptions, but it does not automatically multiply positivity requirements. Calibration is useful but insufficient because a conditionally misspecified intensity model can be marginally calibrated. Very high severity is proportionate only when decision-relevant eligibility variables, confounders, or outcomes are materially visit-dependent, not for every record-based emulation.
+</dd>
+<dt>Grok 4.5, recency lens</dt>
+<dd>
+<strong>partially-solved / supported-with-caveat.</strong> Inverted-prior search finds methods that put the visit process in the causal or estimating structure, so the problem is not open as a pure absence of methodology. It is not fully solved either: the report’s hard tradeoffs remain live, and the comparative evaluation it proposes has not been delivered for sustained-strategy target trial emulation under a known, treatment-dependent visiting mechanism.
+</dd>
+</dl>
+<p>Cited works first. Goldstein et al.&nbsp;(JAMIA 2019; 10.1093/jamia/ocz148) characterize when informative visits bias EHR association analyses; that paper diagnoses the mechanism and does not close it. Wang et al.&nbsp;(npj Digit Med 2026; 10.1038/s41746-026-02563-z) elevate the observation process to an operational constraint on whether an EHR can realize a target trial protocol element. Secondary commentary on that paper treats the contribution as specification-versus-realization discipline, not as a solved estimator. Both strengthen the claim that the issue is still on the agenda; neither resolves identification or estimation under treatment-dependent visiting.</p>
+<p>Prior art that treats visits as structure rather than pure nuisance: (i) inverse-intensity-of-visit (IIW) theory and software for irregular longitudinal data (Pullenayegum line; CRAN IrregLong with Cox visit-intensity weights and IIW-GEE), still actively refined in 2025 on visit-model variable selection and selection of patients with no follow-up; (ii) parametric g-formula software that models a random measurement or visit process jointly with covariates for sustained strategies (gfoRmula’s visitprocess argument: visit indicators attached to intermittently measured confounders, with last-measured values and a cap on consecutive missed visits); (iii) Kalia et al.&nbsp;(BMC Med Res Methodol 2023; 10.1186/s12874-022-01831-2), calibrated inverse probability weights for marginal structural models under irregular visits, with Monte Carlo evaluation; (iv) Kalia et al.&nbsp;(Stat Med 2025; 10.1002/sim.70102), continuous-time MSM weights factored as visit intensity times dose (marked point process) on primary-care EHR for cumulative SGLT-2i exposure and recurrent UTI, explicitly motivated by informative visit timing. Coulombe et al.&nbsp;(Stat Methods Med Res 2023) combine inverse intensity of visit weights with individualized treatment rules in longitudinal observational data, which is related but not full sustained-strategy TTE.</p>
+<p>What remains open, and why a full solved vote fails. IIW and continuous-time visit weights still require sequential positivity for the visit intensity and can be unstable when intensities vary sharply across patients; Kalia 2025 itself discusses extreme weights, stabilization, and constrained optimal weights, not elimination of the variance problem the report flags. Joint visit–treatment–outcome models still multiply nuisance components and positivity requirements; that structural cost is not removed by packaging. gfoRmula’s visit process assumes a discrete grid and a correctly specified visit model, and still encodes non-visit intervals via last measured values, so it does not by itself refute the LOCF critique for continuous-time EHR generation. No 2024–2026 paper or package release was found that runs the report’s proposed horse race (complete case, LOCF, MI, IIW, joint latent-state targeted learning) on data generated with a known treatment-dependent visiting mechanism in a sustained-strategy TTE design. Method proposals and single-setting applications therefore count as partial, not full, resolution.</p>
+<p>Package and guidance scan. IrregLong and gfoRmula implement visit or measurement process handling; TrialEmulation, lmtp, ltmle, WeightIt, MatchIt, cobalt, ipw, adjustedCurves, riskRegression, zEpid, causallib, lifelines, and scikit-survival did not surface merged work that closes this gap for informative EHR visit processes under sustained strategies. 2025–2026 RWE guidances (FDA RWE, EMA/HMA registry, ICH E9(R1), TARGET, HARPER/STaRT-RWE, ENCePP, ISPE, NICE) frame data-generation and missingness issues at a high level; none was found that settles a preferred causal handling of informative visits for TTE.</p>
+<p>Caveat on the claim as stated. Applied TTE and EHR pipelines still often grid time and carry forward or impute under MAR, so the nuisance framing is still a fair description of common practice. The methodological literature has long refused that framing, so a reader who only knows IIW, gfoRmula visitprocess, or continuous-time marked point process MSMs would find the absolute statement overstated. The agenda item that remains is comparative, practical, and identification-theoretic under realistic visit heterogeneity, not the invention of the first joint visit model.</p>
+<p>Queries run (among others): Goldstein informative visit JAMIA 2019; Wang operational TTE npj Digit Med 2026; informative visit process inverse intensity EHR TTE 2024–2026; joint modeling visit process treatment outcome causal; site:arxiv.org informative visit inverse intensity; gfoRmula/lmtp/TrialEmulation visit process; CRAN IrregLong; Kalia MSM irregular visits; Kalia continuous-time marked point process 2025; Pullenayegum IIW 2025 Biometrics; Coulombe ITR IIV; FDA/EMA/TARGET visit observation process TTE. Cites 10.1002/sim.70102: Implements continuous-time MSM weights as the product of visit-intensity weights and dose weights via a marked point process on primary-care EHR, treating informative visit timing as part of the treatment-process model rather than as a nuisance to impute for cumulative exposure and recurrent outcomes.. Cites 10.1186/s12874-022-01831-2: Gives calibrated IPW estimators for MSMs when visits are irregular, with Monte Carlo evidence that calibration reduces finite-sample bias relative to uncalibrated longitudinal weights under irregular observation and unmeasured confounding.. Cites 10.1016/j.patter.2020.100008: Released software for sustained treatment strategies that models a random measurement or visit process jointly with intermittently observed covariates (visitprocess), so visits enter the g-formula rather than being only a pre-analysis cleaning step; CRAN description still advertises handling of a random measurement/visit process.. Cites cran:IrregLong: Maintained CRAN implementation of inverse-intensity weights and IIW-GEE for irregular, potentially informative observation times, providing operational infrastructure for visit-process adjustment outside pure LOCF or MAR imputation..</p>
+<dl>
+<dt>glm</dt>
+<dd>
+<strong>open / supported.</strong> The problem statement accurately describes a methodological tension in EHR-based target trial emulation: the visit process is informative, yet standard practice treats it as a nuisance to be imputed. The reasons given for it being open (collider bias from conditioning on observation, instability of inverse-intensity weights, and positivity violations from joint modeling) are valid structural tradeoffs that genuinely support the claim being open. The claim is proportionate and does not assert an impossibility, but rather highlights a difficult modeling tradeoff that remains unresolved in standard practice.
+</dd>
+<dt>Decision path</dt>
+<dd>
+<code>R3:partially-solved(n=2/4) → R7:counter-and-support-both-present(support=1/counter=1)</code>
+</dd>
+</dl>
+</div>
+</section>
+<section id="related-problems" class="level2">
+<h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
+<div class="related-links">
+<ul>
+<li><a href="../problems/GMT-02-identification-of-dynamic-regimes-in-continuous-time-under-t.html">GMT-02 — Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved</a></li>
+<li><a href="../problems/MER-01-phenotypes-enter-emulations-as-error-free-binary-variables.html">MER-01 — Phenotypes enter emulations as error-free binary variables</a></li>
+</ul>
+</div>
+</section>
+<section id="source" class="level2">
+<h2 class="anchored" data-anchor-id="source">Source</h2>
+<p>Extracted from the source document at seed-linked.md line 108, row ‘Informative observation and healthcare utilization’ (seed-data).</p>
 
 
-
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -1016,7 +967,7 @@ Priority
 </div>   
     <div class="nav-footer-center">
 <p>Every entry carries a verification verdict. See <a href="../methods.html">How this was verified</a>.</p>
-<div class="toc-actions"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p><a href="https://github.com/choxos/TTE-open-problems">Source</a></p>
 </div>
