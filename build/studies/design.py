@@ -284,7 +284,14 @@ def slugify(s):
 
 
 def design_one(pid, entry, related, slug):
-    """One design pass. Returns (pid, slug, summary) or (pid, slug, None)."""
+    """One design pass. Returns (pid, slug, summary) or (pid, slug, None).
+
+    The cache is checked again on the way out, not only when the run was
+    planned. A pass that takes ten minutes can still be in flight when a later
+    invocation caches the same problem, and writing on completion then silently
+    replaces a design that is already committed with a second one from an
+    identical prompt. That happened once here and cost a tracked file.
+    """
     try:
         d = call(DESIGN_PROMPT.replace("{ENVIRONMENT}", ENVIRONMENT),
                  {"target": entry, "related": related}, "design", slug)
@@ -293,6 +300,13 @@ def design_one(pid, entry, related, slug):
         return pid, slug, None
     except Exception as e:
         print(f"  {pid}: FAILED ({type(e).__name__})", flush=True)
+        return pid, slug, None
+    existing = [f for f in glob.glob(os.path.join(OUT, f"{pid}-*-design.json"))
+                if os.path.basename(f) != f"{slug}-design.json"]
+    if existing:
+        os.remove(os.path.join(OUT, f"{slug}-design.json"))
+        print(f"  {pid}: another run cached it first; this one discarded",
+              flush=True)
         return pid, slug, None
     print(f"  {pid}: {d.get('dgm', {}).get('n_scenarios')} scenarios x "
           f"{d.get('performance', {}).get('n_rep')} reps, "
