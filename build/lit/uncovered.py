@@ -140,13 +140,66 @@ def build(n_batches):
 # below. Requiring one here rejected every entry that followed instructions.
 REQUIRED = ("title", "category", "statement", "why_open", "prior_work",
             "proposed_direction", "priority", "maturity", "verdict",
-            "verdict_rationale")
+            "verdict_rationale", "tractability", "severity",
+            "protocol_component", "data_setting")
 ENUM = {
     "priority": {"Very high", "High", "Medium-high", "Medium"},
     "maturity": {"Established", "Promising", "Emerging", "Speculative"},
     "verdict": {"confirmed-open", "partially-addressed", "overstated",
                 "resolved-since-report", "not-supported", "unverifiable"},
 }
+# The two editorial axes are a controlled vocabulary and nothing downstream
+# validates them, so a value invented here would sit in the registry looking
+# like a browse facet and matching no other entry.
+VOCAB = {
+    "protocol_component": {"eligibility", "treatment-strategies", "assignment",
+                           "follow-up", "outcome", "causal-contrast",
+                           "analysis-plan", "cross-cutting"},
+    "data_setting": {"claims", "ehr", "registry", "linked", "trial-data",
+                     "multi-database", "federated", "any"},
+}
+
+
+def origins():
+    """Map each promoted entry's title back to the absence it came from.
+
+    An assessor is asked to account for every candidate in its batch, as an
+    entry or as a rejection, and is not asked to echo the absence into the
+    entry. So the link is recoverable only by elimination inside a batch, and
+    only when the elimination is unambiguous. Where it is not, the entry gets a
+    generic locator rather than a guessed one: a wrong provenance line is worse
+    than a vague one, because it points a reader at gaps that say something
+    else.
+    """
+    out = {}
+    for bf in sorted(glob.glob(os.path.join(OUT, "batch_*.json"))):
+        b = json.load(open(bf, encoding="utf8"))
+        of = os.path.join(OUT, "out", f"{b['batch']}.json")
+        if not os.path.exists(of):
+            continue
+        d = json.load(open(of, encoding="utf8"))
+        killed = {(r.get("absence") or "").strip()
+                  for r in (d.get("rejected") or [])}
+        left = [i for i in b["items"]
+                if i["absence_as_reported"].strip() not in killed]
+        got = d.get("entries") or []
+        if len(left) != len(got):
+            continue
+        for e, i in zip(got, left):
+            ids = [g["gap_id"] for g in i["evidence_gaps"]]
+            # `named_by_labellers` reads "4 (batches 03, 06, 08, 10)", which is
+            # a count and the batches that produced it; both belong in the
+            # locator, so it goes in whole.
+            out[e.get("title")] = {
+                "raw_id": "/".join(ids) or "uncovered",
+                "locator": (
+                    f"named as a missing theme by {i['named_by_labellers']} of "
+                    f"the twelve gap labellers, working on disjoint gaps; "
+                    f"reported as \"{i['absence_as_reported']}\"; evidence is "
+                    f"{len(ids)} future-research gaps in "
+                    f"{i['distinct_papers']} papers: " + ", ".join(ids)),
+            }
+    return out
 
 
 def apply():
@@ -170,6 +223,9 @@ def apply():
         why = [f"missing {k}" for k in REQUIRED if not e.get(k)]
         why += [f"{k}={e.get(k)!r} not allowed" for k, vals in ENUM.items()
                 if e.get(k) and e[k] not in vals]
+        why += [f"{k} has {v!r}, not in the vocabulary"
+                for k, vals in VOCAB.items() for v in (e.get(k) or [])
+                if v not in vals]
         if not (e.get("prior_work") or []):
             why.append("prior_work is empty")
         if why:
@@ -182,23 +238,28 @@ def apply():
         e["id"] = f"{cat}-{top[cat]:02d}"
         ok.append(e)
 
+    # An entry does not carry its own candidate back, so recover it: within a
+    # batch, the absences that were not rejected are the ones that became
+    # entries. Recovering it rather than leaving `source` generic matters
+    # because the whole standing of these entries is that a labeller named the
+    # absence and the gaps behind it are checkable.
+    origin = origins()
     for e in ok:
-        e.setdefault("merged_from", [])
-        e["source_refs"] = ["reading:uncovered"]
-        e.setdefault("tractability", None)
-        e.setdefault("severity", None)
-        e.setdefault("claims_to_check", [])
-        e["source_unsourced"] = False
-        e.setdefault("implementation_specific", False)
         e["_group"] = e["category"]
         e.setdefault("related", [])
+        src = origin.get(e["title"]) or {}
+        e["source"] = {
+            "slice": "gap-labelling",
+            "raw_id": src.get("raw_id") or "uncovered",
+            "locator": src.get("locator") or (
+                "named by more than one gap labeller as a theme the registry "
+                "lacked"),
+        }
         e.setdefault("audit", {})
         e["audit"]["provenance"] = (
             "named independently by more than one gap labeller as a theme the "
             "registry lacked, then checked against the whole registry for "
             "coverage and against the cited papers for substance")
-        e.setdefault("original_statement", None)
-        e.setdefault("correction_note", None)
 
     final = {p["id"]: p for p in problems}
     for e in ok:

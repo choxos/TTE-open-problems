@@ -1,0 +1,89 @@
+{
+ "batch": "01",
+ "entries": [
+  {
+   "title": "No mediated effect is defined for a sustained treatment strategy, and emulations report a proportion mediated anyway",
+   "category": "EST",
+   "statement": "The target trial protocol has seven components: eligibility, treatment strategies, assignment, follow-up, outcome, causal contrast and analysis plan. None of them holds an intermediate variable, so a mediator enters an emulation only as an analysis appended after the total effect is estimated. The methods borrowed for that appendix are stated for a randomly assigned point or fixed longitudinal exposure with the mediator assessed at planned visits: the mediational g-formula for time-varying exposures and mediators, interventional effects for multiple mediators, path-specific effects for repeatedly measured mediators under time-varying confounding, and a 2026 extension of the last to competing risks. None is stated for a sustained strategy realized by cloning, artificial censoring and inverse-probability-of-censoring weights, nor for a sequential emulation in which one person contributes to many trials, and in both of those designs the population followed under each strategy is constructed by the analysis rather than given. Applied emulations report mechanism regardless, as a proportion mediated on a hazard or subdistribution-hazard scale: 2.4 percent and 6.5 percent of the semaglutide effect on adult-onset seizure through hemoglobin A1c, 8.7 percent of the cardiovascular benefit of SGLT2 inhibitors through regression of steatotic liver disease. A proportion mediated on a hazard scale is not a ratio of counterfactual risk contrasts and matches none of the estimands the identification results cover. Three objects are missing and each is nameable: a mediated estimand defined for a sustained strategy, an identification result for it when censoring is artificial, and a protocol component that requires the mediator, its measurement times and its intercurrent-event strategy to be fixed before the analysis.",
+   "why_open": "Two requirements conflict and no estimand satisfies both. Natural direct and indirect effects carry the mechanistic reading and need a cross-world independence that no experiment can check, and that fails outright once a confounder of the mediator and the outcome is affected by treatment, which is the ordinary situation across follow-up. Interventional effects drop the cross-world condition and are identified from a single world, and they fail the sharp mediational null: an interventional indirect effect can be nonzero when no individual has any mediated effect at all, so a nonzero estimate does not license the sentence about mechanism it is written to support. Emulation adds an obstacle the trial setting does not have, because under cloning and artificial censoring the variable that mediates is frequently the same variable that triggers deviation from the strategy, so it enters the censoring weight and the mediation formula at once and the weighting already conditions on part of the mediator path. The mediator is also recorded when a patient attends care rather than on a schedule, so the repeated mediator history that every longitudinal identification result assumes is itself selectively observed. Nobody has worked the join out because the applied demand is met far more cheaply: point-treatment mediation software runs on the weighted cohort and returns a percentage.",
+   "prior_work": [
+    {
+     "cite": "Vansteelandt S, Linder M, Vandenberghe S, Steen J, Madsen J. Mediation analysis of time-to-event endpoints accounting for repeatedly measured mediators subject to time-varying confounding. Stat Med 2019;38(24):4828-4840",
+     "doi_or_url": "10.1002/sim.8336",
+     "what_it_does": "Identifies a path-specific effect through a repeatedly measured mediator under time-varying confounding, for a randomly assigned treatment with the mediator measured at planned visits, and states that the effect along all pathways intercepting one or more mediators is not identified without overly stringent assumptions."
+    },
+    {
+     "cite": "Tai AS, Lin SH, Chu YC, Yu T, Puhan MA, VanderWeele TJ. Causal mediation analysis with multiple time-varying mediators. Epidemiology 2023;34(1):8-19",
+     "doi_or_url": "10.1097/EDE.0000000000001555",
+     "what_it_does": "Extends the mediational g-formula from a single mediator to several time-varying mediators, with nonparametric identification for two variants and an R implementation, which is the supply the candidate assumed was absent."
+    },
+    {
+     "cite": "Vansteelandt S, Daniel RM. Interventional effects for mediation analysis with multiple mediators. Epidemiology 2017;28(2):258-265",
+     "doi_or_url": "10.1097/EDE.0000000000000596",
+     "what_it_does": "Defines interventional direct and indirect effects for multiple mediators, identified without a cross-world condition, which are the estimands an emulation would have to adopt if it wanted identification from a single world."
+    },
+    {
+     "cite": "Miles CH. On the causal interpretation of randomised interventional indirect effects. J R Stat Soc Series B Stat Methodol 2023;85(4):1154-1172",
+     "doi_or_url": "10.1093/jrsssb/qkad066",
+     "what_it_does": "Shows that randomized interventional indirect effects do not satisfy the sharp null criterion without stronger assumptions, so a nonzero estimate is compatible with no individual-level mediation; this is the half of the conflict that the applied switch to interventional effects does not resolve."
+    },
+    {
+     "cite": "Moreno-Betancur M, Moran P, Becker D, Patton GC, Carlin JB. Mediation effects that emulate a target randomised trial: Simulation-based evaluation of ill-defined interventions on multiple mediators. Stat Methods Med Res 2021;30(6):1395-1412",
+     "doi_or_url": "10.1177/0962280221998409",
+     "what_it_does": "Defines interventional effects explicitly as contrasts in a target trial of hypothetical interventions on several mediators, estimated by g-computation; the closest existing template, and the trial it specifies is a trial of mediator interventions rather than an emulation of a sustained treatment strategy."
+    },
+    {
+     "cite": "Domingo-Relloso A, Zhang Y, Wang Z, et al. A path-specific effect approach to mediation analysis with time-varying mediators and time-to-event outcomes accounting for competing risks. Stat Med 2026;45:e70425",
+     "doi_or_url": "10.1002/sim.70425",
+     "what_it_does": "Adds competing events to path-specific mediation with repeatedly measured mediators by treating the competing event as a nested mediator, with a mediational g-formula algorithm and simulation evidence."
+    },
+    {
+     "cite": "Leigh L, Hinwood M, Oldmeadow C, et al. Which factors mediate the effect of childhood socioeconomic disadvantage on mental health in young adulthood? A protocol for a target trial emulation using linked administrative data from New South Wales, Australia. BMJ Open 2026;16(3):e109541",
+     "doi_or_url": "10.1136/bmjopen-2025-109541",
+     "what_it_does": "An emulation protocol that prespecifies an interventional mediation analysis across several mediators, which is what practice looks like when the mediator is fixed in the protocol rather than added afterward."
+    },
+    {
+     "cite": "Eun Y, Bong S, Koh HY, et al. Semaglutide and risk of adult-onset seizure: a target trial emulation. Neurology 2026;107(1):e218174",
+     "doi_or_url": "10.1212/WNL.0000000000218174",
+     "what_it_does": "Applies a longitudinal path-specific framework derived for a randomized trial to a weighted emulation in electronic health records and reports mediation through hemoglobin A1c as 2.4 percent and 6.5 percent."
+    },
+    {
+     "cite": "Jang H, Kim Y, Lim YK, et al. Outcomes of oral antidiabetic drugs in metabolic dysfunction-associated steatotic liver disease: a nationwide target trial emulation study. Clin Mol Hepatol 2026;32(2):737-750",
+     "doi_or_url": "10.3350/cmh.2025.1006",
+     "what_it_does": "Reports that regression of steatotic liver disease accounts for 8.7 percent of the cardiovascular benefit, on a subdistribution-hazard scale, without naming the mediated estimand or its identification conditions."
+    }
+   ],
+   "proposed_direction": "Make the mediator a protocol component: name the intermediate variable, the times at which it is to be assessed, and the strategy for every intercurrent event that can precede it, so the mechanism question is fixed alongside eligibility and treatment strategies instead of being chosen once the total effect is known. Derive interventional direct and indirect effects for a sustained strategy under cloning and artificial censoring, and state what the estimand becomes when the mediator history enters the censoring weight; the tractable first step is a worked identification result for one time-varying mediator under a static strategy with a grace period, which is the design most emulations already run. Report the two mediator regimes as counterfactual risks at a stated horizon, on the same scale as the total effect the emulation already reports, rather than as a proportion mediated on a hazard scale. State for whichever effect is used whether it satisfies the sharp mediational null, so a reader can tell whether a nonzero estimate is evidence about mechanism or evidence about a distributional shift.",
+   "priority": "High",
+   "tractability": 3,
+   "maturity": "Emerging",
+   "severity": "Percentages of an effect attributed to a mechanism are published in general medical and specialty journals under an estimand that has never been defined for the design that produced them.",
+   "verdict": "partially-addressed",
+   "verdict_rationale": "This entry rests on weaker provenance than its neighbors. Nobody read a paper and argued for it: four gap labellers working on disjoint gaps reported mediation as a theme they had wanted in the registry and not found, and the evidence behind that report is seven papers spanning 2011 to 2025. Those seven do not all support the claim. Two describe mediator data that were unavailable in one dataset, one asks a substantive question about a drug class, and four name a missing method. Absence from the registry was checked entry by entry rather than by title: mediation, mediator and indirect effect appear in none of the 40 current entries, and the nearest neighbor, OUT-01, reaches direct effects only through competing events. The candidate as reported, that there are no methods for time-varying mediators, multiple mediators, cross-world conditions or mediator-confounding sensitivity analysis, is largely wrong for the general case, which is why the verdict is partially-addressed rather than confirmed-open: the mediational g-formula and its multiple-mediator extension, interventional effects for multiple mediators, path-specific effects under time-varying confounding and the 2026 competing-risks extension supply identification and estimation, and Moreno-Betancur et al. define mediation effects that map to a target trial of mediator interventions. What remains unsupplied is the join to a sustained strategy realized by cloning and censoring, a protocol slot for the mediator, and an interpretable estimand given the Miles result. A PubMed search for target trial together with mediation, mediator or indirect effect returned one methods paper, one protocol using interventional effects, and applied emulations reporting a proportion mediated; no work joining mediation to clone-censor-weighting was found. The framing above is the assessor's, not the labellers'.",
+   "related": [
+    "EST-03",
+    "OUT-01",
+    "PRO-04",
+    "MIS-01"
+   ],
+   "protocol_component": [
+    "causal-contrast",
+    "outcome",
+    "analysis-plan"
+   ],
+   "data_setting": [
+    "ehr",
+    "claims",
+    "linked"
+   ]
+  }
+ ],
+ "rejected": [
+  {
+   "absence": "Established methods exist and are implemented, and the applied subfields publishing the affected studies have not adopted them",
+   "why": "not-a-field-gap",
+   "covered_by": null,
+   "reasoning": "All seven gaps are statements about diffusion rather than about method, and the sources say so themselves. The 2020 overview of COVID-19 analyses writes in one sentence that most methods to reduce bias are easy to apply and available in standard statistical software and in the next that they have yet to be widely adopted; the 2024 review of exposure-change methods states its own purpose as promoting wider adoption outside pharmacoepidemiology; the 2026 rural piece observes that emulation has not been applied to rural contexts; the 2017 pregnancy overview reports slow uptake with few exceptions; the 2012 piece says time-related biases have not penetrated the subspecialty fields. Not one names an estimator, a diagnostic with known operating characteristics, a criterion, an identification result or a validated instrument that does not exist, so an entry built on them would assert that a literature is behind, which is a fact about researchers rather than about the field's methods. The adjacent candidate about a method having no usable implementation was rejected during the reading on the ground that software availability is a research-practice constraint rather than an identification problem; that reasoning applies with more force here, because this candidate concedes that the implementations exist and ship in standard software, which removes even the availability argument. Four labellers reaching the same theme from disjoint gaps shows only that future-research sentences complain about uptake often, which is what a discussion section is for. The reviewable part of the concern is already in the registry: REG-03 covers the emulation label being read as evidence about assumption burden, and GMT-04 covers the absence of any requirement that a study show its estimator choice mattered."
+  }
+ ]
+}

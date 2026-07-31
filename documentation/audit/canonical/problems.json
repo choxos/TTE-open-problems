@@ -39,6 +39,7 @@
   "related": [
    "BEN-02",
    "DTA-01",
+   "EST-05",
    "REG-01"
   ]
  },
@@ -80,7 +81,8 @@
   },
   "_group": "BEN",
   "related": [
-   "BEN-01"
+   "BEN-01",
+   "EST-05"
   ]
  },
  {
@@ -300,6 +302,7 @@
   "_group": "ELG",
   "related": [
    "ELG-02",
+   "ELG-03",
    "LRN-02",
    "MER-01"
   ]
@@ -343,6 +346,7 @@
   "_group": "ELG",
   "related": [
    "ELG-01",
+   "ELG-03",
    "PRO-04"
   ]
  },
@@ -395,8 +399,8 @@
   "related": [
    "ELG-01",
    "ELG-02",
-   "TZO-01",
-   "OVL-01"
+   "OVL-01",
+   "TZO-01"
   ]
  },
  {
@@ -480,7 +484,9 @@
   },
   "_group": "EST",
   "related": [
-   "DTA-02"
+   "DTA-02",
+   "EST-05",
+   "LRN-05"
   ]
  },
  {
@@ -526,6 +532,7 @@
   "_group": "EST",
   "related": [
    "CNF-01",
+   "EST-04",
    "OUT-01",
    "REG-03"
   ]
@@ -574,7 +581,8 @@
   "_group": "GMT",
   "related": [
    "GMT-04",
-   "LRN-01"
+   "LRN-01",
+   "LRN-05"
   ]
  },
  {
@@ -757,6 +765,7 @@
    "GMT-04",
    "LRN-03",
    "LRN-04",
+   "LRN-05",
    "OVL-01"
   ]
  },
@@ -883,6 +892,7 @@
   "_group": "LRN",
   "related": [
    "LRN-01",
+   "LRN-05",
    "OVL-01"
   ]
  },
@@ -969,6 +979,7 @@
   },
   "_group": "MIS",
   "related": [
+   "EST-04",
    "GMT-02",
    "MER-01"
   ]
@@ -1011,7 +1022,8 @@
   },
   "_group": "OUT",
   "related": [
-   "EST-03"
+   "EST-03",
+   "EST-04"
   ]
  },
  {
@@ -1051,6 +1063,7 @@
   },
   "_group": "OVL",
   "related": [
+   "ELG-03",
    "GMT-03",
    "LRN-01",
    "LRN-04",
@@ -1227,6 +1240,7 @@
   "_group": "PRO",
   "related": [
    "ELG-02",
+   "EST-04",
    "PRO-01"
   ]
  },
@@ -1318,6 +1332,7 @@
   "_group": "REG",
   "related": [
    "BEN-01",
+   "EST-05",
    "REG-02"
   ]
  },
@@ -1662,6 +1677,7 @@
   },
   "_group": "TZO",
   "related": [
+   "ELG-03",
    "GMT-02",
    "SEQ-01",
    "STR-01"
@@ -1741,6 +1757,237 @@
   "related": [
    "OVL-01",
    "UCF-01"
+  ]
+ },
+ {
+  "id": "EST-04",
+  "category": "EST",
+  "title": "No mediated effect is defined for a sustained treatment strategy, and emulations report a proportion mediated anyway",
+  "statement": "The target trial protocol has seven components: eligibility, treatment strategies, assignment, follow-up, outcome, causal contrast and analysis plan. None of them holds an intermediate variable, so a mediator enters an emulation only as an analysis appended after the total effect is estimated. The methods borrowed for that appendix are stated for a randomly assigned point or fixed longitudinal exposure with the mediator assessed at planned visits: the mediational g-formula for time-varying exposures and mediators, interventional effects for multiple mediators, path-specific effects for repeatedly measured mediators under time-varying confounding, and a 2026 extension of the last to competing risks. None is stated for a sustained strategy realized by cloning, artificial censoring and inverse-probability-of-censoring weights, nor for a sequential emulation in which one person contributes to many trials, and in both of those designs the population followed under each strategy is constructed by the analysis rather than given. Applied emulations report mechanism regardless, as a proportion mediated on a hazard or subdistribution-hazard scale: 2.4 percent and 6.5 percent of the semaglutide effect on adult-onset seizure through hemoglobin A1c, 8.7 percent of the cardiovascular benefit of SGLT2 inhibitors through regression of steatotic liver disease. A proportion mediated on a hazard scale is not a ratio of counterfactual risk contrasts and matches none of the estimands the identification results cover. Three objects are missing and each is nameable: a mediated estimand defined for a sustained strategy, an identification result for it when censoring is artificial, and a protocol component that requires the mediator, its measurement times and its intercurrent-event strategy to be fixed before the analysis.",
+  "why_open": "Two requirements conflict and no estimand satisfies both. Natural direct and indirect effects carry the mechanistic reading and need a cross-world independence that no experiment can check, and that fails outright once a confounder of the mediator and the outcome is affected by treatment, which is the ordinary situation across follow-up. Interventional effects drop the cross-world condition and are identified from a single world, and they fail the sharp mediational null: an interventional indirect effect can be nonzero when no individual has any mediated effect at all, so a nonzero estimate does not license the sentence about mechanism it is written to support. Emulation adds an obstacle the trial setting does not have, because under cloning and artificial censoring the variable that mediates is frequently the same variable that triggers deviation from the strategy, so it enters the censoring weight and the mediation formula at once and the weighting already conditions on part of the mediator path. The mediator is also recorded when a patient attends care rather than on a schedule, so the repeated mediator history that every longitudinal identification result assumes is itself selectively observed. Nobody has worked the join out because the applied demand is met far more cheaply: point-treatment mediation software runs on the weighted cohort and returns a percentage.",
+  "prior_work": [
+   {
+    "cite": "Vansteelandt S, Linder M, Vandenberghe S, Steen J, Madsen J. Mediation analysis of time-to-event endpoints accounting for repeatedly measured mediators subject to time-varying confounding. Stat Med 2019;38(24):4828-4840",
+    "doi_or_url": "10.1002/sim.8336",
+    "what_it_does": "Identifies a path-specific effect through a repeatedly measured mediator under time-varying confounding, for a randomly assigned treatment with the mediator measured at planned visits, and states that the effect along all pathways intercepting one or more mediators is not identified without overly stringent assumptions."
+   },
+   {
+    "cite": "Tai AS, Lin SH, Chu YC, Yu T, Puhan MA, VanderWeele TJ. Causal mediation analysis with multiple time-varying mediators. Epidemiology 2023;34(1):8-19",
+    "doi_or_url": "10.1097/EDE.0000000000001555",
+    "what_it_does": "Extends the mediational g-formula from a single mediator to several time-varying mediators, with nonparametric identification for two variants and an R implementation, which is the supply the candidate assumed was absent."
+   },
+   {
+    "cite": "Vansteelandt S, Daniel RM. Interventional effects for mediation analysis with multiple mediators. Epidemiology 2017;28(2):258-265",
+    "doi_or_url": "10.1097/EDE.0000000000000596",
+    "what_it_does": "Defines interventional direct and indirect effects for multiple mediators, identified without a cross-world condition, which are the estimands an emulation would have to adopt if it wanted identification from a single world."
+   },
+   {
+    "cite": "Miles CH. On the causal interpretation of randomised interventional indirect effects. J R Stat Soc Series B Stat Methodol 2023;85(4):1154-1172",
+    "doi_or_url": "10.1093/jrsssb/qkad066",
+    "what_it_does": "Shows that randomized interventional indirect effects do not satisfy the sharp null criterion without stronger assumptions, so a nonzero estimate is compatible with no individual-level mediation; this is the half of the conflict that the applied switch to interventional effects does not resolve."
+   },
+   {
+    "cite": "Moreno-Betancur M, Moran P, Becker D, Patton GC, Carlin JB. Mediation effects that emulate a target randomised trial: Simulation-based evaluation of ill-defined interventions on multiple mediators. Stat Methods Med Res 2021;30(6):1395-1412",
+    "doi_or_url": "10.1177/0962280221998409",
+    "what_it_does": "Defines interventional effects explicitly as contrasts in a target trial of hypothetical interventions on several mediators, estimated by g-computation; the closest existing template, and the trial it specifies is a trial of mediator interventions rather than an emulation of a sustained treatment strategy."
+   },
+   {
+    "cite": "Domingo-Relloso A, Zhang Y, Wang Z, et al. A path-specific effect approach to mediation analysis with time-varying mediators and time-to-event outcomes accounting for competing risks. Stat Med 2026;45:e70425",
+    "doi_or_url": "10.1002/sim.70425",
+    "what_it_does": "Adds competing events to path-specific mediation with repeatedly measured mediators by treating the competing event as a nested mediator, with a mediational g-formula algorithm and simulation evidence."
+   },
+   {
+    "cite": "Leigh L, Hinwood M, Oldmeadow C, et al. Which factors mediate the effect of childhood socioeconomic disadvantage on mental health in young adulthood? A protocol for a target trial emulation using linked administrative data from New South Wales, Australia. BMJ Open 2026;16(3):e109541",
+    "doi_or_url": "10.1136/bmjopen-2025-109541",
+    "what_it_does": "An emulation protocol that prespecifies an interventional mediation analysis across several mediators, which is what practice looks like when the mediator is fixed in the protocol rather than added afterward."
+   },
+   {
+    "cite": "Eun Y, Bong S, Koh HY, et al. Semaglutide and risk of adult-onset seizure: a target trial emulation. Neurology 2026;107(1):e218174",
+    "doi_or_url": "10.1212/WNL.0000000000218174",
+    "what_it_does": "Applies a longitudinal path-specific framework derived for a randomized trial to a weighted emulation in electronic health records and reports mediation through hemoglobin A1c as 2.4 percent and 6.5 percent."
+   },
+   {
+    "cite": "Jang H, Kim Y, Lim YK, et al. Outcomes of oral antidiabetic drugs in metabolic dysfunction-associated steatotic liver disease: a nationwide target trial emulation study. Clin Mol Hepatol 2026;32(2):737-750",
+    "doi_or_url": "10.3350/cmh.2025.1006",
+    "what_it_does": "Reports that regression of steatotic liver disease accounts for 8.7 percent of the cardiovascular benefit, on a subdistribution-hazard scale, without naming the mediated estimand or its identification conditions."
+   }
+  ],
+  "proposed_direction": "Make the mediator a protocol component: name the intermediate variable, the times at which it is to be assessed, and the strategy for every intercurrent event that can precede it, so the mechanism question is fixed alongside eligibility and treatment strategies instead of being chosen once the total effect is known. Derive interventional direct and indirect effects for a sustained strategy under cloning and artificial censoring, and state what the estimand becomes when the mediator history enters the censoring weight; the tractable first step is a worked identification result for one time-varying mediator under a static strategy with a grace period, which is the design most emulations already run. Report the two mediator regimes as counterfactual risks at a stated horizon, on the same scale as the total effect the emulation already reports, rather than as a proportion mediated on a hazard scale. State for whichever effect is used whether it satisfies the sharp mediational null, so a reader can tell whether a nonzero estimate is evidence about mechanism or evidence about a distributional shift.",
+  "priority": "High",
+  "maturity": "Emerging",
+  "tractability": 3,
+  "severity": "Percentages of an effect attributed to a mechanism are published in general medical and specialty journals under an estimand that has never been defined for the design that produced them.",
+  "protocol_component": [
+   "causal-contrast",
+   "outcome",
+   "analysis-plan"
+  ],
+  "data_setting": [
+   "ehr",
+   "claims",
+   "linked"
+  ],
+  "source": {
+   "slice": "gap-labelling",
+   "raw_id": "L0225#1/L0235#0/L0285#1/L0149#1/L0086#0/L0084#2/L0197#1",
+   "locator": "named as a missing theme by 4 (batches 03, 06, 08, 10) of the twelve gap labellers, working on disjoint gaps; reported as \"Causal mediation inside an emulation: time-varying mediators, multiple interacting mediators, cross-world conditions, and sensitivity analysis for mediator confounding\"; evidence is 7 future-research gaps in 7 papers: L0225#1, L0235#0, L0285#1, L0149#1, L0086#0, L0084#2, L0197#1"
+  },
+  "_group": "EST",
+  "related": [
+   "EST-03",
+   "MIS-01",
+   "OUT-01",
+   "PRO-04"
+  ]
+ },
+ {
+  "id": "EST-05",
+  "category": "EST",
+  "title": "An emulation enters a synthesis with randomized trials through a discrepancy parameter that nothing identifies",
+  "statement": "Emulated trials are combined with randomized trials in three ways: as an added study in a network meta-analysis, as an external or hybrid control arm borrowed into a randomized trial, and as a substituted effectiveness input to an economic model. All three need a quantity that neither source supplies, the systematic difference between what the emulation estimates and what the trial estimates, and practice sets it by assumption. A bivariate network meta-analysis that bridged first-line and second-line biologic therapies in rheumatoid arthritis combined 21 randomized trials with six registry-derived target trials entered at face value, assumed equivalent to randomized data. A cost-effectiveness analysis in the same disease put the emulated probability of at least a moderate response at 0.215 against 0.650 in the randomized trial, with a between-source odds ratio of 0.30 (95% confidence interval 0.23 to 0.37), then pooled the two into 0.336 as though the difference were sampling variation; the pooled incremental cost-effectiveness ratio came to 46,300 pounds per quality-adjusted life-year, essentially the real-world value of 46,800 rather than a number between the sources. Hybrid control designs instead discount the external arm by a tuning parameter calibrated from earlier replication exercises, in which residual bias hazard ratios ran between 0.96 and 1.10 for nine of eleven emulated lung cancer control arms and between 0.66 and 1.09 for most of fifteen trials across tumor types. No criterion decides whether a given emulation is exchangeable enough to enter a network, and no borrowing method balances post-baseline treatment patterns, so a borrowed control arm can answer a different estimand from the randomized arm it augments.",
+  "why_open": "The discrepancy is not identified. Separating it from real effect modification would require observing the same population under both designs, and the reason for combining the sources is precisely that neither covers what the other does. Cross-design synthesis machinery therefore takes the bias term as an input, whether as a design adjustment, an inflated between-study variance or a power-prior weight, all supplied by judgment rather than estimated from the data being combined. Dynamic borrowing tries to recover the weight from outcome agreement, which makes it a function of the quantity under test and works only when the sources agree for the right reason: simulation shows propensity-integrated Bayesian borrowing controlling bias and type I error under selection bias and failing under unmeasured confounding, measurement error and effect drift. The estimands also differ before any weight is applied, since a trial reports an intention-to-treat contrast under protocolized follow-up while an emulation of the same question usually reports a per-protocol contrast under routine care, and nothing aligns the two before pooling.",
+  "prior_work": [
+   {
+    "cite": "Efthimiou O, Mavridis D, Debray TPA, et al. Combining randomized and non-randomized evidence in network meta-analysis. Stat Med 2017;36(8):1210-1226",
+    "doi_or_url": "10.1002/sim.7223",
+    "what_it_does": "Sets out naive pooling, design-adjusted synthesis, non-randomized evidence as prior information and three-level hierarchical models, each of which requires a bias term the combined data do not supply."
+   },
+   {
+    "cite": "Schmitz S, Adams R, Walsh C. Incorporating data from various trial designs into a mixed treatment comparison model. Stat Med 2013;32(17):2935-2949",
+    "doi_or_url": "10.1002/sim.5764",
+    "what_it_does": "Gives the three-level hierarchical model that adjusts for design bias while allowing heterogeneity between designs, which is the structure a synthesis including emulations would use."
+   },
+   {
+    "cite": "Hamza T, Schwarzer G, Salanti G. crossnma: an R package to synthesize cross-design evidence and cross-format data using network meta-analysis and network meta-regression. BMC Med Res Methodol 2024;24(1):169",
+    "doi_or_url": "10.1186/s12874-023-02130-0",
+    "what_it_does": "Implements Bayesian three-level cross-design network meta-analysis, so the machinery is available and what remains missing is the bias input the user must supply."
+   },
+   {
+    "cite": "Bujkiewicz S, Singh J, Wheaton L, et al. Bridging disconnected networks of first and second lines of biologic therapies in rheumatoid arthritis with registry data: Bayesian evidence synthesis with target trial emulation. J Clin Epidemiol 2022;150:171-178",
+    "doi_or_url": "10.1016/j.jclinepi.2022.06.011",
+    "what_it_does": "Enters six registry-derived target trials into a network with 21 randomized trials at face value and names power-prior down-weighting and design-level hierarchical modeling as untried alternatives."
+   },
+   {
+    "cite": "Singh J, Stevenson M, Hyrich KL, Gillies CL, Abrams KR, Bujkiewicz S. Target trial emulation to incorporate real-world data in the estimation of the clinical and cost-effectiveness of biologic treatment. Med Decis Making 2026;46(3):386-398",
+    "doi_or_url": "10.1177/0272989X251408484",
+    "what_it_does": "Pools an emulated and a randomized response probability that differ with an odds ratio of 0.30, and carries the pooled value into an economic model whose cost-effectiveness ratio moves from 34,700 to 46,300 pounds per quality-adjusted life-year."
+   },
+   {
+    "cite": "Tan WK, Segal BD, Curtis MD, et al. Augmenting control arms with real-world data for cancer trials: hybrid control arm methods and considerations. Contemp Clin Trials Commun 2022;30:101000",
+    "doi_or_url": "10.1016/j.conctc.2022.101000",
+    "what_it_does": "Compares static and dynamic borrowing methods, calibrates their tuning parameters against measured residual bias from earlier control-arm emulations, and names covariate balancing weights for post-baseline treatment patterns as the missing piece."
+   },
+   {
+    "cite": "Wang C, Li H, Chen WC, Lu N, Tiwari R, Xu Y, Yue LQ. Propensity score-integrated power prior approach for incorporating real-world evidence in single-arm clinical studies. J Biopharm Stat 2019;29(5):731-748",
+    "doi_or_url": "10.1080/10543406.2019.1657133",
+    "what_it_does": "Stratifies on the propensity score and applies a power prior within strata, which supplies the baseline covariate half of the balancing-plus-borrowing problem."
+   },
+   {
+    "cite": "Wang J, Tiwari R. Approximate Bayesian analysis for borrowing external controls for randomized controlled trials with dynamic borrowing and covariate balancing adjustment. Pharm Stat 2025;24(2):e2474",
+    "doi_or_url": "10.1002/pst.2474",
+    "what_it_does": "Combines covariate balancing with dynamic borrowing in a single Bayesian bootstrap procedure, which closes the baseline part of the 2022 request and leaves the post-baseline part open."
+   },
+   {
+    "cite": "Wang K, Cao H, Yao C. Bayesian proactive dynamic borrowing utilizing propensity score overlap for a hybrid control arm and the impacts of various biases: a simulation study. J Evid Based Med 2025;18(2):e70022",
+    "doi_or_url": "10.1111/jebm.70022",
+    "what_it_does": "Shows propensity-integrated Bayesian borrowing controlling bias and type I error under selection bias and losing that control under unmeasured confounding, measurement error and effect drift."
+   },
+   {
+    "cite": "Wang P, Hong H, Jeon K, Thomas LE. Trials augmented by external control data using balancing weights: a comparison of estimands and estimators. Contemp Clin Trials 2026;162:108220",
+    "doi_or_url": "10.1016/j.cct.2026.108220",
+    "what_it_does": "Sets out which causal estimands propensity-weighted estimators actually target in a hybrid trial, which is the step that has to precede pooling and is usually skipped."
+   },
+   {
+    "cite": "Lai PC, Lai CH, Lai EC, Huang YT. Do we need to administer fludrocortisone in addition to hydrocortisone in adult patients with septic shock? An updated systematic review with Bayesian network meta-analysis of randomized controlled trials and an observational study with target trial emulation. Crit Care Med 2024;52(4):e193-e202",
+    "doi_or_url": "10.1097/CCM.0000000000006161",
+    "what_it_does": "Combines randomized trials and observational target trial emulations across 19 studies and 95,841 patients in one Bayesian network meta-analysis, an applied instance of the practice with no stated admission criterion."
+   }
+  ],
+  "proposed_direction": "Estimate the discrepancy rather than assume it: build a bias distribution from paired emulation and trial results in the same disease area and data source, and use it as the prior on the design effect that cross-design synthesis and power-prior borrowing already require as an input. Report the pooled estimate alongside the source-specific estimates and the implied bias, so a reader can see how much of the pooled number is borrowed and from where. Require estimand alignment before pooling: state which contrast each source identifies, and reweight or re-emulate so that both answer the same question rather than pooling an efficacy estimate with an effectiveness estimate. Extend covariate balancing inside borrowing methods to post-baseline treatment patterns, treating treatment duration and subsequent therapy as time-varying variables to be weighted rather than as differences left for the borrowing parameter to absorb. The first tractable step is a prespecified discrepancy prior calibrated on the existing benchmarking literature, which turns an assumption that is currently invisible into a reported quantity.",
+  "priority": "High",
+  "maturity": "Promising",
+  "tractability": 4,
+  "severity": "Pooled estimates from emulations and trials are already entering health technology assessment and applied network meta-analyses, and the weight that decides the answer is set by judgment.",
+  "protocol_component": [
+   "causal-contrast",
+   "cross-cutting"
+  ],
+  "data_setting": [
+   "registry",
+   "ehr",
+   "multi-database"
+  ],
+  "source": {
+   "slice": "gap-labelling",
+   "raw_id": "L0358#1/L0449#0/L0545#0",
+   "locator": "named as a missing theme by 3 (batches 01, 07, 08) of the twelve gap labellers, working on disjoint gaps; reported as \"Synthesizing randomized and real-world evidence together, including borrowing into an external or hybrid control arm and combining emulations with trials in a network\"; evidence is 3 future-research gaps in 3 papers: L0358#1, L0449#0, L0545#0"
+  },
+  "_group": "EST",
+  "related": [
+   "BEN-01",
+   "BEN-02",
+   "EST-02",
+   "REG-01"
+  ]
+ },
+ {
+  "id": "LRN-05",
+  "category": "LRN",
+  "title": "A counterfactual prediction is validated under the assumptions that produced it, and nothing maps its output to a decision",
+  "statement": "Emulation is increasingly used to produce a risk under a hypothetical treatment strategy and to learn which treatment an individual should receive, and both outputs are then offered as decision support. Ordinary validation compares a predicted risk against an observed outcome, and under a strategy the outcome is observed only for the part of a validation set that happened to follow it, so the label a calibration curve needs does not exist for everyone else. Counterfactual analogues of the standard measures now exist: artificial censoring with inverse probability weighting extends calibration, the c-index, the time-dependent AUC and the Brier score to sustained strategies with time-to-event outcomes, and identification results cover loss-based measures, the ROC area and the calibration curve even when the prediction model is misspecified. All of them are identified under the same conditional exchangeability and positivity conditions used to fit the model, and violations are referred to sensitivity analysis, so a counterfactual calibration curve computed in a validation database is evidence about fit rather than about the assumption carrying the causal claim. What nobody reports is how these measures behave when exchangeability fails, so a check aimed at the failure mode that motivates the whole exercise has no known operating characteristics. The scoping review that named the absence screened 4919 records down to 13 included papers and asked for extension to non-discrete treatments and to nonparametric models; the published performance results cover discrete strategies, with dynamic regimes in an appendix. At the applied end a machine-learned antidepressant rule was scored by emulating a four-arm target trial in a held-out test set of the same claims database of 715,246 patients and 739,980 treatment episodes, which reuses the identification assumptions instead of testing them, and applied prediction work still stops at predicted probabilities without defining the action space that maps them to the set of possible decisions.",
+  "why_open": "The label validation needs is the outcome under the strategy, and it is missing by construction for exactly the individuals whose treatment departed from that strategy; recovering it requires the identification assumptions, which is why every counterfactual performance estimator inherits them and none can test them. Moving validation to a second database changes the confounding structure along with the population, so a disagreement between sources is not attributable to the model rather than to the new source's own unmeasured confounding. The design that breaks the circle is a trial randomizing patients to the rule against usual care, which costs what the observational route exists to avoid. A threshold is what turns a predicted benefit into an action, and a threshold encodes how much benefit is worth how much harm, which is a value judgment no estimator supplies. The simulation that would at least establish whether counterfactual calibration degrades under unmeasured confounding has not been published, and its answer would be a property of the confounding structure assumed, so it yields a scenario rather than a guarantee.",
+  "prior_work": [
+   {
+    "cite": "Lin L, Sperrin M, Jenkins DA, Martin GP, Peek N. A scoping review of causal methods enabling predictions under hypothetical interventions. Diagn Progn Res 2021;5(1):3",
+    "doi_or_url": "10.1186/s41512-021-00092-9",
+    "what_it_does": "Screens 4919 records down to 13 included papers, finds most observational approaches built on marginal structural models and g-estimation, and concludes that techniques for validating causal prediction models are in their infancy."
+   },
+   {
+    "cite": "Keogh RH, Van Geloven N. Prediction under interventions: evaluation of counterfactual performance using longitudinal observational data. Epidemiology 2024;35(3):329-339",
+    "doi_or_url": "10.1097/EDE.0000000000001713",
+    "what_it_does": "Builds a validation set mimicking the strategy through artificial censoring and inverse probability weighting, and extends calibration, the c-index, the cumulative dynamic AUC and the Brier score to sustained strategies with time-to-event outcomes."
+   },
+   {
+    "cite": "Boyer CB, Dahabreh IJ, Steingrimsson JA. Estimating and evaluating counterfactual prediction models. Stat Med 2025;44(23-24):e70287",
+    "doi_or_url": "10.1002/sim.70287",
+    "what_it_does": "Gives identification and estimation results for counterfactual loss-based measures, the ROC area and the calibration curve that stay valid under a misspecified prediction model, and refers violations of exchangeability to sensitivity analysis."
+   },
+   {
+    "cite": "Voter SC, Dahabreh IJ, Boyer CB, Rahbar H, Kontos D, Steingrimsson JA. Counterfactual prediction from machine learning models: transportability and joint analysis for model development and evaluation using multi-source data. Diagn Progn Res 2025;9(1):22",
+    "doi_or_url": "10.1186/s41512-025-00201-y",
+    "what_it_does": "Estimates counterfactual model performance in the population underlying an observational study either from that study alone or by transporting from the randomized trial it emulates, and states that the assumptions of both routes are untestable."
+   },
+   {
+    "cite": "Sachs MC, Sjölander A, Gabriel EE. Aim for clinical utility, not just predictive accuracy. Epidemiology 2020;31(3):359-364",
+    "doi_or_url": "10.1097/EDE.0000000000001173",
+    "what_it_does": "Derives a decision rule from a prognostic model and emulates a prediction-driven trial in a split sample to evaluate its clinical utility, holding that a randomized comparison against standard care is what settles the question."
+   }
+  ],
+  "proposed_direction": "Start with operating characteristics: simulate a sustained strategy under a known confounding structure, compute counterfactual calibration, discrimination and the Brier score with the confounder in the adjustment set and then without it, and report how large the confounding has to be before each measure moves. Report counterfactual performance as a bias-analysis interval rather than as a point estimate, so a calibration curve carries the same sensitivity parameter as the effect estimate it descends from. Extend the counterfactual performance results from discrete strategies to dose-defined and dynamic strategies, which is what the scoping review asked for and where routine treatment data actually sit. For a learned rule, require the emulated evaluation to be reported with the action space it implies: the decision threshold, the number of patients whose treatment would change, and the net benefit at that threshold, rather than a table of predicted probabilities.",
+  "priority": "Medium-high",
+  "maturity": "Emerging",
+  "tractability": 3,
+  "severity": "A rule can be fielded on the strength of a validation that assumes the condition it exists to test.",
+  "protocol_component": [
+   "analysis-plan",
+   "causal-contrast"
+  ],
+  "data_setting": [
+   "ehr",
+   "claims",
+   "any"
+  ],
+  "source": {
+   "slice": "gap-labelling",
+   "raw_id": "L0043#0/L0152#0/L0458#0/L0032#0",
+   "locator": "named as a missing theme by 2 (batches 03, 05) of the twelve gap labellers, working on disjoint gaps; reported as \"Validating a counterfactual prediction model or a learned treatment rule outside the data that produced it, and mapping its output to a decision\"; evidence is 4 future-research gaps in 4 papers: L0043#0, L0152#0, L0458#0, L0032#0"
+  },
+  "_group": "LRN",
+  "related": [
+   "EST-02",
+   "GMT-01",
+   "LRN-01",
+   "LRN-04"
   ]
  }
 ]

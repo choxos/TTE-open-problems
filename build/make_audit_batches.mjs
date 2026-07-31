@@ -6,6 +6,14 @@
 // verdicts rather than the run.
 //
 // Usage: node build/make_audit_batches.mjs [--size 6]
+//        node build/make_audit_batches.mjs --only EST-04,EST-05,LRN-05
+//
+// `--only` writes one single-problem prompt per named id and touches nothing else. Entries
+// that arrive after a category has already been audited need this: regenerating the whole
+// set would rewrite the prompt files recording what the settled auditors were asked, and
+// re-running a shared category batch would overwrite opinions that are already adjudicated.
+// The prompt is produced by the same header and the same renderProblem as every other batch,
+// so a late entry is asked exactly what its neighbors were asked.
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -23,6 +31,8 @@ const EXTERNAL_AUDITORS = ['codex', 'grok', 'glm']
 
 const sizeArg = process.argv.indexOf('--size')
 const BATCH_SIZE = sizeArg > -1 ? Number(process.argv[sizeArg + 1]) : 6
+const onlyArg = process.argv.indexOf('--only')
+const ONLY = onlyArg > -1 ? process.argv[onlyArg + 1].split(',').map((s) => s.trim()).filter(Boolean) : null
 
 const CODEX_HEADER = `ROLE
 You are a senior methodological statistician and pharmacoepidemiologist auditing an
@@ -231,14 +241,35 @@ function main() {
   }
   const problems = JSON.parse(readFileSync(CANONICAL, 'utf8'))
 
-  // Group by category so a batch shares context, then chunk.
-  const byCat = {}
-  for (const p of problems) (byCat[p.category] ||= []).push(p)
-
-  const batches = []
-  for (const [cat, list] of Object.entries(byCat)) {
-    for (let i = 0; i < list.length; i += BATCH_SIZE) {
-      batches.push({ id: `${cat}-${String(i / BATCH_SIZE + 1).padStart(2, '0')}`, problems: list.slice(i, i + BATCH_SIZE) })
+  let batches
+  if (ONLY) {
+    const byId = Object.fromEntries(problems.map((p) => [p.id, p]))
+    const missing = ONLY.filter((id) => !byId[id])
+    if (missing.length) {
+      console.error(`not in the canonical registry: ${missing.join(', ')}`)
+      process.exit(1)
+    }
+    // A batch is named after its first problem, so a single-problem batch takes that
+    // problem's own id. That can collide with a category batch already on disk, and the
+    // collision is silent: the prompt is overwritten and the auditor answers a different
+    // question than its output file claims. Refuse rather than clobber.
+    for (const auditor of EXTERNAL_AUDITORS) {
+      const clash = ONLY.filter((id) => existsSync(join(AUDIT, 'auditors', auditor, 'prompts', `${id}.txt`)))
+      if (clash.length) {
+        console.error(`${auditor} already has a prompt for ${clash.join(', ')}; move it aside before regenerating`)
+        process.exit(1)
+      }
+    }
+    batches = ONLY.map((id) => ({ id, problems: [byId[id]] }))
+  } else {
+    // Group by category so a batch shares context, then chunk.
+    const byCat = {}
+    for (const p of problems) (byCat[p.category] ||= []).push(p)
+    batches = []
+    for (const [cat, list] of Object.entries(byCat)) {
+      for (let i = 0; i < list.length; i += BATCH_SIZE) {
+        batches.push({ id: `${cat}-${String(i / BATCH_SIZE + 1).padStart(2, '0')}`, problems: list.slice(i, i + BATCH_SIZE) })
+      }
     }
   }
 

@@ -1,0 +1,98 @@
+{
+ "batch": "02",
+ "entries": [
+  {
+   "title": "An emulation enters a synthesis with randomized trials through a discrepancy parameter that nothing identifies",
+   "category": "EST",
+   "statement": "Emulated trials are combined with randomized trials in three ways: as an added study in a network meta-analysis, as an external or hybrid control arm borrowed into a randomized trial, and as a substituted effectiveness input to an economic model. All three need a quantity that neither source supplies, the systematic difference between what the emulation estimates and what the trial estimates, and practice sets it by assumption. A bivariate network meta-analysis that bridged first-line and second-line biologic therapies in rheumatoid arthritis combined 21 randomized trials with six registry-derived target trials entered at face value, assumed equivalent to randomized data. A cost-effectiveness analysis in the same disease put the emulated probability of at least a moderate response at 0.215 against 0.650 in the randomized trial, with a between-source odds ratio of 0.30 (95% confidence interval 0.23 to 0.37), then pooled the two into 0.336 as though the difference were sampling variation; the pooled incremental cost-effectiveness ratio came to 46,300 pounds per quality-adjusted life-year, essentially the real-world value of 46,800 rather than a number between the sources. Hybrid control designs instead discount the external arm by a tuning parameter calibrated from earlier replication exercises, in which residual bias hazard ratios ran between 0.96 and 1.10 for nine of eleven emulated lung cancer control arms and between 0.66 and 1.09 for most of fifteen trials across tumor types. No criterion decides whether a given emulation is exchangeable enough to enter a network, and no borrowing method balances post-baseline treatment patterns, so a borrowed control arm can answer a different estimand from the randomized arm it augments.",
+   "why_open": "The discrepancy is not identified. Separating it from real effect modification would require observing the same population under both designs, and the reason for combining the sources is precisely that neither covers what the other does. Cross-design synthesis machinery therefore takes the bias term as an input, whether as a design adjustment, an inflated between-study variance or a power-prior weight, all supplied by judgment rather than estimated from the data being combined. Dynamic borrowing tries to recover the weight from outcome agreement, which makes it a function of the quantity under test and works only when the sources agree for the right reason: simulation shows propensity-integrated Bayesian borrowing controlling bias and type I error under selection bias and failing under unmeasured confounding, measurement error and effect drift. The estimands also differ before any weight is applied, since a trial reports an intention-to-treat contrast under protocolized follow-up while an emulation of the same question usually reports a per-protocol contrast under routine care, and nothing aligns the two before pooling.",
+   "prior_work": [
+    {
+     "cite": "Efthimiou O, Mavridis D, Debray TPA, et al. Combining randomized and non-randomized evidence in network meta-analysis. Stat Med 2017;36(8):1210-1226",
+     "doi_or_url": "10.1002/sim.7223",
+     "what_it_does": "Sets out naive pooling, design-adjusted synthesis, non-randomized evidence as prior information and three-level hierarchical models, each of which requires a bias term the combined data do not supply."
+    },
+    {
+     "cite": "Schmitz S, Adams R, Walsh C. Incorporating data from various trial designs into a mixed treatment comparison model. Stat Med 2013;32(17):2935-2949",
+     "doi_or_url": "10.1002/sim.5764",
+     "what_it_does": "Gives the three-level hierarchical model that adjusts for design bias while allowing heterogeneity between designs, which is the structure a synthesis including emulations would use."
+    },
+    {
+     "cite": "Hamza T, Schwarzer G, Salanti G. crossnma: an R package to synthesize cross-design evidence and cross-format data using network meta-analysis and network meta-regression. BMC Med Res Methodol 2024;24(1):169",
+     "doi_or_url": "10.1186/s12874-023-02130-0",
+     "what_it_does": "Implements Bayesian three-level cross-design network meta-analysis, so the machinery is available and what remains missing is the bias input the user must supply."
+    },
+    {
+     "cite": "Bujkiewicz S, Singh J, Wheaton L, et al. Bridging disconnected networks of first and second lines of biologic therapies in rheumatoid arthritis with registry data: Bayesian evidence synthesis with target trial emulation. J Clin Epidemiol 2022;150:171-178",
+     "doi_or_url": "10.1016/j.jclinepi.2022.06.011",
+     "what_it_does": "Enters six registry-derived target trials into a network with 21 randomized trials at face value and names power-prior down-weighting and design-level hierarchical modeling as untried alternatives."
+    },
+    {
+     "cite": "Singh J, Stevenson M, Hyrich KL, Gillies CL, Abrams KR, Bujkiewicz S. Target trial emulation to incorporate real-world data in the estimation of the clinical and cost-effectiveness of biologic treatment. Med Decis Making 2026;46(3):386-398",
+     "doi_or_url": "10.1177/0272989X251408484",
+     "what_it_does": "Pools an emulated and a randomized response probability that differ with an odds ratio of 0.30, and carries the pooled value into an economic model whose cost-effectiveness ratio moves from 34,700 to 46,300 pounds per quality-adjusted life-year."
+    },
+    {
+     "cite": "Tan WK, Segal BD, Curtis MD, et al. Augmenting control arms with real-world data for cancer trials: hybrid control arm methods and considerations. Contemp Clin Trials Commun 2022;30:101000",
+     "doi_or_url": "10.1016/j.conctc.2022.101000",
+     "what_it_does": "Compares static and dynamic borrowing methods, calibrates their tuning parameters against measured residual bias from earlier control-arm emulations, and names covariate balancing weights for post-baseline treatment patterns as the missing piece."
+    },
+    {
+     "cite": "Wang C, Li H, Chen WC, Lu N, Tiwari R, Xu Y, Yue LQ. Propensity score-integrated power prior approach for incorporating real-world evidence in single-arm clinical studies. J Biopharm Stat 2019;29(5):731-748",
+     "doi_or_url": "10.1080/10543406.2019.1657133",
+     "what_it_does": "Stratifies on the propensity score and applies a power prior within strata, which supplies the baseline covariate half of the balancing-plus-borrowing problem."
+    },
+    {
+     "cite": "Wang J, Tiwari R. Approximate Bayesian analysis for borrowing external controls for randomized controlled trials with dynamic borrowing and covariate balancing adjustment. Pharm Stat 2025;24(2):e2474",
+     "doi_or_url": "10.1002/pst.2474",
+     "what_it_does": "Combines covariate balancing with dynamic borrowing in a single Bayesian bootstrap procedure, which closes the baseline part of the 2022 request and leaves the post-baseline part open."
+    },
+    {
+     "cite": "Wang K, Cao H, Yao C. Bayesian proactive dynamic borrowing utilizing propensity score overlap for a hybrid control arm and the impacts of various biases: a simulation study. J Evid Based Med 2025;18(2):e70022",
+     "doi_or_url": "10.1111/jebm.70022",
+     "what_it_does": "Shows propensity-integrated Bayesian borrowing controlling bias and type I error under selection bias and losing that control under unmeasured confounding, measurement error and effect drift."
+    },
+    {
+     "cite": "Wang P, Hong H, Jeon K, Thomas LE. Trials augmented by external control data using balancing weights: a comparison of estimands and estimators. Contemp Clin Trials 2026;162:108220",
+     "doi_or_url": "10.1016/j.cct.2026.108220",
+     "what_it_does": "Sets out which causal estimands propensity-weighted estimators actually target in a hybrid trial, which is the step that has to precede pooling and is usually skipped."
+    },
+    {
+     "cite": "Lai PC, Lai CH, Lai EC, Huang YT. Do we need to administer fludrocortisone in addition to hydrocortisone in adult patients with septic shock? An updated systematic review with Bayesian network meta-analysis of randomized controlled trials and an observational study with target trial emulation. Crit Care Med 2024;52(4):e193-e202",
+     "doi_or_url": "10.1097/CCM.0000000000006161",
+     "what_it_does": "Combines randomized trials and observational target trial emulations across 19 studies and 95,841 patients in one Bayesian network meta-analysis, an applied instance of the practice with no stated admission criterion."
+    }
+   ],
+   "proposed_direction": "Estimate the discrepancy rather than assume it: build a bias distribution from paired emulation and trial results in the same disease area and data source, and use it as the prior on the design effect that cross-design synthesis and power-prior borrowing already require as an input. Report the pooled estimate alongside the source-specific estimates and the implied bias, so a reader can see how much of the pooled number is borrowed and from where. Require estimand alignment before pooling: state which contrast each source identifies, and reweight or re-emulate so that both answer the same question rather than pooling an efficacy estimate with an effectiveness estimate. Extend covariate balancing inside borrowing methods to post-baseline treatment patterns, treating treatment duration and subsequent therapy as time-varying variables to be weighted rather than as differences left for the borrowing parameter to absorb. The first tractable step is a prespecified discrepancy prior calibrated on the existing benchmarking literature, which turns an assumption that is currently invisible into a reported quantity.",
+   "priority": "High",
+   "tractability": 4,
+   "maturity": "Promising",
+   "severity": "Pooled estimates from emulations and trials are already entering health technology assessment and applied network meta-analyses, and the weight that decides the answer is set by judgment.",
+   "verdict": "partially-addressed",
+   "verdict_rationale": "This entry rests on weaker provenance than its neighbors. Nobody read a paper and argued for it; three gap labellers working on disjoint gaps reported it as a theme the registry lacked, and the evidence is three future-research sentences from three distinct papers dated 2022, 2022 and 2026. The registry was searched for coverage and none was found: BEN-01 and BEN-02 concern what agreement between an emulation and a trial means when the trial is used to validate the emulation, which is the opposite direction of use, and EST-02 concerns transporting one estimate rather than combining two. The literature was then checked for what has since been supplied, which is why the verdict is partially-addressed and not confirmed-open: cross-design synthesis models and a maintained implementation exist, and covariate-balanced dynamic borrowing was published after the 2022 request that named it missing. What survives is the part none of that work supplies, the discrepancy term itself, any criterion for admitting an emulation to a network, and balancing on post-baseline treatment patterns.",
+   "related": [
+    "BEN-01",
+    "BEN-02",
+    "EST-02",
+    "REG-01"
+   ],
+   "protocol_component": [
+    "causal-contrast",
+    "cross-cutting"
+   ],
+   "data_setting": [
+    "registry",
+    "ehr",
+    "multi-database"
+   ]
+  }
+ ],
+ "rejected": [
+  {
+   "absence": "A method is identified and has no usable or maintained implementation a non-specialist can run, so it is not applied",
+   "why": "not-a-field-gap",
+   "covered_by": null,
+   "reasoning": "The eight gaps behind this do not converge on one missing object; they name eight different absences in different software ecosystems, which is agreement about a category of complaint rather than about a hole in the field. Each is a feature request, a port or an adoption grievance: mice cannot update one row of a long-form frame from another, so a pooled-across-time-point imputation model cannot be expressed, although the method is specified and released as gFormulaMI; reference-based multiple imputation for time-to-event data is described as a slight modification of standard technique and is simply not packaged; targeted maximum likelihood estimation exists in R, in Python through zEpid and in Stata through a wrapper, and what is asked for is native ports; more SuperLearner learners are wanted and a selection was released with the request; and the dynamic-regime review asks for software usable by clinicians while attributing the shortage of applied studies to exchangeability, positivity and consistency rather than to tooling. The two substantive deferrals have since been supplied: longitudinal targeted learning was implemented after the 2010 statement that it was groundwork, and the 2013 complaint that no package performed two-stage weighting for guarantee-time bias already carried downloadable macros in its own sentence. Three labellers reaching this independently is evidence about how often the field says it, which is what one expects from a constraint that binds every applied analyst and yields a discussion-section sentence; independent recurrence would be decisive only if the labellers had converged on the same missing estimator, criterion or diagnostic, and they did not. An entry also has to state something research can close, and this closes with engineering and funding, after which it stops being open; the methodological residue, that estimator choice is made from what is runnable and no study must show the choice mattered, is already held by GMT-04, and study-level code and phenotype logic by SFW-03. This reaches the same conclusion as the second reviewer who rejected the L0172 proposal during the reading, on the same ground, with three more papers checked."
+  }
+ ]
+}

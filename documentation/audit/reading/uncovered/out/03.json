@@ -1,0 +1,68 @@
+{
+ "batch": "03",
+ "entries": [
+  {
+   "title": "A counterfactual prediction is validated under the assumptions that produced it, and nothing maps its output to a decision",
+   "category": "LRN",
+   "statement": "Emulation is increasingly used to produce a risk under a hypothetical treatment strategy and to learn which treatment an individual should receive, and both outputs are then offered as decision support. Ordinary validation compares a predicted risk against an observed outcome, and under a strategy the outcome is observed only for the part of a validation set that happened to follow it, so the label a calibration curve needs does not exist for everyone else. Counterfactual analogues of the standard measures now exist: artificial censoring with inverse probability weighting extends calibration, the c-index, the time-dependent AUC and the Brier score to sustained strategies with time-to-event outcomes, and identification results cover loss-based measures, the ROC area and the calibration curve even when the prediction model is misspecified. All of them are identified under the same conditional exchangeability and positivity conditions used to fit the model, and violations are referred to sensitivity analysis, so a counterfactual calibration curve computed in a validation database is evidence about fit rather than about the assumption carrying the causal claim. What nobody reports is how these measures behave when exchangeability fails, so a check aimed at the failure mode that motivates the whole exercise has no known operating characteristics. The scoping review that named the absence screened 4919 records down to 13 included papers and asked for extension to non-discrete treatments and to nonparametric models; the published performance results cover discrete strategies, with dynamic regimes in an appendix. At the applied end a machine-learned antidepressant rule was scored by emulating a four-arm target trial in a held-out test set of the same claims database of 715,246 patients and 739,980 treatment episodes, which reuses the identification assumptions instead of testing them, and applied prediction work still stops at predicted probabilities without defining the action space that maps them to the set of possible decisions.",
+   "why_open": "The label validation needs is the outcome under the strategy, and it is missing by construction for exactly the individuals whose treatment departed from that strategy; recovering it requires the identification assumptions, which is why every counterfactual performance estimator inherits them and none can test them. Moving validation to a second database changes the confounding structure along with the population, so a disagreement between sources is not attributable to the model rather than to the new source's own unmeasured confounding. The design that breaks the circle is a trial randomizing patients to the rule against usual care, which costs what the observational route exists to avoid. A threshold is what turns a predicted benefit into an action, and a threshold encodes how much benefit is worth how much harm, which is a value judgment no estimator supplies. The simulation that would at least establish whether counterfactual calibration degrades under unmeasured confounding has not been published, and its answer would be a property of the confounding structure assumed, so it yields a scenario rather than a guarantee.",
+   "prior_work": [
+    {
+     "cite": "Lin L, Sperrin M, Jenkins DA, Martin GP, Peek N. A scoping review of causal methods enabling predictions under hypothetical interventions. Diagn Progn Res 2021;5(1):3",
+     "doi_or_url": "10.1186/s41512-021-00092-9",
+     "what_it_does": "Screens 4919 records down to 13 included papers, finds most observational approaches built on marginal structural models and g-estimation, and concludes that techniques for validating causal prediction models are in their infancy."
+    },
+    {
+     "cite": "Keogh RH, Van Geloven N. Prediction under interventions: evaluation of counterfactual performance using longitudinal observational data. Epidemiology 2024;35(3):329-339",
+     "doi_or_url": "10.1097/EDE.0000000000001713",
+     "what_it_does": "Builds a validation set mimicking the strategy through artificial censoring and inverse probability weighting, and extends calibration, the c-index, the cumulative dynamic AUC and the Brier score to sustained strategies with time-to-event outcomes."
+    },
+    {
+     "cite": "Boyer CB, Dahabreh IJ, Steingrimsson JA. Estimating and evaluating counterfactual prediction models. Stat Med 2025;44(23-24):e70287",
+     "doi_or_url": "10.1002/sim.70287",
+     "what_it_does": "Gives identification and estimation results for counterfactual loss-based measures, the ROC area and the calibration curve that stay valid under a misspecified prediction model, and refers violations of exchangeability to sensitivity analysis."
+    },
+    {
+     "cite": "Voter SC, Dahabreh IJ, Boyer CB, Rahbar H, Kontos D, Steingrimsson JA. Counterfactual prediction from machine learning models: transportability and joint analysis for model development and evaluation using multi-source data. Diagn Progn Res 2025;9(1):22",
+     "doi_or_url": "10.1186/s41512-025-00201-y",
+     "what_it_does": "Estimates counterfactual model performance in the population underlying an observational study either from that study alone or by transporting from the randomized trial it emulates, and states that the assumptions of both routes are untestable."
+    },
+    {
+     "cite": "Sachs MC, Sjölander A, Gabriel EE. Aim for clinical utility, not just predictive accuracy. Epidemiology 2020;31(3):359-364",
+     "doi_or_url": "10.1097/EDE.0000000000001173",
+     "what_it_does": "Derives a decision rule from a prognostic model and emulates a prediction-driven trial in a split sample to evaluate its clinical utility, holding that a randomized comparison against standard care is what settles the question."
+    }
+   ],
+   "proposed_direction": "Start with operating characteristics: simulate a sustained strategy under a known confounding structure, compute counterfactual calibration, discrimination and the Brier score with the confounder in the adjustment set and then without it, and report how large the confounding has to be before each measure moves. Report counterfactual performance as a bias-analysis interval rather than as a point estimate, so a calibration curve carries the same sensitivity parameter as the effect estimate it descends from. Extend the counterfactual performance results from discrete strategies to dose-defined and dynamic strategies, which is what the scoping review asked for and where routine treatment data actually sit. For a learned rule, require the emulated evaluation to be reported with the action space it implies: the decision threshold, the number of patients whose treatment would change, and the net benefit at that threshold, rather than a table of predicted probabilities.",
+   "priority": "Medium-high",
+   "tractability": 3,
+   "maturity": "Emerging",
+   "severity": "A rule can be fielded on the strength of a validation that assumes the condition it exists to test.",
+   "verdict": "partially-addressed",
+   "verdict_rationale": "This came from labeller-reported absence rather than from a paper arguing for it: two of twelve gap labellers, working on disjoint gaps and unable to see each other, named it at the end as something the registry lacked. The four future-research sentences behind it span four papers from 2020 to 2025, and two of the four are weak on their own, one being a limitation about carrying a population-level g-formula down to individuals and one a call for prospective trials. The entry rests on the other two: a scoping review naming validation as the most pressing problem for predictions under hypothetical interventions, and the observation that applied models stop at probabilities and define no action space. Checked against the whole registry: GMT-01 concerns how nuisance models are selected and LRN-04 concerns subgroup effect estimation, and neither addresses scoring a prediction made under a strategy. Checked the literature since 2021 and found the counterfactual performance estimators of 2024 and 2025, which supply the machinery and inherit the identification assumptions, hence partially-addressed rather than confirmed-open.",
+   "protocol_component": [
+    "analysis-plan",
+    "causal-contrast"
+   ],
+   "data_setting": [
+    "ehr",
+    "claims",
+    "any"
+   ],
+   "related": [
+    "LRN-01",
+    "LRN-04",
+    "GMT-01",
+    "EST-02"
+   ]
+  }
+ ],
+ "rejected": [
+  {
+   "absence": "Valid variance and finite-sample inference for causal estimators with learned nuisance components, outside the cloning and sequence-expansion setting SFW-01 is scoped to",
+   "why": "not-a-field-gap",
+   "covered_by": null,
+   "reasoning": "Both sentences behind this are to-do items rather than field gaps. The 2026 Biometrics sentence sits in a list of limitations of a hidden Markov model for N-of-1 mobile health time series and asks for a bootstrap suited to a multivariate time series with an underlying latent state, which is that estimator's own inference problem rather than one an emulation meets; block-bootstrap work for hidden Markov chains already sits in its own reference list. The 2021 Statistics in Medicine sentence asks for tutorials on the functional delta method and the influence curve, which is a request for teaching material, and the same section states that cross-fit doubly robust estimators retain valid inference when nuisance models are machine-learned and prints the influence-function computation as runnable code, so it asserts that the theory exists and that its exposition is thin. Neither supports the generalization to causal estimators with learned nuisance components at large, which is the absence as reported. The part of that generalization the catalog does carry is already split between GMT-03, for inference once eligibility and weighting leave a small effective sample, and SFW-01, for the dependence the analysis itself creates."
+  }
+ ]
+}
