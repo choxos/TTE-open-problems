@@ -21,8 +21,32 @@ OUT="$DIR/$BATCH.json"
 
 mkdir -p "$DIR"
 
-# Restartable: never redo a batch that already produced output.
-if [ -s "$OUT" ]; then
+# Restartable: never redo a batch that already produced a real verdict. A non-empty file is
+# not enough. Grok returns a well-formed envelope carrying an empty opinions array when it
+# short-circuits, using about 140 output tokens instead of several thousand, and a size check
+# treats that as a completed audit. It is the same silent-coverage-loss failure the roster gate
+# in collect_opinions.mjs exists to catch, one level further down, so the skip condition is
+# "this file contains at least one opinion" rather than "this file exists".
+if [ -s "$OUT" ] && python3 - "$OUT" <<'PYEOF'
+import json, re, sys
+raw = open(sys.argv[1], encoding="utf8", errors="ignore").read()
+best = 0
+for m in re.finditer(r"\{", raw):
+    i = m.start()
+    for end in range(len(raw), i, -1):
+        if raw[end - 1] != "}":
+            continue
+        try:
+            o = json.loads(raw[i:end])
+        except Exception:
+            continue
+        ops = (o.get("structuredOutput") or {}).get("opinions") or o.get("opinions")
+        if isinstance(ops, list):
+            best = max(best, len(ops))
+        break
+sys.exit(0 if best else 1)
+PYEOF
+then
   echo "  skip $AUDITOR/$BATCH (cached)"
   exit 0
 fi
