@@ -88,9 +88,15 @@ run_one <- function(fn, scenario, rep_id, stream) {
 ## Results are written to `outdir/raw/scenario-NN.rds` as each scenario
 ## finishes. Those files are regenerable from the seed and are gitignored; the
 ## tracked artifact is the summary CSV the analysis step writes.
+## `only` restricts the run to a subset of scenario indices while leaving the
+## seed streams indexed by absolute scenario number, so a slice draws exactly the
+## data the full run would have drawn for those scenarios. It exists because a
+## process killed part way through a scenario loses that scenario's work, and on
+## a machine that will not hold a long process the slice is what makes progress
+## monotone rather than a treadmill.
 run_design <- function(fn, scenarios, n_rep, master_seed, outdir,
                        workers = max(1L, parallel::detectCores() - 2L),
-                       resume = TRUE) {
+                       resume = TRUE, only = NULL) {
   raw <- file.path(outdir, "raw")
   dir.create(raw, recursive = TRUE, showWarnings = FALSE)
 
@@ -103,7 +109,8 @@ run_design <- function(fn, scenarios, n_rep, master_seed, outdir,
   message(sprintf("%d scenarios x %d replicates on %d workers",
                   n_scen, n_rep, workers))
 
-  for (s in seq_len(n_scen)) {
+  todo <- if (is.null(only)) seq_len(n_scen) else intersect(only, seq_len(n_scen))
+  for (s in todo) {
     f <- file.path(raw, sprintf("scenario-%03d.rds", s))
     if (resume && file.exists(f)) {
       message(sprintf("  scenario %d/%d: cached", s, n_scen))

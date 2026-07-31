@@ -1,0 +1,31 @@
+{
+ "CNF-01": {
+  "also_bears_on": [
+   "EST-03",
+   "REG-02"
+  ],
+  "slug": "CNF-01-convergence-attenuation",
+  "title": "Reporting comparator-arm initiation does not recover the attenuation it is meant to explain",
+  "status": "complete",
+  "week": 1,
+  "question": "CNF-01 asks authors to publish the cumulative incidence of initiation in both arms so a reader can see how far the contrasted strategies stayed distinct, and to quantify by simulation how much attenuation a given convergence rate produces. Does that diagnostic actually recover the attenuation?",
+  "design": "Discrete monthly time to 10 years, 4000 individuals per replicate, confounded baseline initiation, later initiation in the comparator arm, and a treatment that works. 24 scenarios crossing three convergence rates, two timing shapes tuned to the same cumulative initiation at the horizon, initiation that does or does not concentrate in high-risk patients, and two effect-persistence regimes. 1000 replicates each, 24,000 replicates in all. Truth enumerated from the mechanism at two million individuals per scenario rather than estimated from the replicates.",
+  "estimand": "Risk difference at horizons of 1 to 10 years for assignment to initiate at baseline versus not, with later initiation left to run, against the always-treated versus never-treated contrast the comparator arm would have supported had it stayed untreated",
+  "methods_compared": [
+   "g-formula standardization",
+   "stabilized IPTW"
+  ],
+  "n_sim": "1000 per scenario, 24,000 replicates, 288,000 estimate rows",
+  "date_completed": "2026-07-31",
+  "answer": "No. Two emulations reporting the same cumulative initiation in the comparator arm can differ by 20 percentage points in how much of the sustained-strategy effect convergence has removed. At the horizon where the diagnostic is matched to four decimal places, attenuation differs by up to 0.203 between the early-initiation and late-initiation scenarios, against a protocol threshold of 0.05 declared before the run. The diagnostic the catalog entry proposes is necessary and not sufficient: what determines the attenuation is when the comparator arm initiated and who initiated, and a single cumulative number at the horizon carries neither.",
+  "findings": [
+   "The attenuation is large and grows with the horizon. Pooled across scenarios its median is 2.4% at one year and 24.5% at ten, and its maximum is 56.7%. A treatment that genuinely works can lose more than half its sustained-strategy effect to convergence alone.",
+   "It is a property of the estimand and not of estimation. Both estimators recover the attenuating quantity essentially without bias: median absolute relative bias 0.43%, coverage between 0.934 and 0.970 against a nominal 0.95, relative error in the model standard error a median 1.2%, and no replicate failed to converge in any of the 24 scenarios. Nothing here is an estimation artifact.",
+   "The decisive comparison fails at every convergence rate. Matched pairs share a cumulative initiation at month 120 and differ only in when the initiation happened. The attenuation difference is 0.053 to 0.060 at 20% cumulative initiation, 0.116 to 0.145 at 45%, and 0.181 to 0.203 at 70%. Every one of the twelve pairs exceeds the declared 0.05 threshold, and the gap widens as convergence rises, which is exactly where the diagnostic is most needed.",
+   "Who initiates matters as much as when. Concentrating initiation in high-risk patients raises attenuation from 0.476 to 0.567 at the highest convergence rate, and it inflates the reported diagnostic at the same time, from 0.700 to 0.742, so the diagnostic moves in the right direction and by the wrong amount.",
+   "Effect persistence is the one factor that barely matters. Transient and legacy regimes differ by less than 0.01 in attenuation throughout, so a reader worried about attenuation does not additionally need to know the effect's time course."
+  ],
+  "not_answered": "The comparator arm converges upward and the treated arm never discontinues, so this measures one direction of convergence only. There is no loss to follow-up and no competing event, both deliberately excluded so the attenuation is not confounded with a second mechanism, and both are separate catalog entries. The scale is the risk difference throughout; the attenuation of a hazard ratio is a different question because non-collapsibility would mix this mechanism with another. The study says what the proposed diagnostic cannot do; it does not establish that reporting the whole initiation curve plus the initiator case-mix would be sufficient, only that the single number is not.",
+  "peer_review": null
+ }
+}
