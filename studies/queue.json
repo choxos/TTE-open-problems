@@ -1,0 +1,363 @@
+{
+ "generated_from": "43 of 43 catalog problems, triaged by gpt-5.6-sol at high reasoning effort",
+ "excluded": {
+  "needs corpus, not a simulation or case study": 5,
+  "needs analytic, not a simulation or case study": 9,
+  "needs software, not a simulation or case study": 1,
+  "needs consensus, not a simulation or case study": 3,
+  "not a target trial emulation problem": 8
+ },
+ "queue": [
+  {
+   "id": "CNF-01",
+   "title": "Convergence of treatment in the comparator arm attenuates the observational intention-to-treat analogue with follow-up length",
+   "category": "CNF",
+   "priority": "High",
+   "verdict": "overstated",
+   "tte": "core",
+   "methods": [
+    "intention-to-treat-analogue",
+    "sustained-strategies",
+    "clone-censor-weight"
+   ],
+   "study_type": "simulation",
+   "answerable": "yes",
+   "answerable_part": null,
+   "feasibility": 5,
+   "design_sketch": "Target the risk difference for assignment to initiate at baseline versus not initiate at baseline at horizons from 1 to 10 years. Vary delayed initiation in the comparator arm and treatment-effect persistence, then measure attenuation relative to the true assignment-effect curve and assess whether observed treatment-trajectory summaries predict that attenuation.",
+   "priority_note": "Run early because it is inexpensive, directly interpretable and capable of producing a practical diagnostic relating treatment convergence to horizon-specific attenuation.",
+   "confidence": "high"
+  },
+  {
+   "id": "BEN-02",
+   "title": "Replication is reported as a binary label rather than as a calibrated comparison of estimands",
+   "category": "BEN",
+   "priority": "High",
+   "verdict": "overstated",
+   "tte": "core",
+   "methods": [
+    "trial-benchmarking",
+    "estimand-alignment"
+   ],
+   "study_type": "simulation+case",
+   "answerable": "yes",
+   "answerable_part": null,
+   "feasibility": 3,
+   "design_sketch": "Estimate whether candidate agreement measures recover known concordance while independently varying estimand mismatch, trial standard error, emulation standard error and true effect heterogeneity. Apply the measures to existing paired trial-emulation results and compare binary labels with effect differences, effect ratios, standardized discrepancies and prediction-interval coverage.",
+   "priority_note": "This is a clean and consequential early study because binary agreement rules can be shown to fail under controlled conditions and replaced with interpretable graded summaries.",
+   "confidence": "high"
+  },
+  {
+   "id": "GMT-01",
+   "title": "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+   "category": "GMT",
+   "priority": "Very high",
+   "verdict": "partially-addressed",
+   "tte": "core",
+   "methods": [
+    "marginal-structural-model",
+    "parametric-g-formula",
+    "longitudinal-tmle",
+    "sequential-cross-fitting"
+   ],
+   "study_type": "simulation",
+   "answerable": "partly",
+   "answerable_part": "Determine which observable model-selection criteria best predict causal performance across prespecified longitudinal data-generating mechanisms; no finite simulation can establish a universally optimal causal cross-validation loss.",
+   "feasibility": 3,
+   "design_sketch": "Target a sustained-strategy risk difference while varying treatment positivity, treatment-confounder feedback, nuisance-model misspecification and informative observation. Select nuisance learners using predictive loss, longitudinal balance, weight dispersion and estimated remainder criteria, then compare causal bias, interval coverage and estimator failure rates.",
+   "priority_note": "Run early with a narrowed estimator set because this is a direct, decision-relevant simulation, although a four-estimator comparison with extensive machine-learning libraries would exceed one week.",
+   "confidence": "high"
+  },
+  {
+   "id": "TZO-01",
+   "title": "No outcome-blind procedure selects the time grid or the grace period",
+   "category": "TZO",
+   "priority": "Very high",
+   "verdict": "partially-addressed",
+   "tte": "core",
+   "methods": [
+    "clone-censor-weight",
+    "sequential-nested-trials",
+    "continuous-time-g-computation",
+    "marginal-structural-model"
+   ],
+   "study_type": "simulation",
+   "answerable": "partly",
+   "answerable_part": "A simulation can compare outcome-blind selection rules and quantify sensitivity to grids and grace periods, but it cannot recover the clinically meaningful interval or grace period from treatment and observation processes alone.",
+   "feasibility": 3,
+   "design_sketch": "Estimate the 5-year risk difference under a sustained initiation strategy while varying treatment latency, visit intensity, within-interval event ordering, and true adherence behavior. Select grids using masked treatment and visit intensities, vary grace periods from 0 to 180 days, and compare methods on bias, interval coverage, ordering conflicts, and regret relative to the best prespecified specification.",
+   "priority_note": "Run this early because it offers a decisive comparison of prespecified procedures, while presenting any selected grid as a performance rule rather than a universal truth.",
+   "confidence": "high"
+  },
+  {
+   "id": "PRO-04",
+   "title": "An unobservable protocol component produces a different, data-defined estimand rather than a noisy version of the intended one",
+   "category": "PRO",
+   "priority": "Very high",
+   "verdict": "partially-addressed",
+   "tte": "core",
+   "methods": [
+    "protocol-specification",
+    "estimand-mapping",
+    "trial-benchmarking"
+   ],
+   "study_type": "simulation+case",
+   "answerable": "partly",
+   "answerable_part": "A study can determine how selected component substitutions alter estimands and benchmark agreement in chosen settings, but cannot establish universal criteria separating innocuous operational refinements from changes of scientific question.",
+   "feasibility": 1,
+   "design_sketch": "Start from emulations with randomized-trial benchmarks, then systematically remove or coarsen observability of eligibility, strategy, outcome and follow-up components while writing the resulting estimand explicitly. Compare each substituted estimand with the intended trial estimand using population overlap, intervention-support loss, effect-estimate discrepancy and benchmark calibration.",
+   "priority_note": "This is highly important but should not run first because credible benchmarking across multiple component substitutions needs substantial data access and methodological work.",
+   "confidence": "medium"
+  },
+  {
+   "id": "PRO-02",
+   "title": "Inference conditions on a fixed target trial that was in fact selected after seeing the data",
+   "category": "PRO",
+   "priority": "High",
+   "verdict": "partially-addressed",
+   "tte": "core",
+   "methods": [
+    "protocol-specification",
+    "clone-censor-weight",
+    "sequential-nested-trials"
+   ],
+   "study_type": "simulation",
+   "answerable": "partly",
+   "answerable_part": "A simulation can establish the inferential cost of explicit protocol-selection rules and compare design splitting or blinded design against naive inference, but cannot correct undocumented human searches in general.",
+   "feasibility": 4,
+   "design_sketch": "Estimate a sustained-strategy risk difference after selecting among candidate eligibility thresholds, grace periods and washout windows using sample size, event prevalence or covariate-outcome associations. Compare naive, split-sample and outcome-blinded procedures on coverage, type I error, bias and power.",
+   "priority_note": "Run this early because it is a clean, decisive simulation of a distinctly emulation-specific source of undercoverage.",
+   "confidence": "high"
+  },
+  {
+   "id": "SEQ-01",
+   "title": "Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals",
+   "category": "SEQ",
+   "priority": "High",
+   "verdict": "overstated",
+   "tte": "core",
+   "methods": [
+    "sequential-nested-trials",
+    "pooled-outcome-model",
+    "person-clustered-sandwich",
+    "person-level-bootstrap"
+   ],
+   "study_type": "simulation",
+   "answerable": "partly",
+   "answerable_part": "A simulation can determine the bias, coverage, and efficiency consequences of repeated participation, calendar-time heterogeneity, and alternative variance estimators under specified mechanisms, but it cannot establish that later eligibility is innocuous across all outcome models.",
+   "feasibility": 3,
+   "design_sketch": "Estimate a pooled 5-year risk difference from sequential nested trials while varying calendar trends, treatment-effect modification by trial start, repeated eligibility, and survival-dependent re-entry. Compare naive, person-clustered, and person-bootstrap inference on bias, 95% interval coverage, and effective efficiency relative to a single baseline trial.",
+   "priority_note": "Run this early because it is a clean, consequential simulation even though the catalog statement overstates how unsettled person-level dependence is.",
+   "confidence": "high"
+  },
+  {
+   "id": "GMT-04",
+   "title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+   "category": "GMT",
+   "priority": "High",
+   "verdict": "partially-addressed",
+   "tte": "core",
+   "methods": [
+    "IPTW",
+    "marginal-structural-models",
+    "parametric-g-formula",
+    "iterated-conditional-expectation",
+    "g-estimation",
+    "longitudinal-targeted-learning"
+   ],
+   "study_type": "simulation+case",
+   "answerable": "partly",
+   "answerable_part": "A common benchmark can identify which estimator families are reliable under named failures and show whether choice matters in a real emulation, but no finite benchmark can establish a universally defensible default.",
+   "feasibility": 2,
+   "design_sketch": "Target the same 5-year sustained-strategy risk difference with weighting, outcome-modeling and doubly robust estimators while varying treatment-confounder feedback, nuisance-model misspecification and positivity. Measure bias, coverage, convergence and failure signaling, then reanalyze one published emulation and quantify between-estimator disagreement.",
+   "priority_note": "The problem is important but too broad for an early one-week study; first restrict it to a small set of estimators and prespecified failure modes.",
+   "confidence": "high"
+  },
+  {
+   "id": "LRN-05",
+   "title": "A counterfactual prediction is validated under the assumptions that produced it, and nothing maps its output to a decision",
+   "category": "LRN",
+   "priority": "Medium-high",
+   "verdict": "partially-addressed",
+   "tte": "core",
+   "methods": [
+    "counterfactual-prediction",
+    "artificial-censoring",
+    "inverse-probability-weighting",
+    "sustained-strategies"
+   ],
+   "study_type": "simulation",
+   "answerable": "partly",
+   "answerable_part": "A simulation can quantify how counterfactual calibration, discrimination, and Brier-score estimators degrade under specified exchangeability and positivity violations, but it cannot validate those assumptions or determine how predictions should map to treatment decisions.",
+   "feasibility": 3,
+   "design_sketch": "Simulate longitudinal treatment, time-varying confounding, and survival outcomes under sustained strategies; vary the strength of an omitted confounder and practical positivity while comparing IPW estimates of calibration, time-dependent AUC, c-index, and Brier score with their oracle counterfactual values on bias, interval coverage, and diagnostic sensitivity.",
+   "priority_note": "The catalog rating overstates its readiness as one problem; the operating-characteristics component is a clean early simulation, while assumption validation and decision mapping require separate questions.",
+   "confidence": "high"
+  },
+  {
+   "id": "MER-01",
+   "title": "Phenotypes enter emulations as error-free binary variables",
+   "category": "MER",
+   "priority": "Very high",
+   "verdict": "partially-addressed",
+   "tte": "applies",
+   "methods": [
+    "clone-censor-weight",
+    "IPTW",
+    "marginal-structural-models",
+    "parametric-g-formula",
+    "longitudinal-targeted-learning"
+   ],
+   "study_type": "simulation",
+   "answerable": "partly",
+   "answerable_part": "A simulation can characterize how repeated phenotype error propagates through artificial censoring, longitudinal weights and regime-effect estimates, including validation-sample requirements under specified transport assumptions.",
+   "feasibility": 3,
+   "design_sketch": "Estimate the 5-year risk difference between sustained treatment strategies while varying time-specific sensitivity, specificity, differential misclassification and validation-sample size for treatment and confounder histories. Compare thresholded, corrected and latent-variable analyses on regime-effect bias, interval coverage and weight distortion.",
+   "priority_note": "Prioritize this relatively early because the longitudinal propagation mechanism is specific, important and amenable to a decisive simulation.",
+   "confidence": "high"
+  },
+  {
+   "id": "MIS-01",
+   "title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+   "category": "MIS",
+   "priority": "Very high",
+   "verdict": "partially-addressed",
+   "tte": "applies",
+   "methods": [
+    "inverse-intensity-of-visit-weighting",
+    "marginal-structural-models",
+    "parametric-g-formula",
+    "longitudinal-targeted-learning"
+   ],
+   "study_type": "simulation",
+   "answerable": "partly",
+   "answerable_part": "A study can compare methods under explicit treatment-dependent and severity-dependent visit mechanisms, but cannot identify a universally correct visit model when latent severity is unrestricted.",
+   "feasibility": 3,
+   "design_sketch": "Estimate a 5-year sustained-strategy risk difference while varying the effects of prior treatment, latent severity and impending outcome on visit intensity. Compare last observation carried forward, imputation, inverse-intensity weighting and joint latent-state methods using bias, coverage, visit-model calibration and weight dispersion.",
+   "priority_note": "This is a strong target trial emulation problem, but its joint data-generating mechanism makes it a second-wave study after simpler weighting experiments.",
+   "confidence": "high"
+  },
+  {
+   "id": "LRN-01",
+   "title": "Flexible estimation is presented as a remedy for identification failure",
+   "category": "LRN",
+   "priority": "High",
+   "verdict": "partially-addressed",
+   "tte": "applies",
+   "methods": [
+    "IPTW",
+    "parametric-g-formula",
+    "longitudinal-targeted-learning",
+    "modified-treatment-policies"
+   ],
+   "study_type": "simulation",
+   "answerable": "partly",
+   "answerable_part": "A study can evaluate whether support diagnostics detect interpolation, practical positivity failure and extrapolation in longitudinal histories; it cannot empirically settle the already established fact that flexible estimation does not repair nonidentification.",
+   "feasibility": 4,
+   "design_sketch": "Estimate a sustained-strategy 5-year risk difference while varying the fraction and geometry of unsupported treatment-history regions and learner flexibility. Score diagnostics by sensitivity and specificity for unsupported predictions, then assess estimator bias, coverage and falsely reassuring interval rates.",
+   "priority_note": "Run an explicitly diagnostic study early, but do not frame the established identification principle itself as an unanswered simulation question.",
+   "confidence": "high"
+  },
+  {
+   "id": "OUT-01",
+   "title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+   "category": "OUT",
+   "priority": "High",
+   "verdict": "partially-addressed",
+   "tte": "applies",
+   "methods": [
+    "sustained-treatment-strategies",
+    "parametric-g-formula",
+    "longitudinal-targeted-learning",
+    "competing-risks"
+   ],
+   "study_type": "simulation",
+   "answerable": "partly",
+   "answerable_part": "A simulation can measure the consequences of censoring competing events for a prespecified sustained-strategy estimand and compare available estimators; it cannot determine which scientific estimand investigators ought to choose.",
+   "feasibility": 3,
+   "design_sketch": "Target the 5-year cumulative-incidence difference and restricted mean event-free-time difference under two sustained strategies while varying treatment effects on the outcome, death and recurrent events. Compare censor-at-death, multistate g-computation and joint approaches using estimand-specific bias, coverage and convergence.",
+   "priority_note": "Do not run this as a generic estimator horse race; it becomes worthwhile after narrowing the scientific estimand and intercurrent-event strategy.",
+   "confidence": "high"
+  },
+  {
+   "id": "DTA-02",
+   "title": "Averaging site estimates in a federated emulation can conceal that the sites emulated different trials",
+   "category": "DTA",
+   "priority": "High",
+   "verdict": "partially-addressed",
+   "tte": "applies",
+   "methods": [
+    "federated-estimation",
+    "transportability",
+    "component-validation"
+   ],
+   "study_type": "simulation+case",
+   "answerable": "partly",
+   "answerable_part": "Evaluate whether shareable site-level diagnostics detect specified differences in protocol implementation and whether excluding or transporting incompatible sites reduces bias; no single study can certify semantic equivalence across all data systems.",
+   "feasibility": 2,
+   "design_sketch": "Target a transported strategy-specific risk difference in a common population while varying site-specific eligibility mappings, exposure misclassification, time resolution and outcome definitions. Compare naive pooling, random-effects pooling and transport-weighted pooling on bias and coverage, then demonstrate the diagnostics in one multisite emulation.",
+   "priority_note": "Important, but it should follow simpler single-site diagnostics because a credible case study requires coordinated site access and semantic review.",
+   "confidence": "high"
+  },
+  {
+   "id": "ELG-01",
+   "title": "An unrecorded eligibility criterion is indistinguishable from a criterion that was met",
+   "category": "ELG",
+   "priority": "High",
+   "verdict": "partially-addressed",
+   "tte": "applies",
+   "methods": [
+    "eligibility-modeling",
+    "multiple-imputation",
+    "inverse-probability-weighting",
+    "partial-identification"
+   ],
+   "study_type": "simulation+case",
+   "answerable": "partly",
+   "answerable_part": "Compare methods under explicit eligibility-observation mechanisms and estimate sensitivity in a dataset with validation information; the study cannot determine which missingness assumptions are credible without such validation.",
+   "feasibility": 2,
+   "design_sketch": "Target the strategy-specific risk difference among the truly trial-eligible population. Vary dependence of eligibility measurement on latent severity, anticipated treatment and future outcome, then compare imputation, eligibility weighting, doubly robust correction and bounds on bias, coverage and distortion of the eligible population; repeat in a validation-linked cohort.",
+   "priority_note": "Run after securing a suitable validation dataset; simulation alone would only rank methods under assumptions chosen by the investigator.",
+   "confidence": "high"
+  },
+  {
+   "id": "GMT-03",
+   "title": "Large databases yield small effective samples after eligibility, comparator restriction and weighting",
+   "category": "GMT",
+   "priority": "Medium-high",
+   "verdict": "confirmed-open",
+   "tte": "applies",
+   "methods": [
+    "clone-censor-weight",
+    "IPTW",
+    "marginal-structural-models"
+   ],
+   "study_type": "simulation",
+   "answerable": "partly",
+   "answerable_part": "A simulation can establish estimator-specific coverage failure and useful effective-sample-size warnings under specified longitudinal weighting regimes, but it cannot produce one universal effective sample size or settle every proposed small-sample remedy.",
+   "feasibility": 4,
+   "design_sketch": "Estimate the 5-year risk difference between two sustained strategies while varying eligibility prevalence, event risk, weight-tail severity and artificial-censoring frequency. Compare candidate effective sample size summaries and interval corrections using bias, coverage, standard-error calibration and type I error.",
+   "priority_note": "Run this early because it is a clean experiment with immediate reporting value, despite its medium-high catalog rating.",
+   "confidence": "high"
+  },
+  {
+   "id": "ELG-02",
+   "title": "Eligibility criteria built from healthcare-use variables can induce selection through colliders",
+   "category": "ELG",
+   "priority": "Medium-high",
+   "verdict": "confirmed-open",
+   "tte": "applies",
+   "methods": [
+    "eligibility-specification",
+    "causal-graph-auditing"
+   ],
+   "study_type": "simulation",
+   "answerable": "partly",
+   "answerable_part": "Measure whether a prespecified eligibility auditor detects collider-producing criteria and whether acting on its warnings reduces bias across generated causal structures; it cannot certify collider status in an unknown real causal graph.",
+   "feasibility": 3,
+   "design_sketch": "Target the treatment risk difference in the clinically intended eligible population while varying whether prior visits, laboratory recording and enrollment history are causes, colliders or descendants of early disease and treatment anticipation. Score warning sensitivity, false-positive rate and downstream effect-estimate bias before and after flagged criteria are removed or redefined.",
+   "priority_note": "This lower-rated problem offers a clean diagnostic experiment, but it should be framed as evaluating warnings rather than claiming automated causal discovery can validate eligibility.",
+   "confidence": "high"
+  }
+ ]
+}
