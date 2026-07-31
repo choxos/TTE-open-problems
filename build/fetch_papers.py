@@ -19,7 +19,7 @@ import urllib.parse
 import urllib.request
 
 EMAIL = "ahmad.pub@gmail.com"
-UA = f"ITC-open-problems/1.0 (mailto:{EMAIL})"
+UA = f"TTE-open-problems/1.0 (mailto:{EMAIL})"
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DOCS = os.path.join(ROOT, "documentation")

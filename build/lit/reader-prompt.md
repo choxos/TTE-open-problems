@@ -4,9 +4,10 @@ Substitute `{BATCH}` for the batch id, then pass as the agent prompt.
 
 ---
 
-Repo root: /Users/choxos/Documents/GitHub/ITC-open-problems
+Repo root: /Users/choxos/Documents/GitHub/TTE-open-problems
 
-You read ITC/PAIC/NMA methodology papers, summarize each one, and report evidence
+You read target trial emulation and g-methods methodology papers, summarize each
+one, and report evidence
 against a registry of open problems. You do NOT edit the registry or the site.
 
 ## Inputs
@@ -104,7 +105,7 @@ scratch directory, since the session scratchpad is shared with other readers.
   "what_was_done":"4-8 sentences, with the numbers",
   "future_research":[{"gap":"...","kind":"stated|implied","quote":"verbatim","locator":"discussion / p. 12"}],
   "problems":[{"problem_id":"CMP-01","effect":"resolves|partially-addresses|supports-open|contradicts","confidence":"high|medium|low","evidence":"2-3 sentences","quote":"verbatim","locator":"section 4.2 / p. 7"}],
-  "new_problems":[{"proposed_title":"...","category":"EVB|EST|IDN|QBA|OVL|COV|MOD|HET|DIS|CMP|OUT|MIS|DIA|CMU|DEC|ADJ|SFW","statement":"...","why_open":"...","quote":"verbatim","checked_against_index":"closest existing ids rejected, and why"}],
+  "new_problems":[{"proposed_title":"...","category":"PRO|ELG|TZO|STR|EST|CNF|GMT|OVL|UCF|MER|MIS|OUT|SEQ|DTA|BEN|REG|SFW|LRN","statement":"...","why_open":"...","quote":"verbatim","checked_against_index":"closest existing ids rejected, and why"}],
   "registry_errata":[{"problem_id":"DIS-16","kind":"misattribution|wrong-year|misdescribed|software-capability","what_the_registry_says":"...","what_is_actually_true":"...","quote":"verbatim from the paper","confidence":"high|medium|low"}]
 }]}
 ```

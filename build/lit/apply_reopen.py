@@ -33,71 +33,10 @@ READING = os.path.join(AUDIT, "reading")
 REGISTRY = os.path.join(AUDIT, "registry")
 
 # Literal edits for the `narrow` verdicts. `source` records who wrote the
-# replacement text: the reviewer supplied CMP-05 and DEC-12 verbatim, and
-# described the other two, which are composed from that description.
-NARROW = {
-    "CMP-05": [(
-        "statement",
-        "What is missing is any mapping from these onto CNMA component "
-        "matrices, and any hierarchical equivalence-class model",
-        "What is missing is a reusable, version-preserving and "
-        "software-supported mapping from structured intervention ontologies "
-        "onto CNMA component matrices, and any hierarchical equivalence-class "
-        "model",
-        "reviewer",
-        "A 2024 eHealth CNMA protocol (doi:10.1136/bmjopen-2024-084774) maps "
-        "the BCTTv1 hierarchy into its component scheme by hand, so the "
-        "absolute claim that no mapping exists was drawn too broadly. An "
-        "occasional manual study-level mapping is not a reusable one carried "
-        "into analysis software.")],
-    "DEC-12": [(
-        "statement",
-        "No rule requires a formal quantitative bias analysis or a minimum "
-        "stress-test set for a decision-grade unanchored analysis",
-        "No broadly applicable rule or agreed minimum stress-test set requires "
-        "quantitative assessment of assumption-driven conclusions for "
-        "decision-grade indirect comparisons, and EU HTA guidance now "
-        "recommends shifted-null testing for population-adjusted comparisons "
-        "without extending a comparable requirement to standard network "
-        "meta-analysis or Bucher comparisons",
-        "reviewer",
-        "A 2026 review (doi:10.3390/jmahp14020030) reports that EU guidance "
-        "recommends shifted-null hypothesis testing for PAICs to account for "
-        "unmeasured effect modifiers. That postdates the closure and defeats "
-        "the categorical form of the claim, though it supplies no agreed "
-        "minimum set and does not reach other indirect-comparison methods.")],
-    "EST-01": [(
-        "verdict_rationale",
-        "and although ML-NMR/multinma can estimate every network contrast in "
-        "one externally supplied target population",
-        "and although ML-NMR/multinma can estimate every network contrast in "
-        "one externally supplied target population for anchored comparisons, "
-        "which is not yet a general solution for unanchored comparisons or for "
-        "all outcome types",
-        "composed from the reviewer's description",
-        "Unanchored-method papers from 2024 and 2025 state that ML-NMR was "
-        "then applicable to anchored comparisons only, and a 2025 "
-        "quantitative-bias-analysis paper lists estimation in an arbitrary "
-        "target population as a remaining need for unanchored PAICs. The "
-        "closure stands; its counterexample was stated more broadly than the "
-        "machinery reaches.")],
-    "OUT-12": [(
-        "statement",
-        "Flexible study-specific baseline hazards for survival ML-NMR are not "
-        "open.",
-        "Flexible study-specific baseline hazards for survival ML-NMR are not "
-        "open where every study supplies sufficiently informative "
-        "time-to-event data; they are not identified for arms represented only "
-        "by sparse aggregate counts, where a baseline shape has to be borrowed "
-        "across studies.",
-        "composed from the reviewer's description",
-        "A 2014 mixed IPD and aggregate-count survival network shows a "
-        "study-specific baseline shape is not identified for aggregate count "
-        "arms and must be borrowed, despite materially incompatible "
-        "study-specific Weibull shapes. Implementation availability is not a "
-        "data-support condition. Survival-tail nonidentification remains the "
-        "principal open problem and the closure of the broad claim stands.")],
-}
+# Per-entry narrowing text, keyed by entry id: the exact substring to replace and its
+# replacement. Populated from what the reopen reviewer actually returns. The sibling
+# project's entries are not ported; they name ids that do not exist here.
+NARROW = {}
 
 VERDICT_FOR = {"open": "confirmed-open"}   # the reviewer's word, in registry terms
 

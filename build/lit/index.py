@@ -15,13 +15,16 @@ from collections import Counter, defaultdict
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, "documentation", "refs", "systematic")
 
-TOPIC_ORDER = ["ML-NMR", "STC", "MAIC", "cNMA", "NMA"]
+TOPIC_ORDER = ["CCW", "EMUL", "GFORM", "MSM", "ITB", "TTE", "TEMU", "TT"]
 TOPIC_PHRASE = {
-    "ML-NMR": "multilevel network meta-regression",
-    "STC": "simulated treatment comparison",
-    "MAIC": "matching-adjusted indirect comparison",
-    "cNMA": "component network meta-analysis",
-    "NMA": "network meta-analysis",
+    "CCW": "clone censor weight",
+    "EMUL": "emulated trial",
+    "GFORM": "parametric g-formula",
+    "MSM": "marginal structural model",
+    "ITB": "immortal time bias",
+    "TTE": "target trial emulation",
+    "TEMU": "trial emulation",
+    "TT": "target trial",
 }
 
 
@@ -49,13 +52,13 @@ def main():
     by_dir = {m["dir"]: m for m in manifest if m.get("dir")}
     by_topic = defaultdict(list)
     for m in manifest:
-        by_topic[m.get("topic") or "NMA"].append(m)
+        by_topic[m.get("topic") or "TT"].append(m)
 
     lines = []
     w = lines.append
-    w("# ITC / PAIC methodology reference collection")
+    w("# Target trial emulation methodology reference collection")
     w("")
-    w("Everything below came out of a PubMed and PMC search on the five phrases, "
+    w("Everything below came out of a PubMed and PMC search on the eight phrases, "
       "hand-screened title by title, with the open-access full text, supplements "
       "and linked code fetched for the records that were kept.")
     w("")
@@ -73,14 +76,17 @@ def main():
     w("")
     w("## Screening")
     w("")
-    w("Every record was read by hand, in batches of 250, ordered by phrase set "
+    w("Every record was read by hand, in batches of 200, ordered by phrase set "
       "then journal then year. A record was kept when it was methodological in "
-      "at least some part: method development, simulation studies, method "
-      "comparisons, methodological or meta-research reviews, software, tutorials, "
-      "reporting guidelines, feasibility and evidence-base assessments, and "
-      "methodological critiques of published analyses. Purely clinical analyses, "
-      "HTA reimbursement dossiers, applied protocols and generic correspondence "
-      "were dropped.")
+      "at least some part: development or extension of a target trial emulation "
+      "design, g-methods for sustained treatment strategies, simulation studies, "
+      "method comparisons, emulation-versus-trial benchmarking studies, "
+      "methodological or meta-research reviews of emulations, software, tutorials "
+      "and worked protocols, reporting guidelines and regulatory guidance, "
+      "data-source and linkage evaluations, and methodological critiques of "
+      "published emulations. Purely clinical emulations that apply an existing "
+      "design to answer a substantive question, regulatory submissions, protocols "
+      "for a single applied study, and generic correspondence were dropped.")
     w("")
     for k in ("include", "exclude"):
         w(f"- {k}: {decisions.get(k, 0)}")

@@ -17,7 +17,7 @@ Anything still closed is recorded as unavailable rather than worked around.
 Layout: documentation/refs/systematic/<TOPIC>/<Author><Year>_<PMID>/
             article.pdf, article.xml, supplements/, meta.json
 
-Usage: python3 build/lit/fetch.py [--limit N] [--topic MAIC] [--dry-run]
+Usage: python3 build/lit/fetch.py [--limit N] [--topic TTE] [--dry-run]
 """
 
 import argparse
@@ -38,7 +38,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from xml.etree import ElementTree as ET
 
 EMAIL = "ahmad.pub@gmail.com"
-UA = f"ITC-open-problems/1.0 (mailto:{EMAIL})"
+UA = f"TTE-open-problems/1.0 (mailto:{EMAIL})"
 EUTILS = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 OA_FCGI = "https://www.ncbi.nlm.nih.gov/pmc/utils/oa/oa.fcgi"
 IDCONV = "https://pmc.ncbi.nlm.nih.gov/tools/idconv/api/v1/articles/"
@@ -48,9 +48,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 OUT = os.path.join(ROOT, "documentation", "refs", "systematic")
 
 # Directory names match the ones already in documentation/refs.
-TOPIC_DIR = {"mlnmr": "ML-NMR", "stc": "STC", "maic": "MAIC",
-             "cnma": "cNMA", "nma": "NMA"}
-TOPIC_ORDER = ["mlnmr", "stc", "maic", "cnma", "nma"]
+TOPIC_DIR = {"ccw": "CCW", "emul": "EMUL", "gform": "GFORM", "msm": "MSM",
+             "itb": "ITB", "tte": "TTE", "temu": "TEMU", "tt": "TT"}
+TOPIC_ORDER = ["ccw", "emul", "gform", "msm", "itb", "tte", "temu", "tt"]
 
 MAX_PACKAGE_MB = 250
 MIN_FREE_GB = 5
@@ -132,7 +132,7 @@ def resolve_pmcids(recs):
             chunk = group[i:i + 190]
             ids = ",".join(str(r[idtype]) for r in chunk)
             try:
-                d = json.loads(get(f"{IDCONV}?tool=ITC-open-problems&email={EMAIL}"
+                d = json.loads(get(f"{IDCONV}?tool=TTE-open-problems&email={EMAIL}"
                                    f"&format=json&idtype={idtype}"
                                    f"&ids={urllib.parse.quote(ids)}", ncbi=True), strict=False)
             except Exception as e:  # noqa: BLE001
@@ -538,7 +538,7 @@ def main():
 
     src = os.path.join(OUT, "screened.jsonl")
     if not os.path.exists(src):
-        sys.exit(f"No screening output at {src}. Run build/lit/screen.py first.")
+        sys.exit(f"No screening output at {src}. Run build/lit/batches.py finalize first.")
     wanted = set(args.decisions.split(","))
     recs = [json.loads(l) for l in open(src, encoding="utf8")]
     recs = [r for r in recs if r["screen"]["decision"] in wanted]

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stage 1: harvest citation records for the five ITC/PAIC search phrases.
+"""Stage 1: harvest citation records for the eight target-trial-emulation search phrases.
 
 Searches PubMed and PMC for each phrase in title, abstract and author keywords,
 then fetches the full citation record for every hit. PMC is searched as well as
@@ -23,19 +23,27 @@ import urllib.request
 from xml.etree import ElementTree as ET
 
 EMAIL = "ahmad.pub@gmail.com"
-UA = f"ITC-open-problems/1.0 (mailto:{EMAIL})"
+UA = f"TTE-open-problems/1.0 (mailto:{EMAIL})"
 EUTILS = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, "documentation", "refs", "systematic")
 CACHE = os.path.join(OUT, "_cache")
 
+# Ordered narrowest first, by measured PubMed size. The order is load-bearing downstream:
+# topic_of() is first-match-wins, and the phrases nest. "target trial emulation" contains
+# "trial emulation", which contains neither but is contained by "target trial", so a paper
+# matching the specific phrase must be filed under it rather than under the broad one.
+# Counts measured 2026-07-30 against [Title/Abstract] OR [Other Term].
 PHRASES = {
-    "nma": "network meta-analysis",
-    "cnma": "component network meta-analysis",
-    "maic": "matching-adjusted indirect comparison",
-    "stc": "simulated treatment comparison",
-    "mlnmr": "multilevel network meta-regression",
+    "ccw":   "clone censor weight",         # 66
+    "emul":  "emulated trial",              # 78
+    "gform": "parametric g-formula",        # 223
+    "msm":   "marginal structural model",   # 458
+    "itb":   "immortal time bias",          # 929
+    "tte":   "target trial emulation",      # 1278
+    "temu":  "trial emulation",             # 1395
+    "tt":    "target trial",                # 1930
 }
 
 # NCBI allows 3 requests/second without an API key.
@@ -71,7 +79,7 @@ CEILING = 9999  # NCBI will not return more than this many ids for one query
 def esearch(db, term, retmax=CEILING):
     q = urllib.parse.urlencode(
         {"db": db, "term": term, "retmax": retmax, "retmode": "json",
-         "email": EMAIL, "tool": "ITC-open-problems"}
+         "email": EMAIL, "tool": "TTE-open-problems"}
     )
     # strict=False: NCBI echoes the query back with raw control characters,
     # which the default decoder rejects.

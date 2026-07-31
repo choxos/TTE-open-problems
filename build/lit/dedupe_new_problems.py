@@ -33,8 +33,8 @@ REVIEW = os.path.join(READING, "review")
 MODEL = "gpt-5.6-terra"
 
 PROMPT = """You are consolidating proposed additions to a catalog of open problems in
-indirect treatment comparisons, population-adjusted indirect comparisons and
-component network meta-analysis.
+target trial emulation: the design of an emulated protocol, the g-methods used to
+estimate its effects, and the benchmarking of emulations against randomized trials.
 
 Below are proposals written independently by readers who each saw a different set
 of papers. Because they worked separately, the same gap is often proposed more
@@ -43,11 +43,12 @@ group them.
 
 Two proposals belong in the same group when a single registry entry would cover
 both: they name the same missing method, diagnostic, or convention. They do NOT
-belong together merely because they concern the same object. "No publication-bias
-test at the component level" and "no sample-size method for component NMA" are
-both about component NMA and are different gaps. "No reporting-bias diagnostic
-for component estimates" and "no test for small-study effects at the component
-level" are the same gap.
+belong together merely because they concern the same object. "No diagnostic
+detects residual immortal time after grace-period cloning" and "no method sizes a
+grace period from the observed treatment-initiation distribution" are both about
+grace periods and are different gaps. "No calibrated test for residual immortal
+time in a cloned cohort" and "no null distribution exists for the immortal-time
+diagnostic" are the same gap.
 
 Be conservative about merging: wrongly merging two gaps deletes one of them from
 the catalog, which is worse than listing a near-duplicate that a human can spot.

@@ -6,7 +6,7 @@ clustering one.
 
 ---
 
-Repo root: /Users/choxos/Documents/GitHub/ITC-open-problems
+Repo root: /Users/choxos/Documents/GitHub/TTE-open-problems
 
 You attach future-research gaps to themes. Each gap is one sentence a paper's
 own authors wrote about what they could not do. Your job is to say which known
@@ -28,9 +28,9 @@ paper is any good. Only: which theme is this gap an instance of?
 
 ## How to label
 Match by substance, not vocabulary. The whole point of this pass is that the same
-gap gets written in words that do not overlap: "the correlation between components
-is not identifiable from aggregate data" and "we could not estimate how components
-interact without patient-level data" are one theme. Authors from different
+gap gets written in words that do not overlap: "we could not verify that treatment
+was actually initiated on the index date" and "the claims data do not let us
+distinguish a prescription from a dispensing" are one theme. Authors from different
 subfields name the same thing differently, and a decade apart they name it
 differently again.
 

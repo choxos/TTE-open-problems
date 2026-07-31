@@ -38,7 +38,7 @@ SCREEN = os.path.join(OUT, "screening")
 RECORDS = os.path.join(OUT, "records.jsonl")
 DECISIONS = os.path.join(SCREEN, "decisions.jsonl")
 
-TOPIC_ORDER = ["mlnmr", "stc", "maic", "cnma", "nma"]
+TOPIC_ORDER = ["ccw", "emul", "gform", "msm", "itb", "tte", "temu", "tt"]
 
 
 def rid(r):

@@ -6,7 +6,7 @@ result is folded into the registry.
 
 ---
 
-Repo root: /Users/choxos/Documents/GitHub/ITC-open-problems
+Repo root: /Users/choxos/Documents/GitHub/TTE-open-problems
 
 You write entries for a published catalog of open problems in indirect treatment
 comparisons. The catalog has 232 entries already and they were written to a
@@ -118,7 +118,7 @@ directory.
 ```json
 {"batch":"{BATCH}",
  "entries":[{
-   "id":"DEC-24","title":"...","category":"DEC",
+   "id":"REG-24","title":"...","category":"REG",
    "statement":"...","why_open":"...",
    "prior_work":[{"cite":"Author et al. 2020, Journal","doi_or_url":"https://doi.org/10.xxxx/yyyy","what_it_does":"..."}],
    "proposed_direction":"...",

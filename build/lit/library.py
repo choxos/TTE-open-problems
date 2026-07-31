@@ -26,8 +26,8 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 REFS = os.path.join(ROOT, "documentation", "refs")
 SYS = os.path.join(REFS, "systematic")
-MANUAL_TOPICS = ["General", "IPD-MA", "MAIC", "ML-NMR", "ML-UMR", "NMA",
-                 "NMI", "QBA", "STC", "cNMA"]
+MANUAL_TOPICS = ["General", "Guidance", "Protocol", "CCW", "GFORM", "MSM",
+                 "ITB", "TTE", "BENCH", "MEASUREMENT", "POSITIVITY"]
 
 DOI_RE = re.compile(r"\b10\.\d{4,9}/[-._;()/:A-Za-z0-9]+\b")
 JUNK_TAIL = re.compile(r"[.,;:)\]]+$")

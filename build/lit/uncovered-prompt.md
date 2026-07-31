@@ -5,7 +5,7 @@ for how the payload is built and how the result is folded in.
 
 ---
 
-Repo root: /Users/choxos/Documents/GitHub/ITC-open-problems
+Repo root: /Users/choxos/Documents/GitHub/TTE-open-problems
 
 You assess candidate gaps for a published catalog of open problems in indirect
 treatment comparisons. The catalog has 331 entries and they were written to a

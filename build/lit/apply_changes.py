@@ -39,74 +39,17 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 AUDIT = os.path.join(ROOT, "documentation", "audit")
 READING = os.path.join(AUDIT, "reading")
 REGISTRY = os.path.join(AUDIT, "registry")
-STAMP = "2026-07-26 full-text reading of the consolidated library (687 papers)"
+STAMP = os.environ.get("READING_STAMP", "full-text reading of the consolidated library")
 
 
 # ---- errata ---------------------------------------------------------------
 # Each is a literal substring replacement, so a change that does not land is
 # reported rather than silently skipped. The wording is the minimum edit that
 # makes the sentence true; nothing else about the entry is touched.
-ERRATA = [
-    ("ADJ-12", "statement",
-     "that articulation and minimal cut-set enumeration and removal "
-     "vulnerability are still missing",
-     "that articulation and minimal cut-set enumeration are still missing",
-     "netmeta exports netimpact(), which measures a study's importance by the "
-     "loss of precision when it is removed, citing Rucker et al. 2020. Removal "
-     "vulnerability has shipped on CRAN for years and does not belong on a list "
-     "of what is missing."),
-    ("ADJ-12", "proposed_direction",
-     "and add what is genuinely missing, articulation and minimal cut-set "
-     "enumeration and removal vulnerability.",
-     "and add what is genuinely missing, articulation and minimal cut-set "
-     "enumeration.",
-     "Same correction as the statement: removal vulnerability is implemented."),
-    ("HET-04", "why_open",
-     "have never been measured",
-     "have not been measured for the population-indexed comparison this entry "
-     "describes, though Song et al. 2012 measured them for the ordinary "
-     "unadjusted test by simulation",
-     "Song et al. 2012 (BMC Med Res Methodol 12:138) ran 5000 replicates per "
-     "scenario across four heterogeneity levels and six network sizes, "
-     "reporting type I error and power for the unadjusted test. The flat claim "
-     "that these were never measured is false; the narrower population-indexed "
-     "claim in the statement stands."),
-    ("EVB-04", "statement",
-     "conditional trial design sizes and configures a new trial against an "
-     "existing network",
-     "conditional trial design sizes and configures a new trial against an "
-     "existing network to reach a target power or precision rather than by "
-     "expected decision value",
-     "Salanti et al. 2018 minimizes sample size for a target conditional power "
-     "or precision. The words 'net benefit' and 'utility' do not appear in it. "
-     "The entry's other citation, Heath et al. 2022 on expected value of sample "
-     "information, is decision-value and is correctly described."),
-]
-
-# Where the registry credits a method to the wrong paper. The replacement adds
-# the originator ahead of the paper that refined it; it does not remove the
-# later work, which is correctly cited for what it actually contributed.
-CALDWELL = {
-    "cite": "Caldwell et al. 2016, Journal of Clinical Epidemiology",
-    "doi_or_url": "https://doi.org/10.1016/j.jclinepi.2016.07.003",
-    "what_it_does": "proposes threshold analysis for network meta-analysis and "
-                    "computes, by a two-stage numerical procedure, the smallest "
-                    "changes to the evidence that would change a recommendation; "
-                    "Phillippo et al. credit this paper as the origin of the "
-                    "method and describe their own contribution as replacing the "
-                    "numerical procedure with an algebraic one",
-}
-
-KIEFER_NOTE = (
-    "The rationale cited a Kiefer, Sturtz and Bender simulation with no year or "
-    "DOI. The Kiefer, Sturtz and Bender paper in the corpus "
-    "(doi:10.3238/arztebl.2015.0803) contains no simulation; it is a narrative "
-    "review producing an appraisal checklist. The citation is unresolvable as "
-    "written and has been withdrawn from the rationale."
-)
-
-DIS16_CITE = ("Hu, Wang, Ye and O'Connor 2022, BMC Medical Research Methodology")
-
+# Each is a literal substring replacement, so a change that does not land is reported
+# rather than silently skipped. The wording is the minimum edit that makes the sentence
+# true; nothing else about the entry is touched. Populated from verified errata.
+ERRATA = []
 
 def crossref_print_year(doi, cache):
     """The year on the version of record, not the online-first year.
@@ -181,59 +124,13 @@ def main():
         p["reading_update"]["changes"][-1]["previous_text"] = before
         log.append(f"erratum       {pid}.{field}")
 
-    # DIA-07's bad citation sits inside a recorded auditor opinion, not in the
-    # entry's own prose. An opinion is a record of what someone said at the time,
-    # so it is annotated rather than edited; rewriting it would make the trail
-    # agree with the correction and destroy the evidence that the correction was
-    # needed.
-    p = by_id.get("DIA-07")
-    if p:
-        hit = next((o for o in (p.get("audit", {}).get("opinions") or [])
-                    if "Kiefer" in (o.get("rationale") or "")), None)
-        if hit:
-            note(p, "erratum",
-                 "an auditor opinion cites a simulation that does not exist; "
-                 "the opinion text is left as recorded",
-                 KIEFER_NOTE)
-            hit["contested"] = KIEFER_NOTE
-            log.append("erratum       DIA-07 auditor opinion annotated")
-        else:
-            log.append("ERRATUM MISS  DIA-07: no Kiefer citation found")
+    # The sibling project applies two further corrections here, both hardcoded to its own
+    # entry ids: an auditor opinion annotated in place rather than rewritten, because an
+    # opinion is a record of what someone said at the time and editing it would destroy the
+    # evidence that the correction was needed; and a misattribution of who first proposed a
+    # method. Both are the right shape and neither is portable. Equivalent corrections are
+    # added here once the reading pass produces them.
 
-    # The method both entries describe was proposed by Caldwell et al. 2016, and
-    # the paper the registry credits says so itself. The later work stays cited
-    # for what it did contribute, an algebraic procedure in place of a numerical
-    # one; what changes is who is named as having had the idea.
-    for pid, old, new in (
-        ("DIS-15",
-         "Phillippo et al. 2018 derive bias-adjustment thresholds",
-         "Caldwell et al. 2016 proposed threshold analysis for network "
-         "meta-analysis and computed it numerically, and Phillippo et al. 2018 "
-         "derive bias-adjustment thresholds algebraically"),
-        ("DEC-12",
-         "decision tipping points are",
-         "decision tipping points, proposed by Caldwell et al. 2016 and given an "
-         "algebraic form by Phillippo et al. 2018, are"),
-    ):
-        p = by_id.get(pid)
-        if not p or old not in (p.get("statement") or ""):
-            log.append(f"CALDWELL MISS {pid}: target text not found")
-            continue
-        before = p["statement"]
-        p["statement"] = p["statement"].replace(old, new)
-        have = {(w.get("doi_or_url") or "").lower()
-                for w in p.get("prior_work") or []}
-        if CALDWELL["doi_or_url"].lower() not in have:
-            p.setdefault("prior_work", []).insert(0, dict(CALDWELL))
-        if note(p, "citation", "corrected who is credited with threshold analysis",
-                "Phillippo et al. (doi:10.1111/rssa.12341) state in their own "
-                "text that 'Threshold analysis has previously been proposed by "
-                "Caldwell et al. (2016)' and that their contribution avoids the "
-                "limitations of that approach. Caldwell et al. 2016 is now cited "
-                "as the origin; the later work remains cited for the algebraic "
-                "procedure."):
-            p["reading_update"]["changes"][-1]["previous_text"] = before
-        log.append(f"citation      {pid} attribution corrected to Caldwell 2016")
 
     # ---- 2. citations -----------------------------------------------------
     p = by_id.get("DIS-16")

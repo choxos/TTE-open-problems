@@ -23,14 +23,18 @@ READING = os.path.join(ROOT, "documentation", "audit", "reading")
 
 # Tier by topic: the phrases the registry is actually about come first.
 TIERS = {
-    "core": [("systematic", "ML-NMR"), ("manual", "ML-NMR"),
-             ("systematic", "STC"), ("manual", "STC"),
-             ("systematic", "MAIC"), ("manual", "MAIC"),
-             ("systematic", "cNMA"),
-             ("manual", "General"), ("manual", "QBA"), ("manual", "NMI"),
-             ("manual", "ML-UMR"), ("manual", "IPD-MA"), ("manual", "NMA")],
-    "cnma": [("manual", "cNMA")],
-    "nma": [("systematic", "NMA")],
+    # Ordered by expected yield: the narrow phrases are where the methodological argument
+    # lives, and the two broad ones return mostly applied emulations that a reader will mark
+    # relevance: none. Reading the narrow tiers first means the registry is already populated
+    # when the expensive, low-yield tiers run.
+    "core": [("systematic", "CCW"), ("manual", "CCW"),
+             ("systematic", "GFORM"), ("manual", "GFORM"),
+             ("systematic", "ITB"), ("systematic", "EMUL"),
+             ("systematic", "TTE"), ("manual", "TTE"),
+             ("manual", "Guidance"), ("manual", "General"),
+             ("manual", "Protocol"), ("manual", "BENCH")],
+    "msm": [("systematic", "MSM"), ("manual", "MSM")],
+    "broad": [("systematic", "TEMU"), ("systematic", "TT")],
 }
 
 
