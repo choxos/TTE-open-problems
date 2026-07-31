@@ -1,0 +1,182 @@
+{
+ "batch": "rev-43",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Balance-based joint tuning of treatment and censoring models directly addresses the problem's concern that predictive treatment-model selection can favor instruments. It supplies a causal-estimator-relevant criterion but not the requested unified selection rule with valid inference and remainder-rate diagnostics.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-01",
+    "problem_title": "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Identifying a sustained-strategy effect requires consistency, sequential exchangeability and positivity, and the estimator families differ in which nuisance components they need. When those components are fitted by machine learning, the model that predicts treatment best is not the model that minimizes the finite-sample error of the causal estimator: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Balance-calibrated weight fitting exists and has been applied, so the field is not selecting on prediction alone. What is missing is a criterion that combines predictive risk with the estimator-specific diagnostics that matter, longitudinal balance, weight tails and the remainder-rate condition, in one selection rule, and a default library tuned that way rather than for prediction.",
+    "paper": "Adaptive Sparsening and Smoothing of the Treatment Model for Longitudinal Causal Inference Using Outcome-Adaptive LASSO and Marginal Fused LASSO.",
+    "doi": "10.1002/sim.70316",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A concrete alternative to predictive tuning is supplied: the two penalization parameters for the treatment and censoring models are chosen jointly by minimizing longitudinal covariate balance metrics rather than by cross-validated prediction loss, and the comparison against superlearner screening shows why this matters. Screening tuned to predict treatment pulled instruments into the model and performed worse than the balance-tuned selection. What remains open is inference: the balance criterion yields no valid post-selection standard error, so the causal-performance criterion buys point estimation but not coverage.",
+    "quote": "variable screening applied directly to the treatment models will prioritize the selection of variables correlated with treatment, including instruments",
+    "locator": "Higher-Dimensions, More Time-Points, and Varied Instrument Strengths, Comparisons Across Estimators, and Inference"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The evidence concerns variable selection, instruments, and bootstrap undercoverage, not identification failure or the mistaken claim that flexible learning restores identification. A poor nuisance-model selection rule does not establish the broader conceptual problem described in LRN-01.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "LRN-01",
+    "problem_title": "Flexible estimation is presented as a remedy for identification failure",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Identification is a property of the observed data together with the assumptions, not of the estimator. A flexible learner reduces approximation error in a nuisance function and cannot repair nonidentification, and the same smoothness that reduces that error extends the fit confidently into regions holding no observations. Support and overlap diagnostics can flag particular forms of extrapolation, and they depend on how support is defined and on the model producing them, so a passing diagnostic certifies nothing about sequential exchangeability, positivity or identification. The gap widens with high-dimensional treatment histories, where the region a prediction is being asked about is itself hard to characterize, and applied work continues to offer a more flexible learner as the response to a confounding or positivity concern.",
+    "paper": "Adaptive Sparsening and Smoothing of the Treatment Model for Longitudinal Causal Inference Using Outcome-Adaptive LASSO and Marginal Fused LASSO.",
+    "doi": "10.1002/sim.70316",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Generic flexible learning applied to the treatment model is shown to be actively harmful rather than neutral: superlearner screening selected instruments and lost to the causal selection criterion, and the m-out-of-n bootstrap intended to repair inference after any selection step undercovered. This is direct evidence that flexibility in nuisance estimation does not substitute for getting the identification-relevant adjustment set right. It does not close the entry, because no procedure is offered that delivers valid intervals once flexibility is used.",
+    "quote": "However, we observed undercoverage of the bootstrap-based confidence intervals in our setting.",
+    "locator": "Higher-Dimensions, More Time-Points, and Varied Instrument Strengths, Comparisons Across Estimators, and Inference"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted method explicitly models visit processes in continuous time as part of the weight construction rather than imputing observations as if recording were incidental. Its stated unresolved latent dependence leaves the central informative-observation problem only partly addressed.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Continuous-Time Causal Inference With Marked Point Process Weights: An Example on Sodium-Glucose Co-Transporters 2 Inhibitor Medications and Urinary Tract Infection.",
+    "doi": "10.1002/sim.70102",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The visit process is promoted from nuisance to structure: it is the point process on which the entire weight construction rests, so the weight is the product of a visit component built from marginal and conditional Andersen-Gill intensities and a dose component that only contributes when a visit occurred. Visit times and infection status are combined into one recurrent event outcome rather than treating irregular observation as missing data to be filled. What is not closed is dependence: a latent process driving both visiting and dosing is identified as the next extension and left unaddressed, and comorbidities such as hypertension, osteoarthritis and depression were found to raise visit intensity in both sexes.",
+    "quote": "we employed marked point process to characterize the continuous-time treatment weights using visit process and dose assignment",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper addresses a continuous-time treatment and observation process and explicitly limits its contrast when current health confounds immediate treatment effects. Because it considers delayed static dose contrasts rather than dynamic regimes, it cannot resolve GMT-02.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-02",
+    "problem_title": "Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Discretizing that onto a grid can reverse the temporal ordering of a treatment and an outcome falling in the same interval, merge several events into one, and define an estimand that exists only relative to the chosen interval. Identification and efficient estimation for dynamic interventions in continuous time under counting-process filtrations and irregular monitoring have been established. They do not yet settle the case an emulation on routine data actually faces: a visit process that depends on treatment, combined with effects that occur inside an interval. A continuous-time emulation must define the treatment, covariate, visit, censoring and outcome processes relative to a filtration and impose assumptions linking latent histories to the observed visit proce",
+    "paper": "Continuous-Time Causal Inference With Marked Point Process Weights: An Example on Sodium-Glucose Co-Transporters 2 Inhibitor Medications and Urinary Tract Infection.",
+    "doi": "10.1002/sim.70102",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Identification in continuous time under an observation process that responds to health status is obtained by a change of probability measure whose Radon-Nikodym derivative serves as the weight process, and the honest consequence is stated: an immediate treatment effect is not identified because current health status confounds it, so the contrast is redefined as a delayed effect under a weaker stability assumption. That assumption was then found to fail under one outcome parameterization. Only static cumulative-dose contrasts are considered, so dynamic regimes in continuous time remain untouched.",
+    "quote": "Immediate treatment effect is difficult to estimate due to confounding by current health status, and thus we define the causal contrast using a delayed treatment effect under slightly weaker sequential randomization or stability assumption.",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Stochastic interventions over plausible dose distributions make an otherwise multiversion nonpharmaceutical exposure more concrete and estimable. This does not define policy assignment units, interference mappings, or a cluster-level estimand, so the effect is necessarily partial.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-05",
+    "problem_title": "Emulation is proposed for non-pharmaceutical and policy interventions whose treatment versions and assignment units are not defined",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Interference, combination therapies, multiple treatment versions and non-pharmaceutical interventions all strain the two-arm, individually assigned, well-defined-intervention assumptions the standard emulation protocol makes. Policy interventions are the sharpest case: delivered to a place or an organization rather than a person, varying in content by implementer, arriving gradually rather than on a date, and often with no comparable version of not receiving them. A policy emulation therefore has to specify the assignment unit, the timing, the comparator, the intervention versions or a stochastic rule over them, the exposure mapping under interference, and a cluster-level estimand. Emulation is being applied to such questions with these filled in by analogy, and when treatment varies only across jurisdictions the causal information comes from the number of independent jurisdictions and t",
+    "paper": "A marginal structural model for normal tissue complication probability.",
+    "doi": "10.1093/biostatistics/kxae019",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "For an intervention that is not a drug and has no natural dose levels, a workable definition is supplied: rather than fixing a whole dose distribution that no planner could deliver, the intervention draws from a distribution of plausible plans, and localized pointwise versions restrict only the volume receiving at least a given dose while the rest of the distribution follows its observed conditional law. That makes the assignment concrete and the contrast estimable. It does not resolve the unit problem raised in the same analysis, that reducing dose to one organ at risk redirects it to another, so the intervention on one organ is not separable from its effect elsewhere.",
+    "quote": "instead of fixing the entire dose distribution, we consider fully or partially stochastic interventions where the intervention is randomly drawn from a distribution of plausible dose distributions",
+    "locator": "Stochastic interventions"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "downgrade",
+   "corrected_effect": "acknowledges the absolute-continuity positivity requirement for stochastic dose interventions",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Stating that the intervention distribution must be supported by the observed distribution is an identification condition, not a diagnostic that identifies unsupported patient histories. The payload supplies no localized support rule, excluded-population fraction, or resulting restricted estimand.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "A marginal structural model for normal tissue complication probability.",
+    "doi": "10.1093/biostatistics/kxae019",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The positivity condition is restated as absolute continuity, so the supported region is named directly as the support of the observed dose distributions and any intervention outside it is ruled out before estimation rather than discovered afterwards in a weight histogram. That is a stronger diagnostic than a weight summary. What remains is that residual violations are then detected by studying the importance sampling weights, which returns to describing weights rather than naming the patients whose plans are unsupported.",
+    "quote": "meaning that the support of the intervention distribution is a subset of the support of the observed distribution",
+    "locator": "Stochastic interventions"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Individual-level clustered bootstrap inference for replicated long-format outcomes is relevant evidence for one limited form of expansion-induced dependence. It neither establishes scalability nor addresses cloning, repeated eligibility, site clustering, or flexible estimated weights.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "A marginal structural model for normal tissue complication probability.",
+    "doi": "10.1093/biostatistics/kxae019",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Fitting the dose-specific marginal models jointly requires replicating each patient's outcome across rows of a long dataset, at which point the objective is no longer a likelihood and maximum likelihood standard errors do not exist. The response is a clustered bootstrap resampling at individual level, with 1000 resamples, plus the observation that clustered sandwich estimating equations would serve for parametric specifications. That is a working default for one form of row expansion, obtained at bootstrap cost on 87 patients, and it is not shown to scale or to remain correct when the replication is over eligibility times rather than dose bins.",
+    "quote": "fitting the dose-specific models together requires replicating the outcomes of the individuals in a long format dataset, and as a result, the fitted objective function is no longer a likelihood",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A time-fixed binary-action estimating-equation method without cloning, artificial censoring, or sequence expansion does not address the variance problem registered in SFW-01. Avoiding duplicated records in that separate setting is a useful computational observation but not partial resolution of the stated gap.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "Estimating marginal structural model parameters for time-fixed, binary actions with g-computation and estimating equations.",
+    "doi": "10.1093/aje/kwae316",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "For the one setting it covers, the variance problem is closed rather than deferred: the marginal structural model parameters solve a stacked estimating equation, so the empirical sandwich estimator is consistent and propagates uncertainty from the outcome model into the marginal structural model parameters, with the automation already present in delicatessen and geex. Crucially it avoids the row duplication that the standard implementation requires. What it does not cover is the case the registry entry names, since the action is time-fixed and binary with no cloning, no artificial censoring and no expansion over eligibility times, and the bootstrap remains the fallback there.",
+    "quote": "Unlike the standard implementation, the proposed method does not require storing multiple copies of observations in memory, which may be more computationally feasible in cases of limited computational resources or big data.",
+    "locator": "Introduction"
+   }
+  }
+ ]
+}

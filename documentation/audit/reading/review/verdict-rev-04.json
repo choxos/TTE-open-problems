@@ -1,0 +1,182 @@
+{
+ "batch": "rev-04",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper explicitly recognizes informative observation as a feature requiring adjustment and incorporates measurement frequency in its modeling. It addresses the problem only partially because it does not establish a causal observation-process estimand or identify conditions for the proposed adjustment.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Applying Trial Emulation Methods to Population-Scale Linked Electronic Health Records for Individuals with Multiple Long-Term Conditions Whilst Adjusting for Informative Observations.",
+    "doi": "10.23889/ijpds.v9i5.2884",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The observation process is elevated from an imputation nuisance to a modeled component: the joint model conditions on the number of available blood pressure measurements, on the stated ground that sicker patients are measured more often. That is a mechanism, not a diagnostic, and the abstract reports neither how much the adjusted and unadjusted fits differ nor what causal structure links measurement frequency to the treatment effect being emulated. Without a numerical contrast the visit process remains a modeling choice rather than a stated identifying assumption.",
+    "quote": "However, the Data Generating Mechanisms (DGMs) associated with EHR data mean that there is a need to adjust for informative observations, i.e. worse prognosis patients may have more observations.",
+    "locator": "Background & Objectives"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Modeling dropout due to death is meaningfully different from simply deleting or administratively censoring deaths. It remains only a partial contribution because the quoted material does not define the causal estimand in the presence of death or justify the identifying assumptions for it.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "Applying Trial Emulation Methods to Population-Scale Linked Electronic Health Records for Individuals with Multiple Long-Term Conditions Whilst Adjusting for Informative Observations.",
+    "doi": "10.23889/ijpds.v9i5.2884",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "low",
+    "evidence": "Death is handled inside the joint model as dropout rather than by censoring the blood pressure trajectory, which avoids the routine treatment of death as a data-cleaning step. What the four-year predicted blood pressure means for a person who has died is left unstated, and no alternative estimand such as a survivor-average or composite is named. The population is one with multiple long-term conditions, where mortality over four years is the dominant competing event.",
+    "quote": "Predictions were made using a fully probabilistic Bayesian joint model which allowed for dropout due to death and which either did or did not also adjust for the frequency of blood pressure observations available.",
+    "locator": "Methods & Results"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper identifies specific trial-design features that cannot be emulated, creating potential prespecification points at which an emulation should not proceed. It does not provide database-specific quantitative thresholds or a general stopping rule, so it cannot resolve the registered problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "DTA-01",
+    "problem_title": "Data-fitness assessment is narrative and has no thresholds that would stop a study",
+    "problem_verdict": "overstated",
+    "problem_statement": "Electronic health records arise from encounters, billing and documentation rather than from scheduled research assessments, so eligibility and follow-up in an emulation partly reflect care-seeking and access rather than the biology the protocol intends. Whether a given database can support a given target trial is a question about the data source and the protocol jointly, and quantitative assessments of that pair now exist. What does not exist is a prespecified stop rule: a threshold agreed before the analysis, on observability, temporal precision, capture continuity, comparator support, outcome validity and linkage completeness, that would halt a study when an essential component fails. Outside tightly gated regulatory and network feasibility processes, most published emulations still assert suitability in a paragraph, and a pipeline with no route to the answer no will always produce an ",
+    "paper": "Observational studies to emulate randomized trials: Some real-world barriers.",
+    "doi": "10.1111/bcp.15998",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Three named, checkable trial design features are offered as grounds on which an emulation should not proceed, which converts part of the fitness question from narrative into a list a reviewer can apply before any data are pulled. The list is on the trial side rather than the data side: it says nothing about whether a given database supports a question with no such feature, it is explicitly incomplete, and no threshold governs the intermediate cases such as a run-in that homogenizes therapy rather than screening compliance.",
+    "quote": "Even so, some RCT design aspects cannot be emulated, described below and summarized in the Table 1.",
+    "locator": "Discontinuation of prior treatment"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Preregistering protocols before treatment-stratified outcome counts are examined directly limits outcome-driven protocol selection. Feasibility, power, and covariate-balance checks can still shape the protocol using the same data, and the paper does not provide post-selection inference.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-02",
+    "problem_title": "Inference conditions on a fixed target trial that was in fact selected after seeing the data",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Eligibility thresholds, comparators, grace periods, washout windows and outcome definitions are routinely revised after investigators inspect the data. When outcome-relevant information from the analysis data is used to select among candidate protocols, a confidence interval calibrated for a protocol fixed in advance need not have nominal coverage for the selected estimand, unless the selection is incorporated into the inference or separated out through independent data. Saying so requires naming the target of inference and whether the coverage claimed is conditional on the selection or marginal over it, and applied reports do neither. Design multiverse analyses of emulations exist and display the spread of estimates across specifications, which is informative and is not a correction: a multiverse shows the sensitivity and leaves the reported interval uncalibrated for the search that pro",
+    "paper": "Emulation of randomized trials of direct oral anticoagulants with claims data and implications for new Factor XI inhibitors.",
+    "doi": "10.1002/pds.5813",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Registration of the full protocol before treatment-stratified outcome counts were examined blocks the most direct route by which a target trial is selected after seeing the answer, and it is stronger than registering a protocol alone because the recorded boundary is the outcome data rather than the study start. It does not close the entry: the protocols were developed iteratively against feasibility, power and balance checks run on the same database, so the design is conditioned on the data even though it is not conditioned on the outcome.",
+    "quote": "Importantly, the full protocols, including details of the data checks conducted to date, were pre-registered on clinicaltrials.gov before examining treatment-stratified outcome counts or conducting inferential analyses.",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "downgrade",
+   "corrected_effect": "documents a prespecified pre-inference feasibility, power, and covariate-balance assessment workflow, without a threshold-based stop rule",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted checks are more structured than a purely narrative assertion of suitability, but they do not state pass-fail criteria. Without prespecified thresholds or evidence that a failed check halts an analysis, this does not partially solve the registry's central gap.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "DTA-01",
+    "problem_title": "Data-fitness assessment is narrative and has no thresholds that would stop a study",
+    "problem_verdict": "overstated",
+    "problem_statement": "Electronic health records arise from encounters, billing and documentation rather than from scheduled research assessments, so eligibility and follow-up in an emulation partly reflect care-seeking and access rather than the biology the protocol intends. Whether a given database can support a given target trial is a question about the data source and the protocol jointly, and quantitative assessments of that pair now exist. What does not exist is a prespecified stop rule: a threshold agreed before the analysis, on observability, temporal precision, capture continuity, comparator support, outcome validity and linkage completeness, that would halt a study when an essential component fails. Outside tightly gated regulatory and network feasibility processes, most published emulations still assert suitability in a paragraph, and a pipeline with no route to the answer no will always produce an ",
+    "paper": "Emulation of randomized trials of direct oral anticoagulants with claims data and implications for new Factor XI inhibitors.",
+    "doi": "10.1002/pds.5813",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Fitness is assessed by a named sequence of prespecified checks on feasibility, power and balance on key confounders, run before inferential analysis, which is more than a narrative claim that the data suit the question. What the checks require is not stated, no threshold is quoted for any of the three, and no study is reported as having been stopped by them, so whether the gate can fail remains untested in what is presented.",
+    "quote": "Each database study protocol was iteratively developed, going through a series of pre-specified data checks to evaluate feasibility, power, and balance on key confounders.",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper explicitly defines partial interference and estimates spillover contrasts under a two-stage allocation framework, so it addresses a real component of the problem. Its component-wide interference structure and simulated coverage policy leave key questions of exposure mapping and implementable joint strategies unresolved.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-01",
+    "problem_title": "Emulation assumes no interference, and cloning individuals can produce joint strategies nobody could implement",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "One person's treatment can change another's outcome through infection, provider behavior, household exposure or a shared resource constraint. Target trial emulation as normally practiced invokes no interference, and under that assumption an individual-level protocol is coherent. Identifying a direct or spillover effect requires more than adding the interference literature alongside it: the emulation has to specify a feasible joint or stochastic treatment policy, the exposure mapping or potential-outcome indexing that defines what each unit is exposed to, and joint support for that exposure. Individual clone-censor rules do not identify those effects, because a set of individually compatible strategies need not correspond to any allocation a cluster could receive. Eligibility, assignment and positivity all become cluster- or network-dependent quantities, and the TARGET reporting guideline",
+    "paper": "Spillover benefit of pre-exposure prophylaxis for HIV prevention: evaluating the importance of effect modification using an agent-based model.",
+    "doi": "10.1017/s0950268822001650",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Interference is made the estimand rather than assumed away: a two-stage design randomizes components and then agents within them, partial and stratified interference are stated, and two-stage inverse probability weights deliver spillover contrasts of 13 versus 5 fewer infections per 100 agents by component prevalence. What it does not close is the choice of interference set and the realizability of the strategy. The set is taken to be the entire component, so one agent's assignment is allowed to affect every other agent in it, an assumption the discussion concedes is dubious for large or loosely connected components, and 70% coverage is imposed by the simulation rather than implementable by any actor.",
+    "quote": "We assume partial interference ; that is, an agent's outcome is influenced only by others in the same component, but no agents outside the component.",
+    "locator": "Causal inference methods for spillover"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "downgrade",
+   "corrected_effect": "illustrates the use of multiple negative control outcomes in an observational causal analysis",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The negative controls are used as diagnostic reassurance rather than integrated with the primary effect estimator, proxies, or validation data. The analysis is also not a standard target-trial emulation workflow, so it does not partially solve the stated integration problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Mediterranean Diet and Cardiovascular Prevention: Why Analytical Observational Designs Do Support Causality and Not Only Associations.",
+    "doi": "10.3390/ijerph192013653",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Eight naive negative control outcomes are run, including mammography or prostate testing, any doctor visit, sport and road injuries, cataract surgery, glaucoma and bronchitis, and their null results are reported alongside an E-value of 6.12 and a health consciousness index built from ten screening procedures. That is a usable panel of controls in a single workflow. It stops short of integration: the controls are not used to calibrate the primary hazard ratio, no negative control exposure is used, no validation subsample supports the food frequency measurement, and no threshold is stated at which a control signal would have overturned the causal claim.",
+    "quote": "to evaluate whether the observed association might be the result of some artifact or another potential bias, we adopted the approach known as negative controls",
+    "locator": "2.5. Statistical Analyses"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The example places a negative control outcome in a recognizable target-trial-emulation bias-assessment workflow. It is appropriately only partial because a single negative control outcome does not integrate negative controls with proxies, validation data, or calibrated causal estimation.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Trial Emulation Methods.",
+    "doi": "10.1053/j.ajkd.2023.07.024",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A concrete negative control outcome is supplied and used: urinary tract infection, chosen to be unaffected by statin type but sensitive to general health, showed no difference between arms and is reported as reassurance. That is one instrument placed in a named workflow slot. What remains open is everything around it: no negative control exposure, no proxy or validation subsample, no calibration of the primary estimate against the control distribution, and no statement of how large a control signal would have stopped the analysis.",
+    "quote": "In our example, we chose urinary tract infection as an outcome that would not plausibly be affected by statin type but could detect differences in the general health of patients.",
+    "locator": "Assessing Bias"
+   }
+  }
+ ]
+}

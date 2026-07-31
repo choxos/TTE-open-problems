@@ -1,0 +1,182 @@
+{
+ "batch": "rev-21",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper presents a counterfactual risk under a specified hypothetical intervention and explicitly rejects default hazard, rate, and odds contrasts on estimand grounds. It supplies an example of materially better estimand reporting, while neither establishing a reporting convention nor resolving the broader applied reporting failure.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-03",
+    "problem_title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.",
+    "paper": "Estimating Counterfactual Risk Under Hypothetical Interventions in the Presence of Competing Events: Crystalline Silica Exposure and Mortality From 2 Causes of Death.",
+    "doi": "10.1093/aje/kwy077",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The reported quantity is an absolute counterfactual risk under a named intervention with a stated time horizon, and the choice of scale is argued rather than defaulted: risk differences and risk ratios are collapsible while hazard, rate and odds contrasts are not, so a conditional estimate of the latter need not equal the marginal one even without confounding. This is one analysis reporting an estimand properly, not a convention that would make the entry's failure mode impossible.",
+    "quote": "The property of collapsibility makes it preferable to use risk differences and risk ratio as effect measures, rather than contrasts based on the rate, hazard, or odds, which are not collapsible parameters.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Bootstrap and multiple-imputation combination rules do not establish valid inference for cloned or sequence-expanded target trial emulations. The quoted statement is generic and provides no evidence about clone dependence, repeated eligibility, site clustering, estimated flexible weights, or scalable implementation.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "Bootstrap inference when using multiple imputation.",
+    "doi": "10.1002/sim.7654",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The registry entry says variance estimation for this family of estimators has no correct scalable default. This supplies the correctness half for one common configuration: the g-formula has no analytic standard error, missing data is normal in the databases it runs on, and until this paper the literature did not say how to combine the required bootstrap with multiple imputation. Three schemes are proved valid and one commonly plausible scheme is shown to give invalid intervals. Scalability is untouched and gets worse, since the recommended scheme for small numbers of imputations was 13 times more expensive and the resampling steps nest.",
+    "quote": "The current statistical literature is not clear on how to combine bootstrap with multiple imputation inference.",
+    "locator": "Section 7, Conclusion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "downgrade",
+   "corrected_effect": "partially-addresses small-sample and weakly identified g-formula estimation through Bayesian regularization, not the loss of effective sample size after eligibility restriction and weighting or its reporting.",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The simulation result supports improved accuracy under small samples and highly correlated exposures. It does not address weighted effective sample size, active-comparator restriction, rare competing events, or a convention requiring effective sample size reporting.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-03",
+    "problem_title": "Large databases yield small effective samples after eligibility, comparator restriction and weighting",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "A database of millions can carry very little information about a specific target trial once strict eligibility, active-comparator restriction and weighting have been applied, and extreme weights reduce the effective sample size far below the nominal count. Conventional asymptotic inference then becomes unreliable, most sharply for rare competing events and for subgroup effects, which are the quantities decision makers ask about. Papers continue to report the nominal number of patients, which for a weighted longitudinal analysis is not the quantity that governs the variance, and no convention requires the effective size to appear beside it.",
+    "paper": "A Bayesian approach to the g-formula.",
+    "doi": "10.1177/0962280217694665",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The registry entry says large databases yield small effective samples once eligibility, comparator restriction and weighting are applied, and that the resulting estimates are unstable. Shrinkage priors are shown by simulation to reduce mean squared error precisely in that regime, small samples and exposures too correlated to separate, with very little prior information required. The remedy trades bias for stability rather than recovering information, and the entry's structural causes are untouched.",
+    "quote": "Our simulation\nresults suggest that we can improve accuracy over standard g-formula analyses even with very limited prior\ninformation, especially when effects are under-identified due to high correlation among exposures or in small\nsamples.",
+    "locator": "Section 7, Discussion"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Smoothing empty strata with priors is not a policy-specific positivity diagnostic and cannot identify histories with structural lack of support. The quoted mechanism may conceal unsupported histories rather than localize them and define a surviving estimand.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "A Bayesian approach to the g-formula.",
+    "doi": "10.1177/0962280217694665",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "low",
+    "evidence": "Priors smooth over strata that happen to be empty, so random departures from positivity produce less bias than they would under maximum likelihood. That is a repair for sparsity, not for structural nonpositivity: where a strategy assigns a treatment that clinicians never give to a covariate history, the prior supplies the missing information rather than revealing that it is missing, which makes the unsupported region harder to see rather than easier.",
+    "quote": "In the Bayesian setting, we may be less prone to bias due to random deviations from positivity,\nbecause our priors help to smooth over the empty strata.",
+    "locator": "Section 7, Discussion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Posterior simulation may avoid one bootstrap layer for a Bayesian g-formula, but this paper does not evaluate inference after cloning or sequence expansion. It gives no basis for correctness under clone-level dependence, repeated participation, site clustering, or flexible estimated weights.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "A Bayesian approach to the g-formula.",
+    "doi": "10.1177/0962280217694665",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Inference comes from the posterior rather than from a nonparametric bootstrap wrapped around a Monte Carlo simulation, and the paper reports that Markov chain Monte Carlo costs no more than the frequentist procedure it replaces. That removes one resampling layer from the variance computation for a g-formula analysis, which is the layer that scales worst on an expanded dataset. It is demonstrated on a birth cohort rather than on a cloned or sequence-expanded emulation.",
+    "quote": "Because standard\ng-formula algorithms typically require large Monte Carlo samples and a non-parametric bootstrap, the use of\nMCMC machinery in the Bayesian g-formula does not result in a substantial computational burden relative\nto the frequentist approach.",
+    "locator": "Section 7, Discussion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Estimating and reporting ATT, ATU, and ATE makes the target population an explicit component of a point-treatment estimand. This addresses one element of the reporting problem, while leaving sustained strategies, time horizon, adherence, grace periods, and intercurrent events outside scope.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-03",
+    "problem_title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.",
+    "paper": "G-computation of average treatment effects on the treated and the untreated.",
+    "doi": "10.1186/s12874-016-0282-4",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The population an estimate refers to is made a parameter of the procedure rather than an artifact of it: the same data yield the effect among the treated, among the untreated, and over the whole population, and the three are reported together with the average sitting between the other two. That makes the target population explicit for a point treatment. Naming an intervention, a time horizon and a strategy for each intercurrent event, which is what a sustained-strategy emulation must also do, is outside the scope.",
+    "quote": "The estimates for ATT, ATU and average treatment effect (ATE) were of similar magnitude, with ATE being in between ATT and ATU as expected.",
+    "locator": "Abstract, Results"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The proposed reporting items directly support disclosure of data level, code lists, case definitions, time zero, follow-up, and outcomes. They do not provide executable code, weight diagnostics, versioned rejected protocols, or an enforceable release requirement, so the effect is necessarily partial.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "Electronic health records research: easy evidence, harder oversight.",
+    "doi": "10.1093/ehjdh/ztag105",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A concrete reporting list is proposed and it is close to what the entry says is missing: the level of data, the code lists and case definitions, the time-zero definition for each group separately, the follow-up, and the outcome definitions. It stops short of the code itself, the weight diagnostics and the rejected protocol versions, and it is a proposal in a viewpoint rather than a requirement anyone applies.",
+    "quote": "Accordingly, studies using EHR-data should clearly report the level of data used (aggregate vs. patient-level data), the code lists and case definitions used, the time-zero definition for each study group, follow-up, and definition of outcomes.",
+    "locator": "Viewpoint"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "downgrade",
+   "corrected_effect": "addresses the design requirement to align time zero, eligibility, and treatment assignment across the cohort; it does not provide an outcome-blind procedure for selecting a time grid or grace period.",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted conclusion supports cohort-wide alignment of design times, which is relevant to avoiding time-related bias. It does not support the claimed selection rule for candidate grids or grace periods, and those quantities remain untouched by the described derivation.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Evaluation of Time-related Bias With Non-user Control.",
+    "doi": "10.2188/jea.je20250126",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This supplies what the entry says is missing for one common design: an analytic account of the direction and magnitude of the bias under each candidate time zero, a demonstration that the ranking survives time-dependent confounding, and a rule that does not depend on inspecting the outcome. The rule is stated precisely and goes beyond the usual formulation, since alignment of time zero, eligibility and assignment within each arm separately is not enough; the assessment times must agree across the whole cohort. The grace period and the time grid are untouched, and the derivation covers two time points under proportional hazards.",
+    "quote": "Therefore, it is necessary to ensure that time-zero, eligibility, and treatment assignment are consistently aligned across the entire cohort, not just within each group.",
+    "locator": "Discussion"
+   }
+  }
+ ]
+}

@@ -1,0 +1,182 @@
+{
+ "batch": "rev-31",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper directly concerns reproducible operational cohort definitions and identifies ambiguity in natural-language study specifications as a source of divergent implementations. It addresses phenotype or concept-set authoring only, not executable analysis code, diagnostics, version logs, or independent auditability of a full emulation.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "Agentic Authoring of OMOP Concept Sets from Natural Language.",
+    "doi": "10.64898/2026.06.02.26354704",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The paper attacks reproducibility at its source: independent teams implementing the same study produce materially different cohorts, in part because the natural-language description is ambiguous, and codelist differences come from design choices, database-specific validation history, expert judgment and coding practice change. Automating the authoring makes the artifact reproducible without making the underlying judgment explicit.",
+    "quote": "Even when working\nwithin a CDM, independent teams attempting to implement the same observational study can produce materially\ndifferent patient cohorts, in part due to the ambiguity of natural language study descrip",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted conclusion explicitly distinguishes the intended causal estimand from a data-constrained target trial when protocol components cannot be implemented. It supports the conceptual component of the problem but does not provide the requested formal decomposition or identification procedure.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-04",
+    "problem_title": "An unobservable protocol component produces a different, data-defined estimand rather than a noisy version of the intended one",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The canonical protocol has seven linked components: eligibility, treatment strategies, assignment, follow-up, outcomes, causal contrast and analysis plan. Conceptual specification and operational realization are distinct, and when a component cannot be observed the analyst substitutes a proxy. If no valid measurement, missing-data or validation model recovers the intended variable, the resulting observed-data functional generally does not identify the intended causal effect, and it does not automatically identify some other one either: naming it a different estimand requires a corresponding intervention and an identification argument. A criterion that cannot be verified is dropped and the population changes; a strategy that cannot be distinguished from its neighbor is merged and the contrast changes; an outcome that is only partly captured redefines the endpoint. Nothing in current repor",
+    "paper": "An operational target trial emulation framework for causal inference using electronic health record data.",
+    "doi": "10.1038/s41746-026-02563-z",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The framework's central move is exactly the distinction between a protocol component and its realization, and it names the consequence: when a component cannot be implemented without conditioning on post-baseline information or selective observation, the intended estimand is not identifiable and what is estimated is a data-constrained target trial. This is a conceptual framework rather than a decomposition, offering no procedure that separates and quantifies the sources of loss.",
+    "quote": "EHR-based TTE should therefore be understood as defining a data-constrained target trial. When target trial components cannot be implemented without conditioning on post-baseline information, selective observation, or unobserved processes, the intended causal estimand is not identifiable from the EHR data alone.",
+    "locator": "Conclusion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The framework explicitly permits a no-go conclusion when the causal question is not identifiable in the available EHR data. Its criteria remain qualitative, so it does not supply the prespecified quantitative thresholds and component-specific stop rules described by the problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "DTA-01",
+    "problem_title": "Data-fitness assessment is narrative and has no thresholds that would stop a study",
+    "problem_verdict": "overstated",
+    "problem_statement": "Electronic health records arise from encounters, billing and documentation rather than from scheduled research assessments, so eligibility and follow-up in an emulation partly reflect care-seeking and access rather than the biology the protocol intends. Whether a given database can support a given target trial is a question about the data source and the protocol jointly, and quantitative assessments of that pair now exist. What does not exist is a prespecified stop rule: a threshold agreed before the analysis, on observability, temporal precision, capture continuity, comparator support, outcome validity and linkage completeness, that would halt a study when an essential component fails. Outside tightly gated regulatory and network feasibility processes, most published emulations still assert suitability in a paragraph, and a pipeline with no route to the answer no will always produce an ",
+    "paper": "An operational target trial emulation framework for causal inference using electronic health record data.",
+    "doi": "10.1038/s41746-026-02563-z",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A stopping rule is stated outright: determining that a question is not identifiable in the available data is a valid outcome and the emulation should not be pursued. The conditions given are qualitative, a defensible baseline for eligibility and assignment, routinely captured outcomes and comparable patients on different strategies, so the rule names what to check without setting a threshold for any of it.",
+    "quote": "Importantly, a valid outcome of this framework is the determination that a given causal question is not identifiable using available EHR data, in which case TTE should not be pursued.",
+    "locator": "Conclusion"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quote correctly states that common-support restriction changes the target estimand and that limited overlap creates instability. It does not supply policy-specific, time-indexed diagnostics that identify the unsupported patient histories or quantify their exclusion.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "An operational target trial emulation framework for causal inference using electronic health record data.",
+    "doi": "10.1038/s41746-026-02563-z",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The review insists that restricting to common support changes the estimand and should be reported that way, rather than treated as a technical fix, and states that statistical adjustment cannot recover a contrast the data do not support. Structural non-overlap is distinguished from finite-sample imbalance, and the diagnostics offered remain balance, overlap and weight stability rather than identification of unsupported histories.",
+    "quote": "Even when an estimand is identifiable in principle, limited overlap can yield high-variance, model-sensitive estimates, and restrictions to regions of common support should be framed as targeting a restricted estimand supported by the observed data.",
+    "locator": "Conclusion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The proposed framework treats device measurement bias as an intervention and discusses possible saturation-stratified bias interventions. It does not identify or correct longitudinal phenotype misclassification in treatment, confounder, eligibility, censoring, or outcome variables, and the quote supports no such correction.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MER-01",
+    "problem_title": "Phenotypes enter emulations as error-free binary variables",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquel",
+    "paper": "Nesting a Target Study within a Target Trial: A Framework for Evaluating Intervention Effects on Disparities.",
+    "doi": "10.1097/ede.0000000000002024",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Measurement error is the intervention here rather than a nuisance: the framework intervenes on how much bias a device is permitted, and shows how that bias propagates into treatment decisions and disparities. It also makes the phenotype substitution explicit, using race as a proxy for skin tone because skin tone is unrecorded, and it names the direction the framework could extend to, assigning different permissible bias within levels of true saturation.",
+    "quote": "For instance, one could define interventions that assign\ndifferent degrees of permissible bias in SpO₂ within levels of SaO₂ (e.g., 70-85%, ≥85%).",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Explicitly defining allowable covariates for a disparity estimand is not a solution to reporting an unspecified hazard ratio in place of a grace-period-compatible weighted per-protocol effect. The quote concerns the normative definition of a disparity contrast and does not establish the intervention, adherence regime, time horizon, or intercurrent-event handling at issue.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-03",
+    "problem_title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.",
+    "paper": "Nesting a Target Study within a Target Trial: A Framework for Evaluating Intervention Effects on Disparities.",
+    "doi": "10.1097/ede.0000000000002024",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The estimand is constructed rather than inherited: which covariates the social groups are equalized on is a normative choice, and that choice defines what the disparity means. Making allowability an explicit design input turns an implicit adjustment decision into a stated one, and the paper declines to take a position on which choices are right in its own application.",
+    "quote": "We compare social groups who are similarly situated on “allowable” covariates, denoted by &! , those whose differential distribution is not considered to lead to disparity.",
+    "locator": "Signal paragraph, allowable covariates"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The framework provides a concrete example of a non-pharmaceutical intervention whose versions and measurement-level implementation are made explicit. Its acknowledged infeasibility of clinician masking shows that it does not resolve the broader assignment, implementation, and interference problems for such interventions.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-05",
+    "problem_title": "Emulation is proposed for non-pharmaceutical and policy interventions whose treatment versions and assignment units are not defined",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Interference, combination therapies, multiple treatment versions and non-pharmaceutical interventions all strain the two-arm, individually assigned, well-defined-intervention assumptions the standard emulation protocol makes. Policy interventions are the sharpest case: delivered to a place or an organization rather than a person, varying in content by implementer, arriving gradually rather than on a date, and often with no comparable version of not receiving them. A policy emulation therefore has to specify the assignment unit, the timing, the comparator, the intervention versions or a stochastic rule over them, the exposure mapping under interference, and a cluster-level estimand. Emulation is being applied to such questions with these filled in by analogy, and when treatment varies only across jurisdictions the causal information comes from the number of independent jurisdictions and t",
+    "paper": "Nesting a Target Study within a Target Trial: A Framework for Evaluating Intervention Effects on Disparities.",
+    "doi": "10.1097/ede.0000000000002024",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The intervention is a device performance threshold rather than a drug, and the framework gives it a protocol: the assignment unit is the measurement, the strategies are degrees of permissible bias, and regulatory draft guidance already specifies saturation-stratified thresholds that implicitly treat true saturation as allowable. It does not resolve how masking a clinician to a value they can see is emulated, which the paper lists as a limitation.",
+    "quote": "First, masking clinicians to SaO₂ was infeasible in routine clinical care. Although we\napproximated masking, residual awareness or unmeasured clinical need may still exist.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper demonstrates a meaningful use of prespecified negative control outcomes within a target-trial emulation to reveal residual confounding missed by conventional diagnostics. It does not integrate negative controls with proxies or validation data in a joint identification and reporting workflow, so the effect is necessarily partial.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Exposure definition sensitivity unmasks hidden confounding in crystalloid target trial emulation.",
+    "doi": "10.1016/j.isci.2026.116584",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Prespecified negative control outcomes were the only device that detected the confounding, and their parallel directional shift under the two operationalizations is what identifies it as systematic. The paper is equally clear on their limits, since pressure ulcers and urinary tract infections track length of stay and nursing intensity, so they support residual confounding only combined with the reversal and switching evidence and cannot exclude a time-at-risk pathway.",
+    "quote": "Only the negative control outcomes flagged residual confounding.",
+    "locator": "Discussion, why baseline diagnostics missed the bias"
+   }
+  }
+ ]
+}

@@ -1,0 +1,182 @@
+{
+ "batch": "rev-16",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper addresses a specific form of outcome measurement error by modeling heaping rather than treating observed counts as error-free. It does not identify the joint longitudinal measurement model required by the broader problem, so partial rather than full resolution is appropriate.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MER-01",
+    "problem_title": "Phenotypes enter emulations as error-free binary variables",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquel",
+    "paper": "Exposure effects on count outcomes with observational data, with application to incarcerated women",
+    "doi": "10.1093/aje/kwae023",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Heaping is a measurement artifact of self-reported counts, where respondents round, and the estimators accommodate it rather than treating the reported count as the true one. That is measurement structure carried into the estimator instead of discarded before it, for a specific and common reporting error.",
+    "quote": "each of which can account for overdispersion, zero-inflation, and heaping in the measured outcome",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The empirical sandwich result concerns ICE g-computation expressed as stacked estimating equations. It does not address clone copies, repeated sequential-emulation participation, site clustering, or flexible weight-estimation uncertainty, which define the registered problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "Empirical Sandwich Variance Estimator for Iterated Conditional Expectation g-Computation",
+    "doi": "10.1093/aje/kwae127",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is the shape of the answer the entry asks for in the g-computation setting: derive the estimator's influence function structure, in this case by writing it as stacked estimating equations, and get a closed-form variance rather than resampling. The runtime comparison against a parallelized bootstrap is the point, since the entry's claim is that the correct route is often prohibitive. It covers iterated conditional expectation g-computation rather than the cloning and sequence expansion the entry is about.",
+    "quote": "Here, we present ICE g-computation as a set of stacked estimating equations. Therefore, the variance for the ICE g-computation estimator can be consistently estimated using the empirical sandwich variance estimator.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Avoiding models for every time-varying covariate reduces one specification burden, but it supplies no causal-performance model-selection criterion or tuned learner library. The quoted claim does not bear on cross-validation optimizing prediction rather than causal performance.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-01",
+    "problem_title": "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Identifying a sustained-strategy effect requires consistency, sequential exchangeability and positivity, and the estimator families differ in which nuisance components they need. When those components are fitted by machine learning, the model that predicts treatment best is not the model that minimizes the finite-sample error of the causal estimator: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Balance-calibrated weight fitting exists and has been applied, so the field is not selecting on prediction alone. What is missing is a criterion that combines predictive risk with the estimator-specific diagnostics that matter, longitudinal balance, weight tails and the remainder-rate condition, in one selection rule, and a default library tuned that way rather than for prediction.",
+    "paper": "Empirical Sandwich Variance Estimator for Iterated Conditional Expectation g-Computation",
+    "doi": "10.1093/aje/kwae127",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The iterated conditional expectation form removes the requirement to model every time-varying covariate, which is the specification burden that makes nuisance-model selection consequential in the standard g-formula. Fewer models to choose is a direct reduction in the surface the entry describes, achieved by reformulating rather than by supplying a selection criterion.",
+    "quote": "Unlike other gcomputation implementations, ICE avoids the need to specify models for each time-varying covariate.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "SWIGs clarify causal estimands and identification assumptions, but they do not provide a reporting panel or distinguish which assumptions have diagnostics from those that remain untestable. The quote supports visual exposition, not partial implementation of an assumption dashboard.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "Single World Intervention Graphs (SWIGs): A Practical Guide",
+    "doi": "10.1093/aje/kwae274",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A SWIG makes the target estimand and the conditions under which it is identified visible in one object, which is part of what the entry asks a reporting panel to separate: what the analysis assumes as against what it can diagnose. It is a tool for making assumptions inspectable rather than a reporting requirement, so it supplies the vocabulary without establishing the convention.",
+    "quote": "we illustrate their application in identifying the g-formula, showcasing their capacity to make causal estimands visually explicit",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "SWIGs can represent sequential causal structures, but the quoted guide does not address eligibility conditioning, healthcare-use variables, or collider assessment. A general graphical language is not an eligibility-definition audit procedure.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "ELG-02",
+    "problem_title": "Eligibility criteria built from healthcare-use variables can induce selection through colliders",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An eligibility criterion is a conditioning statement, and conditioning on a variable that is a collider, or a relevant descendant of one, in the graph relating determinants of treatment and outcome opens a noncausal path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables: a required prior visit, a recorded baseline laboratory value, a minimum enrollment period. Being a healthcare-use variable is not sufficient for the bias, and these variables are the ones most likely to sit at the junction, because pre-baseline treatment decisions, incipient disease and the common causes of care-seeking and outcome all feed them. Nothing in the current workflow checks an eligibility definition for that structure before the analysis runs, and the reporting checklist asks what the criteria were rather than what conditioning on them does.",
+    "paper": "Single World Intervention Graphs (SWIGs): A Practical Guide",
+    "doi": "10.1093/aje/kwae274",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The entry's proposed direction rests on domain-grounded causal review of a proposed eligibility definition against an assumed graph, and this supplies the graphical apparatus for doing that under sequential randomization, which is the structure an emulation has. It gives a reviewer something to draw and does not supply the audit itself.",
+    "quote": "The article provides a step-by-step guide on transforming DAGs into SWIGs that includes practical insights into constructing SWIGs under various scenarios such as confounding, mediation, and sequential randomization.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "downgrade",
+   "corrected_effect": "Illustrates a stochastic intervention that may be more feasible under limited support and reports an interpretable intervention uptake quantity; it does not provide policy-specific, history-localized positivity diagnostics or define the supported target population.",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A stochastic intervention can avoid forcing implausible deterministic treatment assignments, which is relevant to practical positivity concerns. Uptake is not a diagnostic of which covariate histories lack support, nor does it establish an estimand after unsupported strata are excluded.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Causal Effects of Stochastic PrEP Interventions on HIV Incidence Among Men Who Have Sex With Men",
+    "doi": "10.1093/aje/kwad097",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is the entry's proposed direction executed on real data: the intervention shifts the probability of initiation rather than forcing it, which keeps the estimand inside observed practice, and the paper reports the resulting uptake so a reader can see how far the shifted world is from the observed one. The uptake estimator exists precisely so the intervention's plausibility is checkable rather than assumed.",
+    "quote": "We also developed an IPW estimator of cumulative treatment uptake associated with such interventions, which provides estimates of PrEP uptake on a more comparable scale to those of ongoing pilot trials and may be more intuitive to subject-matter experts than hazard-based measures.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Comparing modeled intervention uptake with uptake in one pilot trial is a substantive plausibility comparison, not a theory for transporting replication success across questions or databases. It neither defines a performance estimand nor addresses selection and transport of benchmarking results.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "BEN-01",
+    "problem_title": "There is no theory for extrapolating successful replication of selected trials to new questions",
+    "problem_verdict": "overstated",
+    "problem_statement": "A successful replication calibrates one emulation of one trial in one database. Transferring that confidence to a different question, or to the same question in a different database, is not an inference the benchmarking design licenses: it requires a target performance estimand stated in advance, an explicit selection or transport model, conditional exchangeability across the questions being compared, and overlap in whatever modifies emulation quality. Outside that support the transfer is model-dependent rather than identified, and frameworks that have been proposed for it remain unevaluated in that role. The benchmarking corpus is also a selected sample: trials get emulated when they are recent, large and have an accessible active comparator, which are the conditions under which emulation works best. Across 107 paired emulations and trials the effect correlation was 0.59 overall and 0.8",
+    "paper": "Causal Effects of Stochastic PrEP Interventions on HIV Incidence Among Men Who Have Sex With Men",
+    "doi": "10.1093/aje/kwad097",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The paper benchmarks an intermediate quantity rather than the effect: the uptake a stochastic intervention implies is compared against the uptake a published pilot trial achieved, 22.0% against 24.4%. That calibrates the intervention's realism against trial evidence without claiming the effect estimate has been validated, which is a narrower and more defensible use of a trial comparison than the concordance inference the entry says nothing licenses.",
+    "quote": "For example, intervention 1 with a choice of δ = 0.1 provided a stochastic intervention analogue for a behavioral intervention to promote PrEP uptake among MSM and resulted in a similar increase in PrEP initiation (22.0% vs. 24.4%)",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper directly studies bias from temporal coarsening and offers methods for evaluating and selecting more suitable intervals. Its approach is setting- and outcome-model-dependent and does not select grace periods outcome-blindly, so it appropriately partially addresses only the interval-width portion.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Bias due to coarsening of time intervals in the inference for the effectiveness of cancer screening",
+    "doi": "10.1093/ije/dyae100",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is the most direct treatment of the entry's interval-width half found so far: the direction of the coarsening bias is derived, its magnitude is simulated across interval lengths, and general formulas are supplied so an analyst can assess it in their own setting and choose an interval. The procedure requires a simulated model of the setting rather than the treatment and observation processes alone, and it is outcome-aware, so the entry's outcome-blind claim survives while its claim that nothing selects the interval does not.",
+    "quote": "we hope to have simplified the process of evaluating the potential influence of coarsening for researchers and suggest methods for selecting more optimal intervals",
+    "locator": "Discussion"
+   }
+  }
+ ]
+}

@@ -1,0 +1,182 @@
+{
+ "batch": "rev-24",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper operationalizes a negative outcome control within an emulation protocol, which is a real but limited advance over relegating residual-confounding diagnostics to discussion. It does not supply the required joint model, common estimand, or reconciliation rule for disagreement among negative controls, sensitivity analyses, proxies, and validation data.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Emulating target trials of postexposure vaccines using observational data.",
+    "doi": "10.1093/aje/kwae350",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Two devices for residual confounding are written into the emulation protocol rather than left to a discussion section, with concrete instances for this question: negative-outcome controls chosen so that the confounding structure is shared but the outcome is plausibly unaffected by vaccination, such as routine visits standing in for health-seeking behavior or a positive syphilis test standing in for high-risk sexual behavior, and a sensitivity analysis over a plausible range of unmeasured confounding strength. What is missing is any rule connecting what a negative control shows to what the estimate should become.",
+    "quote": "One strategy is to identify possible negative-outcome controls,21,22 that is, outcomes where confounding structure is expected to be similar but are plausibly unaffected by vaccination.",
+    "locator": "Confounding"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted rule gives a design-based, outcome-blind criterion for choosing follow-up start in the specific postexposure setting. Its applicability depends on an observed exposure time and a scientifically specified incubation distribution, so it does not select a general grace period or observation grid.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Emulating target trials of postexposure vaccines using observational data.",
+    "doi": "10.1093/aje/kwae350",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "For this class of question the timing rule is derived rather than conventional: because effectiveness depends on time since exposure, the start of follow-up must be chosen so that the distribution of time since exposure matches across arms, and the daily nested design achieves that by construction from the exposure date. Simulations show what the naive alternatives cost. The rule depends on an observable exposure date and on knowing the incubation period distribution, so it does not extend to strategies whose grace period is a clinical choice rather than a biological interval.",
+    "quote": "To avoid immortal time bias, we need to choose a start of follow-up in the emulation in a way that ensures the distribution of time since exposure is the same in both groups.25",
+    "locator": "Analysis"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Treating transplantation as a competing event explicitly avoids the particular practice of treating it as routine censoring. The paper does not articulate the causal estimand or identification assumptions for the Fine-Gray contrast, so it addresses implementation rather than resolving the estimand problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "Antifibrotics and mortality in idiopathic pulmonary fibrosis: external validity and avoidance of immortal time bias.",
+    "doi": "10.1186/s12931-024-02922-y",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Lung transplantation is handled as a competing event rather than as censoring, which is the right structure for an outcome that transplantation makes impossible and that treatment plausibly affects. The choice is stated in the methods with the estimator that implements it, a Fine-Gray model. It is one decision made explicitly rather than a convention, and the paper does not state which causal effect the resulting subdistribution contrast corresponds to.",
+    "quote": "To address immortal time bias, we employed models treating antifibrotic initiation as a time-dependent covariate and target trial emulation (TTE), both incorporating new-user designs for antifibrotics and treating lung transplantation as a competing event.",
+    "locator": "Abstract, Methods"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Multiple imputation of an immortal period addresses uncertainty in a particular correction for postbaseline exposure classification. It neither selects the emulation time grid nor provides an outcome-blind rule for selecting a grace period or time zero.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Addressing immortal time bias in precision medicine: Practical guidance and methods development.",
+    "doi": "10.1111/1475-6773.14376",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The paper reframes the timing problem as one of missing data: the length of the immortal period is known for the intervention arm and unknown for comparators, so it can be imputed conditional on patient characteristics rather than fixed by a landmark applied uniformly. The gain is that uncertainty about the true length enters the standard errors rather than being assumed away, and the method does not need a landmark chosen by the analyst. It rests on missingness at random and on ignorability, neither testable, and the estimates in the case study matched the simpler alternative.",
+    "quote": "Compared to alternative approaches, MI minimizes information loss and better characterizes statistical uncertainty about the true length of the immortal time period, avoiding false precision.",
+    "locator": "Principal Findings"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted statement treats agreement with prior randomized evidence as generic credibility support, not as a calibrated comparison of aligned estimands. Nothing described supplies a paired contrast, joint uncertainty, or assessment of population and measurement mismatch.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "BEN-02",
+    "problem_title": "Replication is reported as a binary label rather than as a calibrated comparison of estimands",
+    "problem_verdict": "overstated",
+    "problem_statement": "Agreement between an emulation and a trial is informative only when the estimands, populations and measurements are close enough to be comparable, and better design alignment is empirically associated with stronger concordance. The benchmarking programs report this in graded form. What is cited downstream is a binary label, usually derived from interval overlap or direction agreement, and that label discards magnitude and uncertainty and cannot diagnose why two estimates differ: two studies estimating the same quantity imprecisely agree by that criterion, and two estimating different quantities precisely disagree. No reported measure, graded or binary, separates estimand mismatch from random error, because doing so requires aligning the estimands first and then reporting a paired contrast with joint uncertainty, which no benchmarking report currently does as a matter of course.",
+    "paper": "Designing target trials using electronic health records: A case study of second-line disease-modifying anti-rheumatic drugs and cardiovascular disease outcomes in patients with rheumatoid arthritis.",
+    "doi": "10.1371/journal.pone.0305467",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The emulation is read against previously published trial meta-analyses of the same question, and the agreement is offered as support for the interpretation rather than as validation of the method. That is closer to what the entry asks for than a binary replication verdict, since it treats the trial evidence as a reference point for a result rather than as a pass mark. It is a single comparison against a pooled estimate, with no accounting of how closely the estimands, populations or measurements align.",
+    "quote": "Benchmarking results of observational analyses to previously published RCTs can lend credibility to interpretation.",
+    "locator": "Conclusion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Estimating operating characteristics for reproducible phenotype definitions supplies validation information that an error-free analysis lacks. The contribution stops before the central joint measurement and causal analysis, including propagation of longitudinal misclassification through eligibility, strategies, weights, and outcomes.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MER-01",
+    "problem_title": "Phenotypes enter emulations as error-free binary variables",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquel",
+    "paper": "Comparing broad and narrow phenotype algorithms: differences in performance characteristics and immortal time incurred.",
+    "doi": "10.3389/jpps.2023.12095",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The registry entry says phenotypes enter emulations as error-free binary variables. Here the error is measured rather than assumed away: sensitivity and positive predictive value are estimated for five definitions of each of 11 conditions in five databases, using a method that returns specificity as well, which chart-review validations usually do not. The algorithms are released as reproducible definitions. What is not supplied is propagation: the performance figures are offered as inputs to a quantitative bias analysis the reader must perform, and exposure, outcome and eligibility misclassification are not carried jointly through any estimate.",
+    "quote": "We found that requiring a second code at any time after the index event (i.e., the occurrence of a condition code for the first time in a subject’s history) always increased the positive predictive value and decreased the sensitivity compared to single-code algorithms.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The DAG analysis explains why temporal alignment is necessary and clarifies mechanisms of immortal-time bias. It offers no selection procedure for interval width, grace-period length, or a defensible choice when exact alignment is unavailable.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Illustrating the structures of bias from immortal time using directed acyclic graphs.",
+    "doi": "10.1093/ije/dyae176",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The entry says nothing outcome-blind selects the timing an emulation must fix. This supplies the structural reason alignment is the right target: immortal time has one cause, misalignment of exposure allocation and eligibility, and it produces confounding or selection depending on which direction the misalignment runs. Reading the bias as a structure rather than as miscounted person-time also yields a result the counting view misses, that excluding the immortal period leaves the bias in place. What it does not supply is a procedure for the cases where alignment is impossible, or for the grace period and the time grid.",
+    "quote": "The fundamental cause of immortal time is misalignment of exposure allocation and eligibility. Specifically, immortal time arises from using post-eligibility information to define exposure or using post-exposure information to define eligibility.",
+    "locator": "Conclusion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The risk-set construction corrects a specific exposure definition that improperly uses future follow-up duration. It is a structural solution to one form of time-zero misalignment, not an outcome-blind procedure for selecting a general time grid or grace period.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Using Parametric g-Computation for Time-to-Event Data and Distributed Lag Models to Identify Critical Exposure Windows for Preterm Birth: An Illustrative Example Using PM2.5 in a Retrospective Birth Cohort Based in Eastern Massachusetts (2011-2016).",
+    "doi": "10.1289/ehp13891",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The entry says nothing outcome-blind selects the timing, and this identifies a case where the exposure definition itself encodes the outcome: an average over follow-up is a function of how long follow-up lasted. The fix is structural rather than a tuning parameter, comparing pregnancies within each weekly risk set so gestational age cannot predict exposure, and it changes the answer by a factor of two. The direction of the bias here depends on the season of conception and the exposure's own trend, which the paper notes makes it unlike the usual immortal time.",
+    "quote": "That is, exposure assignment is made using information that occurs after baseline (i.e., the length of follow-up), which creates a misalignment between exposure assignment and “time zero” 9 , 10",
+    "locator": "Introduction"
+   }
+  }
+ ]
+}

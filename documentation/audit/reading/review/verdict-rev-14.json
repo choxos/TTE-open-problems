@@ -1,0 +1,182 @@
+{
+ "batch": "rev-14",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "An incremental intervention may avoid some deterministic-strategy positivity problems, but this application supplies no policy-specific support criterion or localized support diagnostic. The quoted methodological proposal does not address the registered gap about naming unsupported histories and defining the surviving estimand.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Long-term memory effects of an incremental blood pressure intervention in a mortal cohort",
+    "doi": "10.1093/biomtc/ujaf176",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The intervention is an incremental threshold shift rather than a deterministic assignment, which is the modified-policy route the entry proposes for strategies the data cannot support, applied here over 15 years of cohort data. It is one application rather than a general treatment of support, and it does not report which histories fail.",
+    "quote": "we propose a Bayesian semi-parametric estimation approach for an incremental threshold intervention, using the extended G-formula",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Sensitivity analysis for stochastic monotonicity in an always-survivor estimand is not a joint analysis of confounding, selection, measurement, and practical positivity. It neither supplies compatible multi-bias parameters nor characterizes their joint effect under sustained strategies.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-02",
+    "problem_title": "Sensitivity analyses vary one violated assumption at a time when several are violated together",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A conventional emulation reports a point estimate under exchangeability, positivity and correct measurement, then a sensitivity analysis relaxing one of them. In a longitudinal emulation on routine data several are doubtful at once, and one-at-a-time analyses need not characterize their joint effect. Joint multi-bias analysis of confounding, selection and misclassification exists, with software, and so do longitudinal sensitivity models for sequential confounding. What is not standard, and not required by any reporting practice, is a joint region that also includes practical positivity failure under sustained-strategy g-methods, with the product of marginal analyses remaining the default in practice. Constructing one requires compatible bias parameters, restrictions on how the biases depend on each other, and a stated target population and estimand; without those restrictions the resulti",
+    "paper": "Long-term memory effects of an incremental blood pressure intervention in a mortal cohort",
+    "doi": "10.1093/biomtc/ujaf176",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The always-survivor effect is only partially identified, and the paper says so, supplying sensitivity parameters for the stochastic monotonicity assumption rather than reporting a point estimate under an assumption it concedes is unverifiable. That is the separation of an identification region from sampling uncertainty the entry asks for, for one violation rather than jointly.",
+    "quote": "Our approach relies on the less strong stochastic monotonicity assumption and uses sensitivity parameters that allow researcher to investigate sensitivity of results to this unverifiable assumption.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Stating a missing-at-random assumption conditional on survival treats missingness as an identification condition, but it does not model the visit or measurement process as causal structure. The quoted assumption can be inappropriate precisely when observation depends on unrecorded severity or impending outcomes.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Long-term memory effects of an incremental blood pressure intervention in a mortal cohort",
+    "doi": "10.1093/biomtc/ujaf176",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The identification assumptions include missing at random conditional on survival for the outcome, the treatment and the time-varying confounders, stated explicitly as a fourth condition alongside consistency, conditional exchangeability and sequential positivity. Naming the missingness assumption as an identification condition rather than handling it in preprocessing is the practice the entry says is absent.",
+    "quote": "Additionally, we assume: C4, missing at random conditional on survival (MARS) for the outcome, treatment, and time-varying confounders.",
+    "locator": "Section 2"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Availability of a general-purpose methods package and supplementary derivations is not release of an emulation's analysis code, versioned phenotype logic, diagnostics, and protocol-decision history. The quote provides no evidence that those applied-study audit artifacts are available.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "Long-term memory effects of an incremental blood pressure intervention in a mortal cohort",
+    "doi": "10.1093/biomtc/ujaf176",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The method ships as a named R package with a public repository and the web appendices carry the assumptions, the identification argument and the computational detail. That is the level of release the entry says applied emulations do not reach, achieved here by a methods paper.",
+    "quote": "The R package GcompBART is available on https://github.com/m4ryjo/GcompBART",
+    "locator": "Supplementary materials"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper compares several approaches to a common time-dependent survival question and explicitly ties method selection to the study objective. That addresses the narrower practical point that estimator choice should be justified and its consequences examined, while leaving the broader sustained-strategy g-method default problem open.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "[Methodological appraisal of statistical approaches to evaluating the impact of time-dependent events on survival outcomes]",
+    "doi": "10.3760/cma.j.cn121090-20250612-00284",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Five approaches to one question on one cohort of 4,361 patients, each reported with what makes it biased rather than only what it returns. That is the comparison the entry says nothing requires, and the paper's conclusion is precisely the entry's position: the choice must be justified against the objective rather than defaulted to.",
+    "quote": "Researchers should select the appropriate method based on their specific study objectives to ensure that the estimation of the impact of time-dependent events on outcomes is both statistically valid and clinically meaningful.",
+    "locator": "Abstract, conclusion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A multi-state model can describe clinical transitions, but that does not establish what estimand is targeted when death or another competing event is censored. The quoted result does not address hypothetical elimination interventions, identification assumptions, or sustained-strategy competing-risk contrasts.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "[Methodological appraisal of statistical approaches to evaluating the impact of time-dependent events on survival outcomes]",
+    "doi": "10.3760/cma.j.cn121090-20250612-00284",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The multi-state model is included as one of the five approaches and is credited with describing the dynamic clinical transitions that a single time-to-event contrast collapses. That is the estimator matched to a question about intermediate events, presented alongside the alternatives rather than as the default.",
+    "quote": "Method 4 allowed for a comprehensive description of the impact of time-dependent events on survival prognosis by modeling dynamic clinical transitions.",
+    "locator": "Abstract, results"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Natural-course simulation is a useful model-checking exercise for a fitted g-formula, but it is not a rule for selecting longitudinal nuisance learners by causal performance. The quote does not show comparison of candidate learners, balance or weight diagnostics, or a causal-risk selection criterion.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-01",
+    "problem_title": "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Identifying a sustained-strategy effect requires consistency, sequential exchangeability and positivity, and the estimator families differ in which nuisance components they need. When those components are fitted by machine learning, the model that predicts treatment best is not the model that minimizes the finite-sample error of the causal estimator: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Balance-calibrated weight fitting exists and has been applied, so the field is not selecting on prediction alone. What is missing is a criterion that combines predictive risk with the estimator-specific diagnostics that matter, longitudinal balance, weight tails and the remainder-rate condition, in one selection rule, and a default library tuned that way rather than for prediction.",
+    "paper": "Modelling Asthma Treatment Dynamics: Insights from the g-Formula",
+    "doi": "10.2147/CLEP.S486869",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The natural-course simulation is a check on the nuisance models that does not require the counterfactual: if the g-formula's simulated trajectories do not reproduce the observed ones, the models are wrong regardless of predictive loss. That is a diagnostic of the kind the entry says is missing from selection, and here it is reported against observed switching rates, timing and counts rather than assumed.",
+    "quote": "In this real-world drug utilization study, we found that natural course simulations using the parametric g-formula were successful in approximating empirical asthma treatment trajectories.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Combining multiple imputation with the g-formula addresses incomplete covariate or outcome data under its missingness assumptions, not informative observation times or visit-dependent measurement. The proposed method may retain the nuisance-treatment framing that the registered problem identifies as inadequate.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "G-formula with multiple imputation for causal inference with incomplete data",
+    "doi": "10.1177/09622802251316971",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This addresses the missing-data half of the entry directly, and the paper's motivation is that the combination was undefined rather than merely unused. It also names the alternative that existing software takes, complete-case fits per model as in gfoRmula, and states the assumption that route requires and why it can be more plausible than missing at random under intermittent missingness plus dropout. It does not address an informative visit process, which is the harder part of the entry.",
+    "quote": "In longitudinal data settings missing data are a common issue, which are often handled using multiple imputation, but it is unclear how G-formula and multiple imputation should be combined.",
+    "locator": "Abstract"
+   }
+  }
+ ]
+}

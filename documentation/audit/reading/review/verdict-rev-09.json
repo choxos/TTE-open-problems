@@ -1,0 +1,182 @@
+{
+ "batch": "rev-09",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The study evaluates alternative rules for defining time zero in a particular external-control setting. It neither selects a time-grid resolution nor a grace period, and the quoted conclusion explicitly leaves viable time-zero choices to analyst judgment.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Approaches to Selecting \"Time Zero\" in External Control Arms with Multiple Potential Entry Points: A Simulation Study of 8 Approaches.",
+    "doi": "10.1177/0272989x221096070",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Eight candidate time-zero rules are enumerated and evaluated against a known truth, and two are eliminated on performance rather than on argument, which is more than the field usually has. What is not supplied is an outcome-blind selection rule: five methods survive with bias in the Cox hazard ratio between 0.005 and 0.013 and nothing distinguishes them, so the choice is handed back to the analyst on grounds of interpretability, power and compatibility with other steps. An analyst who tries several and reports one is not detectable under this guidance.",
+    "quote": "In selecting between the viable methods, analysts should consider the context of their analysis and justify the approach selected.",
+    "locator": "Conclusions"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Multiple treatment-line records in an external-control simulation are not sequential target-trial emulation with repeated eligibility across calendar starts. The quote concerns point-estimate bias from record duplication and provides no analysis of dependence-adjusted inference, calendar-time confounding, or start-time effect heterogeneity.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SEQ-01",
+    "problem_title": "Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals",
+    "problem_verdict": "overstated",
+    "problem_statement": "Sequential emulation exploits repeated eligibility: a new trial is emulated at each decision point, and a person eligible at many points contributes to many of them. The resulting within-person dependence has been addressed: clustering by person, and confidence-interval procedures for survival outcomes compared across the sandwich estimator, nonparametric bootstrap, jackknife and a linearized estimating function bootstrap, which covers better in the small-sample, low-event-rate regime that motivates the design. What has not been addressed is the calendar-time structure. Trials begun at different times occur under different treatment availability, guidelines and background risk, so a pooled estimate assumes an effect common to start times that differ in all three. Trial start is not conventionally modeled flexibly, treatment-by-start-time heterogeneity is not conventionally examined, and ",
+    "paper": "Approaches to Selecting \"Time Zero\" in External Control Arms with Multiple Potential Entry Points: A Simulation Study of 8 Approaches.",
+    "doi": "10.1177/0272989x221096070",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The all-lines rule is repeated participation in its purest form: one patient contributes several records and a single death is attributed to more than one treatment line. The simulation reports that this did not bias point estimates and often gave numerically better ones, which is a real piece of evidence on the efficiency side. It leaves the rest of the entry open: coverage for overall survival was noted as lower for most methods, no clustering correction is described, and the calendar-time structure that produces earlier lines in the external cohort and later lines in the trial is handled by weighting rather than examined.",
+    "quote": "Using multiple records per patient, in which death could be attributed to multiple treatment lines in the same patient, did not result in bias, and indeed frequently produced numerically superior estimates.",
+    "locator": "Main Findings"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper directly recognizes calendar year as a common cause of treatment assignment and outcome and applies a temporal adjustment strategy. It addresses the calendar-time component only; its one-time treatment assignment does not inform repeated participation in sequential emulation.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SEQ-01",
+    "problem_title": "Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals",
+    "problem_verdict": "overstated",
+    "problem_statement": "Sequential emulation exploits repeated eligibility: a new trial is emulated at each decision point, and a person eligible at many points contributes to many of them. The resulting within-person dependence has been addressed: clustering by person, and confidence-interval procedures for survival outcomes compared across the sandwich estimator, nonparametric bootstrap, jackknife and a linearized estimating function bootstrap, which covers better in the small-sample, low-event-rate regime that motivates the design. What has not been addressed is the calendar-time structure. Trials begun at different times occur under different treatment availability, guidelines and background risk, so a pooled estimate assumes an effect common to start times that differ in all three. Trial start is not conventionally modeled flexibly, treatment-by-start-time heterogeneity is not conventionally examined, and ",
+    "paper": "Temporal Trends in Clinical Evidence of 5-Year Survival Within Electronic Health Records Among Patients With Early-Stage Colon Cancer Managed With Laparoscopy-Assisted Colectomy vs Open Colectomy.",
+    "doi": "10.1001/jamanetworkopen.2022.18371",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Calendar-time confounding is measured rather than assumed away: chi-square 60.3 for the calendar contribution to treatment assignment and 137.2 for its contribution to survival, with laparoscopy adoption rising from 35 percent to 70 percent across the span. The correction offered is stratification by calendar period with cotraining so that some data-selected associations may change over time, and it moved the answer, since the unadjusted benchmark analyses differ. This addresses only the calendar-time half of the entry; the emulation enters each patient once at first colectomy, so the repeated participation that sequential designs create is not touched.",
+    "quote": "When both treatment and response patterns shift over time, the calendar year becomes a confounding factor.",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Reporting risk differences, arm-specific survival, and confidence intervals in one applied emulation is not a calibrated replication-comparison method. The quote supports descriptive comparison of outcome levels, not a prespecified estimand-aligned contrast with joint uncertainty or a rule distinguishing mismatch from sampling error.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "BEN-02",
+    "problem_title": "Replication is reported as a binary label rather than as a calibrated comparison of estimands",
+    "problem_verdict": "overstated",
+    "problem_statement": "Agreement between an emulation and a trial is informative only when the estimands, populations and measurements are close enough to be comparable, and better design alignment is empirically associated with stronger concordance. The benchmarking programs report this in graded form. What is cited downstream is a binary label, usually derived from interval overlap or direction agreement, and that label discards magnitude and uncertainty and cannot diagnose why two estimates differ: two studies estimating the same quantity imprecisely agree by that criterion, and two estimating different quantities precisely disagree. No reported measure, graded or binary, separates estimand mismatch from random error, because doing so requires aligning the estimands first and then reporting a paired contrast with joint uncertainty, which no benchmarking report currently does as a matter of course.",
+    "paper": "Temporal Trends in Clinical Evidence of 5-Year Survival Within Electronic Health Records Among Patients With Early-Stage Colon Cancer Managed With Laparoscopy-Assisted Colectomy vs Open Colectomy.",
+    "doi": "10.1001/jamanetworkopen.2022.18371",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The comparison with the trial is carried out on the estimand scale rather than as an agreement label: the treatment effect is reported as a 5-year risk difference of minus 0.007 with an interval, and the arm-specific survival levels are compared to the trial with their own intervals, 0.074 higher for open colectomy and 0.061 higher for laparoscopy. That separates a matching contrast from a shifted level, which a binary replication verdict would hide. It does not close the entry: the headline framing is still that the emulation reached the same conclusion as the trial, and no calibration statistic or prespecified agreement margin is defined.",
+    "quote": "the estimated 5-year survival rates based on the EHR emulation analyses were 0.074 higher (95% CI, 0.011-0.131) for the OC group and 0.061 higher (95% CI, –0.001 to 0.122) for the LAC group",
+    "locator": "EHR Emulation: LAC vs OC"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper explicitly treats covariate measurement timing as part of the causal structure and demonstrates bias induced by exposure-dependent measurement and LOCF. It diagnoses the problem rather than providing identification under exposure-driven observation, so partially-addresses is appropriately limited.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Bias of time-varying exposure effects due to time-varying covariate measurement strategies.",
+    "doi": "10.1002/pds.5328",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The measurement process is drawn into the causal structure rather than left as an imputation nuisance: the observed covariate is represented as a separate node with arrows from prior and current covariates and from prior and current exposure, which makes it a collider on the path from exposure to outcome, so conditioning on it opens that path. This explains the sign flip from plus 29 percent under fixed intervals to minus 14 percent under switch-triggered measurement, and it is a genuine advance over treating gaps as missing data. What is not closed is the estimator: no method is offered that recovers the effect when measurement is exposure-driven, and the only advice is to measure more often.",
+    "quote": "Together with LOCF, these measurement designs introduced a form of differential misclassification, which may result in bias even in the absence of confounding.",
+    "locator": "DISCUSSION"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "downgrade",
+   "corrected_effect": "documents an isolated negative-control outcome use in an emulation, rather than partially addressing integration of negative controls, proxies, and validation data into a standard workflow",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The study embeds one negative-control outcome as a qualitative diagnostic for healthy-user bias. It supplies no joint model, calibration, negative-control exposure, proxy analysis, or reporting framework for reconciling multiple residual-confounding tools.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Computational drug repositioning of atorvastatin for ulcerative colitis.",
+    "doi": "10.1093/jamia/ocab165",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A negative control outcome is deployed and reported: pneumonia risk is unaffected by atorvastatin in both sources, chosen because statin use appears protective for pneumonia when healthy-user bias is uncontrolled. That is one negative control embedded in the emulation rather than left to a separate literature. It does not close the entry: the control returns a qualitative pass or fail, no negative control exposure or proxy is used, no validation sample calibrates the residual bias, and the pneumonia null is not converted into a bound on the 0.47 and 0.66 colectomy estimates.",
+    "quote": "the lack of pneumonia protection due to statin use in our cohorts supports that the structure of this study minimizes the healthy user bias",
+    "locator": "Results, Atorvastatin use in patients with UC is associated with decreased risk of colectomy"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper directly confronts ill-defined mediator interventions by defining distribution-shift intervention estimands and stating the assumptions required for them. Its discussion of unverifiable mediator-dependence assumptions supports the residual limitation claimed.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-04",
+    "problem_title": "An unobservable protocol component produces a different, data-defined estimand rather than a noisy version of the intended one",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The canonical protocol has seven linked components: eligibility, treatment strategies, assignment, follow-up, outcomes, causal contrast and analysis plan. Conceptual specification and operational realization are distinct, and when a component cannot be observed the analyst substitutes a proxy. If no valid measurement, missing-data or validation model recovers the intended variable, the resulting observed-data functional generally does not identify the intended causal effect, and it does not automatically identify some other one either: naming it a different estimand requires a corresponding intervention and an identification argument. A criterion that cannot be verified is dropped and the population changes; a strategy that cannot be distinguished from its neighbor is merged and the contrast changes; an outcome that is only partly captured redefines the endpoint. Nothing in current repor",
+    "paper": "Mediation effects that emulate a target randomised trial: Simulation-based evaluation of ill-defined interventions on multiple mediators.",
+    "doi": "10.1177/0962280221998409",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The unobservable component here is the mediator intervention itself, and the response is not to treat the estimate as a noisy version of an intended effect but to define the data-defined estimand explicitly: shift the mediator distribution to that of the unexposed given covariates, and state the three assumptions that fix it. The resulting quantities, 0.9 percent for university completion and 1.6 percent for the joint shift, are labeled as evidence about intervention targets rather than about interventions. What remains open is that the estimand still depends on unverifiable choices, the benchmark distribution and the mediator dependence structure after intervention, so the substituted estimand is one of a family and nothing prices the distance from the intended one.",
+    "quote": "the price to pay for considering the joint distribution in the estimand assumptions, even under approach (b) to Question 1, is the need for unverifiable assumptions about the dependence between the mediators under the hypothetical interventions",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The distinction between allowable estimand covariates and nonallowable identification covariates is a genuine qualitative separation between target specification and emulation. It does not provide the full documented lineage or quantify discrepancies, so partially-addresses is the appropriate effect.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-01",
+    "problem_title": "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error",
+    "problem_verdict": "overstated",
+    "problem_statement": "Three trials are in play in any emulation and only one is usually named: the ideal trial that would answer the decision-maker's question, the target trial the investigator specifies, and the emulation the data support. Specifying the target trial closely around the available data conceals the distance between the first two, and the paper reports one estimate as though the chain were tight. What is missing is not an additive decomposition; that generally does not exist, because the transitions change populations, interventions, outcomes and scales, so the discrepancies do not add. What is missing is a documented lineage: the change from the decision question to the operational causal estimand, the assumptions mapping that estimand to an observed-data functional, and the estimation uncertainty, each recorded separately so a reader can see which step carries the load. No convention requires",
+    "paper": "The Target Trial: A Powerful Device Beyond Well-defined Interventions.",
+    "doi": "10.1097/ede.0000000000001318",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A real separation is supplied: covariates that define the estimand are shown to enter the protocol at a different component from covariates that make it identifiable, so scientific-target choices can be told apart from emulation choices by where they first appear in the table. Applied to existing mediation estimators, this shows that none of them uses covariates appropriately for the question, because they target different estimands. What it does not supply is a size for any component; the decomposition is qualitative and cannot say how much of a reported estimate is target mismatch and how much is estimation.",
+    "quote": "allowable and nonallowable covariates are of a critically different nature, with allowable covariates pertaining to the target-trial specification, that is, estimand assumptions, while nonallowable covariates pertain to the emulation and required identification assumptions.",
+    "locator": "Specification of the target trial and its emulation"
+   }
+  }
+ ]
+}

@@ -1,0 +1,182 @@
+{
+ "batch": "rev-19",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper supplies a formally defined separable-effect estimand, identification conditions, estimators, and sensitivity analyses for an important competing-event setting. It does not resolve the registry problem because its assumptions can remain infeasible with routinely available data and it does not cover joint recurrent and terminal events.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "A generalized theory of separable effects in competing event settings.",
+    "doi": "10.1007/s10985-021-09530-8",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The registry entry says death and other intercurrent events are handled as data cleaning rather than as an identifying choice. This supplies the missing apparatus for one route: a formally defined estimand, identification conditions weak enough to allow time-varying common causes of the outcome, the competing event and censoring, implementable weighted estimators, and named sensitivity analyses. It also states plainly why the two standard alternatives fail, controlled direct effects requiring an intervention nobody can implement and natural effects resting on cross-world assumptions. What remains is availability: the conditions are still hard to meet with the data most studies hold.",
+    "quote": "Even under our generalized conditions, the separable effects may be difficult to identify given currently available data in many studies.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quote concerns whether separable effects may be empirically scrutinized in future studies. It neither proposes a reporting panel nor establishes a general distinction between which assumptions in an emulation are diagnostically interrogable and which are not.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "A generalized theory of separable effects in competing event settings.",
+    "doi": "10.1007/s10985-021-09530-8",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The registry entry asks for a distinction between assumptions that can be interrogated and assumptions that cannot. Separable effects are constructed so that the reasoning behind them is falsifiable in a subsequent trial, in explicit contrast to natural effects, whose identifying assumptions are untestable even in principle. That is a worked example of moving an assumption across the diagnosable boundary rather than a dashboard for reporting the whole set.",
+    "quote": "We stress that unlike previous definitions of direct and indirect effects, the separable effects can be subject to empirical scrutiny in future studies.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper provides a constructive simulation framework in which the causal data-generating mechanism and fitted model forms are known, which is relevant to causal estimator benchmarking. Its scope is narrow and does not validate broad generative patient models or permit causal claims from synthetic data lacking causal assumptions.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-02",
+    "problem_title": "Generative models are evaluated on distributional fidelity and used for causal work",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation does not match the use. Marginal and temporal fidelity do not validate a generator's counterfactual behavior, and cannot: without identifying assumptions or interventional ground truth, two generators indistinguishable on observed data can disagree on some interventions. A model optimized for fidelity can therefore reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those appears in the loss. Privacy mechanisms compound it by suppressing rare patterns, which are often the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and curre",
+    "paper": "Simulating longitudinal data from marginal structural models using the additive hazard model.",
+    "doi": "10.1002/bimj.202000040",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The registry entry says synthetic data are judged on distributional fidelity and then used for causal work. This supplies the criterion that matters instead: congeniality between the generating mechanism and the causal model to be fitted, derived rather than assumed. A simulation built this way is a valid benchmark for a causal estimator regardless of how realistic its marginals look. The scope is a marginal structural model for a time-to-event outcome, so the criterion does not yet cover generative patient models more broadly.",
+    "quote": "In a simulation, it is important to be able to generate the data in such a way that the correct forms of any models to be fitted to those data are known.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "downgrade",
+   "corrected_effect": "partially-addresses: supplies a narrow simulation framework for evaluating selected causal estimators under a known marginal structural model, but does not establish a default estimator or a study-level requirement to demonstrate estimator-choice sensitivity.",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper supports better-designed method comparisons and correctly identifies flaws in some existing comparisons. That is useful infrastructure, but it does not answer the registry's central question of defensibly selecting an estimator in an applied emulation or requiring robustness across choices.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "Simulating longitudinal data from marginal structural models using the additive hazard model.",
+    "doi": "10.1002/bimj.202000040",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Comparing estimators requires a data-generating mechanism under which each competing model is correctly specified, and the paper supplies the derivation that makes such a comparison constructible. It also records that comparisons of causal methods are rare and that at least one published comparison was invalid, having contrasted a marginal estimand with a conditional one under a mechanism that made neither model correct. The tooling for demonstrating that an estimator choice mattered now exists; nothing requires a study to use it.",
+    "quote": "Assessment and comparison of causal inference methods is rarely happening up to now and some comparisons are flawed.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper gives explicit identification consequences for alternative trial-to-target sampling designs, including a clear nonidentifiability result. It is appropriately characterized as adjacent and partial because randomized trial transport, point treatment, and observational-emulation transport involve materially different assumptions.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-02",
+    "problem_title": "Transporting an observational estimate compounds sampling assumptions on top of confounding assumptions with no accounting",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Transporting an observational contrast requires treatment exchangeability in the source, effect exchangeability across samples conditional on a sufficient measured set, and positivity for both treatment and sampling. A sufficient set is weaker than every effect modifier: modifiers that do not differ across populations or that are irrelevant after conditioning need not be observed. Transport estimators are now being applied to emulations, including post hoc standardization of emulations to their trial populations inside a benchmarking program. What remains is the accounting. If either exchangeability condition fails, source outcomes and target covariates alone cannot generally identify the resulting bias or apportion it between the two conditions, and no reporti",
+    "paper": "Study Designs for Extending Causal Inferences From a Randomized Trial to a Target Population.",
+    "doi": "10.1093/aje/kwaa270",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The registry entry says transporting an estimate compounds sampling assumptions on top of confounding assumptions with no accounting. This is the accounting, for the trial-to-target case: a table of which potential outcome means and which participation probabilities are identifiable under each sampling scheme, with the non-nested design shown to lose the marginal target-population mean outright. It covers extension from a randomized trial rather than transport of an observational contrast, and it is developed for point treatments, so the compounded case an emulation faces is adjacent rather than covered.",
+    "quote": "In non-nested trial designs, where the sampling probability for non-randomized individuals is unknown, the marginal potential outcome means in the target population are not identifiable, but the potential outcome means in the sub-population of non-randomized individuals are identifiable.",
+    "locator": "Section 6, Discussion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Dependent outcome censoring is not the same as an informative clinical visit or measurement process. The paper's limitation about residual censoring dependence reinforces the concern, but it does not model observation timing, test ordering, or covariate recording as part of the causal structure.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Doubly robust estimator of risk in the presence of censoring dependent on time-varying covariates: application to a primary prevention trial for coronary events with pravastatin.",
+    "doi": "10.1186/s12874-020-01087-8",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The registry entry says the observation and censoring process is treated as a nuisance to be imputed. Here it is modeled as a hazard that depends on time-varying covariates and is given double protection against misspecification, which is more than imputation under a fixed missingness assumption. The limit is stated plainly: if censoring and event time remain dependent after conditioning on measured covariates, which is the case the entry is about since the visit process tracks latent severity, this estimator and every existing one fail.",
+    "quote": "However, in a situation that censoring and event time are not independent even if we condition on time-varying covariates, our proposed estimator and other existing estimators cannot correct for selection bias.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper addresses identification conditions for dynamic strategies in a discrete-time marginal structural model discussion. It does not address continuous-time filtration-based identification, within-interval effects, or treatment-dependent observation, which define the registered problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-02",
+    "problem_title": "Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Discretizing that onto a grid can reverse the temporal ordering of a treatment and an outcome falling in the same interval, merge several events into one, and define an estimand that exists only relative to the chosen interval. Identification and efficient estimation for dynamic interventions in continuous time under counting-process filtrations and irregular monitoring have been established. They do not yet settle the case an emulation on routine data actually faces: a visit process that depends on treatment, combined with effects that occur inside an interval. A continuous-time emulation must define the treatment, covariate, visit, censoring and outcome processes relative to a filtration and impose assumptions linking latent histories to the observed visit proce",
+    "paper": "Understanding Marginal Structural Models for Time-Varying Exposures: Pitfalls and Tips.",
+    "doi": "10.2188/jea.je20200226",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The entry says identification of dynamic regimes is unresolved under an observation process that depends on treatment. This settles the discrete-time part of the question that is answerable: sequential exchangeability identifies static regime effects but not dynamic ones, an additional independence condition is required, and a causal diagram is exhibited that is compatible with the observed data yet fails it. The continuous-time and treatment-dependent-observation half of the entry is untouched.",
+    "quote": "Sequential exchangeability (C1) and (C2) is insufficient for identification of the effects of more general exposure interventions (also known as dynamic regimes or strategies ) that may depend on (time-varying) covariates",
+    "locator": "Appendix B"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Support for incorporating visit processes into parametric g-formula simulation is relevant to treating observation timing as an explicit modeled process. It remains only a partial contribution because software support does not identify effects when visiting depends on unmeasured severity or impending outcomes.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "gfoRmula: An R Package for Estimating the Effects of Sustained Treatment Strategies via the Parametric g-formula.",
+    "doi": "10.1016/j.patter.2020.100008",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The registry entry says the visit process is treated as a nuisance to be imputed. Here it is a first-class modeled component of the simulation, alongside deterministic knowledge of covariate distributions, so an analyst can represent the fact that a covariate is updated only when a visit occurs. What the software cannot supply is the identifying assumption: whether the visit process depends on latent severity or on an impending outcome given the record remains unverifiable, and modeling it does not make it ignorable.",
+    "quote": "Users can incorporate deterministic knowledge and visit processes",
+    "locator": "Highlights"
+   }
+  }
+ ]
+}

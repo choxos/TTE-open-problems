@@ -1,0 +1,182 @@
+{
+ "batch": "rev-13",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted evidence concerns separation caused by few outcome events relative to covariates in regression standardization. It does not address effective sample size lost through eligibility restriction, active comparison, or longitudinal weighting, nor reporting of effective sample size.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-03",
+    "problem_title": "Large databases yield small effective samples after eligibility, comparator restriction and weighting",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "A database of millions can carry very little information about a specific target trial once strict eligibility, active-comparator restriction and weighting have been applied, and extreme weights reduce the effective sample size far below the nominal count. Conventional asymptotic inference then becomes unreliable, most sharply for rare competing events and for subgroup effects, which are the quantities decision makers ask about. Papers continue to report the nominal number of patients, which for a weighted longitudinal analysis is not the quantity that governs the variance, and no convention requires the effective size to appear beside it.",
+    "paper": "Caveats on Using Firth's Penalization in the Model-Based Regression Standardization for Rare Diseases",
+    "doi": "10.1002/sim.70371",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is the entry's regime studied directly: what happens to a longitudinal marginal estimator when the informative stratum is small. Non-convergence reaches 49.3% of replications, and the standard remedy fixes the coefficients while biasing the marginal quantity the analysis reports. The paper supplies two corrections and a comparison against propensity score methods, which addresses one estimator in this regime rather than establishing where asymptotic inference fails generally.",
+    "quote": "in rare disease settings, the small number of observed events relative to the number of covariates can lead to (quasi-)complete separation, resulting in non-convergent estimates in the regression models",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The analysis propagates uncertainty about adherence misclassification into a parametric g-formula estimand and interval. It is a sensitivity analysis for one measured variable and setting, so it partially addresses rather than resolves the broader joint measurement and confounding problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MER-01",
+    "problem_title": "Phenotypes enter emulations as error-free binary variables",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquel",
+    "paper": "Applying a hypothetical strategy to the intercurrent event of non-adherence with the parametric g-formula: a post hoc secondary analysis of the MET-PREVENT trial",
+    "doi": "10.1186/s13063-026-09708-1",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is the propagation the entry says emulation pipelines do not do: the adherence variable is treated as a mismeasured proxy for true adherence, a probabilistic bias analysis is run across several misclassification scenarios because the true extent is unknown, and the conclusion is stated in terms of what the estimate and its interval would have been under true adherence. The measurement uncertainty reaches the reported result rather than being discarded at thresholding.",
+    "quote": "sensitivity analyses indicated that the greater the extent of misclassification, the more the CDE may be estimated with bias (the estimate would have been closer to the null if true adherence had been collected and used in the parametric g-formula analysis) and with over-optimistic precision",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper explicitly defines a controlled direct effect under a hypothetical full-adherence strategy and distinguishes it from intention-to-treat and per-protocol effects. This is a concrete example of estimand-aligned reporting, but it does not establish that such reporting is routine in emulations.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-03",
+    "problem_title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.",
+    "paper": "Applying a hypothetical strategy to the intercurrent event of non-adherence with the parametric g-formula: a post hoc secondary analysis of the MET-PREVENT trial",
+    "doi": "10.1186/s13063-026-09708-1",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The paper names its estimand, a controlled direct effect under a hypothetical strategy on non-adherence, states what it means in words, and reports it against the trial's intention-to-treat and per-protocol effects so a reader can see the three are different quantities. That is the estimand statement the entry asks for, executed.",
+    "quote": "the average controlled direct effect (CDE) of metformin (versus placebo) on 4-m walk speed, which is interpreted as the average treatment effect under the hypothetical scenario that all trial participants adhered to assigned treatment",
+    "locator": "Abstract, methods"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "A positivity validation plot aimed at identifying supported treatment regimes is materially closer to the requested diagnostic than a marginal weight histogram. Its N-of-1 time-series setting does not by itself provide the full patient-history-specific support criterion and post-restriction target estimand required by the registry problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Causal estimands and identification of time-varying effects in nonstationary time series from N-of-1 mobile device studies",
+    "doi": "10.1093/biostatistics/kxag014",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The positivity validation plot is exactly the artifact the entry says is missing: a diagnostic that reports which treatment regimes are identifiable rather than summarizing weights. The authors introduce it because positivity in observational time series cannot be secured the traditional way, by randomization or by studying few time points, so the support question has to be answered directly.",
+    "quote": "We propose a new diagnostic tool – the positivity validation plot – that evaluate the spectrum of treatment regimes that might be identifiable, representing valuable contribution to the field of causal inference in time series data.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper addresses identification of time-varying effects with confounded, nonstationary longitudinal exposure processes, which is relevant to one component of the gap. It remains discrete-time and does not address irregular treatment-dependent observation or continuous-time filtrations, so partial addressing is the strongest justified effect.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-02",
+    "problem_title": "Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Discretizing that onto a grid can reverse the temporal ordering of a treatment and an outcome falling in the same interval, merge several events into one, and define an estimand that exists only relative to the chosen interval. Identification and efficient estimation for dynamic interventions in continuous time under counting-process filtrations and irregular monitoring have been established. They do not yet settle the case an emulation on routine data actually faces: a visit process that depends on treatment, combined with effects that occur inside an interval. A continuous-time emulation must define the treatment, covariate, visit, censoring and outcome processes relative to a filtration and impose assumptions linking latent histories to the observed visit proce",
+    "paper": "Causal estimands and identification of time-varying effects in nonstationary time series from N-of-1 mobile device studies",
+    "doi": "10.1093/biostatistics/kxag014",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is identification for time-varying effects without assuming stationarity, in data measured at high frequency, with a g-formula estimator inside a state space model that handles feedback between exposure, outcome and covariates. It addresses the intensively-measured half of the entry's setting, and it works in discrete series from devices rather than in the irregular treatment-dependent observation the entry is about.",
+    "quote": "We assume neither static treatment effects nor stationary time series, and the identification strategy can be applied to both randomized trials and observational studies where the treatment assignments are confounded.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Explicit short- and long-term causal estimands and effect-trajectory plots improve communication beyond an uninterpretable single model coefficient. The setting is not a grace-period clone-censor-weight emulation, so it supplies a reporting example rather than resolving the specific reporting failure described.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-03",
+    "problem_title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.",
+    "paper": "Causal estimands and identification of time-varying effects in nonstationary time series from N-of-1 mobile device studies",
+    "doi": "10.1093/biostatistics/kxag014",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The paper defines its estimands explicitly as short- and long-term total and controlled direct effects, and builds two plots, impulse impact and step response, whose purpose is to communicate how an effect accumulates rather than to compress it into one number. That is the reporting the entry asks for, in a setting where a single summary would be plainly inadequate.",
+    "quote": "We introduce graphical tools, specifically the impulse impact plot and step response plot, to facilitate the illustration of the long-term impact of exposures over time.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Latent disease-state effect modification and limitations from missingness or low variability are not subgroup-specific positivity diagnostics, protected-group overlap, or selection-aware subgroup inference. The quote does not show that the method identifies unsupported subgroup histories or reports a changed target population after overlap restriction.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "LRN-04",
+    "problem_title": "Subgroup effects are estimated where overlap is worst, and the groups with worst overlap are often the protected ones",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Causal forests and meta-learners estimate heterogeneous treatment effects and inherit every identification assumption of the base analysis without relaxing any of them. A subgroup analysis therefore requires subgroup-specific assessment of exchangeability, measurement validity, positivity and uncertainty, and apparent heterogeneity can reflect differential measurement or differential access rather than differential biology. Two further requirements are routinely skipped. Adaptively chosen subgroups need selection-aware inference, because the reported interval otherwise conditions on a subgroup the data chose. And restricting to regions with adequate overlap changes the target population rather than fixing the estimate, so it has to be reported as a change of question. Where the groups with the poorest support are the protected groups the analysis was undertaken to examine, that has to be",
+    "paper": "Individual causal effect estimation accounting for latent disease state modification",
+    "doi": "10.1093/biomtc/ujaf191",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The paper's premise is the entry's: an intervention's effect varies with an underlying state, so a single average describes nobody. It recovers the modifier from data rather than assuming subgroups, and it reports where the recovery fails, short follow-up, high missingness, low variability, which is the subgroup-support reporting the entry asks for.",
+    "quote": "We also identify in the application the limitations to the proposed methods when there is short follow-up, a high rate of missing data, or lack of variability in the observed data.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper explicitly treats mortality as changing the meaning and definition of the memory outcome, then distinguishes prognostic and etiological estimands rather than silently censoring deaths. This is a relevant applied treatment of truncation by death, but it does not resolve the broader competing-events problem for sustained strategies.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "Long-term memory effects of an incremental blood pressure intervention in a mortal cohort",
+    "doi": "10.1093/biomtc/ujaf176",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Death is treated as the thing that makes the outcome undefined rather than as a censoring event, and the paper reports two distinct estimands, prognostic in the mortal cohort and etiological in the always-survivor stratum, because they answer different questions and previous work conflated them. That is the estimand-matched handling of a competing event the entry says applied work defaults away from, with both estimands reported rather than one chosen silently.",
+    "quote": "A limitation with previous research on the potential risk reduction of such interventions is that they do not properly account for the reduction of mortality rates. Hence, one can only speculate whether the effect is due to changes in memory or changes in mortality.",
+    "locator": "Abstract"
+   }
+  }
+ ]
+}

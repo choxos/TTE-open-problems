@@ -1,0 +1,182 @@
+{
+ "batch": "rev-03",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "downgrade",
+   "corrected_effect": "documents estimator-model sensitivity in a single baseline propensity-score emulation",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The comparison shows that alternative propensity-score modeling choices can produce materially different estimates in this application. It neither compares the distinct longitudinal estimators named in GMT-04 nor establishes a reporting requirement or a defensible rule for choosing among them.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "Machine Learning Versus Logistic Regression for Propensity Score Estimation: A Benchmark Trial Emulation Against the PARADIGM-HF Randomized Trial.",
+    "doi": "10.1101/2025.06.16.25329708",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Three estimators were run on one dataset and the spread was reported: HR 0.93, 0.97 and 0.61 with risk ratios of 0.86, 0.96 and 0.69. That is the demonstration the registry entry says studies are not required to provide, and it shows the choice mattered by a factor larger than any reported confidence interval width would suggest. It does not supply a rule for choosing: the winner is identified only by proximity to a trial result that will usually be unavailable, and the boosted model silently dropped beta-blockers and SGLT2 inhibitors from every tree.",
+    "quote": "Gender, ethnicity, baseline hypertension and prescription of β-blockers and SGLT2i were not used in any boosted trees.",
+    "locator": "Estimates From Pre-Specified Confounders and GBM-Based Propensity Score"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The recommendation against a single agreement metric and for comparing relative estimate distributions directly addresses part of the reporting problem. It does not supply a paired, estimand-aligned contrast with joint uncertainty, so it cannot resolve the full gap.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "BEN-02",
+    "problem_title": "Replication is reported as a binary label rather than as a calibrated comparison of estimands",
+    "problem_verdict": "overstated",
+    "problem_statement": "Agreement between an emulation and a trial is informative only when the estimands, populations and measurements are close enough to be comparable, and better design alignment is empirically associated with stronger concordance. The benchmarking programs report this in graded form. What is cited downstream is a binary label, usually derived from interval overlap or direction agreement, and that label discards magnitude and uncertainty and cannot diagnose why two estimates differ: two studies estimating the same quantity imprecisely agree by that criterion, and two estimating different quantities precisely disagree. No reported measure, graded or binary, separates estimand mismatch from random error, because doing so requires aligning the estimands first and then reporting a paired contrast with joint uncertainty, which no benchmarking report currently does as a matter of course.",
+    "paper": "Improving the validity of noninterventional comparative effectiveness research by basing study design on a specified existing randomized controlled trial.",
+    "doi": "10.1093/aje/kwae317",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The commentary catalogs the incompatible success measures in use, from standardized-difference limits to binary agreement metrics to informal benchmarking, and rejects reliance on any single metric because agreement depends on the trial's precision and the emulation's sample size. It asks instead that the relative distributions of the two estimates be compared and that conflicts between multiple criteria be resolved a priori. It supplies no calibration statistic and still resolves to a pass or fail verdict, so the estimand comparison remains uncalibrated.",
+    "quote": "Assessing the compatibility between the results of the RCT and its emulation using a single metric is not recommended",
+    "locator": "Pitfalls of reference trial-informed study design"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Reporting post-hoc analyses after a failed benchmark makes a limited portion of the analytic path observable. The recommendation is conditional and does not preserve pre-analysis alternatives, decision timing, or abandoned protocol variants.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-03",
+    "problem_title": "Registrations record the final protocol and not the alternatives that were rejected",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulation makes many defensible decisions: active comparator, washout period, time zero, grace period, how treatment episodes are constructed, censoring rules, follow-up length and outcome definition. Each has more than one reasonable answer, and the set of answers is the researcher's degrees of freedom. Design guidance exists and states that the operational methods remain scenario dependent, so it narrows the set without closing it. Registrations record the specification that was finally run and not the alternatives considered, the order in which decisions were made, or which were revised after the data were inspected. A final protocol snapshot cannot reveal what was never logged, so a reader cannot distinguish a protocol written once from one converged upon, and no later audit can reconstruct it.",
+    "paper": "Improving the validity of noninterventional comparative effectiveness research by basing study design on a specified existing randomized controlled trial.",
+    "doi": "10.1093/aje/kwae317",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Item 7 of the reporting table asks explicitly that post-hoc analyses run after a benchmarking failure be reported alongside the reasons explored, which would make some of the rejected analytic path visible. The recommendation is voluntary, applies only when benchmarking fails, and covers analyses run after the fact rather than protocol variants considered and dropped before the first estimate.",
+    "quote": "If unsuccessful, potential reasons should be explored, including any post-hoc analyses done to help elucidate these reasons.",
+    "locator": "Table 1: recommendations for reporting"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Randomly retaining one eligible period per patient is a familiar way to avoid repeated-participation dependence, at the cost of discarding the sequential-emulation efficiency gain. It does not provide a method for modeling calendar-time structure or treatment-by-start-time heterogeneity, which is the unresolved part of SEQ-01.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SEQ-01",
+    "problem_title": "Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals",
+    "problem_verdict": "overstated",
+    "problem_statement": "Sequential emulation exploits repeated eligibility: a new trial is emulated at each decision point, and a person eligible at many points contributes to many of them. The resulting within-person dependence has been addressed: clustering by person, and confidence-interval procedures for survival outcomes compared across the sandwich estimator, nonparametric bootstrap, jackknife and a linearized estimating function bootstrap, which covers better in the small-sample, low-event-rate regime that motivates the design. What has not been addressed is the calendar-time structure. Trials begun at different times occur under different treatment availability, guidelines and background risk, so a pooled estimate assumes an effect common to start times that differ in all three. Trial start is not conventionally modeled flexibly, treatment-by-start-time heterogeneity is not conventionally examined, and ",
+    "paper": "Effectiveness and risk of ARB and ACEi among different ethnic groups in England: A reference trial (ONTARGET) emulation analysis using UK Clinical Practice Research Datalink Aurum-linked data.",
+    "doi": "10.1371/journal.pmed.1004465",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The design generates repeated eligibility by construction, since a patient with a treatment gap over 90 days starts a new exposed period and can qualify more than once. Repeated participation is then removed by drawing a single eligible period at random per patient, which is a clean fix for the correlation problem and costs the efficiency the sequential design was meant to buy. Calendar-time confounding over an 18-year accrual window is handled only by including time-related variables in the propensity score, not by matching or stratifying on entry date.",
+    "quote": "Therefore, a patient could contribute multiple eligible exposed periods, as in a trial a patient could meet the trial criteria on more than one occasion.",
+    "locator": "Eligibility criteria and treatment strategies"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper specifies an explicit pre-study eligibility-ascertainability threshold and uses it to rule out candidate emulations. Its screen is narrower than the full multidimensional data-fitness problem, but it is a genuine partial stop-rule contribution.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "DTA-01",
+    "problem_title": "Data-fitness assessment is narrative and has no thresholds that would stop a study",
+    "problem_verdict": "overstated",
+    "problem_statement": "Electronic health records arise from encounters, billing and documentation rather than from scheduled research assessments, so eligibility and follow-up in an emulation partly reflect care-seeking and access rather than the biology the protocol intends. Whether a given database can support a given target trial is a question about the data source and the protocol jointly, and quantitative assessments of that pair now exist. What does not exist is a prespecified stop rule: a threshold agreed before the analysis, on observability, temporal precision, capture continuity, comparator support, outcome validity and linkage completeness, that would halt a study when an essential component fails. Outside tightly gated regulatory and network feasibility processes, most published emulations still assert suitability in a paragraph, and a pipeline with no route to the answer no will always produce an ",
+    "paper": "Feasibility of using real-world data to emulate substance use disorder clinical trials: a cross-sectional study.",
+    "doi": "10.1186/s12874-024-02307-1",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is a stopping rule with a number in it: five protocol components must be recoverable, eligibility must clear 80% of criteria, and the rule stopped all 272 candidate emulations, with sensitivity analyses at a 50% threshold and with placebo counted as ascertainable leaving one and six. It closes the pre-study half of the entry. It does not close the rest: ascertainability was judged from clinical experience rather than measured against field-completion rates, unstructured text was excluded by construction, and nothing in the screen bears on residual confounding or on data fitness once a study is underway.",
+    "quote": "For a trial to be considered to have eligibility criteria ascertainable from contemporary claims and/or structured EHR data, it had to have greater than 80% of its total criteria deemed ascertainable.",
+    "locator": "Eligibility criteria"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "downgrade",
+   "corrected_effect": "documents the limitations of a prespecified binary benchmarking criterion",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A numeric compatibility range and side-by-side event rates improve transparency, but the reported rule still ends in a binary pass or fail judgment. It does not align estimands or estimate their discrepancy with joint uncertainty, so it does not partially solve BEN-02.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "BEN-02",
+    "problem_title": "Replication is reported as a binary label rather than as a calibrated comparison of estimands",
+    "problem_verdict": "overstated",
+    "problem_statement": "Agreement between an emulation and a trial is informative only when the estimands, populations and measurements are close enough to be comparable, and better design alignment is empirically associated with stronger concordance. The benchmarking programs report this in graded form. What is cited downstream is a binary label, usually derived from interval overlap or direction agreement, and that label discards magnitude and uncertainty and cannot diagnose why two estimates differ: two studies estimating the same quantity imprecisely agree by that criterion, and two estimating different quantities precisely disagree. No reported measure, graded or binary, separates estimand mismatch from random error, because doing so requires aligning the estimands first and then reporting a paired contrast with joint uncertainty, which no benchmarking report currently does as a matter of course.",
+    "paper": "Comparison of oral anticoagulants for stroke prevention in atrial fibrillation using the UK clinical practice research Datalink Aurum: A reference trial (ARISTOTLE) emulation study.",
+    "doi": "10.1371/journal.pmed.1004377",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The benchmarking rule is numeric, published in advance and deliberately asymmetric around the trial estimate, and absolute event rates are reported side by side, so the comparison goes beyond a bare label. The verdict is still binary and it passes on an estimate of 0.98 whose confidence interval excludes the trial point estimate of 0.79: the trial showed superiority and the emulation did not, yet both the range criterion and the noninferiority criterion were satisfied. Nothing in the reported comparison quantifies how far the two estimands are apart.",
+    "quote": "The effect size must be clinically comparable with the ARISTOTLE findings; the HR for time to stroke/SE with the HR must be between 0.69 and 0.99.",
+    "locator": "Benchmarking results against ARISTOTLE"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Repeating the analysis across candidate thresholds usefully reports sensitivity to the timing definition, and the lower bound has an outcome-blind rationale. The procedure supplies no outcome-blind selection rule for a grace period or time grid, and the interpretation of individual thresholds remains vulnerable to post-hoc selection.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Timing of follow-up visits after hospital discharge for COPD: Application of a new method.",
+    "doi": "10.1371/journal.pone.0302681",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Instead of picking one threshold, the entire procedure was rerun for every day from 7 to 30, and the lower bound was justified outcome-blind on the ground that visits before day 7 reflect the index admission rather than post-discharge care. That converts an arbitrary grid choice into a reported curve. It does not close the entry: no rule selects among the 24 estimates, no multiplicity accounting accompanies the scan, and the day-7 estimate of 1.03 is separately explained away as patients still unstable from the admission, which is a post-hoc reading of the curve.",
+    "quote": "To identify optimal timing of post discharge physician visit, the above steps were repeated 23 times, each time changing number of days that defined the groups were assigned to.",
+    "locator": "Statistical analysis"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "downgrade",
+   "corrected_effect": "documents limited agreement between two adjustment approaches in an already highly restricted, comparable cohort",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The head-to-head analysis is a useful descriptive sensitivity exercise, but its restricted cohort leaves little confounding for weighting to address. It does not establish a general estimator-comparison requirement or inform choice among the longitudinal g-methods at issue in GMT-04.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "Comparison of Methods of Clinical Trial Emulation Utilizing Data From the Comparison of AMD Treatment Trial (CATT) and the IRIS® Registry.",
+    "doi": "10.1016/j.xops.2024.100524",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Two adjustment methods were run head to head on identical eyes and the agreement is quantified: 1.9 versus 2.8 letters (P = 0.43) and 2.4 versus 2.1 letters (P = 0.79), with identical injection counts. That is the sensitivity-to-estimator demonstration the registry entry says is not required. The paper then explains the agreement away: restriction to under 0.1% of eyes left a cohort already comparable to the trial on the three matching variables, so weighting had little to adjust. The finding therefore says nothing about estimator choice in settings where overlap is imperfect.",
+    "quote": "This subgroup of patient eyes was comparable in age, gender, and baseline VA to the CATT monthly treatment arms, suggesting that IPSW may not have adjusted this overall cohort significantly.",
+    "locator": "Discussion"
+   }
+  }
+ ]
+}

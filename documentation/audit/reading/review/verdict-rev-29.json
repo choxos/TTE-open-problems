@@ -1,0 +1,182 @@
+{
+ "batch": "rev-29",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Reanalyzing a response-group comparison with a time-dependent covariate addresses guarantee-time or immortal-time bias in that analysis. It provides no outcome-blind rule for selecting a time grid or grace period.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Response to letter, 'immortal time bias in retrospective analysis'.",
+    "doi": "10.1038/bcj.2015.55",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The requested correction was performed and published, which is the correction loop working end to end on a specific paper. The correction is a time-dependent covariate, which removes the guaranteed survival but leaves the comparison a prognostic one between response groups, so it addresses the time-related bias without making the contrast a treatment strategy contrast.",
+    "quote": "To address the concerns of Hsieh et al. , 1 we reanalyzed PFS and OS using humoral response as a time-dependent covariate, as suggested.",
+    "locator": "Letter"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper supplies a concrete, reproducible screen for one design-induced bias, including an effect-size trigger and review questions. It is not an assumption dashboard, but it partially addresses the broader reporting gap by demonstrating one component that such a panel could contain.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "Randomized Trials Built on Sand: Examples from COPD, Hormone Therapy, and Cancer.",
+    "doi": "10.5041/rmmj.10082",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is a working detection instrument rather than a principle: an effect-size trigger at relative risk below 0.70 and six yes-or-no design questions any reviewer can answer from a methods section. It detects one bias and says nothing about the assumptions that cannot be read off a design description, so it is a screen and not a dashboard.",
+    "quote": "If a cohort study reports extreme beneficial effects (relative risks < 0.70) for a treatment, reviewer should consider immortal time bias as an alternative explanation and answers in the affirmative to any of the following questions should raise red flags:",
+    "locator": "Box 1"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The quoted warning identifies structural nonoverlap in covariate patterns as a condition that must be checked before fitting IPW models. It falls short of policy-specific, history-localized reporting and does not define the surviving estimand, so partial addressing is the appropriate effect.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Challenges of guarantee-time bias.",
+    "doi": "10.1200/jco.2013.49.5283",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The paper gives a concrete positivity check for the first-stage model, that no cell size is zero and no covariate pattern has zero probability of moving into the other group, and flags small data sets as the risk case. It is stated as an implementation caution rather than as a reported diagnostic, and it does not identify which patient histories are unsupported.",
+    "quote": "However, it is\nimportant to check that the probability models do not result in cell\nsizes of zero or create covariate patterns with zero probability of\nmoving into the other classifying event group.",
+    "locator": "IPW"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Embedding proximal causal inference and negative-control variables within a target-trial emulation is a direct example of integrating one residual-confounding tool into the workflow. It does not establish a standard joint workflow or validate the negative-control assumptions, so it cannot resolve the problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Estimating cardiovascular effects of influenza vaccination in older adults: a target trial emulation using proximal causal inference.",
+    "doi": "10.1016/j.eclinm.2025.103449",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Negative controls are not a supplementary check here but the estimator: proximal causal inference is run inside the emulation and its negative control exposures and outcomes are varied in sensitivity analyses. The authors state this is the first pharmacoepidemiologic study to combine the two, and the method's requirement, that the negative controls have a genuinely null relationship with exposure or outcome, is asserted rather than tested.",
+    "quote": "The PCI method requires correctly selecting negative control variables exhibiting null causal relationship with the exposure or outcome of interest.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The described use of polygenic scores and Mendelian randomization at specified stages of an emulation is a concrete integration of genetic proxy or instrumental-information tools. Its stated inability to distinguish confounders from nonconfounding imbalance means it is only a partial contribution, not a general reconciliation framework.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Incorporating genetic data improves target trial emulations and informs the use of polygenic scores in randomized controlled trial design.",
+    "doi": "10.1038/s41588-025-02229-8",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Two genetic instruments are brought into the emulation workflow at defined points: polygenic scores as an orthogonal balance check after matching, and Mendelian randomization at the eligibility stage to suggest which unmeasured factors to include and after matching to probe residual confounding. The limits are stated with equal precision, and a detected imbalance does not establish that the factor is a confounder.",
+    "quote": "We show that PGS can be used to identify both measured and unmeasured factors that are unbalanced between the two arms of the trials. Some of these factors are likely confounders; others are not. PGS cannot distinguish between the two.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Selecting calendar periods for clinical relevance and data availability is protocol justification, not a procedure for selecting interval width or a treatment grace period. The evidence does not address the registered gap.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Effects of azithromycin in young adults with cystic fibrosis: a protocol for emulating a published randomised controlled trial using registry data.",
+    "doi": "10.1136/bmjopen-2024-091357",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The three emulation windows are chosen for stated reasons, proximity to the trial after allowing uptake, features of the data, and ending before CFTR modulators entered practice. That is a documented calendar-time design rather than a convenience window, and the reasons are clinical and data-driven rather than derived from any procedure, with one window chosen because prescription start and stop dates only began to be collected in 2016.",
+    "quote": "Period 1 is close to the timing of the target trial while allowing time for the treatment to have come into use. Periods 2 and 3 were chosen based on features of the data, and ending the time frame in 2018 means that we only use data from the time before CFTR modulators became widespread in clinical practice.",
+    "locator": "Time periods"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quotation concerns avoiding use of post-baseline information when defining time zero and offers constructions for delayed assignment. It does not select a time grid or grace period, which is the specific unresolved problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Target Trial Emulation: Improving the Quality of Observational Studies in Inflammatory Bowel Disease Using the Principles of Randomized Trials.",
+    "doi": "10.1093/ibd/izae131",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The alignment rule is stated with its data restriction, that time zero must be defined from information available at that moment and not from later treatment data, and two named constructions are given for when assignment at time zero is impossible. Neither construction fixes the grid on which time zero can fall, and the sequential option leaves the spacing of candidate entry times open.",
+    "quote": "Time zero should be defined with data available at that specific time timepoint and not guided by later treatment data.",
+    "locator": "Signal paragraph, immortal time bias"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Reference-based imputation for informative censoring after loss to follow-up concerns a different observation mechanism from irregular, informative visits that generate covariate histories. The evidence expressly frames the contribution as handling loss to follow-up rather than the visit process.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Application of the estimand framework for an emulated trial using reference based multiple imputation to investigate informative censoring.",
+    "doi": "10.1186/s12874-024-02364-6",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The censoring assumption is made explicit and clinical rather than statistical: patients who stop attending are assumed to stop prophylaxis and to inherit the hazard of a named reference group. That is a statement a clinician can accept or reject, unlike a delta parameter on the log odds scale, and the paper contrasts it with weight manipulation on exactly those grounds. It handles loss to follow-up rather than the visit process that generates the covariate history.",
+    "quote": "Reference based multiple imputation, as implemented here, avoids discussion of an appropriate multiplying factor by exploring sensitivities based on the post-censoring behavior of clearly defined and understandable groups of patients.",
+    "locator": "Discussion"
+   }
+  }
+ ]
+}

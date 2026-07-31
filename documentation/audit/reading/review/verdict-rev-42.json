@@ -1,0 +1,182 @@
+{
+ "batch": "rev-42",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper explicitly replaces an infeasible always-treat intervention with availability-respecting dynamic interventions and defines their population-level causal meanings. This is a genuine partial contribution to the distinction between an intended protocol and a separately justified data-supported estimand.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-04",
+    "problem_title": "An unobservable protocol component produces a different, data-defined estimand rather than a noisy version of the intended one",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The canonical protocol has seven linked components: eligibility, treatment strategies, assignment, follow-up, outcomes, causal contrast and analysis plan. Conceptual specification and operational realization are distinct, and when a component cannot be observed the analyst substitutes a proxy. If no valid measurement, missing-data or validation model recovers the intended variable, the resulting observed-data functional generally does not identify the intended causal effect, and it does not automatically identify some other one either: naming it a different estimand requires a corresponding intervention and an identification argument. A criterion that cannot be verified is dropped and the population changes; a strategy that cannot be distinguished from its neighbor is merged and the contrast changes; an outcome that is only partly captured redefines the endpoint. Nothing in current repor",
+    "paper": "Nonparametric Causal Inference for Optogenetics: Sequential Excursion Effects for Dynamic Regimes.",
+    "doi": "10.1080/01621459.2026.2635071",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "An uncontrollable protocol component, whether the subject is available for treatment at a timepoint, is handled by replacing the intended static sequence with an availability-respecting dynamic regime and by stating in the open what the resulting parameter means. The contrast is explicitly a change to the experimental protocol over the last Gamma timepoints, not a noisy version of the always-treat contrast, and when Gamma equals one it decomposes into an availability-conditional effect scaled by the probability of availability. What is not closed is the reverse direction: for Gamma greater than one no availability-conditional analogue is shown to exist, so the intended and the data-defined estimands cannot be placed on a common scale.",
+    "quote": "our proposed estimands summarize the effects of plausible interventions on the whole population, acknowledging that treatment, At = 1, is not always possible.",
+    "locator": "Section 3"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "downgrade",
+   "corrected_effect": "Illustrates estimand restriction for a known, design-imposed structural positivity failure; it does not provide the requested policy-specific, history-localized positivity diagnostic.",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Availability is observed and structurally imposed in this experimental setting, so infeasible histories can be identified by design and excluded from the intervention class. The quoted material does not supply diagnostics for observational treatment support, quantify unsupported target-population histories, or define an estimand after empirical support failures.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Nonparametric Causal Inference for Optogenetics: Sequential Excursion Effects for Dynamic Regimes.",
+    "doi": "10.1080/01621459.2026.2635071",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The unsupported histories are named rather than described through weight summaries: any regime requiring stimulation at a timepoint where the availability indicator is zero has probability exactly zero by design, and the estimand class is rebuilt so that only realizable sequences are contrasted. That is the diagnostic the registry entry asks for, applied to a design where the violation is structural and known. It does not extend to observational settings where the analogue of availability is unmeasured, and the paper states no method existed for sequences longer than one timepoint.",
+    "quote": "the positivity violation inherent to these experimental designs precludes estimation of certain counterfactual distributions",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Inference for sequential excursion-effect estimators over repeated experimental time points is not inference after cloning across sustained-strategy emulations. The quote establishes only that inference was considered valid in a particular neuroscience application, not that HC3 resolves clone dependence, site clustering, or flexible-weight uncertainty.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "Nonparametric Causal Inference for Optogenetics: Sequential Excursion Effects for Dynamic Regimes.",
+    "doi": "10.1080/01621459.2026.2635071",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A concrete variance default is supplied and tested for estimators fitted on person-time expanded across up to 500 timepoints per subject: the large-sample sandwich estimator undercovers at small n, and the HC3 finite-sample correction restores near-nominal coverage down to six subjects across 1000 replicates. This is a validated default for one estimator in one design. It does not address variance after cloning or sequence expansion in the emulation setting, where the expansion is over eligibility times rather than experimental timepoints.",
+    "quote": "These results show we can conduct valid inference in the sample sizes common in neuroscience studies.",
+    "locator": "Section 5.1"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Showing that a macro summary can miss sequence-level effects is an argument for a more granular estimand, not a decomposition or documented lineage from scientific question through protocol and observed-data identification. The quote contains no separation of protocol compromise, mapping loss, and estimation error.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-01",
+    "problem_title": "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error",
+    "problem_verdict": "overstated",
+    "problem_statement": "Three trials are in play in any emulation and only one is usually named: the ideal trial that would answer the decision-maker's question, the target trial the investigator specifies, and the emulation the data support. Specifying the target trial closely around the available data conceals the distance between the first two, and the paper reports one estimate as though the chain were tight. What is missing is not an additive decomposition; that generally does not exist, because the transitions change populations, interventions, outcomes and scales, so the discrepancies do not add. What is missing is a documented lineage: the change from the decision question to the operational causal estimand, the assumptions mapping that estimand to an observed-data functional, and the estimation uncertainty, each recorded separately so a reader can see which step carries the load. No convention requires",
+    "paper": "Nonparametric Causal Inference for Optogenetics: Sequential Excursion Effects for Dynamic Regimes.",
+    "doi": "10.1080/01621459.2026.2635071",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The gap between the scientific target and the analyzed quantity is separated and measured rather than asserted: the conventional macro summary compared across arms yielded no significant effect for any of the six poses, while the sequence-level estimands on the same data recovered dose-response structure. That is a demonstration that mapping loss, not estimation error, drove the null. The decomposition is specific to this design and offers no general accounting that would apply to a protocol emulated from records.",
+    "quote": "Such effects may be present even in studies in which one fails to detect the macro effects commonly tested.",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper supplies an outcome-blind design principle for choosing the grace period and identifies treatment-initiation frequencies as relevant information. It does not provide a reproducible selection criterion, so partial rather than full resolution is the appropriate effect.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Analytic Considerations for the Evaluation of Tuberculosis Preventative Therapy Effectiveness Among People Living with HIV.",
+    "doi": "10.1353/obs.2025.a973070",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "An explicit outcome-blind procedure is written into the protocol for three separate design constants: the enrollment window, the grace period and the 104-week follow-up cap are each to be set by inspection that does not touch the outcome. That is the discipline the entry asks for, stated before data are seen rather than reconstructed afterwards. What is not supplied is any criterion the blinded inspection must satisfy. The stated target is that sufficient numbers both do and do not initiate within x weeks, with no number attached, so two countries applying the same procedure can defensibly land on different grace periods and hence different estimands.",
+    "quote": "An outcome-blinded analysis in each country could be used to support this selection.",
+    "locator": "Defining the grace period"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted target trial explicitly defines an intervention whose initiation-time distribution is taken from observed initiators, rather than treating within-grace timing as irrelevant noise. This is a clear, limited example of constructing and stating a data-defined estimand with an intervention interpretation.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-04",
+    "problem_title": "An unobservable protocol component produces a different, data-defined estimand rather than a noisy version of the intended one",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The canonical protocol has seven linked components: eligibility, treatment strategies, assignment, follow-up, outcomes, causal contrast and analysis plan. Conceptual specification and operational realization are distinct, and when a component cannot be observed the analyst substitutes a proxy. If no valid measurement, missing-data or validation model recovers the intended variable, the resulting observed-data functional generally does not identify the intended causal effect, and it does not automatically identify some other one either: naming it a different estimand requires a corresponding intervention and an identification argument. A criterion that cannot be verified is dropped and the population changes; a strategy that cannot be distinguished from its neighbor is merged and the contrast changes; an outcome that is only partly captured redefines the endpoint. Nothing in current repor",
+    "paper": "Analytic Considerations for the Evaluation of Tuberculosis Preventative Therapy Effectiveness Among People Living with HIV.",
+    "doi": "10.1353/obs.2025.a973070",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The distribution of initiation times inside the grace period is a protocol component no record can reveal, and the plan says outright that effectiveness varies with it. Rather than treat that as noise, the estimand is redefined: the counterfactual is that everyone initiates according to the conditional distribution of start times actually observed among initiators, which makes the target a data-defined quantity that changes with prescribing practice. The reasoning for rejecting a uniform distribution is identification, not preference. What is not closed is comparability: the resulting estimand differs across countries and across calendar time by construction, and no mapping is given back to the intended program effect.",
+    "quote": "Thus, the estimand of our target trial imagines a counterfactual scenario wherein all participants initiate TPT within the grace period and they do so according to the conditional distribution of TPT start times observed in the real data.",
+    "locator": "Defining distribution of TPT initiation time in target trial"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "downgrade",
+   "corrected_effect": "Restates the standard full-pipeline bootstrap prescription for a cloned emulation; it does not provide a scalable or validated default for the open problem.",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Refitting nuisance models, recloning, and regenerating weights within each bootstrap replicate is the appropriate general bootstrap principle. The payload gives no computational evaluation, coverage evidence, or scalable alternative for sequence-expanded and clustered settings, which are the unresolved parts of SFW-01.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "Analytic Considerations for the Evaluation of Tuberculosis Preventative Therapy Effectiveness Among People Living with HIV.",
+    "doi": "10.1353/obs.2025.a973070",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A correct variance procedure for the cloned and expanded dataset is prescribed rather than assumed: every bootstrap replicate refits the propensity scores, re-clones participants, regenerates weights and refits the pooled logistic marginal structural model, and percentile intervals are computed alongside Wald intervals to test whether large-sample normality holds. The cost is that the entire pipeline runs once per replicate on a weekly-interval long dataset built from national HIV care records across several countries, and no scalable alternative is offered.",
+    "quote": "The nonparametric bootstrap procedure should include all steps of estimation.",
+    "locator": "Estimating parameters of the MSM"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Treating death as a competing event through event-specific hazards and cumulative incidence, while separately defining mortality, directly avoids the shortcut of censoring deaths from a nonfatal endpoint. This is only partial because it does not establish the causal interpretation or identifying assumptions needed for alternative competing-event estimands.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "Analytic Considerations for the Evaluation of Tuberculosis Preventative Therapy Effectiveness Among People Living with HIV.",
+    "doi": "10.1353/obs.2025.a973070",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Death is named as a competing risk for the tuberculosis endpoint and handled as one, with a cause-specific hazard model for each event type and a cumulative incidence function assembled from both, and the mortality endpoint is obtained by redefining the counting process rather than by censoring. That removes the common shortcut of censoring at death for a non-fatal outcome. It does not extend to the censoring assumptions that remain: right-censoring due to dropout is still assumed conditionally independent given past covariates, with sensitivity analysis deferred.",
+    "quote": "For this analysis, death is considered a competing risk for the TB endpoint.",
+    "locator": "Estimand of interest"
+   }
+  }
+ ]
+}

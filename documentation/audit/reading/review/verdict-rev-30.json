@@ -1,0 +1,182 @@
+{
+ "batch": "rev-30",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted statement assigns a study-specific modeling choice to stakeholders; it does not provide a reporting panel or distinguish diagnosable from intrinsically untestable assumptions. Identifying and probing one untestable assumption in an application is not a partial solution to the missing standardized, design-sensitive dashboard.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "Application of the estimand framework for an emulated trial using reference based multiple imputation to investigate informative censoring.",
+    "doi": "10.1186/s12874-024-02364-6",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "An emulation is written with its estimand specified under a regulatory framework, its intercurrent event strategy named, and its untestable assumption identified and probed. What the paper does not do is separate the assumptions this procedure can diagnose from those it cannot, and it closes by placing responsibility for choosing the reference hazard and its timing on the study stakeholders.",
+    "quote": "It is the responsibility of the stakeholders in a specific study to consider the appropriate hazard for each group of censored patients, and its timing.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Using a prespecified positive control to guide trimming and then assess the completed emulation makes an external validity probe an explicit workflow component. It addresses one part of the problem, but it neither integrates negative controls, proxies, and validation data under a joint estimand nor quantifies the remaining confounding.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Target Trial Emulation Using Cohort Studies: Estimating the Effect of Antihypertensive Medication Initiation on Incident Dementia.",
+    "doi": "10.1097/ede.0000000000001802",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A positive control outcome is used twice, first to set the propensity trimming cutoffs and then as a final validity check after all design decisions are made, and it changed the paper's conclusion. This is a negative-control-style device operating as a workflow step rather than a supplementary analysis, and its limit is stated: the residual confounding it revealed could be detected but not quantified.",
+    "quote": "Importantly, our study may have drawn different conclusions had we foregone a positive\ncontrol analysis, demonstrating the value of such analyses as a final check of the validity of\ntarget trial emulation once all design decisions have been made.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A density-based, subtrial-specific support rule improves on arbitrary percentile trimming and recognizes that support differs over time. It remains a propensity-score-density diagnostic, does not identify unsupported covariate histories, and does not define the post-restriction target population.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Target Trial Emulation Using Cohort Studies: Estimating the Effect of Antihypertensive Medication Initiation on Incident Dementia.",
+    "doi": "10.1097/ede.0000000000001802",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The paper replaces visual or conventional trimming cutoffs with a density-based rule that guarantees a minimum density across the supported range and lets the range vary across nested sub-trials, which is a real improvement on naming a percentile. It still describes support in terms of score densities rather than naming the patient histories that lack it, and restricting further did not change the estimates.",
+    "quote": "Using density-based cutoffs chosen using a positive control outcome\nensures a minimum density of participants across the range of propensity scores where there\nis support for positivity while allowing propensity score ranges to vary across sub-cohorts\nand maximizing sample size.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Varying eligibility criteria and observing changed estimates studies sensitivity to patient selection, not whether conditioning on healthcare-use variables opens collider paths. The quote supplies no causal-graph criterion, healthcare-use analysis, or method for detecting the stated selection mechanism.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "ELG-02",
+    "problem_title": "Eligibility criteria built from healthcare-use variables can induce selection through colliders",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An eligibility criterion is a conditioning statement, and conditioning on a variable that is a collider, or a relevant descendant of one, in the graph relating determinants of treatment and outcome opens a noncausal path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables: a required prior visit, a recorded baseline laboratory value, a minimum enrollment period. Being a healthcare-use variable is not sufficient for the bias, and these variables are the ones most likely to sit at the junction, because pre-baseline treatment decisions, incipient disease and the common causes of care-seeking and outcome all feed them. Nothing in the current workflow checks an eligibility definition for that structure before the analysis runs, and the reporting checklist asks what the criteria were rather than what conditioning on them does.",
+    "paper": "Target Trial Emulation: A Design Tool for Cancer Clinical Trials.",
+    "doi": "10.1200/cci.22.00140",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "This is eligibility treated as an object of study rather than a fixed input: 24 permutations show which criteria change the survival estimate and by how much, and cited work in lung cancer found criteria that could be relaxed without harming the hazard ratio. It measures the consequence of criteria on the estimate and does not address selection induced by healthcare-use variables inside those criteria.",
+    "quote": "The impact of patient selection on treatment outcomes can be studied using target trial emulation.",
+    "locator": "Conclusion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Avoiding an eligibility restriction or adherence definition that would create immortal-time bias is a design-validity judgment, not an outcome-blind rule for choosing a time grid or grace period. The evidence does not address either quantity named in the registered problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Emulating the MERINO randomised control trial using data from an observational cohort and trial of rapid diagnostic (BSI-FOO).",
+    "doi": "10.1371/journal.pone.0268807",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Two time-related traps are handled explicitly: the trial's 96-hour survival exclusion was not imported because it would have created survival bias, and the per-protocol requirement of four days on allocated treatment was refused for the same reason. Both decisions are stated as judgments about which criteria may be carried across from a trial protocol, with no rule generating them.",
+    "quote": "Secondly, it was not possible to emulate the per-protocol analysis fully as few participants received allocated treatment for four days, and restricting analyses to those who are in receipt for four or more days would introduce immortal time bias (bias induced by a period of follow-up during which, by design, the outcome cannot occur).",
+    "locator": "Strengths and limitations"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Aggregate covariate-balance checks after weighting assess measured-confounder balance; they do not diagnose positivity or identify histories with zero or near-zero treatment probability. Flagging drug comparisons on that basis is therefore not a partial solution to the stated support-localization problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Framework for identifying drug repurposing candidates from observational healthcare data.",
+    "doi": "10.1093/jamiaopen/ooaa048",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Balancing weights are used as a pass or fail gate on whether identified biases were removed, and between 6 and 18 percent of drugs failed it and were flagged rather than reported. The paper contrasts this with regression approaches that provide no such check. The gate operates on aggregate balance and does not name the patient histories that lack support, and it is exactly the trade-off with adjusting for many confounders that motivated the confounder selection step.",
+    "quote": "Regression-based methods, such as Cox model, which were commonly used in previous drug-repurposing studies, do not allow one to determine whether identified biases have been eliminated. 26",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The proposal treats successful reproduction of selected known effects as evidence that claims data can support later heterogeneity analysis, but it gives no performance estimand, selection model, transport conditions, or criterion for consistency. It therefore asserts the extrapolation whose validity BEN-01 questions rather than solving any named component of that problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "BEN-01",
+    "problem_title": "There is no theory for extrapolating successful replication of selected trials to new questions",
+    "problem_verdict": "overstated",
+    "problem_statement": "A successful replication calibrates one emulation of one trial in one database. Transferring that confidence to a different question, or to the same question in a different database, is not an inference the benchmarking design licenses: it requires a target performance estimand stated in advance, an explicit selection or transport model, conditional exchangeability across the questions being compared, and overlap in whatever modifies emulation quality. Outside that support the transfer is model-dependent rather than identified, and frameworks that have been proposed for it remain unevaluated in that role. The benchmarking corpus is also a selected sample: trials get emulated when they are recent, large and have an accessible active comparator, which are the conditions under which emulation works best. Across 107 paired emulations and trials the effect correlation was 0.59 overall and 0.8",
+    "paper": "Using the Causal Inference Framework to Support Individualized Drug Treatment Decisions Based on Observational Healthcare Data.",
+    "doi": "10.2147/clep.s274466",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A gate is proposed before individualized estimation begins: the data source must reproduce known randomized main effects, and only then is it deemed suitable for studying individual effects. It is a data-fitness test with an explicit criterion, and it is stated as a proposal without a threshold for what consistent replication means or an argument that passing on main effects licenses conclusions about effect modification.",
+    "quote": "By pre-validation, we mean that promising (literature) findings must demonstrate the consistency in routine claims data and thus indicate that the claims data are suitable for further steps of modelling and HTE assessment.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper operationalizes data fitness by mapping source capture and linkage properties to protocol components, which is a meaningful advance over a generic narrative suitability claim. It does not define prespecified adequacy thresholds or a stop rule, so the effect is properly partial.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "DTA-01",
+    "problem_title": "Data-fitness assessment is narrative and has no thresholds that would stop a study",
+    "problem_verdict": "overstated",
+    "problem_statement": "Electronic health records arise from encounters, billing and documentation rather than from scheduled research assessments, so eligibility and follow-up in an emulation partly reflect care-seeking and access rather than the biology the protocol intends. Whether a given database can support a given target trial is a question about the data source and the protocol jointly, and quantitative assessments of that pair now exist. What does not exist is a prespecified stop rule: a threshold agreed before the analysis, on observability, temporal precision, capture continuity, comparator support, outcome validity and linkage completeness, that would halt a study when an essential component fails. Outside tightly gated regulatory and network feasibility processes, most published emulations still assert suitability in a paragraph, and a pipeline with no route to the answer no will always produce an ",
+    "paper": "Assessing the quality of electronic health record data and the claims linked data for target trial emulation studies.",
+    "doi": "10.1093/jamiaopen/ooag102",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is a data-fitness assessment mapped element by element onto the protocol components an emulation needs, with an external reference supplying the denominators, and it produces a differentiated verdict: single-system records suffice for in-system clinical detail such as laboratory values and vital signs, and linkage is essential when the emulation depends on cross-setting capture. What it does not supply is a threshold; the recommendation is that investigators assess adequate completeness without saying what adequate is.",
+    "quote": "Before conducting a target trial emulation, investigators should also assess whether key elements needed for eligibility, treatment assignment, baseline covariates, outcomes, and follow-up are captured with adequate completeness and internal consistency in the available data.",
+    "locator": "Discussion"
+   }
+  }
+ ]
+}

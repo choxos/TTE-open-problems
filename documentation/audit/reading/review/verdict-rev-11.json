@@ -1,0 +1,182 @@
+{
+ "batch": "rev-11",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "downgrade",
+   "corrected_effect": "illustrates the history-specific nature of positivity failure",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The example correctly identifies which covariate strata lack a treatment comparison. It offers neither a policy-specific support criterion nor a diagnostic for locating unsupported histories in real longitudinal data, so it illustrates the gap rather than partially resolving it.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Comparative Effectiveness Research Using Observational Data: Active Comparators to Emulate Target Trials with Inactive Comparators.",
+    "doi": "10.13063/2327-9214.1234",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Positivity is stated as a claim about which histories exist rather than as a summary of weights: if every glaucoma patient initiates glaucoma therapy and no one else does, contrast 2 has no comparison group at all and contrast 1 has none in the stratum without glaucoma. The unsupported histories are named exactly. It does not close the entry, because the demonstration is analytic on a stylized example and no diagnostic is offered for finding the analogous unsupported strata in a real database.",
+    "quote": "Then contrast 2 is undefined because all subjects with B =1 have glaucoma and all subjects with B =0 do not",
+    "locator": "Setting 2"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "downgrade",
+   "corrected_effect": "illustrates protocol-level tradeoffs in applying IV methods to a target-trial framework",
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The article makes several IV-related compromises visible, including the restriction to time-fixed strategies. It does not document a lineage from a decision question through an operational estimand and observed-data mapping, so it does not provide the reporting framework described by the problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-01",
+    "problem_title": "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error",
+    "problem_verdict": "overstated",
+    "problem_statement": "Three trials are in play in any emulation and only one is usually named: the ideal trial that would answer the decision-maker's question, the target trial the investigator specifies, and the emulation the data support. Specifying the target trial closely around the available data conceals the distance between the first two, and the paper reports one estimate as though the chain were tight. What is missing is not an additive decomposition; that generally does not exist, because the transitions change populations, interventions, outcomes and scales, so the discrepancies do not add. What is missing is a documented lineage: the change from the decision question to the operational causal estimand, the assumptions mapping that estimand to an observed-data functional, and the estimation uncertainty, each recorded separately so a reader can see which step carries the load. No convention requires",
+    "paper": "Instrumental Variable Analyses in Pharmacoepidemiology: What Target Trials Do We Emulate?",
+    "doi": "10.1007/s40471-017-0120-1",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Walking the seven protocol components one at a time produces a qualitative decomposition: the eligibility compromise (compliers), the strategy compromise (point rather than sustained treatments), the assignment compromise (instrumental conditions replacing exchangeability), the follow-up compromise (unaddressed censoring) and the outcome compromise (unblinded ascertainment) are each named separately. It does not close the entry. No component is assigned a magnitude, so the distance between the instrumental estimate and the scientific target is never apportioned among these compromises.",
+    "quote": "Putting classical IV methods in this context indeed illuminates tradeoffs that are unavoidable, such as only considering time-fixed treatment strategies",
+    "locator": "Conclusions"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "downgrade",
+   "corrected_effect": "documents a standalone negative-control-outcome assessment within an emulation and its limitations",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Using several negative control outcomes is relevant evidence that such tools can be embedded in an emulation. The finding that they detect but cannot quantify bias reinforces the absence of an estimand-aligned joint workflow; it does not partially solve that integration problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Comparing PCSK9 Monoclonal Antibody Treatment Strategies Following Myocardial Infarction Using Negative Control Outcomes: A Target Trial Emulation Study",
+    "doi": "10.1097/EDE.0000000000001730",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is the fullest use of negative controls inside an emulation in this batch, ten outcomes chosen by an expert panel to probe distinct mechanisms, run across three databases. It also states the limits precisely: the controls detected bias and could not quantify it, and their associations cannot all be attributed to bias since a PCSK9 and cancer link has been suggested. That is the entry's claim that the tools exist separately without a convention for what each one buys or how to combine them, and the paper declines to combine negative control exposures with outcomes because those methods are not settled.",
+    "quote": "While we were able to detect potential bias and residual confounding using negative control outcomes, we could not estimate the magnitude of the bias.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "downgrade",
+   "corrected_effect": "illustrates a post hoc decision that an analysis is infeasible because treatment initiation was too sparse",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The conclusion appropriately declines a comparative-effectiveness analysis under the current design because sparse initiation would bias results. It does not specify a data-fitness framework or a prespecified threshold that would halt a study, which is the unresolved component of the problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "DTA-01",
+    "problem_title": "Data-fitness assessment is narrative and has no thresholds that would stop a study",
+    "problem_verdict": "overstated",
+    "problem_statement": "Electronic health records arise from encounters, billing and documentation rather than from scheduled research assessments, so eligibility and follow-up in an emulation partly reflect care-seeking and access rather than the biology the protocol intends. Whether a given database can support a given target trial is a question about the data source and the protocol jointly, and quantitative assessments of that pair now exist. What does not exist is a prespecified stop rule: a threshold agreed before the analysis, on observability, temporal precision, capture continuity, comparator support, outcome validity and linkage completeness, that would halt a study when an essential component fails. Outside tightly gated regulatory and network feasibility processes, most published emulations still assert suitability in a paragraph, and a pipeline with no route to the answer no will always produce an ",
+    "paper": "Comparing PCSK9 Monoclonal Antibody Treatment Strategies Following Myocardial Infarction Using Negative Control Outcomes: A Target Trial Emulation Study",
+    "doi": "10.1097/EDE.0000000000001730",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is a published negative fitness assessment, which the entry says does not exist as a citable result: the authors ran the diagnostic, found the data could not support the question, and published that instead of an effect estimate. The criterion was the behavior of negative controls rather than a prespecified threshold, so it demonstrates the outcome the entry wants without the stop rule the entry asks for.",
+    "quote": "A comparative effectiveness study of these treatments using the current approach would likely bias results due to the low number of PCSK9 mAb initiators.",
+    "locator": "Abstract, conclusion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted guidance directly addresses clone-level correlation and names standard inferential routes. It does not establish a scalable default that also handles site clustering and flexible estimated-weight uncertainty, so partial addressing is the correct effect.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "De-Mystifying the Clone-Censor-Weight Method for Causal Research Using Observational Data: A Primer for Cancer Researchers",
+    "doi": "10.1002/cam4.70461",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The primer states the requirement the entry says is often ignored, that inference must account for correlation between clones of the same person, and names three routes: the bootstrap, a robust variance estimator, and M-estimation. It does not address the scale problem or the uncertainty from estimated weights under flexible nuisance models, which is the part of the entry that survives.",
+    "quote": "bootstrapping or a robust variance estimator must be used when generating 95% confidence intervals to preserve and account for the correlation between clones of the same person. M-estimation can alternatively be used.",
+    "locator": "Section 3, end"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "downgrade",
+   "corrected_effect": "illustrates use of effective sample size as a truncation-tuning diagnostic",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper uses effective sample size to choose a truncation level, which is relevant to the problem. It does not establish a reporting convention or require effective sample size alongside nominal sample size, so it illustrates a useful practice rather than partially resolving the gap.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-03",
+    "problem_title": "Large databases yield small effective samples after eligibility, comparator restriction and weighting",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "A database of millions can carry very little information about a specific target trial once strict eligibility, active-comparator restriction and weighting have been applied, and extreme weights reduce the effective sample size far below the nominal count. Conventional asymptotic inference then becomes unreliable, most sharply for rare competing events and for subgroup effects, which are the quantities decision makers ask about. Papers continue to report the nominal number of patients, which for a weighted longitudinal analysis is not the quantity that governs the variance, and no convention requires the effective size to appear beside it.",
+    "paper": "Methodological Challenges of Emulating a Target Trial to Assess Effectiveness of Timing of PCSK9 Inhibitor Treatment Initiation Post Myocardial Infarction",
+    "doi": "10.1002/pds.70354",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Effective sample size is used here as an explicit criterion for choosing the truncation level, which is the reporting the entry says is not conventional. It is used to make one analytic decision rather than reported alongside the nominal count at each follow-up time, so it demonstrates the practice without establishing it.",
+    "quote": "the choice of truncation level involved a trade-off between covariate balance and effective sample size",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "downgrade",
+   "corrected_effect": "documents a standalone negative-control-outcome application in a clone-censor-weight emulation",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper shows that several negative control outcomes can be used to assess an estimator in an emulation. It supplies no joint model, combination with proxies or validation data, or rule for interpreting and reconciling diagnostic results, so it does not partially address the stated integration problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Methodological Challenges of Emulating a Target Trial to Assess Effectiveness of Timing of PCSK9 Inhibitor Treatment Initiation Post Myocardial Infarction",
+    "doi": "10.1002/pds.70354",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Negative control outcomes are used inside an emulation to assess residual bias, several of them chosen to be qualitatively different, which is one of the tools the entry says exist separately and are not routine. It is a single-tool application rather than the estimand-aligned joint model the entry asks for, and the paper does not say what the negative controls would have licensed had they been clean.",
+    "quote": "We assessed the performance of a CCW estimator in a study comparing a rarely and selectively followed protocol—early initiation of a PCSK9i—against non-or late initiators following MI, using several NCOs.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The quoted result directly demonstrates that censoring at a competing event changes the analysis and can yield misleading cumulative-incidence estimates. Its discussion of alternative approaches and research-question dependence addresses the named applied reasoning failure, while leaving the broader sustained-strategy and recurrent-event gap open.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "Target Trial Emulation Using Hospital-Based Observational Data: Demonstration and Application in COVID-19",
+    "doi": "10.3390/life13030777",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The paper shows empirically what the entry asserts, that censoring at the competing event is an identifying decision rather than data cleaning: doing so overestimated the cumulative incidence of the primary outcome in both arms. It then reports the alternatives and states that the choice depends on the research question and on whether the outcome is desirable or undesirable, which is the reasoning the entry says is skipped.",
+    "quote": "in our naïve analysis, we showed that censoring patients at the time of the competing event leads to an overestimation of cumulative incidence probabilities for the primary outcome of both treatment groups",
+    "locator": "Discussion"
+   }
+  }
+ ]
+}

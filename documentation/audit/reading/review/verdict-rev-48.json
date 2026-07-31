@@ -1,0 +1,182 @@
+{
+ "batch": "rev-48",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A single low-participation validation substudy in an applied database analysis does not establish an integrated emulation workflow or a method for reconciling validation data with negative controls, proxies, and other bias tools. The quoted text supports only the recruitment rate, not the claimed analytic integration or its causal implications.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "[Secondary Data for Pharmacoepidemiological Research - Making the Best of It!].",
+    "doi": "10.1055/a-1633-3827",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A two-phase design that links claims to a primary survey is a real integration of validation data into a database analysis, and the result was informative: smoking and body mass index raised bleeding risk but did not materially change the GePaRD-only estimate. What it does not close is feasibility as a workflow, since only 505 of 4,000 contacted people (15.4%) agreed to interview, and the review offers no procedure for deciding when such a substudy is required or how to handle a validation sample selected at that rate.",
+    "quote": "Von 4000 angeschriebenen Personen konnten\nnur 3280 Briefe zugestellt werden, von denen nur 505 (15.4 %) zu\neinem Interview bereit waren.",
+    "locator": "Record Linkage"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The quoted passage directly recognizes history-defined strata in which treatment is effectively deterministic and permits their exclusion. That is a genuine, though incomplete, response to positivity failure because it does not supply the policy-specific, localized reporting framework required by the registered problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Using generalized linear models to implement g-estimation for survival data with time-varying confounding.",
+    "doi": "10.1002/sim.8997",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "G-estimation of the structural nested model supplies something a weight diagnostic does not: it identifies the strata whose next exposure is almost determined by history and permits excluding them, and even when retained those observations contribute little because the estimator weights by the difference between observed and expected exposure. What it does not close is the reporting side; the Cystic Fibrosis analysis names no excluded history and no diagnostic quantifies how much of the 2,386-patient cohort fell into a nearly deterministic stratum, so the reader still cannot see which patient histories carry no information.",
+    "quote": "This offers the possibility of excluding those strata of the population that are composed of individuals whose next exposure is almost guaranteed by their histories to take one particular value",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper explicitly favors regime-specific survival-risk contrasts over hazard ratios, addressing the narrow effect-measure component of the problem. It does not establish complete estimand reporting for a clone-censor-weighted, grace-period per-protocol emulation, so partial rather than resolving status is appropriate.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-03",
+    "problem_title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.",
+    "paper": "Using generalized linear models to implement g-estimation for survival data with time-varying confounding.",
+    "doi": "10.1002/sim.8997",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The model reports relative survival risks, an explicit contrast of survival probabilities under starting now versus delaying a year, rather than the hazard ratio that a marginal structural Cox model would return, and the paper names hazard ratio interpretability as the reason. What it does not close is the constraint problem: the multiplicative model does not hold probabilities below one, which the paper flags as a live concern for outcomes with high survival, and the reported quantity remains a contrast between regimes rather than the protocol-level estimand.",
+    "quote": "These are more easily interpreted than hazard ratios, which are commonly reported when fitting marginal structural Cox models.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Publishing example R code is a real contribution to estimator reproducibility and directly addresses one component of operative transparency. Generic fitting code cannot make the registry analysis externally auditable without its phenotype definitions, analytic decisions, diagnostics, and version history.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "Using generalized linear models to implement g-estimation for survival data with time-varying confounding.",
+    "doi": "10.1002/sim.8997",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Example R code for the g-estimation fit is published with the article, which is more than the norm for time-varying confounding analyses and directly serves the reproducibility the entry asks for. What it does not close is everything downstream of the estimator: the Cystic Fibrosis Registry phenotype logic, the censoring rules for transplant and the 18-month gap, and the weight or exposure model diagnostics are described in prose only, and no rejected model version is available.",
+    "quote": "provide example R code to facilitate the use of this approach by other researchers",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Balance-based penalty tuning is a genuine causal-performance alternative to selecting by predictive deviance alone. Its single-time mediation setting and simulation-based evidence do not provide a usable longitudinal selection rule combining balance, weight behavior, and estimator-specific inference requirements.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-01",
+    "problem_title": "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Identifying a sustained-strategy effect requires consistency, sequential exchangeability and positivity, and the estimator families differ in which nuisance components they need. When those components are fitted by machine learning, the model that predicts treatment best is not the model that minimizes the finite-sample error of the causal estimator: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Balance-calibrated weight fitting exists and has been applied, so the field is not selecting on prediction alone. What is missing is a criterion that combines predictive risk with the estimator-specific diagnostics that matter, longitudinal balance, weight tails and the remainder-rate condition, in one selection rule, and a default library tuned that way rather than for prediction.",
+    "paper": "Variable selection for causal mediation analysis using LASSO-based methods.",
+    "doi": "10.1177/0962280221997505",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Tuning the penalty by covariate balance instead of by deviance is a criterion aimed at the causal target rather than at prediction, and it measurably changed the answer: in the scenarios where outcome-related covariates mattered, balance-based tuning gave much less biased direct and total effect odds ratios over 1,000 replicates. What it does not close is the longitudinal case, since the setting is a single treatment and a single mediator with no time-varying nuisance sequence, and the balance criterion is still selected by comparing simulation performance rather than by a rule available in a real analysis.",
+    "quote": "we found in Scenarios B and C, where the outcome-related covariates are at least moderately related to the outcome variable, wAMD leads to much less biased estimates of NDE and TE odds ratios",
+    "locator": "Simulation results"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Joint calibration of treatment and censoring weights directly targets finite-sample covariate balance rather than treatment-model prediction, which is a substantive partial response to the problem. It does not choose the calibration set or jointly optimize predictive risk, weight tails, longitudinal balance, and remainder behavior, so the central selection gap remains.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-01",
+    "problem_title": "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Identifying a sustained-strategy effect requires consistency, sequential exchangeability and positivity, and the estimator families differ in which nuisance components they need. When those components are fitted by machine learning, the model that predicts treatment best is not the model that minimizes the finite-sample error of the causal estimator: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Balance-calibrated weight fitting exists and has been applied, so the field is not selecting on prediction alone. What is missing is a criterion that combines predictive risk with the estimator-specific diagnostics that matter, longitudinal balance, weight tails and the remainder-rate condition, in one selection rule, and a default library tuned that way rather than for prediction.",
+    "paper": "Joint calibrated estimation of inverse probability of treatment and censoring weights for marginal structural models.",
+    "doi": "10.1111/biom.13411",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Weights are chosen by solving restrictions that eliminate covariate associations with the treatment and censoring processes in the observed sample, which targets the quantity the weights exist to fix rather than the likelihood of the treatment model. The payoff is measurable: smaller variances and mean squared errors than maximum likelihood weights under both correct and incorrect specification, and standard errors in the HIV application smaller than the unweighted analysis. What it does not close is the selection problem it inherits, since exact balance caps how many covariates and functionals can enter and the paper states that omitting observed confounders or strong outcome predictors reduces both robustness and efficiency.",
+    "quote": "We develop novel calibration restrictions by jointly eliminating covariate associations with both treatment assignment and censoring processes after weighting the observed data sample (i.e., to optimize covariate balance in finite samples).",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "downgrade",
+   "corrected_effect": "The study illustrates that observed visit frequency can be included among measured time-varying adjustment variables; it does not model the visit process as part of the causal structure or address informative observation beyond recorded history.",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Including visit frequency in an adjustment set recognizes that visits may carry information, but it is not a method for identifying effects under informative observation or irregular visiting. The quoted text supports covariate adjustment only, not the stronger claimed partial solution to the structural visit-process problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "The Impact of Delayed Switch to Second-Line Antiretroviral Therapy on Mortality, Depending on Definition of Failure Time and CD4 Count at Failure.",
+    "doi": "10.1093/aje/kwaa049",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Visit frequency is carried in the adjustment set alongside CD4 count and viral load, which treats how often a patient is seen as informative rather than as an irrelevance, and switching cannot be observed except at a visit. What it does not close is the structure: the visit process is still an adjustment covariate rather than a modeled node, and the paper concedes that patients recorded as lost to follow-up may be cycling in and out of care in other provinces, which no adjustment for observed visit frequency can represent.",
+    "quote": "We adjusted for measured time-varying confounding by CD4 count, viral load, and visit frequency.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper supplies quantitative bias analysis for misclassification of a binary confounder in an MSM-IPW setting, which is directly relevant to error-prone covariates used in weighted causal analyses. Its point-treatment, single-confounder setting leaves the longitudinal joint measurement, eligibility, treatment, and outcome misclassification problem unresolved.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MER-01",
+    "problem_title": "Phenotypes enter emulations as error-free binary variables",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquel",
+    "paper": "Quantitative Bias Analysis for a Misclassified Confounder: A Comparison Between Marginal Structural Models and Conditional Models for Point Treatments.",
+    "doi": "10.1097/ede.0000000000001239",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This supplies exactly what the entry asks for in one setting: closed-form bias expressions for a mismeasured binary confounder in a weighted analysis, a simulation confirming them at specificity 0.95 and sensitivity 0.90, and an online tool that turns assumed sensitivity and specificity into a predicted bias distribution, giving median -0.30 against an estimate of -3.52 in NHANES. What it does not close is nearly everything a longitudinal emulation needs: a single point treatment, a continuous outcome, one dichotomous confounder, no effect modification, and the confounder rather than the phenotype defining eligibility or outcome. It also requires the sensitivity and specificity to be supplied from outside the analysis.",
+    "quote": "Compared with bias in the average treatment effect in a conditional model, the bias in an MSM-IPW can be different in magnitude but is equal in sign.",
+    "locator": "Abstract"
+   }
+  }
+ ]
+}

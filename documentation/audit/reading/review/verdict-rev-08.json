@@ -1,0 +1,182 @@
+{
+ "batch": "rev-08",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The published guideline and analytical code materially improve auditability for this specific nested case-control emulation. They do not supply the complete phenotype specification, diagnostic outputs, or versioned decision trail required by the registered problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "Combining high quality data with rigorous methods: emulation of a target trial using electronic health records and a nested case-control design.",
+    "doi": "10.1136/bmj-2022-072346",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A detailed guideline, a SAS macro and a sample dataset are published as supplementary files, which is more than most emulations release and closes the code half of the entry for this design. The rest stays open: the data sharing statement declares that no additional data are available, the ICD-9 phenotype logic and the validation protocol are described in prose rather than deposited, weight diagnostics beyond the truncation point are not reported, and no record exists of the protocol versions considered and rejected during the iterative reformulation the paper describes.",
+    "quote": "Supplemental file 1 provides a detailed guideline and an analytical code to implement the target trial emulation approach using a nested case-control design.",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "A prespecified clinician-consensus process can select a grace period without observing study outcomes, so it addresses one component of the problem in a particular application. It is not a general procedure for selecting a window or time grid from treatment and observation processes, and the quoted sentence alone does not establish robustness of the chosen seven-day value.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Emulating Target Trials With Real-World Data to Inform Health Technology Assessment: Findings and Lessons From an Application to Emergency Surgery.",
+    "doi": "10.1016/j.jval.2023.04.010",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The grace period is fixed by an outcome-blind procedure: a Delphi panel of 12 clinicians, requiring at least 9 in favour, sets the 7-day window before any outcome is examined, and three explicit criteria are stated for time zero, with two candidates rejected against them. That is more discipline than most emulations apply. It does not close the entry. No rule maps clinical judgment to a number, the same panel that fixed the window also fixed eligibility and the intervention definition, no alternative window is examined in sensitivity analysis, and the residual bias is argued away by a claim that 7-day mortality is low rather than measured.",
+    "quote": "and that for both conditions the time window for ES should be within 7 days of assessment (baseline/time zero, see below).",
+    "locator": "Definition of Treatment Strategies"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Reporting materially different estimates across estimation and missing-data approaches demonstrates that analytic choice affected the substantive result. It provides an example of the requested sensitivity reporting, but supplies no general criterion for choosing among estimators or declaring robustness.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "Emulating a target trial of intensive nurse home visiting in the policy-relevant population using linked administrative data.",
+    "doi": "10.1093/ije/dyac092",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This does what the entry asks and shows that estimator choice mattered: all eight combinations of three estimators and four missing-data methods are reported side by side, and a minus 20.6 percentage point reading benefit under TMLE with the missing covariate indicator method collapses toward zero under g-computation, inverse probability weighting and the overlapping sample. What stays open is adjudication. No criterion selects among the eight, TMLE is designated primary in advance without a rule that would have preferred it, and the substantive conclusion of no robust effect is reached by inspecting the spread rather than by a defined decision procedure.",
+    "quote": "However, in the common sample or considering other estimation methods, these beneficial effect estimates disappeared.",
+    "locator": "Results"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The Roadmap explicitly requires identification assumptions to be stated and links sensitivity analysis to the causal gap. That improves assumption reporting, while falling short of a standardized dashboard that distinguishes diagnostic checks from fundamentally untestable assumptions.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "Start with the Target Trial Protocol, Then Follow the Roadmap for Causal Inference.",
+    "doi": "10.1097/ede.0000000000001637",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Step 5 makes delineating every identification assumption a required output rather than a discretionary paragraph, and Step 8 attaches sensitivity analysis to the specific assumptions that remain untestable, with the explicit warning that the gap between adjusted and unadjusted estimates says nothing about whether confounding was handled. What is not closed is the dashboard itself: there is no fixed set of fields, no requirement to label an assumption diagnosable or undiagnosable, and no threshold at which a stated causal gap makes a claim unreportable.",
+    "quote": "the Roadmap explicitly requires researchers to delineate all necessary identification assumptions every time they aim to estimate a causal effect",
+    "locator": "MIND THE [CAUSAL] GAP!"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "downgrade",
+   "corrected_effect": "partially-addresses only estimator implementation and tuning within a chosen approach, not the choice among causal estimators or the reporting of estimator sensitivity",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Finite-sample simulations can support selection among candidate algorithms, such as nuisance-model learners or implementation choices. The recommendation does not establish a defensible default or selection rule across g-method estimators with different identification and modeling commitments, nor does it require publication of alternative estimates.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "Start with the Target Trial Protocol, Then Follow the Roadmap for Causal Inference.",
+    "doi": "10.1097/ede.0000000000001637",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Step 7 replaces the free choice of estimator with a selection procedure: candidate algorithms, including different Super Learner libraries and sample-splitting schemes, are compared on finite-sample simulations built from the study's own confounder distribution with outcomes blinded, and the comparison is written into the analysis plan before estimation. That is a concrete answer to the demand that a study show its estimator choice was defensible. It does not close the entry: the procedure is a recommendation in a commentary, no criterion says when the differences between candidates are large enough to report, and nothing requires the losing candidates to be published.",
+    "quote": "Candidate algorithms should be compared using finite sample simulations reflecting the challenges in the real data.",
+    "locator": "RED LIGHT [CHOOSE AN ESTIMATOR]; GREEN LIGHT [ESTIMATE!]"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The causal-gap framework distinguishes an estimable statistical parameter from the desired causal parameter and separates identification from estimation. It does not document the earlier transitions from decision question to target-trial protocol and from protocol to data-constrained emulation, so the broader lineage problem remains.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-01",
+    "problem_title": "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error",
+    "problem_verdict": "overstated",
+    "problem_statement": "Three trials are in play in any emulation and only one is usually named: the ideal trial that would answer the decision-maker's question, the target trial the investigator specifies, and the emulation the data support. Specifying the target trial closely around the available data conceals the distance between the first two, and the paper reports one estimate as though the chain were tight. What is missing is not an additive decomposition; that generally does not exist, because the transitions change populations, interventions, outcomes and scales, so the discrepancies do not add. What is missing is a documented lineage: the change from the decision question to the operational causal estimand, the assumptions mapping that estimand to an observed-data functional, and the estimation uncertainty, each recorded separately so a reader can see which step carries the load. No convention requires",
+    "paper": "Start with the Target Trial Protocol, Then Follow the Roadmap for Causal Inference.",
+    "doi": "10.1097/ede.0000000000001637",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The causal gap names one of the components the registry entry asks to be separated: the distance between the statistical parameter that is estimable and the causal parameter that was wanted. Steps 1 to 7 are then assigned to estimation error and identification separately, so two layers are pulled apart rather than reported as one number. What remains undecomposed is the earlier loss: the distance between the scientific question and the target trial protocol that was written for it, and the further loss when that protocol is compromised to fit the data. Those two are absorbed into Step 1 and never quantified.",
+    "quote": "Without identification, the true value of the statistical parameter that we will estimate from the observed data will not be equivalent to our wished-for causal parameter; in other words, there will be a so-called causal gap.",
+    "locator": "TRY TO BRIDGE THE GAP"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The Roadmap correctly limits machine learning to reducing modeling error and treats identification as a separate requirement. As a methodological recommendation it addresses the conceptual error, but it does not establish that applied studies cease presenting flexible estimation as a remedy for absent exchangeability or support.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "LRN-01",
+    "problem_title": "Flexible estimation is presented as a remedy for identification failure",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Identification is a property of the observed data together with the assumptions, not of the estimator. A flexible learner reduces approximation error in a nuisance function and cannot repair nonidentification, and the same smoothness that reduces that error extends the fit confidently into regions holding no observations. Support and overlap diagnostics can flag particular forms of extrapolation, and they depend on how support is defined and on the model producing them, so a passing diagnostic certifies nothing about sequential exchangeability, positivity or identification. The gap widens with high-dimensional treatment histories, where the region a prediction is being asked about is itself hard to characterize, and applied work continues to offer a more flexible learner as the response to a confounding or positivity concern.",
+    "paper": "Start with the Target Trial Protocol, Then Follow the Roadmap for Causal Inference.",
+    "doi": "10.1097/ede.0000000000001637",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Machine learning is placed where it belongs, at the functional form problem inside estimation, and is fenced by the requirement that it be incorporated so that 95 percent confidence intervals remain valid. The identification question is handled in a separate step, and the interpretation step insists that a nonzero causal gap leaves an association regardless of how flexible the estimator was. What is not closed is the practice: the entry concerns studies that present flexible estimation as a remedy for identification failure, and a commentary recommending a different ordering does not stop them.",
+    "quote": "machine learning may help minimize bias due to reliance on misspecified parametric regressions, but must be incorporated in a manner that yields valid 95% confidence intervals",
+    "locator": "RED LIGHT [CHOOSE AN ESTIMATOR]; GREEN LIGHT [ESTIMATE!]"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "downgrade",
+   "corrected_effect": "partially-addresses only calibration of residual bias for external-control augmentation in a matched trial and data setting",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The proposed replication exercise uses prior randomized controls to inform a residual-bias calibration for hybrid control-arm methods. It is not a general reporting framework for comparing aligned target-trial estimands with paired uncertainty, and it does not separate estimand mismatch from sampling error.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "BEN-02",
+    "problem_title": "Replication is reported as a binary label rather than as a calibrated comparison of estimands",
+    "problem_verdict": "overstated",
+    "problem_statement": "Agreement between an emulation and a trial is informative only when the estimands, populations and measurements are close enough to be comparable, and better design alignment is empirically associated with stronger concordance. The benchmarking programs report this in graded form. What is cited downstream is a binary label, usually derived from interval overlap or direction agreement, and that label discards magnitude and uncertainty and cannot diagnose why two estimates differ: two studies estimating the same quantity imprecisely agree by that criterion, and two estimating different quantities precisely disagree. No reported measure, graded or binary, separates estimand mismatch from random error, because doing so requires aligning the estimands first and then reporting a paired contrast with joint uncertainty, which no benchmarking report currently does as a matter of course.",
+    "paper": "Augmenting control arms with real-world data for cancer trials: Hybrid control arm methods and considerations.",
+    "doi": "10.1016/j.conctc.2022.101000",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Replication is put to work as a measurement rather than a verdict: the control arm of a completed trial is rebuilt from the same data source and the discrepancy is reported as a residual bias hazard ratio, which then feeds a tuning parameter with a stated effect on power and type I error. That is the calibrated comparison the entry asks for, on one estimand. What it does not close is the general case: the calibration is a single overall survival hazard ratio, it says nothing about other endpoints or estimands, and the headline reporting of past replication exercises still travels as the count of trials that agreed.",
+    "quote": "by replicating the control arms of recently completed studies (ie, following steps 1–3 and then comparing outcomes with the randomized control) in the same disease area and trial setting, and with the same external data source, it may be possible to develop empirical evidence for how much residual bias might be expected",
+    "locator": "Assessment of risk and benefits"
+   }
+  }
+ ]
+}

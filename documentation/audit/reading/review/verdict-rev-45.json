@@ -1,0 +1,182 @@
+{
+ "batch": "rev-45",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper bears on the dependence created by overlapping history-restricted windows and provides a corrected influence-function variance calculation against a bootstrap reference. It does not address simultaneous site clustering or flexible nuisance-model uncertainty, so partial addressing is the appropriate effect.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "History-restricted marginal structural model and latent class growth analysis of treatment trajectories for a time-dependent outcome.",
+    "doi": "10.1515/ijb-2023-0116",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A variance correction for the dependence between influence functions across overlapping windows was derived for the pooled targeted estimator and validated against block bootstrapping, which supplies one scalable route where the naive influence function calculation does not apply. It does not become a default: the simple option named for the weighted estimating-equation fit is a sandwich estimator that treats the weights as known and is conservative, and g-computation still needed 50 bootstrap replications in simulation and 100 in the application.",
+    "quote": "A simple practical solution for inference is to use the sandwich variance estimator of the GEE routine, which treats the weights as known and results in conservative statistical inferences",
+    "locator": "Estimation"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Treating compliance continuously avoids one arbitrary binary cutoff, but it does not define clinically defensible equivalence classes of treatment versions. The quoted passage instead documents why such a threshold cannot be chosen from the available framework.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "STR-01",
+    "problem_title": "No procedure defines clinically defensible equivalence classes of treatment versions",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Estimating a per-protocol effect requires the sustained strategy and its relevant treatment versions to be clinically specified first; artificial censoring with inverse probability weighting is one valid estimation route rather than a requirement. Beneath the mechanics sits the question the mechanics assume answered: what counts as the same treatment. Real treatments differ by dose, route, provider, formulation, combination and adherence pattern, and two regimens sharing a label may not satisfy consistency. Clone-censor-weight handles a patient compatible with several predefined strategies and does not decide whether versions should be pooled into one. Observed data can expose heterogeneity across versions and cannot establish that versions are irrelevant, so the pooling decision is clinical. Finer definitions also create practical support problems, so the more faithful specification is ",
+    "paper": "A MARGINAL STRUCTURAL MODEL FOR PARTIAL COMPLIANCE IN SMARTS.",
+    "doi": "10.1214/21-aoas1586",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Compliance is treated as a continuous quantity, the fraction of sessions attended, and the stated reason is that the cut point separating compliers from noncompliers cannot be chosen defensibly. That replaces an arbitrary equivalence class with a continuum and shows the ranking of regimes changes across it. It does not close the problem: the strata are latent, must be imputed from a Dirichlet process mixture, and no clinical criterion establishes which compliance levels constitute the same treatment.",
+    "quote": "Adjusting for partial as opposed to binary compliance allows for more flexibility when there is continuous compliance and the threshold for compliers versus noncompliers is not easily chosen.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Latent principal-stratum membership is an identification problem for a target defined using potential compliance, not an example of an unobservable protocol component automatically creating a different observed-data estimand. The quoted evidence establishes latent compliance only and does not support the claimed estimand substitution.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-04",
+    "problem_title": "An unobservable protocol component produces a different, data-defined estimand rather than a noisy version of the intended one",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The canonical protocol has seven linked components: eligibility, treatment strategies, assignment, follow-up, outcomes, causal contrast and analysis plan. Conceptual specification and operational realization are distinct, and when a component cannot be observed the analyst substitutes a proxy. If no valid measurement, missing-data or validation model recovers the intended variable, the resulting observed-data functional generally does not identify the intended causal effect, and it does not automatically identify some other one either: naming it a different estimand requires a corresponding intervention and an identification argument. A criterion that cannot be verified is dropped and the population changes; a strategy that cannot be distinguished from its neighbor is merged and the contrast changes; an outcome that is only partly captured redefines the endpoint. Nothing in current repor",
+    "paper": "A MARGINAL STRUCTURAL MODEL FOR PARTIAL COMPLIANCE IN SMARTS.",
+    "doi": "10.1214/21-aoas1586",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Potential compliance under the regime a patient did not receive is unobservable, so the target quantity becomes a mean outcome within latent principal strata whose membership is imputed rather than measured. That is a different estimand from the mean under an assigned regime, and it is named as such and modeled explicitly. What remains open is that the resulting quantity is defined by the imputation model: a different mixture specification defines different strata and therefore a different target.",
+    "quote": "An important challenge with principal stratification is that some of the potential compliances are latent.",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The simulation supplies directly relevant evidence that naive sandwich inference can understate uncertainty in weighted longitudinal MSM analyses and that whole-fit bootstrap inference can improve coverage. It remains a non-cloning setting and offers no scalable default for the full sequence-expansion problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "Simulating Data From Marginal Structural Models for a Survival Time Outcome.",
+    "doi": "10.1002/bimj.70010",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A concrete measurement is supplied for the variance problem in weighted longitudinal analyses: across 12 scenarios the simple sandwich estimator underestimated variance more than a 1000-sample percentile bootstrap, with coverage closer to 95% for the bootstrap at every sample size, and the apparent power advantage of the sandwich method is attributed to that undercoverage. What is not closed is scale: the recommended fix is a nonparametric bootstrap of the whole weighted fit, and the sandwich variant that does account for weight estimation would reduce rather than raise the variance estimate.",
+    "quote": "We also found the sandwich estimator tended to underestimate the variance more than did bootstrap, at least when n ≥ 500",
+    "locator": "Results"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The construction evaluates a simulated causal setting by a known target-model property rather than observational resemblance alone, which is a relevant partial response for causal method stress testing. Because it is hand-specified rather than learned from real patient records, it does not validate causal fidelity of fitted generative models.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-02",
+    "problem_title": "Generative models are evaluated on distributional fidelity and used for causal work",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation does not match the use. Marginal and temporal fidelity do not validate a generator's counterfactual behavior, and cannot: without identifying assumptions or interventional ground truth, two generators indistinguishable on observed data can disagree on some interventions. A model optimized for fidelity can therefore reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those appears in the loss. Privacy mechanisms compound it by suppressing rare patterns, which are often the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and curre",
+    "paper": "Simulating Data From Marginal Structural Models for a Survival Time Outcome.",
+    "doi": "10.1002/bimj.70010",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Data generation here is judged by whether the causal model of interest holds exactly in the generated data, not by whether the synthetic data resemble a real dataset: the copula construction makes the marginal structural model correct by construction while leaving the conditional hazard unconstrained. That is the criterion missing when generative models are validated on distributional fidelity. It does not close the entry, because the algorithm is a method-evaluation device with hand-specified coefficients rather than a generator fitted to real records.",
+    "quote": "It is common in such studies to generate data in such a way that the model of interest is correctly specified.",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "This is a direct methodological contribution that models covariate-driven observation rather than treating the visit process solely as an imputation nuisance. Its stated inability to handle an unobserved prior outcome driving future observation preserves the central unresolved case.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Multiply robust estimation of marginal structural models in observational studies subject to covariate-driven observations.",
+    "doi": "10.1093/biomtc/ujae065",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The visit process enters identification through two of the four nuisance models rather than through imputation, and consistency survives misspecification of one of them: with deliberately wrong visit weights the estimate moved only from 0.40 to 0.39, while the earlier doubly weighted estimator moved from 0.36 to 0.72. What remains open is stated in the same analysis: previous outcome values were available but were left out of the adjustment set because an unobserved earlier outcome driving later observation is outside the method.",
+    "quote": "Our proposed approach allows adjusting for previous (observed) treatments or outcomes as potential confounders or visit predictors, but it cannot address settings in which a previous outcome (that is not observed) affects the observation of any future outcome.",
+    "locator": "Motivating example"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper provides relevant finite-sample evidence that robust variance estimators can perform worse than bootstrap inference for weighted MSMs. It concerns point treatment without cloning or sequence expansion and therefore only informs a simpler component of the registered problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "The performance of marginal structural models for estimating risk differences and relative risks using weighted univariate generalized linear models.",
+    "doi": "10.1177/09622802241247742",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A direct measurement of the variance problem is supplied for the simplest case of all, a point-treatment weighted analysis with no cloning or expansion: the robust variance estimator was conservative with overlap and matching weights, anticonservative with treatment weights at extreme prevalence, and in earlier work overstated the log hazard ratio standard deviation by 30% to 45% with weights targeting the treated. It does not close the entry because the recommended replacement is a bootstrap, and the same bootstrap produced 99th-percentile standard errors of 9.34 against a median of 1.00 when events were scarce.",
+    "quote": "in general, the MSM with a robust variance estimator had worse performance than did the MSM with the bootstrap variance estimator",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Plasmode simulation with a Monte Carlo causal truth provides a causal benchmarking criterion that distributional fidelity alone lacks. The approach does not establish that a fitted real-data generator preserves counterfactual behavior, so it is only a conditional partial response.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-02",
+    "problem_title": "Generative models are evaluated on distributional fidelity and used for causal work",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation does not match the use. Marginal and temporal fidelity do not validate a generator's counterfactual behavior, and cannot: without identifying assumptions or interventional ground truth, two generators indistinguishable on observed data can disagree on some interventions. A model optimized for fidelity can therefore reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those appears in the loss. Privacy mechanisms compound it by suppressing rare patterns, which are often the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and curre",
+    "paper": "Longitudinal plasmode algorithms to evaluate statistical methods in realistic scenarios: an illustration applied to occupational epidemiology.",
+    "doi": "10.1186/s12874-023-02062-9",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Generated data are evaluated by whether the true causal parameter is recoverable from them, not by whether they look like real records: counterfactual versions of the algorithms produce the true cumulative exposure effect against which bias and coverage are computed. That is the missing criterion when generative models are validated on distributional fidelity alone. It does not close the entry, because only baseline covariates and baseline exposure are resampled while everything downstream comes from fitted models, so fidelity beyond baseline is asserted rather than tested.",
+    "quote": "In both plasmode and standard simulations, the true value of the parameter of interest can also be estimated by Monte Carlo simulation",
+    "locator": "Discussion"
+   }
+  }
+ ]
+}

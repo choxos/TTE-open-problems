@@ -1,0 +1,182 @@
+{
+ "batch": "rev-37",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Undersmoothing by selecting the smallest convergent penalty is an ad hoc fitting rule, not a selection criterion combining predictive risk with longitudinal balance, weight behavior, and estimator-specific remainder conditions. The quoted method provides no evidence that causal performance was evaluated or optimized.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-01",
+    "problem_title": "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Identifying a sustained-strategy effect requires consistency, sequential exchangeability and positivity, and the estimator families differ in which nuisance components they need. When those components are fitted by machine learning, the model that predicts treatment best is not the model that minimizes the finite-sample error of the causal estimator: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Balance-calibrated weight fitting exists and has been applied, so the field is not selecting on prediction alone. What is missing is a criterion that combines predictive risk with the estimator-specific diagnostics that matter, longitudinal balance, weight tails and the remainder-rate condition, in one selection rule, and a default library tuned that way rather than for prediction.",
+    "paper": "Type 2 diabetes, sodium-glucose cotransporter-2 inhibitors and cardiovascular outcomes: real world evidence versus a randomised clinical trial.",
+    "doi": "10.1186/s12933-025-02924-0",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The nuisance models depart from prediction-optimal tuning on purpose: elastic net penalties are pushed down to undersmooth the fits, which is the recognized direction of correction when the target is a causal parameter rather than a prediction. The criterion that stops the descent is numerical, the lowest penalty at which the model still converged, not any measure of causal performance, and with six intervals of treatment, censoring and outcome models there is no report of how the choice affected the estimate.",
+    "quote": "All nuisance parameter models were fitted using penalized elastic nets where the penalty parameters were chosen such as to undersmooth the regression fits, that is the lowest penalty value where the model still converged.",
+    "locator": "Statistical analyses"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper does not establish a variance procedure for cloning or sequence-expanded data, nor does the quote identify the resampling unit or assess coverage. Using cheap bootstrapping in one longitudinal analysis does not address clone dependence, site clustering, or scalable flexible-nuisance uncertainty.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "Type 2 diabetes, sodium-glucose cotransporter-2 inhibitors and cardiovascular outcomes: real world evidence versus a randomised clinical trial.",
+    "doi": "10.1186/s12933-025-02924-0",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Inference for a longitudinal targeted minimum loss estimate over six intervals in 13,524 people is delivered by cheap bootstrapping, a procedure designed to avoid refitting the whole estimator on every resample, and it is what makes the confidence intervals computable at all. It is stated in one clause with no report of resample count, no comparison against the influence-function standard error the estimator supplies, and no coverage check, so the scalable option is used without evidence that it is correct here.",
+    "quote": "Confidence intervals were calculated by cheap bootstrapping",
+    "locator": "Statistical analyses"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "A statement that competing risks were accounted for does not identify the estimand, the estimand-specific assumptions, or the estimator used. It therefore cannot show that death was handled as an explicit identifying assumption rather than through an unspecified modeling convention.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "Type 2 diabetes, sodium-glucose cotransporter-2 inhibitors and cardiovascular outcomes: real world evidence versus a randomised clinical trial.",
+    "doi": "10.1186/s12933-025-02924-0",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "low",
+    "evidence": "Death is not silently censored for the cause-specific endpoints: competing risks are stated to have been accounted for, and all-cause mortality is reported alongside cardiovascular death, so the reader can see both. What is not stated is which estimand that choice implies, cause-specific hazard or subdistribution risk, nor the assumption it rests on, and the sentence doing the work is seven words long in a paper that otherwise details its estimator at length.",
+    "quote": "For cause specific deaths competing risks have been accounted for.",
+    "locator": "Statistical analyses"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The discussion offers a post hoc interpretation of one null result as a possible negative control, not an integrated negative-control analysis. It neither prespecifies the control nor combines it with proxies, validation data, or a bias-adjustment model aligned to the reported estimand.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Trastuzumab in early curative breast cancer: A target trial emulation benchmarked against two randomized clinical trials.",
+    "doi": "10.1371/journal.pmed.1004661",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A negative control outcome is actually used: the null result for other second primary cancers is read as evidence against unmeasured confounding in the cancer-specific endpoints. The control was not prespecified as one; it is a component of the study's own composite endpoint reinterpreted after the fact, it is not calibrated into a bias adjustment of the reported risk differences, and it is not accompanied by any proxy or validation data. The frailty pathway that would explain the outsized overall survival effect is precisely the one a second-primary-cancer control cannot rule out.",
+    "quote": "if we consider the null result for other second primary cancers as a negative control to assess the impact of potential unmeasured factors",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "downgrade",
+   "corrected_effect": "illustrates that a conventional nonparametric bootstrap can be feasible in a small cloned emulation, without establishing correct handling of clone dependence or a scalable default",
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "A bootstrap may be appropriate in principle, but the quote does not state whether resampling respected person-level clustering or demonstrate coverage. Its use in a cohort of this size is evidence of a feasible small-scale practice, not evidence of a correct general solution.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "Trastuzumab in early curative breast cancer: A target trial emulation benchmarked against two randomized clinical trials.",
+    "doi": "10.1371/journal.pmed.1004661",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Variance after cloning, censoring and time-varying weighting is handled by nonparametric bootstrap with 500 resamples, which is a correct default and is reported. It is also the reason the approach does not generalize: 500 refits of a pooled logistic model with time-varying weights over 1,578 individuals is affordable, and the same procedure over a sequence-expanded national cohort is not. No analytic or scalable alternative is offered, and the bootstrap count is not justified against the width of the resulting intervals.",
+    "quote": "Nonparametric bootstrapping with 500 samples was used to calculate 95% confidence intervals.",
+    "locator": "The observational emulation of the target trial"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "A structured assessment of consistency between the specified target trial and the implemented emulation addresses one link in the proposed lineage. It remains partial because it cannot assess mismatch between the scientific question and target protocol, and it does not distinguish mapping error from estimation error.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-01",
+    "problem_title": "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error",
+    "problem_verdict": "overstated",
+    "problem_statement": "Three trials are in play in any emulation and only one is usually named: the ideal trial that would answer the decision-maker's question, the target trial the investigator specifies, and the emulation the data support. Specifying the target trial closely around the available data conceals the distance between the first two, and the paper reports one estimate as though the chain were tight. What is missing is not an additive decomposition; that generally does not exist, because the transitions change populations, interventions, outcomes and scales, so the discrepancies do not add. What is missing is a documented lineage: the change from the decision question to the operational causal estimand, the assumptions mapping that estimand to an observed-data functional, and the estimation uncertainty, each recorded separately so a reader can see which step carries the load. No convention requires",
+    "paper": "Conducting observational analyses with the target trial emulation approach: a methodological systematic review.",
+    "doi": "10.1136/bmjopen-2024-086595",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The review supplies a measurement that did not previously exist: per-component consistency between the specified target trial and its emulation, showing 46% consistency on the full research question overall and 6% among real-trial emulations, with eligibility criteria the worst component. That separates protocol compromise from estimation error at a coarse grain. It does not close the entry: the assessment is binary per component and could detect only strong deviations, no loss is attributed to mapping versus estimation, and scientific-target mismatch is invisible because the target trial itself was the reference.",
+    "quote": "Additionally, our evaluation of consistency could only identify strong deviations from what was targeted",
+    "locator": "Discussion, strengths and limitations"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Retaining source labels alongside standardized categories makes local mappings inspectable and is directly relevant to detecting otherwise hidden semantic differences. It does not demonstrate semantic equivalence across sites, so it supports only a partial response to the problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "DTA-03",
+    "problem_title": "Common data models harmonize structure without guaranteeing that the same variable means the same thing",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within one site. Multi-source linked databases are associated with better emulation of trials, which makes linkage decisions consequential rather than administrative. Common data models solve the structural half and do not guarantee semantic equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications. Semantic drift is invisible in the analytic dataset, because the column is populated and the values are in range.",
+    "paper": "A Common Longitudinal Intensive Care Unit data Format (CLIF) to enable multi-institutional federated critical illness research.",
+    "doi": "10.1101/2024.09.04.24313058",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The format supplies a concrete mechanism against silent meaning drift: every harmonized element is a category with a closed set of permissible values, and the site's original label is retained alongside it so a mapping can be inspected rather than assumed. That is more than structural harmonization. It does not close the entry: no measurement is reported of whether a given category carries the same clinical meaning across the eight sites, and the observed spread in invasive mechanical ventilation from 28 to 50% and mortality from 7.4 to 13% is left attributed to case mix without any test separating true case-mix difference from divergent mapping.",
+    "quote": "This structure creates standardized ICU elements while preserving original data labels for quality control.",
+    "locator": "Methods, minimum common ICU data elements"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Open ETL and case-study code are useful reproducibility infrastructure, but this is not evidence of an auditable target trial emulation release. The quoted materials do not establish complete versioned phenotype logic, weight diagnostics, synthetic execution fixtures, or a protocol-decision log.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "A Common Longitudinal Intensive Care Unit data Format (CLIF) to enable multi-institutional federated critical illness research.",
+    "doi": "10.1101/2024.09.04.24313058",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Data dictionaries, extract-transform-load pipeline examples, quality control scripts and the full analysis code for both case studies are published under Apache 2.0 with git version control, which is more than emulations in this literature typically release. It does not close the entry: no phenotype validation output, no weight diagnostics and no record of rejected format or protocol versions accompany the release, and deidentified data are explicitly deferred, so a reader cannot rerun a site's contribution against the site's own data.",
+    "quote": "contains data dictionaries, ETL pipeline examples, quality control scripts, and complete analysis code for each case study",
+    "locator": "Methods, open-source commitment"
+   }
+  }
+ ]
+}

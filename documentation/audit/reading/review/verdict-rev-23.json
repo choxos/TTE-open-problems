@@ -1,0 +1,182 @@
+{
+ "batch": "rev-23",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "An attrition table for post-follow-up exclusions improves reporting of a specific selection-bias risk, not reporting of causal assumptions and their diagnostic status. The quote supplies no dashboard, diagnostic taxonomy, or distinction between assumptions that can be probed and those that must remain untestable.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "Requiring continuous enrollment during follow-up? A call for robust research methods.",
+    "doi": "10.18553/jmcp.2025.31.12.1304",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The concrete proposal is an attrition table that separates exclusions applied after follow-up began from those applied at baseline, which would make a design property that is currently invisible in a methods section legible to a reader. It is a reporting recommendation in a viewpoint, covering one exclusion type, and does not distinguish which of the resulting assumptions a study could interrogate.",
+    "quote": "Researchers are strongly urged to report attrition tables that\ndelineate post –follow-up exclusions and use appropriate\ndesigns to avoid such biases.",
+    "locator": "Conclusions"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "downgrade",
+   "corrected_effect": "informs the rationale for aligning eligibility assessment with time zero, but does not provide an outcome-blind selection procedure",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted result formally supports protocol alignment and can characterize how a particular timing gap produces bias. It does not select a grace period or time grid, nor does it furnish a rule for choosing eligibility timing among feasible alternatives.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Immortal time bias from selection: a principal stratification perspective.",
+    "doi": "10.1093/aje/kwaf146",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The entry says nothing outcome-blind selects the timing that an emulation must fix. This supplies the formal reason alignment works: as the eligibility assessment moves toward time zero, the conditional outcome probabilities approach the unconditional potential outcome means monotonically, so the bias is a function of that gap. That converts a design convention into a derived result, for the eligibility component. It does not select a grace period or a time grid, and where alignment is impossible the remedy offered is a different estimand rather than a timing rule.",
+    "quote": "Together, these analyses\nprovide a formal justification for aligning different components of a study protocol, as routinely\ndone in target trial emulation [4, 16].",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The case study combines a design intended to avoid immortal time bias with high-dimensional proxy-based adjustment for residual confounding. It does not establish a general joint workflow across negative controls, validation data, instruments, and proximal methods, so partial rather than resolving status is appropriate.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Simultaneously Dealing With Immortal Time Bias and Residual Confounding: A Case Study of a High-Dimensional Propensity Score Approach With a Nested Case-Control Framework in Multiple Sclerosis Research.",
+    "doi": "10.1002/pds.70174",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The entry says devices for residual confounding sit outside the standard workflow. Here an empirical proxy-selection device is integrated with a design that removes immortal time, and the integration is the contribution: the nested case-control structure converts a time-dependent exposure into a time-fixed one, which is what makes proxy adjustment tractable. Reproducible code is released. What is not delivered is evidence that the proxies work, and the paper says so: if they are poor measures of the unmeasured confounders, the bias survives, and here the adjusted and unadjusted estimates agreed, which the paper reads as possibly meaning the measured confounders already sufficed.",
+    "quote": "This combination allows simultaneous handling of immortal time bias and residual confounding bias—an integration not commonly explored in the literature.",
+    "locator": "Residual Confounding and the Role of hdPS Within the NCC Framework"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Public R code makes a material portion of an otherwise operationally opaque design auditable and reusable. The quote does not establish release of complete phenotype specifications, weight diagnostics, version history, or executable synthetic fixtures, so it only partially addresses the problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "Simultaneously Dealing With Immortal Time Bias and Residual Confounding: A Case Study of a High-Dimensional Propensity Score Approach With a Nested Case-Control Framework in Multiple Sclerosis Research.",
+    "doi": "10.1002/pds.70174",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Code implementing the combined design is released so that others can apply it, which is more than a methods description of a two-stage procedure whose covariate prioritization step, Cox-LASSO over recurrence covariates, is otherwise unreproducible from prose. The underlying linked administrative data are not shareable, so the analysis itself cannot be rerun.",
+    "quote": "We shared reproducible R codes for researchers to facilitate the adoption of this methodology in their research.",
+    "locator": "Abstract, Conclusions"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A comparative analysis showing that estimator choice can materially affect results directly demonstrates the value of reporting such dependence. A single empirical benchmark cannot justify a universal default estimator or create a reporting requirement, so the claimed partial effect is correctly limited.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "Step-by-step causal analysis of EHRs to ground decision-making.",
+    "doi": "10.1371/journal.pdig.0000721",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is the comparison the entry says nothing requires: the same question is run across estimators, confounder sets and initiation windows against a trial benchmark, and the result is reported as a ranking with magnitudes, with a doubly robust estimator using random forests most reliable. It also settles the relative weight of the choices, showing estimator rigidity costs about as much as a plausible misspecification of the causal graph. The demonstration is one question in one database, so it establishes that the comparison is doable rather than that any estimator is a defensible default.",
+    "quote": "We have shown that all these three steps are equally important: paying no attention to one of them leads to invalid estimates of treatment effect, yet imperfect but plausible choices lead to small biases of the same order of magnitude for all steps.",
+    "locator": "Discussion and conclusion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Availability of preprocessing and analysis code alongside accessible data is a strong example of auditability for one emulation. It does not demonstrate complete versioned phenotype logic, weight diagnostics, or a decision log of rejected protocols, so it remains partial.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "Step-by-step causal analysis of EHRs to ground decision-making.",
+    "doi": "10.1371/journal.pdig.0000721",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The whole analysis is reproducible: the data are on PhysioNet, and the preprocessing and analysis code are on GitHub, including the vibration analysis over aggregation choices and the immortal time bias demonstration. That covers the code and the phenotype logic for one emulation; the alternative protocol versions are present here as reported sensitivity analyses rather than as a record of what was rejected.",
+    "quote": "The code for data preprocessing and analyses are available on github",
+    "locator": "Data Availability"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "REMROSE-D supplies consensus reporting guidance for a defined class of observational deprescribing studies and therefore reduces variation in what is reported within that domain. It is not an assumption dashboard that classifies diagnostic limits, so it cannot resolve the broader problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "The Reporting and Methodological Recommendations for Observational Studies Estimating the Effects of Deprescribing Medications (REMROSE-D) ISPE-Endorsed Guidance.",
+    "doi": "10.1002/pds.70255",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A consensus list of reporting items and methodological considerations now exists for one design, derived from measured deficiencies in a systematic review rather than from opinion alone, and endorsed by a professional society. It is a reporting checklist for deprescribing studies rather than an inventory separating what a study could interrogate from what it can only assume, and confounding by indication, its one identification item, is listed alongside items about definitions.",
+    "quote": "We developed consensus recommendations for the methods and reporting of observational studies that aim to examine the effects of deprescribing.",
+    "locator": "Purpose"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper applies established cluster-robust or bootstrap variance approaches to repeated participation, which the registered problem already recognizes as addressed. It provides no method for calendar-time confounding, flexible start-time modeling, or treatment-by-start-time heterogeneity.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SEQ-01",
+    "problem_title": "Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals",
+    "problem_verdict": "overstated",
+    "problem_statement": "Sequential emulation exploits repeated eligibility: a new trial is emulated at each decision point, and a person eligible at many points contributes to many of them. The resulting within-person dependence has been addressed: clustering by person, and confidence-interval procedures for survival outcomes compared across the sandwich estimator, nonparametric bootstrap, jackknife and a linearized estimating function bootstrap, which covers better in the small-sample, low-event-rate regime that motivates the design. What has not been addressed is the calendar-time structure. Trials begun at different times occur under different treatment availability, guidelines and background risk, so a pooled estimate assumes an effect common to start times that differ in all three. Trial start is not conventionally modeled flexibly, treatment-by-start-time heterogeneity is not conventionally examined, and ",
+    "paper": "Emulating target trials of postexposure vaccines using observational data.",
+    "doi": "10.1093/aje/kwae350",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The registry entry says sequential emulation creates repeated participation whose dependence the efficiency gain conceals. Here the dependence is stated as a consequence of the design rather than left implicit: an unvaccinated participant serves as a control in every daily trial until vaccination or symptoms, the observations are therefore not independent, and the standard errors must be adjusted by a cluster-robust variance estimator or the bootstrap. That covers the within-person dependence. Calendar-time confounding across the sequence, where the trials differ because the epidemic and the vaccination policy differ by day, is not addressed.",
+    "quote": "Additionally, because we are using the same participant in multiple nested trials, our observations are no longer independent. Therefore, appropriate adjustment to our SEs is necessary to account for possible correlation across observations.",
+    "locator": "Analysis"
+   }
+  }
+ ]
+}

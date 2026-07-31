@@ -1,0 +1,182 @@
+{
+ "batch": "rev-40",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quote states the standard alignment requirement for time zero. It supplies no outcome-blind rule for choosing a grace period or interval width, which is the registered gap.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Target trial emulation: applying principles of randomised trials to observational studies.",
+    "doi": "10.1136/bmj-2022-071108",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A concrete alignment rule is given: follow-up starts where eligibility is met, strategies are assigned and outcome counting begins, and the failure to hold these together is named as the source of prevalent-user and immortal-time bias. That is an operational constraint on time zero. It does not close the entry, because nothing selects the grace period over which assignment compatibility is judged, nothing selects the granularity of the time grid, and the rule itself gives no procedure blinded to outcomes when several candidate origins satisfy it.",
+    "quote": "Start of follow-up should coincide with three conditions: when eligibility criteria are met, treatment strategies are assigned, and study outcomes begin to be counted.",
+    "locator": "Box 1: Components of target trial protocol"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Specifying intended adherence duration and permissible switching is part of defining a strategy, not a method for determining which treatment versions can defensibly be pooled. The quoted requirement leaves the stated equivalence-class problem unchanged.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "STR-01",
+    "problem_title": "No procedure defines clinically defensible equivalence classes of treatment versions",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Estimating a per-protocol effect requires the sustained strategy and its relevant treatment versions to be clinically specified first; artificial censoring with inverse probability weighting is one valid estimation route rather than a requirement. Beneath the mechanics sits the question the mechanics assume answered: what counts as the same treatment. Real treatments differ by dose, route, provider, formulation, combination and adherence pattern, and two regimens sharing a label may not satisfy consistency. Clone-censor-weight handles a patient compatible with several predefined strategies and does not decide whether versions should be pooled into one. Observed data can expose heterogeneity across versions and cannot establish that versions are irrelevant, so the pooling decision is clinical. Finer definitions also create practical support problems, so the more faithful specification is ",
+    "paper": "Target trial emulation: applying principles of randomised trials to observational studies.",
+    "doi": "10.1136/bmj-2022-071108",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Treatment strategies must state the adherence duration and the legitimate reasons for discontinuing or switching, which is a real requirement: the statin example fixes a dose, a five-year duration and an indication-based stopping rule. What is not supplied is any procedure for grouping the delivered versions of a treatment into a defensible class, so a strategy specified at this level still leaves open which real prescriptions count as compatible with it.",
+    "quote": "the length of time participants should adhere to this strategy, and any legitimate reasons why they could discontinue or switch from the assigned treatments",
+    "locator": "Box 1: Components of target trial protocol"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Reporting validity and reliability of an outcome algorithm is good protocol practice but does not model misclassification or propagate measurement uncertainty into longitudinal causal estimates. The quote does not address the registered identification and estimation gap.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MER-01",
+    "problem_title": "Phenotypes enter emulations as error-free binary variables",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquel",
+    "paper": "Target trial emulation: applying principles of randomised trials to observational studies.",
+    "doi": "10.1136/bmj-2022-071108",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The outcome component requires not only the diagnostic code definition but the validity and reliability of the measurement algorithm, which is more than most protocols demand and puts phenotype accuracy on the record. It stops there: no method is given for propagating the reported sensitivity and specificity into the effect estimate, so the outcome still enters the analysis as an error-free indicator.",
+    "quote": "The definition of the outcome must be clearly stated (eg, using ICD-10 (international classification of diseases, 10th revision) diagnostic codes), along with the validity and reliability of the measurement algorithm or tools used.",
+    "locator": "Box 1: Components of target trial protocol"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The extraction form records target-trial protocol components, not an assumption dashboard or the distinction between diagnosable and undiagnosable assumptions. ROBINS-I does not provide the claimed assumption-specific reporting framework.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "The Use of the Target Trial Approach in Perinatal Pharmacoepidemiology: A Scoping Review Protocol.",
+    "doi": "10.3389/fphar.2022.904824",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A concrete extraction instrument is planned that records the treatment strategies with their start and end times, assignment procedures, follow-up period, outcome and causal contrast for each emulation, backed by ROBINS-I and RECORD-PE. That produces a component-by-component account rather than an unstructured narrative. It does not separate assumptions that can be diagnosed from those that cannot: nothing in the charting asks whether exchangeability was probed, and ROBINS-I returns a bias judgment rather than a statement of which assumptions remain unchecked.",
+    "quote": "Although evaluating risk of bias in scoping reviews is not currently recommended, we will extract information on characteristics of the target trial emulation, such as treatment strategies being compared (including their start and end times), assignment procedures, follow-up period, outcome, and causal contrast(s) adopted",
+    "locator": "Stage 4: Charting the Data"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper explicitly distinguishes population, measurement, and estimand differences between an observational analysis and its benchmark trial. This is a useful partial accounting of sources of mismatch, while the quoted framework does not deliver the requested documented lineage from decision question through estimation.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-01",
+    "problem_title": "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error",
+    "problem_verdict": "overstated",
+    "problem_statement": "Three trials are in play in any emulation and only one is usually named: the ideal trial that would answer the decision-maker's question, the target trial the investigator specifies, and the emulation the data support. Specifying the target trial closely around the available data conceals the distance between the first two, and the paper reports one estimate as though the chain were tight. What is missing is not an additive decomposition; that generally does not exist, because the transitions change populations, interventions, outcomes and scales, so the discrepancies do not add. What is missing is a documented lineage: the change from the decision question to the operational causal estimand, the assumptions mapping that estimand to an observed-data functional, and the estimation uncertainty, each recorded separately so a reader can see which step carries the load. No convention requires",
+    "paper": "Benchmarking Observational Analyses Before Using Them to Address Questions Trials Do Not Answer: An Application to Coronary Thrombus Aspiration.",
+    "doi": "10.1093/aje/kwac098",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Three channels through which trial and emulation can diverge are enumerated and argued one at a time: population composition, with the 16.4 percent versus 5.3 percent death risk among non-enrollers; measurement, argued away because both studies drew on the same registry; and estimand, argued away because adherence in TASTE was 94 percent and the adherer-restricted hazard ratio of 0.95 matched the assigned-treatment 0.94. What is not closed is any decomposition: the channels are signed only by argument, and the paper concedes they can offset so that a passing benchmark is uninformative.",
+    "quote": "Even in the absence of unmeasured confounding, there may be differences between the randomized trial and the observational analysis with respect to: 1) study populations, 2) definition or measurement of interventions or outcomes, and 3) causal estimands.",
+    "locator": "DISCUSSION"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Treating measurement decisions as time-varying confounders recognizes that observation is informative rather than merely a missing-data nuisance. The applied adjustment does not identify a general causal model for informative visit processes or resolve the broader methodological gap.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Comparison of a Target Trial Emulation Framework to Cox Regression to Estimate the Effect of Corticosteroids on COVID-19 Mortality.",
+    "doi": "10.1101/2022.05.27.22275037",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Whether a clinician decided to measure a variable was treated as a confounder in its own right and entered the time-dependent adjustment set alongside the values, rather than being imputed away. That gives the observation process a causal role in a longitudinal emulation. What is not closed is the structure: the measurement indicators are handled as covariates in the g-formula and no directed graph, sensitivity analysis or estimand statement treats the visit and measurement process as an intervention target.",
+    "quote": "The measurement process (i.e., whether a clinician decided to measure these variables) is also an important confounder included in the analysis.",
+    "locator": "Confounding"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Associations between selected design features and concordance within a benchmark corpus are not a theory or identified procedure for extrapolating replication success to new questions or databases. The low explained variance reinforces the limitation but does not partially solve the stated transport problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "BEN-01",
+    "problem_title": "There is no theory for extrapolating successful replication of selected trials to new questions",
+    "problem_verdict": "overstated",
+    "problem_statement": "A successful replication calibrates one emulation of one trial in one database. Transferring that confidence to a different question, or to the same question in a different database, is not an inference the benchmarking design licenses: it requires a target performance estimand stated in advance, an explicit selection or transport model, conditional exchangeability across the questions being compared, and overlap in whatever modifies emulation quality. Outside that support the transfer is model-dependent rather than identified, and frameworks that have been proposed for it remain unevaluated in that role. The benchmarking corpus is also a selected sample: trials get emulated when they are recent, large and have an accessible active comparator, which are the conditions under which emulation works best. Across 107 paired emulations and trials the effect correlation was 0.59 overall and 0.8",
+    "paper": "Concordance between target trial emulation and randomised controlled trials: systematic review and meta-analysis.",
+    "doi": "10.1136/bmj-2025-086810",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Nine of 21 predefined design features were significantly associated with concordance, and hospital initiation and outcome emulation quality survived multivariable selection. That is the closest thing the field has to an attribution procedure for discordance. It is also explicitly incomplete: the fitted model accounts for 9.2% of the variance, so more than nine tenths of the variation in how far an emulation lands from its trial is not attributed to any measured design feature.",
+    "quote": "closer outcome emulation and treatment not started in hospital were associated with target trial emulation-randomised controlled trial concordance",
+    "locator": "Results, Predefined design characteristics"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "A tabular search for empty covariate cells is a localized positivity diagnostic that can reveal unsupported combinations rather than only summarize weights. The reported work still lacks a prespecified support rule, named unsupported histories, population loss, and a corresponding restricted estimand.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "The importance of the design of observational studies in comparative effectiveness research: Lessons from the GARFIELD-AF and ORBIT-AF registries.",
+    "doi": "10.1016/j.ahj.2021.09.003",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A tabular scan for empty cells arising from unusual covariate combinations is a real positivity diagnostic that names covariate strata rather than summarizing weights, and it is executed in both registries. What is reported downstream is still weight behavior: mean 1.99 with maximum 39.18 in GARFIELD-AF, mean 2.03 with maximum 57.21 in ORBIT-AF, and hazard ratios at four truncation levels. No unsupported patient history is named, and no rule says at what weight or what empty-cell count the comparison should not be made.",
+    "quote": "In GARFIELD-AF and ORBIT-AF we used a tabular approach to identify empty cells resulting from unusual\ncombination of factors with small sample sizes.",
+    "locator": "Positivity"
+   }
+  }
+ ]
+}

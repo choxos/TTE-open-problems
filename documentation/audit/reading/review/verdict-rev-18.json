@@ -1,0 +1,182 @@
+{
+ "batch": "rev-18",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted claim concerns separable effects for mediation and natural-effect problems, not competing clinical events in a sustained-strategy emulation. It supplies no evidence that the paper identifies or operationalizes competing-risk estimands or death censoring.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "Longitudinal mediation analysis with multilevel and latent growth models: a separable effects causal approach",
+    "doi": "10.1186/s12874-024-02328-w",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Separable effects are the estimand family the entry names as one of the three that competing-event handling has to choose among, and this extends them to longitudinal mediation with latent variables and supplies identifiability conditions. It works in the mediation setting rather than the competing-risk setting directly, so it widens where separable effects are usable rather than resolving the entry's choice.",
+    "quote": "we propose a causal interpretation of these two classes of models based on a novel type of causal effects called separable, which overcome some of the issues of natural effects",
+    "locator": "Abstract, background"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Quantile-varying effects in an accelerated failure-time model concern functional-form restrictions in a survival model. The registered problem is inadequate reporting of the causal intervention, target population, adherence strategy, horizon, and intercurrent-event handling; the quote does not address those omissions.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-03",
+    "problem_title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.",
+    "paper": "Characterizing quantile-varying covariate effects under the accelerated failure time model",
+    "doi": "10.1093/biostatistics/kxae036",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The entry's complaint is that a single summary is reported where the underlying effect is not constant. This makes the constancy an explicit modeling restriction rather than a convention, shows what it hides when effects differ across quantiles, and reports the effect as a function of the quantile with tools for reading it. The parallel it draws to proportional hazards names the same problem in the measure the entry says is the default headline.",
+    "quote": "Though parsimonious, this structure cannot detect or capture effects that differ across quantiles of the distribution, a limitation that is analogous to only permitting proportional hazards in the Cox model.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Left truncation and outcome censoring are not the visit process that determines when time-varying covariates are measured. The quote contains no model for informative observation times, test ordering, or covariate measurement mechanisms.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Characterizing quantile-varying covariate effects under the accelerated failure time model",
+    "doi": "10.1093/biostatistics/kxae036",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Left truncation and complex censoring are handled inside the estimation rather than by restricting the analysis to fully observed follow-up, which is the treatment the entry says the observation process deserves. It addresses the censoring structure and not the visit process that generates covariate observations.",
+    "quote": "We implement a user-friendly Bayesian approach for estimation and quantification of uncertainty, while accounting for left truncation and complex censoring.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper provides estimators for transportability and valid inference under model misspecification, which the problem statement already recognizes as available. It does not identify bias when source treatment exchangeability or cross-sample effect exchangeability fails, nor apportion bias between those failures.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-02",
+    "problem_title": "Transporting an observational estimate compounds sampling assumptions on top of confounding assumptions with no accounting",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Transporting an observational contrast requires treatment exchangeability in the source, effect exchangeability across samples conditional on a sufficient measured set, and positivity for both treatment and sampling. A sufficient set is weaker than every effect modifier: modifiers that do not differ across populations or that are irrelevant after conditioning need not be observed. Transport estimators are now being applied to emulations, including post hoc standardization of emulations to their trial populations inside a benchmarking program. What remains is the accounting. If either exchangeability condition fails, source outcomes and target covariates alone cannot generally identify the resulting bias or apportion it between the two conditions, and no reporti",
+    "paper": "Estimating Subgroup Effects in Generalizability and Transportability Analyses",
+    "doi": "10.1093/aje/kwae018",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The entry says a sufficient set is weaker than every effect modifier and that no accounting shows how the transport and treatment assumptions compound. This supplies estimators that keep those separate by construction: a trial-participation model and an outcome model, combined so that misspecification of one is tolerated, with valid inference when either is fitted by machine learning. It is estimation for the transport step rather than the apportionment of error the entry asks for.",
+    "quote": "Our augmented weighting estimators, which combine models for the probability of trial participation and the expectation of the outcome, may be preferred in practice because they offer robustness to model misspecification [39] and allow for valid inference when the models are estimated using data-adaptive methods [9], including machine learning techniques [54, 55].",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper concerns prespecified subgroup effects in generalizability and transportability analyses, but the quoted passage does not address subgroup-specific overlap, target-population changes induced by overlap restrictions, or selection-aware inference after adaptive subgroup discovery. Its decision-making motivation is not a solution to the registered gap.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "LRN-04",
+    "problem_title": "Subgroup effects are estimated where overlap is worst, and the groups with worst overlap are often the protected ones",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Causal forests and meta-learners estimate heterogeneous treatment effects and inherit every identification assumption of the base analysis without relaxing any of them. A subgroup analysis therefore requires subgroup-specific assessment of exchangeability, measurement validity, positivity and uncertainty, and apparent heterogeneity can reflect differential measurement or differential access rather than differential biology. Two further requirements are routinely skipped. Adaptively chosen subgroups need selection-aware inference, because the reported interval otherwise conditions on a subgroup the data chose. And restricting to regions with adequate overlap changes the target population rather than fixing the estimate, so it has to be reported as a change of question. Where the groups with the poorest support are the protected groups the analysis was undertaken to examine, that has to be",
+    "paper": "Estimating Subgroup Effects in Generalizability and Transportability Analyses",
+    "doi": "10.1093/aje/kwae018",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This addresses the entry's setting directly: subgroup effects in a target population, with the estimators built for prespecified effect modifiers identified from substantive knowledge rather than discovered adaptively. The authors are explicit that subgroup estimates matter when effect modification is strong enough that the average does not guide a decision, particularly where resources force targeting, which is the entry's motivation. Selection-aware inference for adaptively chosen subgroups is named as future work rather than provided.",
+    "quote": "Estimates of these subgroup-specific treatment effects can be useful in the presence of strong effect modification, when the average treatment effect is not sufficient for guiding decisions in the target population, particularly in limited resource settings when we need to focus intervention efforts on subgroups that are most likely to benefit from treatment",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A Bayesian mediation package motivated by generic small-sample limitations does not address effective sample size produced by eligibility restrictions and longitudinal weighting. It provides no evidence on inference for weighted sustained-treatment estimators, rare competing events, or reporting effective sample size.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-03",
+    "problem_title": "Large databases yield small effective samples after eligibility, comparator restriction and weighting",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "A database of millions can carry very little information about a specific target trial once strict eligibility, active-comparator restriction and weighting have been applied, and extreme weights reduce the effective sample size far below the nominal count. Conventional asymptotic inference then becomes unreliable, most sharply for rare competing events and for subgroup effects, which are the quantities decision makers ask about. Papers continue to report the nominal number of patients, which for a weighted longitudinal analysis is not the quantity that governs the variance, and no convention requires the effective size to appear beside it.",
+    "paper": "BayesGmed: An R-package for Bayesian causal mediation analysis",
+    "doi": "10.1371/journal.pone.0287037",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The package exists because the available estimators are unreliable in the small-sample regime, which is the entry's concern, and a Bayesian formulation is one of the routes the entry names for it. It supplies an implementation for mediation rather than establishing where asymptotic inference fails for sustained-strategy emulation.",
+    "quote": "most analytic tools developed so far rely on frequentist methods which may not be robust in the case of small sample sizes",
+    "locator": "Abstract, background"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Availability of an R package for Bayesian mediation does not make a specific target-trial emulation auditable. The problem concerns release of analysis-specific code, phenotype definitions, diagnostics, schemas, fixtures, and protocol-version history; none is supported by the quote.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "BayesGmed: An R-package for Bayesian causal mediation analysis",
+    "doi": "10.1371/journal.pone.0287037",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A named, installable package rather than a description is what makes a method reproducible in operative detail, which is the standard the entry says applied emulations do not meet. This addresses the supply side: the tool exists and is citable.",
+    "quote": "We created BayesGmed, an R-package for fitting Bayesian mediation models in R.",
+    "locator": "Abstract, methods"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper offers an informative diagnostic comparison for a particular parametric g-formula specification, so it is relevant evidence that some assumption failures can be probed rather than simply asserted. It does not provide thresholds, a general assumption dashboard, or a reporting standard, so partial addressing is the appropriate effect.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "Revisiting the g-null Paradox.",
+    "doi": "10.1097/ede.0000000000001431",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "low",
+    "evidence": "Three concrete checks are named for one assumption that the registry treats as undiagnosable in practice, model correctness: refit under different specifications, refit under different orderings of the confounder density factorization, and compare the estimate against a nonparametric natural-course estimate. They are offered as informal diagnostics with no threshold and no reporting convention, so they narrow the entry rather than close it.",
+    "quote": "comparing the parametric g-formula and the non-parametric estimate of the outcome mean/risk mean under the “natural course”",
+    "locator": "Section 6, Discussion"
+   }
+  }
+ ]
+}

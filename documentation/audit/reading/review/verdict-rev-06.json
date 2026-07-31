@@ -1,0 +1,182 @@
+{
+ "batch": "rev-06",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The placebo assignments are an integrated falsification analysis within the emulation, rather than a post hoc discussion of possible confounding. They address one negative-control-like component of the problem but do not supply a joint model combining negative controls, proxies, validation data, and other identification strategies.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Adjacent spillover efficacy of Wolbachia for control of dengue: emulation of a cluster randomised target trial.",
+    "doi": "10.1186/s12916-025-03941-2",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Negative controls are built into the workflow rather than appended: 100 in-space placebo assignments treating each control site as if intervened returned a mean odds ratio of 0.99 with 12 positive and 18 negative significant results, and an in-time placebo period before releases began returned 0.93 (0.43 to 1.24). These bound the control-selection and pre-trend threats. They do not touch the threat the design actually carries, differential test-seeking behaviour and outcome ascertainment, for which no proxy, validation subsample or negative control outcome is used.",
+    "quote": "There were only 12 positive and 18 negative statistically significant spillover intervention efficacies demonstrated in the placebo-control sites out of 100",
+    "locator": "Results: Sensitivity analyses"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Changing eligibility criteria, strategies, or outcomes defines different target trials and therefore different estimands; it is not a joint sensitivity analysis for multiple violated identifying assumptions. The quote directly confirms this estimand change and provides no evidence of joint modeling of confounding, selection, misclassification, and practical positivity.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-02",
+    "problem_title": "Sensitivity analyses vary one violated assumption at a time when several are violated together",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A conventional emulation reports a point estimate under exchangeability, positivity and correct measurement, then a sensitivity analysis relaxing one of them. In a longitudinal emulation on routine data several are doubtful at once, and one-at-a-time analyses need not characterize their joint effect. Joint multi-bias analysis of confounding, selection and misclassification exists, with software, and so do longitudinal sensitivity models for sequential confounding. What is not standard, and not required by any reporting practice, is a joint region that also includes practical positivity failure under sustained-strategy g-methods, with the product of marginal analyses remaining the default in practice. Constructing one requires compatible bias parameters, restrictions on how the biases depend on each other, and a stated target population and estimand; without those restrictions the resulti",
+    "paper": "Estimating the Effects of Lifestyle Interventions on Mortality Among Cancer Survivors: A Methodologic Framework.",
+    "doi": "10.1097/ede.0000000000001889",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "One family of modifications changes eligibility criteria and treatment strategies together rather than one at a time, so two violated conditions are relaxed jointly, and the whole family of estimates is reported as a range rather than a single sensitivity number. What it does not close is the separation of assumption relaxation from estimand change: four of the five modification families alter the causal estimand while only the covariate expansion leaves it fixed, so the reported spread cannot be read as a bias bound.",
+    "quote": "Modifications I–IV (modifications to eligibility criteria, strategies, and/or outcomes) change the causal estimand, while Modification V (modifications to adjustment covariates) does not.",
+    "locator": "Step 3: Target trial modifications to investigate lack of comparability"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Using questionnaire nonresponse as an outcome passed through the same g-formula analysis is a concrete integration of a negative-control outcome into an emulation workflow. It remains a single negative-control application and does not reconcile that evidence with proxies, validation data, or other approaches to residual confounding.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Estimating the Effects of Lifestyle Interventions on Mortality Among Cancer Survivors: A Methodologic Framework.",
+    "doi": "10.1097/ede.0000000000001889",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A negative control outcome, questionnaire non-response, was carried through the same g-formula pipeline as the mortality outcome and returned risk differences close to null, which is a negative control integrated into the emulation rather than bolted on. It is one device on one arm of the problem: no negative control exposure, no proxy variables for the suspected subclinical disease, and no validation subsample, and the null negative control coexists with an alcohol cessation estimate of 4.8 to 7.4 percentage points that is judged implausible.",
+    "quote": "which we did not expect to be affected by the lifestyle interventions but which could be similarly confounded due to disease severity or health-seeking behavior",
+    "locator": "Step 3: Target trial modifications, Modifications to outcome"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "downgrade",
+   "corrected_effect": "documents sensitivity of an applied estimate to outcome-definition choice, without addressing measurement-error correction or uncertainty propagation",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The comparison shows that phenotype definition can materially change an estimate, which is useful evidence of the practical importance of the problem. Neither the quoted PPV nor the two binary-outcome analyses identifies a measurement model, corrects misclassification, or propagates phenotype error into inference.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MER-01",
+    "problem_title": "Phenotypes enter emulations as error-free binary variables",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquel",
+    "paper": "Strengthening inferential studies in the FDA Sentinel initiative: results from a methodological demonstration project.",
+    "doi": "10.1038/s41746-025-02234-5",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Two outcome definitions applied to the same cohort of 97,119 patients gave hazard ratios of 0.99 and 0.85, so the measurement instrument is shown to be a determinant of the answer rather than a background detail. What is not closed is any propagation of the phenotype's residual error into the interval: both estimates are reported as if the binary outcome were exact, and the 0.90 positive predictive value never enters the variance.",
+    "quote": "the estimates were closer to the null versus when using Sentinel’s phenotyping algorithm for pancreatitis with a PPV of 0.90",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "downgrade",
+   "corrected_effect": "documents conventional missing-data diagnostics and imputation in an emulation, without establishing missing at random or modeling the visit process causally",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Observed-group balance, missingness prediction, and associations with outcomes cannot establish that missingness is at random, especially when observation reflects clinical decisions and latent severity. The quoted recommendation supports imputation, not treatment of observation times or encounters as part of the longitudinal causal structure.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Strengthening inferential studies in the FDA Sentinel initiative: results from a methodological demonstration project.",
+    "doi": "10.1038/s41746-025-02234-5",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A real diagnostic sequence is supplied: monotone missingness patterns, standardized differences between observed and missing groups with medians around 0.02 to 0.05, area under the curve for missingness prediction, and a test of association between the missingness indicator and pancreatitis. That closes the question of whether missing at random is defensible for these covariates. It does not treat the encounter process as causal structure: whether an HbA1c is drawn is itself a clinical decision downstream of health state, and the response is imputation of 70 percent of HealthVerity HbA1c values rather than modeling of the visit process.",
+    "quote": "multiple imputations are likely to provide best bias-variance trade-off",
+    "locator": "Structural missing data investigation"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The stroke endpoint is a negative control outcome analyzed within the regulatory emulation and is therefore a concrete partial implementation of one component of the proposed workflow. A null negative-control estimate alone does not calibrate the primary estimate or combine evidence from other negative controls, proxies, or validation data.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Strengthening inferential studies in the FDA Sentinel initiative: results from a methodological demonstration project.",
+    "doi": "10.1038/s41746-025-02234-5",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Ischemic stroke is run as a negative control outcome and returns 0.97 (0.82 to 1.14), which is a concrete integration of one uncontrolled-confounding probe into a routine regulatory workflow. It stops there: no negative control exposure, no proxy variable and no validation subsample enters the analysis, and the null control result carries no calibration onto the pancreatitis interval.",
+    "quote": "The analysis of the stroke endpoint as a negative control outcome confirmed no difference in risk between SGLT-2i and DPP-4i",
+    "locator": "Results"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The TARGET item makes identification assumptions explicit for each estimand, which addresses an important reporting precondition for an assumption dashboard. It does not classify assumptions by empirical diagnosability or require corresponding diagnostics, so it does not resolve the stated reporting gap.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "Transparent reporting of observational studies emulating a target trial: the TARGET Statement.",
+    "doi": "10.1136/bmj-2025-087179",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Item 7g requires each identifying assumption to be named for each estimand together with the variables that operationalize it, which forces assumptions onto the page instead of leaving them implicit. It stops short of a dashboard: no item asks which of those assumptions can be checked in the data and which cannot, so conditional exchangeability, positivity and sufficient definition of the strategies are all reported alike, and item 16 asks only for a narrative discussion of plausibility.",
+    "quote": "For each causal estimand, describe assumptions made to identify it, including assumptions regarding baseline confounding due to lack of randomization.",
+    "locator": "TARGET checklist"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The TARGET accessibility item creates a reporting prompt for code and materials, which partially improves transparency. It neither requires release nor specifies the operational artifacts needed for auditability, including versioned phenotype logic, weight diagnostics, executable fixtures, and protocol-version history.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "Transparent reporting of observational studies emulating a target trial: the TARGET Statement.",
+    "doi": "10.1136/bmj-2025-087179",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Item 19 asks whether data, analytic code and other materials are accessible and how to reach them, which is the first checklist requirement of its kind for emulations. It is satisfied by a statement that materials are unavailable, and it names no specific artifact: phenotype logic, weight diagnostics and the rejected protocol versions are not enumerated anywhere in the 21 items.",
+    "quote": "Provide information on whether data, analytic code and/or other materials are accessible, and where and how they can be accessed.",
+    "locator": "TARGET checklist"
+   }
+  }
+ ]
+}

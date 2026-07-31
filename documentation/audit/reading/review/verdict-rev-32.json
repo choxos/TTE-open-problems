@@ -1,0 +1,182 @@
+{
+ "batch": "rev-32",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "A portable executable specification directly improves the availability and reproducibility of implementation logic across sites. It does not supply complete phenotype provenance, diagnostics, containers, synthetic fixtures, or versioned rejected protocols, so partial addressing is the appropriate effect.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "From study design to executable code: automating target trial emulation with large language models.",
+    "doi": "10.1093/jamiaopen/ooag131",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The paper states the reproducibility failure precisely: each team writes custom code for its local environment, and conceptually identical designs diverge through variable naming, data transformations or package versions. The proposed fix is a shareable JSON specification executable at any site without modification, which makes the analysis portable while leaving phenotype logic and rejected protocol versions outside what is shared.",
+    "quote": "Even when study designs are conceptually identical, differences in implementation such as variable naming, data transformations or even package versions can lead to divergent results.",
+    "locator": "Background"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "An explanation of text-to-specification interpretation is not an assumption dashboard and does not classify assumptions by diagnosability. It neither supplies standardized diagnostics nor distinguishes omitted diagnostics from diagnostics that were run.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "From study design to executable code: automating target trial emulation with large language models.",
+    "doi": "10.1093/jamiaopen/ooag131",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The pipeline emits an explanation of how each part of the free text was interpreted alongside the specification, which puts the design decisions in a machine-readable and auditable form rather than in prose. It records what was specified rather than which assumptions the specification commits the analysis to.",
+    "quote": "In addition, the LLM produces an explanation describing how each part of the text was interpreted and applied to the analytic specifications.",
+    "locator": "Step 1"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Ranking eligibility criteria by their contribution to an estimate does not assess whether conditioning on a healthcare-use variable opens a collider path. The approach may optimize a practical eligibility set, but it does not provide the required causal-structure check.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "ELG-02",
+    "problem_title": "Eligibility criteria built from healthcare-use variables can induce selection through colliders",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An eligibility criterion is a conditioning statement, and conditioning on a variable that is a collider, or a relevant descendant of one, in the graph relating determinants of treatment and outcome opens a noncausal path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables: a required prior visit, a recorded baseline laboratory value, a minimum enrollment period. Being a healthcare-use variable is not sufficient for the bias, and these variables are the ones most likely to sit at the junction, because pre-baseline treatment decisions, incipient disease and the common causes of care-seeking and outcome all feed them. Nothing in the current workflow checks an eligibility definition for that structure before the analysis runs, and the reporting checklist asks what the criteria were rather than what conditioning on them does.",
+    "paper": "Data-driven trial design: use of target trial emulation to evaluate eligibility criteria in asthma and COPD.",
+    "doi": "10.3389/fmed.2026.1863026",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Eligibility criteria are treated as a design variable with a measured consequence: Shapley values rank each criterion by its contribution to the effect estimate, and dropping all but nine or ten multiplies the cohort by 27 while moving the estimate under 10 percent. The ranking is computed only over the criteria the data could express, so criteria that were never emulated cannot be evaluated by it and cannot be defended or dropped on this evidence.",
+    "quote": "Analysis with Shapley values retained nine criteria for COPD and 10 for asthma. After applying this data-driven set of criteria, cohort sample sizes increased (COPD: N  = 118,739; asthma: N  = 219,580) while AERR point estimates changed by less than 10% with a narrower confidence interval width.",
+    "locator": "Abstract, Results"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "E-values are sensitivity analyses, not negative controls, proxies, validation data, or a joint model integrating those tools. Agreement with a published trial is also not a convention for reconciling evidence from distinct residual-confounding methods.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Data-driven trial design: use of target trial emulation to evaluate eligibility criteria in asthma and COPD.",
+    "doi": "10.3389/fmed.2026.1863026",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "E-values are computed for the final cohorts and reported as requiring a four- to five-fold association to nullify the result, which is a quantitative bias analysis run as a routine step rather than an afterthought. Its evidential weight is then reinforced by agreement with the published trial, so the bias analysis and the benchmark are used to support each other.",
+    "quote": "As reported in Table 4 , the E -values for our final data-driven cohorts were substantial, indicating that an unmeasured confounder would need to have a strong association (greater than four- to five-fold) with both treatment and outcome to nullify our findings.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Pooled-equivalent aggregation solves a computational aggregation issue that the problem statement explicitly identifies as not the central gap. The quoted limitation confirms that site-specific coding and capture differences can persist without diagnostics establishing protocol equivalence.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "DTA-02",
+    "problem_title": "Averaging site estimates in a federated emulation can conceal that the sites emulated different trials",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been developed to the point of pooled-equivalent estimation for time-to-event outcomes. The statistical machinery for combining site estimates is not the hard part. Sites differ in coding systems, treatment availability, confounding structure and time resolution, so one executable protocol can define materially different eligibility, exposure and outcome at each site, and pooling then averages several different questions. Aggregation cannot detect that: heterogeneity between site estimates is produced equally by real effect modification and by mapping failure. Local validation and aggregate diagnostics shared without patient records can flag some of it, and no current practice requires either, or requires the target population and pooling",
+    "paper": "Federated target trial emulation for time-to-event outcomes via POLARIS: Pooled-equivalent One-shot Likelihood Aggregation for Real-world Inference in Survival.",
+    "doi": "10.21203/rs.3.rs-9613167/v1",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The aggregation is lossless rather than an average of site estimates, so the pooled result is the one a centralized analysis would have produced, which removes the arithmetic half of the problem. The other half survives: each site fits its own propensity model, and the paper states that residual differences in unmeasured clinical practice, coding conventions and data capture may persist, so the sites can still be emulating different trials under a common protocol.",
+    "quote": "Second, although POLARIS accounts for observable cross-site heterogeneity by allowing each health system to estimate its own propensity scores and weighted risk sets before aggregation, residual differences in unmeasured clinical practices, coding conventions, or data-capture processes may persist across health systems 17 .",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The study partially addresses missing eligibility information under a missing-at-random assumption and provides evidence about practical imputation choices. It does not model informative observation or visiting as causal processes, so it cannot resolve the broader problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Missingness in Eligibility Criteria for Target Trial Emulation in EHR With Survival Outcomes.",
+    "doi": "10.1002/sim.70500",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is the missing-data question posed at the eligibility step rather than the covariate step, and it is answered with simulations and a real analysis: impute first, use a flexible model, and expect residual bias that grows with missingness. What it does not do is address why the variable is missing, since the whole comparison assumes missingness at random and the authors state every strategy would fail otherwise.",
+    "quote": "In the target trial emulation framework, there is a dearth of information on how to best address missingness in eligibility criteria.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Prespecifying negative control outcomes alongside E-values is a concrete partial integration of residual-confounding assessments into an emulation workflow. It does not establish a standard joint model, validate the negative-control comparability assumption, or integrate proxies and external validation data.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Emulating the LEADER trial in China: a regulatory science case study on non-interventional research.",
+    "doi": "10.3389/fendo.2026.1777954",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Two negative control outcomes with no plausible relation to the exposure were prespecified and returned null, and E-values were computed alongside, so the unmeasured confounding check is part of the analysis rather than a discussion point. The controls are chosen by clinical judgment about what liraglutide cannot affect, with no procedure establishing that they share the confounding structure of the primary outcome.",
+    "quote": "Negative control outcomes (fractures and head injuries) and E-values were employed to assess the potential for unmeasured confounding.",
+    "locator": "Materials and methods"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Explaining why a grace period is needed and reporting a six-month choice does not provide an outcome-blind method for selecting its length or the time grid. The example instead illustrates the unresolved discretionary design choice.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Identifying and avoiding design related biases in observational studies using the target trial framework.",
+    "doi": "10.1136/bmjmed-2024-001280",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The mechanism is set out precisely: a grace period is needed because treatment does not follow eligibility immediately, and its length here is six months, which is also the maximum immortal time created if patients are classified by what they later did. The article says the grace period was necessary without offering any procedure for choosing six months rather than three or twelve.",
+    "quote": "In a study that compared surgery with no surgery for lung cancer in elderly people, a grace period of six months was necessary to allow individuals time from their diagnosis to receive surgery, because surgery often does not occur immediately after diagnosis. 30",
+    "locator": "Signal paragraph, misclassification bias"
+   }
+  }
+ ]
+}

@@ -1,0 +1,182 @@
+{
+ "batch": "rev-36",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "downgrade",
+   "corrected_effect": "documents/illustrates the problem; does not partially address it",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The study recognizes that a primary-care restriction can produce selection bias and shows that alternative utilization restrictions change cohort comparability. It does not assess whether eligibility conditions open collider paths, nor does it provide a workflow for checking that causal structure before analysis.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "ELG-02",
+    "problem_title": "Eligibility criteria built from healthcare-use variables can induce selection through colliders",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An eligibility criterion is a conditioning statement, and conditioning on a variable that is a collider, or a relevant descendant of one, in the graph relating determinants of treatment and outcome opens a noncausal path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables: a required prior visit, a recorded baseline laboratory value, a minimum enrollment period. Being a healthcare-use variable is not sufficient for the bias, and these variables are the ones most likely to sit at the junction, because pre-baseline treatment decisions, incipient disease and the common causes of care-seeking and outcome all feed them. Nothing in the current workflow checks an eligibility definition for that structure before the analysis runs, and the reporting checklist asks what the criteria were rather than what conditioning on them does.",
+    "paper": "Investigating Primary Care Indications to Improve the Quality of Electronic Health Record Data in Target Trial Emulation for Dementia.",
+    "doi": "10.1101/2025.04.08.25325485",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This supplies what the entry asks for in part: an external yardstick for a healthcare-use eligibility criterion, comparing age and sex specific mortality against census life tables and dementia incidence against a Medicare reference, which showed the primary care restriction improving alignment to 1.3 and 1.0 per 1000 person-years while a top-decile visit-count restriction worsened mortality alignment to 6.2 by selecting sicker frequent attenders. It does not close the entry: the paper concedes that all utilization metrics are affected by treatment and outcome and can act as colliders, and the restriction itself skews the cohort toward higher education and socioeconomic status.",
+    "quote": "This filtering also potentially introduces selection bias because the internal PCP population may be skewed across various features",
+    "locator": "Practical Implications"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "downgrade",
+   "corrected_effect": "documents/illustrates informative observation and outcome-ascertainment differences; does not partially address the methodological gap",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted passage establishes that routine encounters replace a common prespecified observation schedule, and the study measures differences in continuity of care. Its response is descriptive cohort restriction and ascertainment assessment, not an estimator or identification strategy for an informative visit process.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Investigating Primary Care Indications to Improve the Quality of Electronic Health Record Data in Target Trial Emulation for Dementia.",
+    "doi": "10.1101/2025.04.08.25325485",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The visit process is treated as part of the identifying structure rather than as noise: encounters are cast as retrospective screening opportunities, and a measure of uninterrupted care is built, the longest span with no four-month gap, giving 5.4 years against 2.4 years by primary care status, with a progression-based proxy for whether an assessment would have been recorded. What is not closed is any adjustment: the measure diagnoses differential ascertainment and the response is cohort restriction, and the paper notes there can be no common prespecified schedule.",
+    "quote": "Because emulating a target trial relies on past healthcare encounters as retrospective screening opportunities, there cannot be a pre-specified schedule common to all patients.",
+    "locator": "Evaluating the quality of outcome ascertainment data"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "TARGET reporting requirements create a required location for articulating assumptions, timing, unmeasured variables, and potential biases. They do not classify assumptions by whether they are diagnosable, specify diagnostics and their limits, or link each reported sensitivity analysis to an assumption.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "Raising the bar for causal inference: PLOS Medicine adopts the TARGET guidelines for target trial emulation studies.",
+    "doi": "10.1371/journal.pmed.1004796",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The mandate does force assumptions into the manuscript: the protocol section must list assumptions alongside eligibility, assignment, follow-up, and estimand, and the mapping must discuss unmeasured variables, timing decisions, and potential selection or measurement biases. That is a required inventory where none existed. It does not separate assumptions with a diagnostic from assumptions without one, assign each a status, or require that the sensitivity analyses reported bear on the specific assumptions listed, so a compliant manuscript can present a balance table and an unverifiable exchangeability claim in the same register.",
+    "quote": "The mapping should include discussion of unmeasured variables, timing decisions",
+    "locator": "What authors should expect, and how submissions will change"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Requiring a protocol and a target-trial mapping table for manuscripts claiming TTE makes use of the label subject to reporting requirements. It remains a reporting standard rather than evidence that consistency, exchangeability, positivity, measurement validity, or estimation validity hold.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-03",
+    "problem_title": "Calling an analysis a target trial emulation is treated as evidence about its assumption burden",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Target trial specification improves temporal alignment, protocol clarity and estimand definition. It does not establish consistency, conditional exchangeability, positivity, valid measurement, correct estimation or transportability, and those are separate conditions rather than steps on one scale: any of them can hold while the others fail. In practice the label does the work of all of them. An analysis that adopts the framework is read as though the whole set had been secured, and no convention asks a study to state the six requirements separately for the estimand it chose. The reporting evidence shows how weakly the label constrains the practice: of 200 published studies claiming to emulate a trial, 43% did not describe all key emulation components.",
+    "paper": "Raising the bar for causal inference: PLOS Medicine adopts the TARGET guidelines for target trial emulation studies.",
+    "doi": "10.1371/journal.pmed.1004796",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "By extending the requirement to manuscripts that claim to rely on emulation, the policy makes the label cost something: a study using the term must now produce a protocol and a mapping table rather than the term alone. What it does not do is tie the label to any assumption burden, since compliance is judged on reporting completeness and the editorial refuses the risk-of-bias role, so a fully compliant manuscript still carries the word with no verified implication about immortal time, positivity, or exchangeability.",
+    "quote": "all manuscripts submitted to the journal that rely on TTE (or claim to do so) must adhere to the TARGET reporting guideline as a submission requirement",
+    "locator": "Editorial body"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The estimand framework sharpens specification of the scientific causal target through its treatment, population, outcome-variable, intercurrent-event, and summary-measure attributes. It does not document the transition from that target to a secondary-data emulation, the identifying assumptions, or the resulting estimation error.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-01",
+    "problem_title": "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error",
+    "problem_verdict": "overstated",
+    "problem_statement": "Three trials are in play in any emulation and only one is usually named: the ideal trial that would answer the decision-maker's question, the target trial the investigator specifies, and the emulation the data support. Specifying the target trial closely around the available data conceals the distance between the first two, and the paper reports one estimate as though the chain were tight. What is missing is not an additive decomposition; that generally does not exist, because the transitions change populations, interventions, outcomes and scales, so the discrepancies do not add. What is missing is a documented lineage: the change from the decision question to the operational causal estimand, the assumptions mapping that estimand to an observed-data functional, and the estimation uncertainty, each recorded separately so a reader can see which step carries the load. No convention requires",
+    "paper": "Review of Recent Pharmacoepidemiologic Post-Market Safety Studies Through the Lens of the Estimand Framework.",
+    "doi": "10.1007/s43441-025-00780-4",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The five estimand attributes give a real decomposition of the scientific target: treatment, population, variable, intercurrent events, and population-level summary, and applying it to 25 published studies exposes exactly where the target was left unstated, since the term intercurrent event appeared in none of them while 84% of cohort studies described such events informally. What the framework does not supply is any accounting of the loss incurred when the protocol is mapped onto secondary data, or of estimation error, and the review says the operational definitions are more complex than in trials without quantifying that gap.",
+    "quote": "the operational definition of the aforementioned four attributes is more complex than the definition used in clinical trials",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "A seven-domain ROBINS-E assessment provides a multidomain profile rather than a single undifferentiated quality label, so it is a partial precedent for structured assumption reporting. It does not distinguish assumptions that can be probed with observed data from those that cannot, and its overall rating can obscure that distinction.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "Strength of evidence for paternal influence on offspring epigenome in observational human studies: a systematic review and risk-of-bias appraisal for non-randomized exposures.",
+    "doi": "10.1080/15592294.2025.2594322",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "ROBINS-E is applied as a seven-domain profile, which is closer to an assumption dashboard than a single quality label and does separate confounding from missing data and from participant selection. What it does not do is distinguish diagnosable from undiagnosable: the domains collapse into one overall rating, six studies received the overall rating with no domain scores at all, and the confounding score of 2.91 sits on the same one-to-four scale as the missing data score of 2.18 despite one being checkable against the data and the other not.",
+    "quote": "we evaluated the quality of the studies across seven domains: confounding, exposure measurement, selection of participants, post-exposure intervention, missing data, selection of results, and outcome measurement",
+    "locator": "Assessment of methodological quality"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Criteria for whether an exposure was well-defined concern measurement validity and biologically relevant exposure windows. They do not select a target-trial time grid or grace period before outcome analysis, and they offer no rule for choosing interval width or permissible treatment delay.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Strength of evidence for paternal influence on offspring epigenome in observational human studies: a systematic review and risk-of-bias appraisal for non-randomized exposures.",
+    "doi": "10.1080/15592294.2025.2594322",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A three-part outcome-blind rubric for exposure timing is supplied: measurement timing must align with the relevant exposure window, the measure must be a valid proxy, and dose or duration must be specified. It scores studies after the fact and it is what separates smoking studies rated high from the one rated some concerns. It does not tell an investigator how to choose the window or the permissible lag before the outcome is looked at, and no threshold on the resulting score changes any study decision.",
+    "quote": "In the exposure measurement domain, we established three criteria to determine whether an exposure was well-defined",
+    "locator": "Assessment of methodological quality"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "downgrade",
+   "corrected_effect": "documents a calendar-time balancing sensitivity analysis in a single-entry emulation; does not partially address the sequential-emulation problem",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Equalizing treatment initiators by calendar year is a relevant diagnostic and design response to secular treatment uptake in this application. The study does not involve repeated participation across sequential trial starts, does not model start-time heterogeneity, and does not establish a generally applicable solution for the stated problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SEQ-01",
+    "problem_title": "Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals",
+    "problem_verdict": "overstated",
+    "problem_statement": "Sequential emulation exploits repeated eligibility: a new trial is emulated at each decision point, and a person eligible at many points contributes to many of them. The resulting within-person dependence has been addressed: clustering by person, and confidence-interval procedures for survival outcomes compared across the sandwich estimator, nonparametric bootstrap, jackknife and a linearized estimating function bootstrap, which covers better in the small-sample, low-event-rate regime that motivates the design. What has not been addressed is the calendar-time structure. Trials begun at different times occur under different treatment availability, guidelines and background risk, so a pooled estimate assumes an effect common to start times that differ in all three. Trial start is not conventionally modeled flexibly, treatment-by-start-time heterogeneity is not conventionally examined, and ",
+    "paper": "Type 2 diabetes, sodium-glucose cotransporter-2 inhibitors and cardiovascular outcomes: real world evidence versus a randomised clinical trial.",
+    "doi": "10.1186/s12933-025-02924-0",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Calendar-time confounding is real here and is measured: DPP4i initiation dominated 2013 to 2015 while SGLT2i initiation rose later, so drug choice is confounded with era of care. The response is a sampling algorithm that enrolls equal numbers of each initiator per calendar year, and the MACE estimate moves only from 2.8 to 3.1 percentage points, which is a genuine diagnostic that few emulations run. It does not address repeated participation, since each person enters once, and it costs 44% of the sample, so the procedure is available but its price is not costed against the bias it removes.",
+    "quote": "Our sampling algorithm enrolled an equal number of people who initiated SGLT2i and DPP4i into the emulated trial in each calendar year, maintaining balanced representation of both treatments over time.",
+    "locator": "Sensitivity analyses"
+   }
+  }
+ ]
+}

@@ -1,0 +1,182 @@
+{
+ "batch": "rev-46",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Statistical clustering of observed trajectories does not supply clinically defensible treatment-version equivalence classes. The quoted warning directly confirms that within-class causal heterogeneity remains possible, so the central problem is not partially solved.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "STR-01",
+    "problem_title": "No procedure defines clinically defensible equivalence classes of treatment versions",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Estimating a per-protocol effect requires the sustained strategy and its relevant treatment versions to be clinically specified first; artificial censoring with inverse probability weighting is one valid estimation route rather than a requirement. Beneath the mechanics sits the question the mechanics assume answered: what counts as the same treatment. Real treatments differ by dose, route, provider, formulation, combination and adherence pattern, and two regimens sharing a label may not satisfy consistency. Clone-censor-weight handles a patient compatible with several predefined strategies and does not decide whether versions should be pooled into one. Observed data can expose heterogeneity across versions and cannot establish that versions are irrelevant, so the pooling decision is clinical. Finer definitions also create practical support problems, so the more faithful specification is ",
+    "paper": "Marginal structural models with latent class growth analysis of treatment trajectories: Statins for primary prevention among older adults.",
+    "doi": "10.1177/09622802231202384",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A defined procedure now maps 346 observed treatment trajectories onto four classes, with the causal parameter constructed as a projection so the classes do not have to be true groups, and simulations show the estimator recovers that parameter. What it does not close is whether the classes are clinically defensible: the number of groups was set to 4 by expert preference against a fit criterion favoring 6, and there is no way to test whether trajectories inside a class share an effect.",
+    "quote": "the effect estimates may not be informative if the observed trajectories that are clustered in the same trajectory group have very different effects",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper supplies operational, quantitative data-quality dimensions and therefore weakens the claim that assessment is purely narrative. It does not specify prespecified, protocol-specific failure thresholds that would stop an emulation, so partial addressing is appropriate.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "DTA-01",
+    "problem_title": "Data-fitness assessment is narrative and has no thresholds that would stop a study",
+    "problem_verdict": "overstated",
+    "problem_statement": "Electronic health records arise from encounters, billing and documentation rather than from scheduled research assessments, so eligibility and follow-up in an emulation partly reflect care-seeking and access rather than the biology the protocol intends. Whether a given database can support a given target trial is a question about the data source and the protocol jointly, and quantitative assessments of that pair now exist. What does not exist is a prespecified stop rule: a threshold agreed before the analysis, on observability, temporal precision, capture continuity, comparator support, outcome validity and linkage completeness, that would halt a study when an essential component fails. Outside tightly gated regulatory and network feasibility processes, most published emulations still assert suitability in a paragraph, and a pipeline with no route to the answer no will always produce an ",
+    "paper": "Observational studies of treatment effectiveness in neurology.",
+    "doi": "10.1093/brain/awad278",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Four measurable dimensions of data quality are specified, three of them as proportions of entries that are complete, in plausible range, or internally congruent, and all are automatable and can be co-reported with results or used to trim or weight participants. That is more than narrative assessment. It stops short of the entry, because no value of any dimension is named at which a study should not proceed, and the fourth dimension, believability, ultimately requires primary source verification that registry work does not have.",
+    "quote": "Data completeness is assessed as the number/proportion of complete data entry points for essential variables.",
+    "locator": "Limitations of observational data"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "An outcome-fitted weighted cumulative exposure window is not an outcome-blind rule for selecting a target-trial time grid or treatment-assignment grace period. The quote concerns the modeled lagged effect of opioid exposure, not a design procedure for the quantities named in TZO-01.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Comparison of Different Modeling Approaches for Prescription Opioid Use and Its Association With Adverse Events.",
+    "doi": "10.1093/aje/kwad115",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Instead of fixing an exposure window by convention, a spline-based weighted cumulative exposure model estimated it, and put positive weight only on the previous 40 to 50 days, contradicting the 90-day threshold used in most of the literature. That is a real measurement of a quantity usually assumed. It does not close the entry: the window is estimated by fitting the outcome, so it is chosen with the outcome in view, and the weight update grid of 10-day intervals and the one-year administrative horizon remain conventions.",
+    "quote": "The estimated weight functions for both past use ( Figure 4 ) and past log-transformed doses ( Figure 5 ) suggest that their impact cumulates over the previous 40 or 50 days",
+    "locator": "Results"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Interview information may document exposure misclassification, but the described analysis does not identify or fit a joint longitudinal measurement model or propagate uncertainty through eligibility, censoring, and weights. This is an applied exposure-validation observation, not a partial methodological resolution of MER-01.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MER-01",
+    "problem_title": "Phenotypes enter emulations as error-free binary variables",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquel",
+    "paper": "Comparison of Different Modeling Approaches for Prescription Opioid Use and Its Association With Adverse Events.",
+    "doi": "10.1093/aje/kwad115",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The exposure phenotype was checked rather than assumed: interviews established that of patients with a dispensation, 85% took it as prescribed, 11% stopped and 4% never started, so a claims-based binary exposure is right about 85% of the time in this cohort. The outcome phenotype gets no such treatment and is acknowledged to be both over-inclusive and under-ascertained, with the misclassification handled by an argument that bias would be toward the null rather than by correction.",
+    "quote": "administratively derived measures of opioid exposure were supplemented with information on medication-taking behavior, extracted from patients’ interviews",
+    "locator": "Opioid use"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Continuous-time treatment-initiation intensity weighting is relevant progress toward dynamic-regime analysis without imposed discrete alignment. It does not handle treatment-dependent observation or stochastic discontinuation, both of which are central to the stated unresolved setting.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-02",
+    "problem_title": "Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Discretizing that onto a grid can reverse the temporal ordering of a treatment and an outcome falling in the same interval, merge several events into one, and define an estimand that exists only relative to the chosen interval. Identification and efficient estimation for dynamic interventions in continuous time under counting-process filtrations and irregular monitoring have been established. They do not yet settle the case an emulation on routine data actually faces: a visit process that depends on treatment, combined with effects that occur inside an interval. A continuous-time emulation must define the treatment, covariate, visit, censoring and outcome processes relative to a filtration and impose assumptions linking latent histories to the observed visit proce",
+    "paper": "Estimating the causal effects of multiple intermittent treatments with application to COVID-19.",
+    "doi": "",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Weights are derived in continuous time from the intensity of treatment initiation, with eligibility intervals switched off while a patient is already on the drug, so an irregularly observed regime is identified without artificial alignment; simulations show bias reduction and coverage gains over discretized alternatives. What stays open is stated plainly: discontinuation is not modeled as a stochastic process at all, so a regime that says when to stop is outside the framework, and the observation process itself is not modeled.",
+    "quote": "we do not consider treatment discontinuation (from 1 to 0) as a stochastic process",
+    "locator": "Signal paragraph"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Treating visit occurrence through calibrated weights and estimating a visit-related contrast explicitly recognizes that observation is part of the causal data-generating structure. The approach remains conditional on assumptions about the visit process and cannot resolve informative visiting driven by unobserved severity.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Estimation of marginal structural models under irregular visits and unmeasured confounder: calibrated inverse probability weights.",
+    "doi": "10.1186/s12874-022-01831-2",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The visit indicator is treated as a second intervention in the structural model rather than as missingness to be imputed: visit weights create a pseudo-population in which visits are exogenous, and the model reports a counterfactual contrast for the visit itself. The size of that contrast is the point: a visit was associated with a 0.78% reduction in hemoglobin A1c, twice the 0.38% attributed to a single prescription, so a visit process treated as a nuisance would have carried a substantial part of the estimated drug effect.",
+    "quote": "A reduction of - 0.78 % (95% CI: - 0.87 % to - 0.69 % ) in mean HbA1c is observed with primary care visit",
+    "locator": "Application results"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Using one expected-null secondary outcome as an instrumental-variable verification exercise is not an integrated negative-control, proxy, and validation-data workflow for target-trial emulation. The quote supports a falsification check only, with neither joint identification nor a prespecified decision rule.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Instrumental variable estimation of the causal hazard ratio.",
+    "doi": "10.1111/biom.13792",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A negative control outcome is built into the analysis: death from causes other than breast cancer is analyzed with the same estimator and returns 0.99 (0.90 to 1.09), which is what a valid instrument and correct identification predict. This supplies a concrete falsification endpoint inside an instrumental variable survival analysis. It does not close the entry, because the control is described as a verification aside with no threshold that would have invalidated the primary estimate, and no proxy or validation data enters the estimation itself.",
+    "quote": "For verification purposes, we also consider a secondary outcome, death due to other causes, for which we expect the causal effect of breast cancer screening to be null.",
+    "locator": "Application to the Health Insurance Plan Study"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Recognizing informative contact times does not establish that the visit process was incorporated into the identified causal structure. The described reliance on modeled imputation for between-contact covariates is precisely the limitation in MIS-01, and the quote supports recognition rather than a solution.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Using marginal structural joint models to estimate the effect of a time-varying treatment on recurrent events and survival: An application on arrhythmogenic cardiomyopathy.",
+    "doi": "10.1002/bimj.202100003",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The observation process is named as informative because sicker patients contact the hospital more often, and the response is to define the analysis grid from the actual contacts and to estimate weights with a time-dependent model on that grid rather than on an artificial fixed grid. That is more than treating visits as missing data. It does not close the entry, because five time-dependent confounders that could not be assumed constant between contacts were filled in by generalized mixed effect models, so the visit process still enters as imputation rather than as part of the identified causal structure.",
+    "quote": "As in most observational studies, the observation times are informative since patients in worse conditions are more likely to have contact with the hospital.",
+    "locator": "Discussion"
+   }
+  }
+ ]
+}

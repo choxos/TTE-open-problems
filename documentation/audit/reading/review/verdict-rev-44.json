@@ -1,0 +1,182 @@
+{
+ "batch": "rev-44",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The method directly bears on precision for an effect modification contrast, which is one component of subgroup-effect estimation. It does not provide subgroup-specific overlap assessment, selection-aware inference, or a rule for target-population changes after restriction.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "LRN-04",
+    "problem_title": "Subgroup effects are estimated where overlap is worst, and the groups with worst overlap are often the protected ones",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Causal forests and meta-learners estimate heterogeneous treatment effects and inherit every identification assumption of the base analysis without relaxing any of them. A subgroup analysis therefore requires subgroup-specific assessment of exchangeability, measurement validity, positivity and uncertainty, and apparent heterogeneity can reflect differential measurement or differential access rather than differential biology. Two further requirements are routinely skipped. Adaptively chosen subgroups need selection-aware inference, because the reported interval otherwise conditions on a subgroup the data chose. And restricting to regions with adequate overlap changes the target population rather than fixing the estimate, so it has to be reported as a change of question. Where the groups with the poorest support are the protected groups the analysis was undertaken to examine, that has to be",
+    "paper": "Estimating marginal structural model parameters for time-fixed, binary actions with g-computation and estimating equations.",
+    "doi": "10.1093/aje/kwae316",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Precision in subgroup contrasts is the stated motivation, and a concrete gain is delivered and measured: a quarter reduction in the standard error of the interaction term relative to weighting, with software in three languages. That addresses the variance half of the subgroup problem. It leaves the overlap half untouched, because g-computation buys its precision by extrapolating the outcome model into covariate regions where one arm is thin, and no diagnostic in the procedure reports where that extrapolation is doing the work.",
+    "quote": "This feature can be particularly important for studying effect measure modification, where precision may be challenging.",
+    "locator": "Conclusion"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A method-by-assumption grid is a genuine contribution toward making assumptions explicit. It is not a study-specific dashboard and does not distinguish assumptions that can receive diagnostics from assumptions that remain unidentified.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "Statistical Methods to Adjust for Treatment Switching in Real-World Clinical Studies: A Scoping Review and Descriptive Comparison.",
+    "doi": "10.1002/cpt.70013",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A method-by-assumption grid is supplied in which each row is one of the identified methods and each column an assumption that must hold, with the consequence of violation stated. That is an assumption inventory at the level of the method. It stops short of the study level: the grid does not separate assumptions that a given dataset can diagnose from those it cannot, and it attaches no evidence from any particular emulation.",
+    "quote": "Each row represents a statistical method, and each column lists an assumption that must be met for the method to produce valid results.",
+    "locator": "Results of the synthesis"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper evaluates an inference procedure adapted to sequential trial emulation and therefore addresses part of the computational and coverage problem. Its scenario-dependent performance does not establish a scalable default for the harder clustered, flexible-nuisance setting in the registry entry.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "Inference procedures in sequential trial emulation with survival outcomes: Comparing confidence intervals based on the sandwich variance estimator, bootstrap and jackknife.",
+    "doi": "10.1177/09622802251356594",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A linearised estimating function bootstrap is supplied and shown to be 1.6 times faster than the nonparametric bootstrap at n = 5000 while giving better coverage at small samples, so one scalable option now exists. It does not deliver a default: across 81 scenarios the best method changes with sample size, event rate and treatment prevalence, all methods lose nominal coverage at later visits under high treatment prevalence, and the sandwich estimator fails outright on non-positive-definite variance matrices in small samples.",
+    "quote": "For inference, the simple sandwich variance estimator is popular but conservative, while nonparametric bootstrap is computationally expensive, and a more efficient alternative, linearised estimating function (LEF) bootstrap, has not been adapted to STE.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Using a marginal risk difference rather than presenting a counterfactual hazard ratio bears on the effect-measure component of estimand alignment. It does not by itself ensure explicit reporting of the intervention, target population, horizon, adherence rule, or handling of other intercurrent events.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-03",
+    "problem_title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.",
+    "paper": "Inference procedures in sequential trial emulation with survival outcomes: Comparing confidence intervals based on the sandwich variance estimator, bootstrap and jackknife.",
+    "doi": "10.1177/09622802251356594",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The reported estimand is the counterfactual marginal risk difference over time rather than a hazard ratio, and the reason given is that the counterfactual hazard ratio lacks a causal interpretation. The step is incomplete: the risk difference is constructed from marginal structural model hazard ratio estimates combined with a baseline hazard estimate, so consistency still rests on the survival model being correctly specified.",
+    "quote": "The counterfactual hazard ratio has been criticised as lacking a causal interpretation, and it has been proposed that other estimands be used instead, for example, the marginal risk difference (MRD).",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Penalized selection of effect modifiers in a structural nested mean model is not selection of longitudinal nuisance models for a sustained-strategy estimator. The quoted limitation explicitly leaves the treatment model unaddressed, so it does not supply the missing causal-performance criterion for nuisance fitting.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-01",
+    "problem_title": "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Identifying a sustained-strategy effect requires consistency, sequential exchangeability and positivity, and the estimator families differ in which nuisance components they need. When those components are fitted by machine learning, the model that predicts treatment best is not the model that minimizes the finite-sample error of the causal estimator: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Balance-calibrated weight fitting exists and has been applied, so the field is not selecting on prediction alone. What is missing is a criterion that combines predictive risk with the estimator-specific diagnostics that matter, longitudinal balance, weight tails and the remainder-rate condition, in one selection rule, and a default library tuned that way rather than for prediction.",
+    "paper": "Penalized G-estimation for effect modifier selection in a structural nested mean model for repeated outcomes.",
+    "doi": "10.1093/biomtc/ujae165",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Selection is driven by a penalized estimating equation for the blip parameters themselves rather than by a prediction criterion, so the tuning target is the causal contrast and the oracle property is proved for it. The nuisance side is untouched: the propensity score was fitted by unpenalized logistic regression on all candidate confounders with no selection at all, and the acknowledgment is that such selection may be necessary in a high-dimensional setup.",
+    "quote": "Although we did not perform variable selection for the treatment model in our hemodiafiltration application, such selection may be necessary in practice, especially in a high-dimensional setup",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "An adherence-defined restricted mean survival time contrast addresses the effect-measure and intercurrent-event components that a bare hazard ratio obscures. It remains only a partial contribution because it does not establish a general reporting practice or resolve whether the stated adherence intervention is practically actionable.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-03",
+    "problem_title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.",
+    "paper": "Assessing Methods for Adjusting Estimates of Treatment Effectiveness for Patient Nonadherence in the Context of Time-to-Event Outcomes and Health Technology Assessment: A Simulation Study.",
+    "doi": "10.1177/0272989x241293414",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The reported quantity is a difference in restricted mean survival times rather than a hazard ratio, and the counterfactual adherence condition defining it is stated up front, so estimand and effect measure are aligned. It does not close the entry: the population is all patients under an adherence condition nobody achieves, so the number that reaches a reimbursement decision still describes a regime that was never implementable.",
+    "quote": "In reality, achieving zero non-adherence is not possible in most clinical settings and instead we would expect adherence to be lower in standard clinical practice than in RCTs",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A consistent, fast sandwich variance estimator for a g-method with estimated nuisance parameters is relevant progress on scalable inference. The stated score-equation condition and absence of the cloning, repeated-sequence, site-clustering, and flexible-nuisance setting prevent it from supplying the requested default.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "How estimating nuisance parameters can reduce the variance (with consistent variance estimation).",
+    "doi": "10.1002/sim.10164",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A closed-form consistent sandwich variance is supplied for exactly the estimators an emulation uses, and the payoff is measured: a structural nested mean model application whose nonparametric bootstrap needed over 8 hours on a computing cluster is served by a sandwich calculation on a laptop, and the conservative alternative gave intervals up to 27 percent too wide. It is not yet a default: 6.3 percent of datasets at n = 130 returned a negative variance estimate, and the result requires the nuisance parameters to solve score equations.",
+    "quote": "The importance of the theory in this article is best illustrated in the application of Web-appendix D, where the nonparametric bootstrap took more than 8 hours on a large computing cluster; the sandwich estimator took very little time on a laptop.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Data-driven trajectory groups make one possible pooling scheme explicit and thus bear on treatment-version definition. The quote correctly limits their interpretation: statistical support points do not establish clinically defensible equivalence classes.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "STR-01",
+    "problem_title": "No procedure defines clinically defensible equivalence classes of treatment versions",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Estimating a per-protocol effect requires the sustained strategy and its relevant treatment versions to be clinically specified first; artificial censoring with inverse probability weighting is one valid estimation route rather than a requirement. Beneath the mechanics sits the question the mechanics assume answered: what counts as the same treatment. Real treatments differ by dose, route, provider, formulation, combination and adherence pattern, and two regimens sharing a label may not satisfy consistency. Clone-censor-weight handles a patient compatible with several predefined strategies and does not decide whether versions should be pooled into one. Observed data can expose heterogeneity across versions and cannot establish that versions are irrelevant, so the pooling decision is clinical. Finer definitions also create practical support problems, so the more faithful specification is ",
+    "paper": "History-restricted marginal structural model and latent class growth analysis of treatment trajectories for a time-dependent outcome.",
+    "doi": "10.1515/ijb-2023-0116",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Latent class growth analysis reduces thousands of observed adherence patterns to three groups with mean adherence 0.99, 0.54 and 0.02, and the estimand is then defined conditional on the groups that were formed, which makes the equivalence classes explicit rather than implicit. It does not close the entry: the groups are stated to be points of support rather than a true data-generating structure, the number of groups is a hyperparameter chosen by information criteria, and no clinical criterion establishes that adherence 0.54 is one treatment.",
+    "quote": "As argued in Nagin [ 11 ] and Diop et al. [ 10 ], trajectory groups are not meant to represent the true data-generating distribution but can be seen as points of support.",
+    "locator": "Discussion"
+   }
+  }
+ ]
+}

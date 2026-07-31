@@ -1,0 +1,182 @@
+{
+ "batch": "rev-52",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The negative-control period is a concrete residual-bias diagnostic in a setting where conventional weighting and covariate balance appeared adequate. It addresses one component of the problem under a highly specific design condition, without integrating negative controls with proxies or validation data.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Controlling Time-Dependent Confounding by Health Status and Frailty: Restriction Versus Statistical Adjustment.",
+    "doi": "10.1093/aje/kwu485",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A negative control period is supplied and it is the only device that revealed the residual bias, since weights, balance and covariate expansion all looked satisfactory. The preinfluenza hazard ratio of 0.43 against a truth of 1.00 quantified the bias directly, and restriction was scored by how far that number moved toward the null. What is not closed is generality: the device depends on a seasonal exposure with a clean pre-exposure window, and no workflow slot exists for proxies or validation data in emulations lacking one.",
+    "quote": "one major advantage of using an inﬂuenza vaccine effectiveness study is the availability of the preinﬂuenza period as a negative control",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The quoted discussion identifies a deterministic post-baseline treatment assignment that violates positivity, rather than relying on weight-tail summaries. It is only a coarse, arm-level identification of unsupported treatment histories, so it does not supply the requested localized diagnostic or revised estimand.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Assessment of patient-specific surgery effect based on weighted estimation and propensity scoring in the re-analysis of the sciatica trial.",
+    "doi": "10.1371/journal.pone.0111325",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Rather than summarizing a weight distribution, the analysis names the exact histories with no support and removes them: in the early surgery arm nobody can remain untreated post-baseline, so half the randomized trial is discarded before any weighting. That is a positivity diagnostic stated in terms of patient histories. It stops at the arm level and says nothing about which of the 142 retained patients lacked a realistic counterpart.",
+    "quote": "Propensity-based methods require the so-called “positivity requirement” which states that patients must have positive probability to receive treatment - or remain free of treatment - post-baseline, which is clearly violated for the early surgery arm of the trial.",
+    "locator": "Methods"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "downgrade",
+   "corrected_effect": "documents the sensitivity of dynamic-regime estimates to observation frequency and grace-period choices, and provides outcome-informed, disease-specific guidance for a grace period",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The study bears directly on the practical consequences of grid and grace-period choices, but it does not provide an outcome-blind selection procedure for either quantity. Its recommendation follows calibrated simulations and mean-square-error comparisons, which are precisely not the missing outcome-blind rule.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Optimal CD4 count for initiating HIV treatment: impact of CD4 observation frequency and grace periods, and performance of dynamic marginal structural models.",
+    "doi": "10.1097/ede.0000000000000043",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The sensitivity of the answer to the grid is quantified rather than assumed: thresholds 350, 410, 460, 490 across monthly through annual measurement, and a survival cost of 0.8657 versus 0.8304 from applying the wrong threshold. A usable default follows, that the grace period should be about the length of the observation interval, since 3-month grace periods gave the smallest mean square error at 3-monthly measurement. What is not closed is any outcome-blind rule for choosing the grid itself; the recommendation is read off one calibrated disease model and the grace period was still selected after seeing survival.",
+    "quote": "it is essential for future studies using causal analysis methods to report their observation frequency",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper identifies a concrete structural-zero pattern, namely unemployment periods in which exposure is definitionally impossible, instead of treating positivity only as a weight-distribution property. The reasoning remains qualitative and restricted to one covariate, so it is a limited partial contribution.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Work related asthma. A causal analysis controlling the healthy worker effect.",
+    "doi": "10.1136/oemed-2013-101362",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Positivity is argued in terms of a named history rather than a weight summary: in occupational cohort settings every unemployed person-period is unexposed by definition, so that stratum has no treated counterpart and weighting cannot repair it. The applicability of the method is then decided on whether such a stratum exists, which here it does not because not all asthmatics move to unexposed jobs. The check is qualitative and covers one variable, so it does not generalize to a covariate history of any size.",
+    "quote": "This is because for one level of the confounder (unemployment) all subjects are by definition unexposed",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The study quantifies healthy-worker selection through external occupational comparison groups; it does not establish a negative-control method for residual confounding in a target-trial emulation. Its reference groups may differ in occupational hazards and social selection, so their rate ratios are not a generally measured residual-confounding quantity.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Quantification of the healthy worker effect: a nationwide cohort study among electricians in Denmark.",
+    "doi": "10.1186/1471-2458-11-571",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The design supplies a working negative-control procedure: an occupation with no known harmful exposure is used so that any nonzero rate ratio is bias, and three reference groups calibrate its magnitude, yielding 0.60 against the general population versus 1.01 (0.87 to 1.19) against the construction industry. That converts residual confounding into a measured quantity. It does not close the entry: the negative control is not paired with a proxy or validation dataset, no threshold declares the residual bias acceptable, and nothing in the reporting standard requires such a control.",
+    "quote": "We evaluated HWE bias among electricians because they were unexposed to detrimental occupational exposures.",
+    "locator": "Methods"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Combining survey-design and inverse-probability-of-exposure weights concerns estimation for a complex sampled population, not transport from an observational source population to a distinct target population. The quote does not address target-sample exchangeability, sampling positivity across populations, or accounting for failures of those assumptions.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-02",
+    "problem_title": "Transporting an observational estimate compounds sampling assumptions on top of confounding assumptions with no accounting",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Transporting an observational contrast requires treatment exchangeability in the source, effect exchangeability across samples conditional on a sufficient measured set, and positivity for both treatment and sampling. A sufficient set is weaker than every effect modifier: modifiers that do not differ across populations or that are irrelevant after conditioning need not be observed. Transport estimators are now being applied to emulations, including post hoc standardization of emulations to their trial populations inside a benchmarking program. What remains is the accounting. If either exchangeability condition fails, source outcomes and target covariates alone cannot generally identify the resulting bias or apportion it between the two conditions, and no reporti",
+    "paper": "Testing and estimating model-adjusted effect-measure modification using marginal structural models and complex survey data.",
+    "doi": "10.1093/aje/kwq244",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A concrete procedure is supplied for stacking a sampling assumption on a confounding assumption: the analysis weight is the product of the survey weight and an inverse-probability-of-exposure weight, and the second must itself be estimated using the first, with code given. That makes the two-stage structure explicit rather than implicit. It does not close the entry: the uncertainty from the two layers is not separated, the interval is only known to be conservative rather than correct, and no sensitivity analysis probes the sampling model the way the confounding model is probed.",
+    "quote": "The second term is an inverse-probability-of-exposure weight that standardizes the population in order to adjust for confounding; it must be estimated using the survey weights.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "downgrade",
+   "corrected_effect": "formalizes history-specific positivity requirements for a simple dynamic regime",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The result makes clear that positivity is defined over treatment and covariate histories, which is conceptually relevant. It does not provide a diagnostic that uses observed data to identify unsupported or nearly unsupported histories in an actual emulation, nor does it define the resulting restricted estimand.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Dynamic regime marginal structural mean models for estimation of optimal dynamic treatment regimes, Part II: proofs of results.",
+    "doi": "10.2202/1557-4679.1242",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The positivity requirement is translated from a statement about weights into an explicit list of histories that must be populated: for the two-point binary example it names the four covariate-treatment strata that must contain subjects following the regime, and it establishes that no support is needed among people who already deviated. That is exactly the naming of unsupported histories the entry asks for. It does not close the entry: the enumeration is done by hand for a toy example with two binary times, there is no finite-sample near-violation measure, and nothing scales the enumeration to the covariate histories of a real emulation.",
+    "quote": "the requirement that in the actual world there be subjects with L0 = 0 that take treatment A0 = 1 and subjects with L0 = 1 that take treatment A0 = 0",
+    "locator": "Positivity Assumption: Example"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper directly identifies why nuisance-model cross-validation under a generic prediction loss need not optimize causal-estimator performance and develops a parameter-targeted alternative. That addresses an important portion of the problem, but it does not yield a default longitudinal selection rule jointly controlling balance, weight tails, and remainder behavior.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-01",
+    "problem_title": "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Identifying a sustained-strategy effect requires consistency, sequential exchangeability and positivity, and the estimator families differ in which nuisance components they need. When those components are fitted by machine learning, the model that predicts treatment best is not the model that minimizes the finite-sample error of the causal estimator: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Balance-calibrated weight fitting exists and has been applied, so the field is not selecting on prediction alone. What is missing is a criterion that combines predictive risk with the estimator-specific diagnostics that matter, longitudinal balance, weight tails and the remainder-rate condition, in one selection rule, and a default library tuned that way rather than for prediction.",
+    "paper": "Targeted maximum likelihood based causal inference: Part I.",
+    "doi": "10.2202/1557-4679.1211",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The mismatch is named exactly: cross-validation optimizes a global loss-specific dissimilarity while the variance of the causal parameter is of smaller order than the variance of the nuisance fit, so an optimally cross-validated fit of the longitudinal factors yields an overly biased substitution estimator. A concrete replacement is supplied, the square of the efficient influence curve as a targeted loss whose cross-validated risk equals the asymptotic variance of the resulting estimator. It does not close the entry: that loss is evaluated at the true treatment mechanism, so the criterion is exact only where the mechanism is known, and Part I contains no simulation or data showing how much a prediction-optimal fit loses against a targeted one.",
+    "quote": "This is due to the fact that cross-validation makes optimal choices w.r.t. the (global) loss-function specific dissimilarity, but the variance of Ψ(Qn ) is of smaller order than the variance of Qn itself.",
+    "locator": "Introduction"
+   }
+  }
+ ]
+}

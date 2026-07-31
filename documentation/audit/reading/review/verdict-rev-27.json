@@ -1,0 +1,182 @@
+{
+ "batch": "rev-27",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper evaluates information loss from alternative sampling designs for rare time-dependent exposures. It does not address effective sample size after eligibility restriction, active-comparator selection, longitudinal weighting, or a reporting convention for effective sample size in target-trial emulations.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-03",
+    "problem_title": "Large databases yield small effective samples after eligibility, comparator restriction and weighting",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "A database of millions can carry very little information about a specific target trial once strict eligibility, active-comparator restriction and weighting have been applied, and extreme weights reduce the effective sample size far below the nominal count. Conventional asymptotic inference then becomes unreliable, most sharply for rare competing events and for subgroup effects, which are the quantities decision makers ask about. Papers continue to report the nominal number of patients, which for a weighted longitudinal analysis is not the quantity that governs the variance, and no convention requires the effective size to appear beside it.",
+    "paper": "Sampling designs for rare time-dependent exposures: a comparison of the nested exposure case-control design and exposure density sampling.",
+    "doi": "10.1017/s095026882100090x",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The registry entry says large databases yield small effective samples once the design restrictions are applied. These designs work the other way: they retain every exposed person and sample the unexposed, so the information about the contrast is preserved while the ascertainment cost falls, and the paper quantifies the resulting power loss against the full cohort with inflation factors, giving the expression for the nested design for the first time. The factors are approximate, optimistic for one design and conservative for the other.",
+    "quote": "We present IFs, that roughly quantify the loss of statistical power of NECC or, respectively, EDS compared to the full cohort.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "downgrade",
+   "corrected_effect": "illustrates a reproducible methods-paper practice rather than partially addressing the field-wide auditability gap",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Publishing code and an analyzed dataset makes this particular comparison more auditable. It does not establish versioned phenotype logic, weight diagnostics, synthetic fixtures, containers, or a requirement for decision logs in target-trial emulations.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "Sampling designs for rare time-dependent exposures: a comparison of the nested exposure case-control design and exposure density sampling.",
+    "doi": "10.1017/s095026882100090x",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Both the computing code and the analyzed dataset are published, the code as supplementary material and the data in a public repository with a citable identifier. For a methods comparison whose conclusions depend on which design wins under which prevalence, that is the artifact set needed to check the comparison rather than accept it.",
+    "quote": "Computing code is available as Supplementary Material. The dataset analyzed during the current study is available in the Zenodo repository, https://doi.org/10.5281/zenodo.3995319 .",
+    "locator": "Data availability statement"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Using donor identification rather than treatment received addresses selection and immortal-time-like bias in a transplantation setting. It supplies no outcome-blind rule for choosing an emulation interval width or a treatment grace period.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Weighted pseudo-values for partly unobserved group membership in paediatric stem cell transplantation studies.",
+    "doi": "10.1177/09622802211041756",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Both approaches use donor identification rather than transplantation actually performed as the grouping variable, which is what avoids selection on surviving to the operation, and the weighted version handles the unobserved cases by a probability that decreases with elapsed search time. The result is a comparison of two strategies where the feasibility of one emerges over time, under non-proportional hazards, without a landmark and without discarding the early events.",
+    "quote": "Therefore, in order to avoid selection bias, it is crucial that statistical approaches consider donor identification rather than SCT applied.",
+    "locator": "Signal paragraph, Background"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The runtime comparison concerns pseudo-value methods for partly unobserved group membership. Faster computation does not provide valid variance estimation for repeated sequential eligibility, clones, site clustering, or flexible estimated weights.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "Weighted pseudo-values for partly unobserved group membership in paediatric stem cell transplantation studies.",
+    "doi": "10.1177/09622802211041756",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The existing approach requires repeated rounds of computation with different starting times and different risk sets, and the alternative needs only common pseudo-values computed once, running between 40 and more than 90 times faster in the simulation scenarios. The gap widens as more donors are identified, so the computational cost of the earlier method rises exactly with the amount of data available.",
+    "quote": "In the considered simulation scenarios of Section D of Supplemental Materials , the median WPV runtime was at least 40 times to more than 90 times faster than the corresponding median GPV runtime (see Figure S14 in Section E of Supplemental Materials ).",
+    "locator": "Section 4, Discussion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The review lists several ways to investigate unmeasured confounding, but it does not integrate negative controls, proxies, and validation data into one estimand-aligned model or workflow. A menu of distinct tools is the condition described by the registered problem, not a partial solution to it.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Pharmacoepidemiology for nephrologists (part 2): potential biases and how to overcome them.",
+    "doi": "10.1093/ckj/sfaa242",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The registry entry says negative controls, proxies and validation data are not integrated into a standard workflow. This review does integrate three devices into a review aimed at practitioners, naming the E-value, negative control outcomes and control cohorts as the tools for investigating unmeasured confounding alongside the design that limits it. What it supplies is a menu with a recommendation to quantify when concerns remain, not a procedure connecting what a negative control shows to what the estimate should become.",
+    "quote": "We first describe designs to handle confounding by indication (e.g. active comparator design) and methods to investigate the influence of unmeasured confounding, such as the E-value, the use of negative control outcomes and control cohorts.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Preventing immortal-time and prevalent-user bias is important design guidance, but it is not a procedure for selecting a time grid or grace period. The quoted conclusion does not bear on the stated selection problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Pharmacoepidemiology for nephrologists (part 2): potential biases and how to overcome them.",
+    "doi": "10.1093/ckj/sfaa242",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The review separates the timing biases from the confounding ones by what can be done about them: immortal time and prevalent user bias are stated to be preventable in the design and therefore the researcher's responsibility to prevent, while confounding is something to be tackled and then quantified. Three analytic routes are given without a rule for choosing among them, and they target different estimands.",
+    "quote": "Researchers can and should prevent problems arising from immortal time and prevalent-user biases in their study design.",
+    "locator": "Conclusion"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Checklists can make time-axis choices explicit and documentable, but the paper expressly says they are not prescriptive procedures. It provides no outcome-blind method to select interval width or a grace period.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Analysis of time-to-event for observational studies: Guidance to the use of intensity models.",
+    "doi": "10.1002/sim.8757",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The guidance supplies checklists that place immortal time alongside the specification of the time axis, delayed entry and the handling of time-dependent covariates, so the timing decisions are made explicit items to be worked through rather than left implicit. It states firmly that the checklists are not cook books and that the most important step is specifying the question and asking whether the data can answer it, which leaves the timing choices as judgments to be documented.",
+    "quote": "We have provided some checklists that we find useful to consider, however, it is important to emphasize that these checklists\ncannot be taken as ‘cook books’ on how to conduct time to event analysis in observational studies.",
+    "locator": "Summary and discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Cloning strategies at time zero addresses immortal-time bias once treatment-duration strategies and their timing have already been specified. The method takes the relevant grid and strategy definitions as inputs, so it does not address their outcome-blind selection.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "How to estimate the effect of treatment duration on survival outcomes using observational data.",
+    "doi": "10.1136/bmj.k182",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Cloning at time zero removes immortal time bias by construction rather than by an analytic correction, because every strategy is assigned before any post-baseline information is used. What it does not do is fix the time grid or the grace period: the procedure takes the set of strategies as given, and the worked example uses discrete time points supplied by the analyst.",
+    "quote": "Cloning is used to assign\npeople to treatment duration strategies at time zero,\neliminating immortal time bias.",
+    "locator": "Conclusions"
+   }
+  }
+ ]
+}

@@ -1,0 +1,182 @@
+{
+ "batch": "rev-15",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted statement concerns avoiding bootstrap inference when combining multiple imputation with the g-formula. It supplies no method for dependence among clones, repeated trial participation, site clustering, or flexible weight-estimation uncertainty at sequence-expansion scale.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "G-formula with multiple imputation for causal inference with incomplete data",
+    "doi": "10.1177/09622802251316971",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The bootstrap is the variance route the entry says is correct in principle and often prohibitive, and this replaces it with a synthetic multiple imputation variance estimator needing around 50 imputations and a smaller Monte Carlo sample. That is a scalable correct default for the g-formula, though not for the cloning and sequence expansion the entry is about, so it addresses the computational half of the problem in a neighbouring design.",
+    "quote": "Moreover, it avoids the need to use bootstrapping for inference, which is particularly attractive in the context of combining MI for missing data with G-formula for causal inference.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Availability of an R package for a methods procedure does not make applied target trial emulations operatively auditable. The quote supplies neither versioned phenotype logic, analysis code for an emulation, diagnostics, containers, synthetic fixtures, nor a protocol decision log.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "G-formula with multiple imputation for causal inference with incomplete data",
+    "doi": "10.1177/09622802251316971",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The method ships as an R package interfacing with an existing imputation package rather than as a description, which is the route by which a method becomes reproducible in operative detail. The entry's claim is about applied emulations rather than method papers, so this bears on the supply side of it.",
+    "quote": "we have developed an R package gFormulaMI that interfaces with the mice package to perform the required data manipulation steps, estimate mean outcomes under each treatment regime of interest, and calculate the synthetic MI variance estimator",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A low-dimensional balancing-score representation may simplify modeling for a particular Bayesian g-formula, but it does not furnish a causal-performance selection criterion. The quote provides no evidence on cross-validation, longitudinal balance, weight tails, remainder rates, or a default learner library.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-01",
+    "problem_title": "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Identifying a sustained-strategy effect requires consistency, sequential exchangeability and positivity, and the estimator families differ in which nuisance components they need. When those components are fitted by machine learning, the model that predicts treatment best is not the model that minimizes the finite-sample error of the causal estimator: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Balance-calibrated weight fitting exists and has been applied, so the field is not selecting on prediction alone. What is missing is a criterion that combines predictive risk with the estimator-specific diagnostics that matter, longitudinal balance, weight tails and the remainder-rate condition, in one selection rule, and a default library tuned that way rather than for prediction.",
+    "paper": "A flexible Bayesian g-formula for causal survival analyses with time-dependent confounding",
+    "doi": "10.1007/s10985-025-09652-3",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This addresses the nuisance-model half of the entry from a different direction: instead of a criterion for selecting among learners, it reduces what has to be modeled to one scalar per period, removing the factorisation choice. It also reports what flexible learners do and do not buy, citing simulations where singly robust g-formula estimators with machine learning did not improve on misspecified parametric models and both were improved by double machine learning or TMLE, and finding BART competitive only at later periods.",
+    "quote": "the coarsest or minimum sufficient longitudinal balancing score, without any tailoring variables, is the joint propensity and censoring score, which is a low-dimensional summary in each period for all time-varying confounders",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A narrative review comparing selected methods for exposure-change questions does not address the absence of a default estimator or a requirement to demonstrate estimator-choice sensitivity. The quote only makes a conditional comparison between IPW MSMs and a parametric g-formula specification.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "A Review of Causal Inference Methods for Estimating the Effects of Exposure Change",
+    "doi": "10.1007/s40471-024-00348-0",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is the synthesis across estimator families the entry says does not exist, for the exposure-change question: a table of what each method assumes, what makes it biased, and what it costs in efficiency, with the doubly robust combinations that mitigate misspecification. It covers one class of question rather than emulation generally, and it compares by argument rather than on a common benchmark.",
+    "quote": "The MSM via IPW method can be less prone to model misspecification than the NICE approach of the parametric g-formula method, as only the exposure model is needed.",
+    "locator": "Comparison of methods"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The study directly compares alternative g-methods and specifications for the same treatment-switching estimand, then shows that a single analysis can be an outlier. It therefore partially addresses the requested practice of showing whether estimator and specification choices mattered, without creating a universal requirement or default.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "Addressing treatment switching in the ALTA-1L trial with g-methods: exploring the impact of model specification",
+    "doi": "10.1186/s12874-024-02437-6",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is the requirement the entry asks for, executed: two estimator families targeting the same contrast, each across many specifications, reported together, with a checklist item saying explicitly to compare them and how to read agreement and disagreement. It also supplies the entry's justification empirically, since the published single specification sits near the edge of the range the same data support.",
+    "quote": "Our analyses underscore the importance of performing sensitivity analyses, as the result from a single analysis could potentially stand as an outlier in a whole range of sensitivity analyses.",
+    "locator": "Abstract, conclusion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The result supports the general proposition that postbaseline switching can make an ITT contrast differ from a switching-adjusted estimand. It does not document convergence of treatment histories in an observational initiation emulation, report arm-specific initiation over follow-up, or address the stated reporting gap.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "CNF-01",
+    "problem_title": "Convergence of treatment in the comparator arm attenuates the observational intention-to-treat analogue with follow-up length",
+    "problem_verdict": "overstated",
+    "problem_statement": "The observational analogue of an intention-to-treat effect contrasts assigning initiation now against not initiating now, and in that contrast the comparator group does not stay untreated: patients frequently initiate later. Reduced separation between the treatment histories can move the estimated effect at longer horizons, in a direction and by an amount that depend on the treatment-effect dynamics, the switching mechanism, the competing events and the effect scale. This is a feature of the estimand rather than a bias to be removed, and it occurs in randomized trials too. What emulations do not do is report it: the cumulative incidence of initiation in each arm over follow-up is rarely published, so a reader cannot judge how far the contrasted strategies stayed distinct, and a null result at a long horizon cannot be read against the convergence that actually occurred.",
+    "paper": "Addressing treatment switching in the ALTA-1L trial with g-methods: exploring the impact of model specification",
+    "doi": "10.1186/s12874-024-02437-6",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The entry's rewritten claim is that reduced separation between treatment histories moves the estimate by an amount that depends on the switching mechanism, and that this is not reported. Here it is quantified on a real trial: the intention-to-treat effect understates the benefit by 10 to 45 percentage points depending on method and specification. The direction and size are recovered only by re-analysis, which is the reporting gap the entry names.",
+    "quote": "Our results consistently indicated that our estimated ITT effect estimate (cHR: 0.82 (0.51,1.22) may have underestimated brigatinib's benefit by around 10-45 percentage points (using IPCW) and 10-20 percentage points (using the parametric g-formula) across a wide range of model choices.",
+    "locator": "Abstract, conclusion"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "A design-specific checklist that requires weight summaries, truncation reporting, natural-course checks, explicit assumptions, and transparent sensitivity results is a useful partial prototype of an assumption panel. It is not an adopted standard or a complete dashboard, and merely listing assumptions does not establish them.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "Addressing treatment switching in the ALTA-1L trial with g-methods: exploring the impact of model specification",
+    "doi": "10.1186/s12874-024-02437-6",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The seven-step checklist is close to the assumption panel the entry asks for: report the weight distribution, report every truncation level, compare the natural course against the observed data, name the five assumptions both estimators share, and report divergent sensitivity results transparently. It is one paper's checklist for one design rather than an adopted standard, and it separates what can be inspected from what must be assumed.",
+    "quote": "IPCW and parametric g-formula both operate under the following five different assumptions: no unmeasured confounding, positivity, consistency, correct model specification, and no measurement error",
+    "locator": "Checklist, step 6"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper compares IPW, the parametric g-formula, and doubly robust estimation for a common causal mean-ratio target, rather than presenting one estimator in isolation. Its simulation comparison partially demonstrates the requested estimator-choice discipline, although it does not establish a general reporting requirement or universal benchmark.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "Exposure effects on count outcomes with observational data, with application to incarcerated women",
+    "doi": "10.1093/aje/kwae023",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Three estimator families targeting the same estimand are developed and compared in simulation rather than one being offered, which is the practice the entry asks for. The comparison is within one paper for one estimand class, so it demonstrates the discipline without establishing the requirement or the common benchmark.",
+    "quote": "This paper considers estimators of the causal mean ratio based on inverse probability of treatment weights, the parametric g-formula, and doubly robust estimation",
+    "locator": "Abstract"
+   }
+  }
+ ]
+}

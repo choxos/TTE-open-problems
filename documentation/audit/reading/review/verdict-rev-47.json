@@ -1,0 +1,182 @@
+{
+ "batch": "rev-47",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quotation supplies an applied, clinically motivated choice of an irregular grid. It does not provide an outcome-blind selection procedure for a grid or grace period, which is the registered gap.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "Using marginal structural joint models to estimate the effect of a time-varying treatment on recurrent events and survival: An application on arrhythmogenic cardiomyopathy.",
+    "doi": "10.1002/bimj.202100003",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A rule for the time grid is stated and defended: an artificial fixed-length grid is rejected for a registry spanning 21 years with irregular granularity, and the common irregular grid of real contacts is used instead, with a gap-time formulation justified by the short-term pharmacodynamics of beta-blockers. That is a substantive grid choice rather than a default. It does not close the entry, since the justification is clinical narrative with no demonstration that the choice was made without sight of the outcome, and the effect only becomes significant after six months on this grid.",
+    "quote": "We made this choice since using an artificial fixed‐length time grid is not appropriate for settings such as the one of the ARVC registry, which is characterized by a long observation period and the granularity of the data.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The quotation explicitly rejects the hazard as the primary effect measure and substitutes marginal cumulative risk and survival probability. This addresses the narrower reporting failure of presenting only a hazard ratio, while leaving the broader estimand-reporting problem open.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-03",
+    "problem_title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.",
+    "paper": "Using marginal structural joint models to estimate the effect of a time-varying treatment on recurrent events and survival: An application on arrhythmogenic cardiomyopathy.",
+    "doi": "10.1002/bimj.202100003",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The reported estimand is aligned with the contrast: the hazard is explicitly rejected as an effect measure and the published quantities are the cumulative risk of recurrent events, 16 percent versus about 4 percent at 24 months, and the survival probability, both marginal with respect to the frailty. It does not close the entry, because time-dependent hazard ratios are still reported for both endpoints and the model with the lowest information criterion on the hazard scale is the one whose risk contrasts are published.",
+    "quote": "To overcome the many disadvantages of the hazard as a measure of effect discussed by Hernán ( 2010 ), we used the cumulative risk of recurrent major arrhythmic events and the survival probability.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quotation establishes only that a nonparametric bootstrap was used. It does not establish the resampling unit, scalability, or correct handling of clone and repeated-sequence dependence, so it cannot support the claimed partial solution.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "Using marginal structural joint models to estimate the effect of a time-varying treatment on recurrent events and survival: An application on arrhythmogenic cardiomyopathy.",
+    "doi": "10.1002/bimj.202100003",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Variance for a weighted joint frailty model has no analytic form here, so all standard errors and intervals come from 150 nonparametric bootstrap replicates, which does propagate the uncertainty of weight estimation and the non-independence of a weighted dataset. It does not close the entry: 150 replicates is a small number for a percentile interval, the reported difference of -0.14 with limits of -0.82 and -0.03 is visibly asymmetric around the point estimate, and the same estimation burden is what blocked the counting process formulation.",
+    "quote": "All standard errors and confidence intervals were obtained through 150 nonparametric bootstrap replicates.",
+    "locator": "Treatment effect estimates"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "downgrade",
+   "corrected_effect": "Identifies a structural cluster-level positivity limitation and motivates avoiding a cluster-level treatment model; it does not supply a policy-specific, history-localized positivity diagnostic.",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted claim concerns combinatorial treatment paths within clusters, not the identification of unsupported patient histories under a sustained strategy. It is relevant background for positivity failures but does not name the unsupported histories that the registered problem requires.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Marginal structural models for multilevel clustered data.",
+    "doi": "10.1093/biostatistics/kxac027",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Rather than reporting a weight summary, the failure of positivity is derived structurally: the number of cluster-level treatment paths grows as two to the power of cluster size times visits, so the supported region is empty for any realistic number of clusters, and the recommended remedy is to change the estimator rather than to trim weights. This names the unsupported histories exactly. It does not close the entry, since no comparable diagnostic is offered for the subject-level weights that the recommended two-stage estimator actually uses.",
+    "quote": "Thus, this “random” violation of positivity is almost guaranteed to happen even under moderate cluster sizes.",
+    "locator": "Section 3.2"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Mixed-effects combination of cluster-specific MSM estimates models numerical heterogeneity but cannot determine whether sites defined the same eligibility, treatment, outcome, or time scale. The quotation concerns pooling small clusters and supplies no protocol-alignment or federated diagnostic procedure.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "DTA-02",
+    "problem_title": "Averaging site estimates in a federated emulation can conceal that the sites emulated different trials",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been developed to the point of pooled-equivalent estimation for time-to-event outcomes. The statistical machinery for combining site estimates is not the hard part. Sites differ in coding systems, treatment availability, confounding structure and time resolution, so one executable protocol can define materially different eligibility, exposure and outcome at each site, and pooling then averages several different questions. Aggregation cannot detect that: heterogeneity between site estimates is produced equally by real effect modification and by mapping failure. Local validation and aggregate diagnostics shared without patient records can flag some of it, and no current practice requires either, or requires the target population and pooling",
+    "paper": "Marginal structural models for multilevel clustered data.",
+    "doi": "10.1093/biostatistics/kxac027",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The recommended estimator is exactly the federated pattern: separate marginal structural models per testing site, then a combination step. It improves on plain averaging by using mixed-effects meta-analysis, which models between-site heterogeneity and allows correlated causal parameters through an unstructured random-effects covariance. It does not close the entry, because the fallback for small sites is to collapse them into one pooled model, and nothing checks whether sites with different case mix and treatment probability were estimating the same parameter before the combination.",
+    "quote": "In real applications, however, some clusters may have small sample sizes and one way to fully utilize data while obtaining reliable parameter estimates is to collapse those small clusters and run a single MSM on the collapsed clusters.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Restricting candidate thresholds to empirically supported ranges is an explicit, outcome-independent support restriction for a static individualized treatment-rule search. It addresses that restricted setting only and does not diagnose unsupported longitudinal joint histories.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Ranking tailoring variables for constructing individualized treatment rules: an application to schizophrenia.",
+    "doi": "10.1111/rssc.12533",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Support is handled by restricting candidate thresholds to approximately the 5th to 95th percentiles of each tailoring variable, which names the rules that the data cannot evaluate rather than summarizing a weight distribution. This is a usable positivity device for value search. It does not close the entry, since it operates one variable at a time on marginal quantiles and says nothing about which joint covariate histories lack support once the rule is applied over follow-up.",
+    "quote": "these possible threshold ranges were selected based on approximately the 5th and 95th percentiles of the distributions of the tailoring variables",
+    "locator": "Constructing ITRs for individuals with schizophrenia"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper treats death as determining an estimand and rejects indiscriminate reweighting toward a hypothetical population without death. Its survivor-stratum target is narrower than the baseline eligible population, so it is a genuine partial response rather than a resolution.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "Accounting for selection bias due to death in estimating the effect of wealth shock on cognition for the Health and Retirement Study.",
+    "doi": "10.1002/sim.8921",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Death is treated as an identification problem rather than as data cleaning: weighting people back in to reconstruct a population as if death had not happened is rejected as an incoherent target, and a survivor stratum defined by survival under both regimes is put in its place, with simulations showing marginal structural model coverage falling as n rises from 4,000 to 8,000. It does not close the entry, because the stratum is only reachable through imputed counterfactual survival from a working model, the method needs fixed follow-up, and the estimand no longer refers to everyone eligible at baseline.",
+    "quote": "Common methods to handle these problems for example marginal structural models, may not be appropriate because it upweights subjects who are more likely to die to obtain a population that over time resembles that would have been obtained in the absence of death.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "downgrade",
+   "corrected_effect": "Provides background on missing-data mechanisms and limits of standard MSM missing-data methods; it does not address the visit process as a causal observation process.",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quotation identifies a lack of guidance for arbitrary nonmonotone missingness, which is relevant to the difficulty. It does not support the stronger claim that recording or visiting is analyzed as part of the causal structure rather than imputed or weighted around.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Common Methods for Handling Missing Data in Marginal Structural Models: What Works and Why.",
+    "doi": "10.1093/aje/kwaa225",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A usable mapping from mechanism to method is supplied, together with the reasoning that makes each valid, so the recording process is analyzed rather than assumed away. It does not close the entry: the recommended approach still treats the visit and recording process as something to impute or weight around, and the review states plainly that no guidance exists for the arbitrary nonmonotone patterns that routinely collected data actually produce, which is the case where recording is driven by the clinical state being modeled.",
+    "quote": "Whereas methods based on inverse weighting have been proposed to address this type of missing data in MSMs, there is no guidance on how to handle arbitrary patterns (not monotone) in MSMs.",
+    "locator": "Missing data in MSMs: mechanisms and methods"
+   }
+  }
+ ]
+}

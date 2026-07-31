@@ -1,0 +1,182 @@
+{
+ "batch": "rev-07",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quote is a recommendation to release NLP source code, not a release standard or an implemented auditability mechanism for emulations. It does not make final code, phenotype versions, weight diagnostics, or protocol decision logs available.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "On the use of natural language processing to implement the target trial framework using unstructured data from the electronic health record.",
+    "doi": "10.1016/j.gloepi.2025.100204",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "low",
+    "evidence": "Release of extraction source code and its documentation is asked for explicitly, which names one of the missing artifacts. It remains an exhortation with no reporting requirement and no mechanism, and it covers only the extraction code; weight diagnostics and rejected protocol versions are not mentioned.",
+    "quote": "releasing their source codes and accompanying documentation for their NLP solutions so that others may learn from these examples",
+    "locator": "Summary and recommendations"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The placebo analyses are concrete falsification checks embedded in an emulation and bear on the negative-control portion of the problem. They do not integrate proxies, validation data, or a joint model that uses negative-control results to calibrate the effect estimate.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Assessing Wolbachia-mediated sterility for dengue control: emulation of a cluster-randomized target trial in Singapore.",
+    "doi": "10.1093/jtm/taae103",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Two families of negative control are built into the workflow: in-space placebo assignment treating each control town as if intervened, whose odds ratios centered on 1, and in-time placebo intervention periods 52 and 104 weeks before releases began, which produced no protective effect. That is a concrete integration of falsification tests into an emulation. It does not extend to proxies or a validation subsample, and no calibration carries the null control results onto the 61 percent estimate.",
+    "quote": "we conducted in-time placebo checks on intervention sites, where we took placebo interventions in the actual intervention site before the intervention began",
+    "locator": "Results"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Naming a target population and proposing transport estimators does not address the stated missing accounting of combined confounding and sampling assumptions. The quoted passage instead emphasizes that target validity remains uncertain even after careful emulation.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-02",
+    "problem_title": "Transporting an observational estimate compounds sampling assumptions on top of confounding assumptions with no accounting",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Transporting an observational contrast requires treatment exchangeability in the source, effect exchangeability across samples conditional on a sufficient measured set, and positivity for both treatment and sampling. A sufficient set is weaker than every effect modifier: modifiers that do not differ across populations or that are irrelevant after conditioning need not be observed. Transport estimators are now being applied to emulations, including post hoc standardization of emulations to their trial populations inside a benchmarking program. What remains is the accounting. If either exchangeability condition fails, source outcomes and target covariates alone cannot generally identify the resulting bias or apportion it between the two conditions, and no reporti",
+    "paper": "Four targets: an enhanced framework for guiding causal inference from observational data.",
+    "doi": "10.1093/ije/dyaf003",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Sampling weights, outcome regression and doubly robust estimators are proposed to carry the buprenorphine estimate from the treated sample to all veterans with opioid use disorder, and the framework insists on naming the target population before emulating. What it does not supply is any accounting: the transport assumptions are stacked on top of the confounding assumptions with no statement of the combined burden, and the resulting quantity has no reported sensitivity to either layer.",
+    "quote": "even when meticulously conducted, the effect estimate obtained from target trial emulation may not represent the true effect in the study sample, much less the true effect in the target population",
+    "locator": "Target validity"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The framework explicitly requires investigators to identify and account for discrepancies between the scientific question and the design-imposed population or estimand. That is a partial response to the requested lineage, although it does not provide a standardized record or an estimable partition of the discrepancies.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-01",
+    "problem_title": "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error",
+    "problem_verdict": "overstated",
+    "problem_statement": "Three trials are in play in any emulation and only one is usually named: the ideal trial that would answer the decision-maker's question, the target trial the investigator specifies, and the emulation the data support. Specifying the target trial closely around the available data conceals the distance between the first two, and the paper reports one estimate as though the chain were tight. What is missing is not an additive decomposition; that generally does not exist, because the transitions change populations, interventions, outcomes and scales, so the discrepancies do not add. What is missing is a documented lineage: the change from the decision question to the operational causal estimand, the assumptions mapping that estimand to an observed-data functional, and the estimation uncertainty, each recorded separately so a reader can see which step carries the load. No convention requires",
+    "paper": "Four targets: an enhanced framework for guiding causal inference from observational data.",
+    "doi": "10.1093/ije/dyaf003",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The framework asks explicitly that any difference between the estimand and population of the research question and the estimand and population imposed by design and analysis be noted and accounted for, which is the decomposition the registry entry describes. It stops at an instruction: no measure, no partition of the total gap into scientific-target mismatch, protocol compromise, mapping loss and estimation error, and no worked example showing the sizes.",
+    "quote": "Any additional differences between the target population and target estimand specified in the research question, and the population or estimand implied or imposed by the study design or data analysis, should be noted and accounted for.",
+    "locator": "Conclusion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Treating truncation by death as an intercurrent event in specification of the target estimand moves it beyond unexamined data cleaning. The quoted material does not establish which estimand is appropriate for a competing death or justify censoring assumptions.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "Four targets: an enhanced framework for guiding causal inference from observational data.",
+    "doi": "10.1093/ije/dyaf003",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "low",
+    "evidence": "Truncation by death is listed as an intercurrent event to be handled by an explicit estimand strategy, which places it among the identification decisions rather than among data preparation steps. The framework does not go further: it names five strategies without saying which is defensible when death is a competing event, and the buprenorphine estimand includes all-cause mortality as an outcome without addressing the other endpoints truncated by it.",
+    "quote": "including treatment discontinuation, protocol deviations, and truncation by death",
+    "locator": "Target estimand"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Public code and simulated teaching data are useful open-science practice but do not make an actual target-trial emulation externally auditable. The evidence contains no operational phenotype definitions, weight diagnostics, or versioned protocol history for a real-data analysis.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "Enhancing inferences and conclusions in body image focused non-experimental research via a causal modelling approach: A tutorial.",
+    "doi": "10.1016/j.bodyim.2024.101704",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "low",
+    "evidence": "Annotated Stata and R code and the simulated data are deposited publicly, which is more than most emulations release and makes the operationalization of each protocol component inspectable. What is deposited is a teaching demonstration on simulated data: no phenotype logic, no weight diagnostics and no record of the protocol variants that were considered and dropped.",
+    "quote": "The simulated data and Stata and R code for a step-by-step demonstration on how to estimate the ACE can be found on the Open Science Framework",
+    "locator": "Section II"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Prospective registration reduces hindsight tuning, and reporting risk differences and ratios improves estimand alignment, but neither creates a calibrated replication verdict. The quoted postmortem plan confirms that disagreement is handled after a binary success or failure determination rather than through a prespecified quantitative comparison with joint uncertainty.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "BEN-02",
+    "problem_title": "Replication is reported as a binary label rather than as a calibrated comparison of estimands",
+    "problem_verdict": "overstated",
+    "problem_statement": "Agreement between an emulation and a trial is informative only when the estimands, populations and measurements are close enough to be comparable, and better design alignment is empirically associated with stronger concordance. The benchmarking programs report this in graded form. What is cited downstream is a binary label, usually derived from interval overlap or direction agreement, and that label discards magnitude and uncertainty and cannot diagnose why two estimates differ: two studies estimating the same quantity imprecisely agree by that criterion, and two estimating different quantities precisely disagree. No reported measure, graded or binary, separates estimand mismatch from random error, because doing so requires aligning the estimands first and then reporting a paired contrast with joint uncertainty, which no benchmarking report currently does as a matter of course.",
+    "paper": "Prospective benchmarking of an observational analysis in the SWEDEHEART registry against the REDUCE-AMI randomized trial.",
+    "doi": "10.1007/s10654-024-01119-3",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Publishing the emulation before the trial reports removes the possibility of tuning the analysis to a known answer, and the plan names the comparisons that will be made: risk differences and risk ratios at five years and a harmonized per-protocol contrast rather than the hazard ratio alone. What remains open is the verdict itself. Success and failure are still binary labels with no pre-specified tolerance on the risk difference, and the response to disagreement is an unspecified postmortem rather than a calibrated statement of how far apart the two estimands were.",
+    "quote": "If benchmarking proves unsuccessful, we will conduct a “postmortem” analysis to identify the reasons for the discrepancy.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Medical-record validation of an outcome phenotype directly addresses the absence of validation information for measurement error in an emulation. It remains a partial result because it concerns one outcome phenotype and does not identify or propagate a joint longitudinal measurement-error model for treatment and confounders.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MER-01",
+    "problem_title": "Phenotypes enter emulations as error-free binary variables",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquel",
+    "paper": "Combining high quality data with rigorous methods: emulation of a target trial using electronic health records and a nested case-control design.",
+    "doi": "10.1136/bmj-2022-072346",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This supplies the measurement the entry asks for: outcome phenotype accuracy of 95 to 96 percent sensitivity and 98 percent specificity against medical record review, and the resulting bias quantified by running the same emulation both ways, giving 0.80 with validation and 1.00 without. What it does not close is the general case. Validation covers the outcome only, exposure and confounder phenotypes remain error-free binary variables, the design requires a validation subsample that most emulations do not have, and no correction is applied to the unvalidated estimate; the accuracy figures are reported after the fact rather than propagated into the interval.",
+    "quote": "In our clinical example, we obtained a sensitivity of 95-96% and a specificity of 98% for the diagnosis of myocardial infarction by ICD codes compared with medical reviews",
+    "locator": "Concluding remarks, Strengths and limitations"
+   }
+  }
+ ]
+}

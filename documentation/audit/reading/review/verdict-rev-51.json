@@ -1,0 +1,182 @@
+{
+ "batch": "rev-51",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper supplies a genuine correction for measurement error in time varying covariates within marginal structural models. Its continuous covariate, known error variance setting does not identify or correct longitudinal diagnostic and treatment misclassification without validation data.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MER-01",
+    "problem_title": "Phenotypes enter emulations as error-free binary variables",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquel",
+    "paper": "Correcting for Measurement Error in Time-Varying Covariates in Marginal Structural Models.",
+    "doi": "10.1093/aje/kww068",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A concrete correction is supplied and its payoff quantified: at high error with strong confounding, two-interval coverage was 0% for the uncorrected weighted model against 78% for indirect correction, and median bias fell by up to 99% at moderate error. Indirect correction is implementable in existing packages, unlike direct correction. What is left open is the class of variables covered: the machinery is for a continuous covariate with a known error variance, entered through the weight model, and says nothing about a binary phenotype defined by codes, where the error is misclassification and no variance parameter exists.",
+    "quote": "The simulations demonstrate that measurement errors in time-dependent covariates may induce substantial bias in MSM estimators of causal effects of time-varying exposures",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The score offers a concrete pre-outcome descriptive aid for deciding whether time dependent confounding may warrant a marginal structural model. It neither chooses among the broader estimator set nor validates a threshold against bias, so it only addresses one component of the registered problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "An Empirical Method of Detecting Time-Dependent Confounding: An Observational Study of Next Day Delirium in a Medical ICU.",
+    "doi": "10.6000/1929-6029.2016.05.01.4",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "An explicit, prespecifiable criterion is offered for a decision that is normally made by assertion: whether to fit the weighted model at all, based on an ordinal score computed from the exposure and covariate trajectories before the outcome models are compared. Applied to three treatment pairs it produced low, moderate and high, and the estimates moved only for the pair scored high. What it does not close is calibration. The score's validity is judged by whether the weighted and unweighted coefficients differ, which is the comparison the score was meant to spare the analyst, and no threshold is anchored to a known bias.",
+    "quote": "we propose and demonstrate a simple plausibility score based on descriptive and exploratory statistics that may be used to justify the added complexity of fitting a marginal structural model",
+    "locator": "Conclusion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "A reported, graded score for one structural feature is a limited example of the distinction between a diagnostic and an untestable assumption. It is not a standard assumption dashboard and it does not provide diagnostics for the other requirements.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "An Empirical Method of Detecting Time-Dependent Confounding: An Observational Study of Next Day Delirium in a Medical ICU.",
+    "doi": "10.6000/1929-6029.2016.05.01.4",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "One structural assumption, treatment-confounder feedback, is turned into a reported number on a 0 to 10 scale for each pair of exposures, so a reader sees a graded claim rather than a binary assertion that the method was applicable. The separation from the undiagnosable assumptions is made explicitly, since no unmeasured confounders is assumed rather than scored, and the latent respiratory factor that motivates the whole example is deleted from the diagram by that assumption. The result is a dashboard covering one row.",
+    "quote": "we constructed a plausibility score from 0 – 10 where higher values indicate higher plausibility of time-dependent confounding of the association between a time-varying explanatory variable and an outcome",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quotation supports appropriate caution about causal interpretation in one observational marginal structural model analysis. It does not concern target trial emulation, nor does it establish a convention requiring separate reporting of the framework's assumptions.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-03",
+    "problem_title": "Calling an analysis a target trial emulation is treated as evidence about its assumption burden",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Target trial specification improves temporal alignment, protocol clarity and estimand definition. It does not establish consistency, conditional exchangeability, positivity, valid measurement, correct estimation or transportability, and those are separate conditions rather than steps on one scale: any of them can hold while the others fail. In practice the label does the work of all of them. An analysis that adopts the framework is read as though the whole set had been secured, and no convention asks a study to state the six requirements separately for the estimand it chose. The reporting evidence shows how weakly the label constrains the practice: of 200 published studies claiming to emulate a trial, 43% did not describe all key emulation components.",
+    "paper": "An Empirical Method of Detecting Time-Dependent Confounding: An Observational Study of Next Day Delirium in a Medical ICU.",
+    "doi": "10.6000/1929-6029.2016.05.01.4",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Fitting the weighted model is explicitly refused as grounds for calling the result unbiased or causal, on the stated ground that capturing all covariates and having no unmeasured factors are very strong assumptions. That is the correct separation between the method label and the assumption burden, made in the same document that fits the method. It closes nothing structurally: the refusal is a sentence in a discussion, not a reporting requirement, and the same analysis presented with the causal vocabulary would be indistinguishable in its numbers.",
+    "quote": "we refrain from using the terms unbiased or causal in describing the resultant associations from this observational study",
+    "locator": "Methods, Definition of Time-Dependent Confounding"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper directly treats monitoring frequency as part of the intervention strategy rather than merely imputing an inconvenient measurement schedule. Its regular, fixed schedules and use of observed histories for weighting leave irregular, patient driven observation processes unresolved.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "The Impact of Different CD4 Cell-Count Monitoring and Switching Strategies on Mortality in HIV-Infected African Adults on Antiretroviral Therapy: An Application of Dynamic Marginal Structural Models.",
+    "doi": "10.1093/aje/kwv083",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The measurement schedule is promoted from nuisance to intervention: survival is estimated under monitoring frequencies from 12-weekly to a single count by declaring counts observed or unobserved, giving 0.96 versus 0.92 at 240 weeks. Weights are still computed from all measured counts, so confounding control uses information the emulated strategy does not see. What is not closed is that the schedule remains a fixed regular grid; per-person and irregular visit processes are not represented.",
+    "quote": "We further estimated survival for CD4-count monitoring frequencies ranging from every 12 weeks (12-weekly) to a single CD4 measurement.",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper gives an identification analysis for discrete monitoring and switching strategies under a strong exclusion restriction for testing. It does not address continuous time ordering, state responsive visit processes, or treatment dependent observation, so the contribution is limited to a simplified component.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-02",
+    "problem_title": "Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Discretizing that onto a grid can reverse the temporal ordering of a treatment and an outcome falling in the same interval, merge several events into one, and define an estimand that exists only relative to the chosen interval. Identification and efficient estimation for dynamic interventions in continuous time under counting-process filtrations and irregular monitoring have been established. They do not yet settle the case an emulation on routine data actually faces: a visit process that depends on treatment, combined with effects that occur inside an interval. A continuous-time emulation must define the treatment, covariate, visit, censoring and outcome processes relative to a filtration and impose assumptions linking latent histories to the observed visit proce",
+    "paper": "The Impact of Different CD4 Cell-Count Monitoring and Switching Strategies on Mortality in HIV-Infected African Adults on Antiretroviral Therapy: An Application of Dynamic Marginal Structural Models.",
+    "doi": "10.1093/aje/kwv083",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A concrete identification route is supplied for regimes indexed by the observation process, resting on the assumption that performing the CD4 test has no effect on survival except through its result. It operates on a discrete 4-week interval grid with a fixed monitoring frequency per strategy. Continuous-time switching and observation schedules that respond to patient state are outside what the construction covers.",
+    "quote": "The same methodology can be utilized, provided that the CD4 test itself (as opposed to the result) has no biological effect on survival",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The SMART setting establishes that shared participation across compatible regimes induces nontrivial estimator correlation and develops simultaneous inference for that setting. Known randomization probabilities remove the estimated observational weight uncertainty that defines the registered gap.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "Identifying a set that contains the best dynamic treatment regimes.",
+    "doi": "10.1093/biostatistics/kxv025",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Each participant contributes to every embedded regime compatible with the observed treatment path, so the regime-specific estimators are correlated by construction and the correlation is not known in advance. A derivation of that correlation structure is supplied and used to build the simultaneous inference. What is not closed is the general case: the derivation leans on known randomization probabilities at both stages, which an observational sequential emulation does not have.",
+    "quote": "In SMART, the correlation structure of estimators is not known a priori.",
+    "locator": "Introduction"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The simulation provides a direct comparison showing that estimator choice can alter precision and the resulting set of candidate optimal regimes. It is restricted to randomized SMART data and does not supply a general requirement or default for observational target trial emulations.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "Identifying a set that contains the best dynamic treatment regimes.",
+    "doi": "10.1093/biostatistics/kxv025",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The estimator choice is shown to change the reported conclusion, not merely its precision: the augmented estimator cut standard errors by up to 60% at n between 100 and 400 and produced a strictly smaller set of candidate best regimes at every sample size while holding the Type I error rate. This is a worked measurement that the choice mattered. It does not extend to observational settings where the treatment mechanism must be estimated rather than known.",
+    "quote": "Our results show that AIPW reduces the standard error by up to 60% compared with IPW",
+    "locator": "Simulation study"
+   }
+  }
+ ]
+}

@@ -1,0 +1,182 @@
+{
+ "batch": "rev-39",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The study embeds negative controls and randomized-trial benchmarking within an explicit emulation, which is a concrete partial integration of validation tools. It does not supply a general joint identification model, reconciliation rule, or reporting convention for disagreement among such tools.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Comparison of the Test-negative Design and Cohort Design With Explicit Target Trial Emulation for Evaluating COVID-19 Vaccine Effectiveness.",
+    "doi": "10.1097/ede.0000000000001709",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Negative control outcomes and a randomized benchmark are run inside the emulation rather than appended to it: risks for the negative control outcome were nearly identical across arms, and the first ten days of follow-up showed the same infection pattern in both groups. The workflow does not generalize as stated, because the benchmark existed only because a trial of this vaccine had already been run, and the negative control was interpreted qualitatively with no threshold for how much divergence would have invalidated the analysis.",
+    "quote": "explicitly emulated a target trial using follow-up data and evaluated the potential for confounding using negative controls and benchmarking to a randomized",
+    "locator": "Abstract, Methods"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted recommendation recognizes differential outcome measurement during follow-up as a threat and provides a diagnostic for it. It does not model the visit process, establish an identifying assumption, or correct informative observation.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "Target Trial Emulation to Improve Causal Inference from Observational Data: What, Why, and How?",
+    "doi": "10.1681/asn.0000000000000152",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The sicker arm gets more eGFR measurements and therefore more detected outcomes, and a diagnostic is supplied: compare the number of measurements per arm during follow-up. The entry stays open because the diagnostic detects the imbalance without correcting it, and the one obvious fix is forbidden, since restricting to patients with a given number of measurements would condition on post-baseline information and induce selection bias. The measurement process is acknowledged as outcome-relevant and still handled outside the causal model.",
+    "quote": "One can check for this problem by comparing the number of eGFR measurements between both arms during follow-up.",
+    "locator": "Outcomes"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper directly addresses missing eligibility variables through imputation before trial selection and sensitivity analysis. Its validity depends on missingness and model assumptions, so it does not identify eligibility when unobserved values are genuinely MNAR without external information or defensible sensitivity parameters.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "ELG-01",
+    "problem_title": "An unrecorded eligibility criterion is indistinguishable from a criterion that was met",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Trial eligibility is assessed at a screening visit; a database records what a clinician happened to order. Restricting an emulation to patients with complete eligibility information can bias it when observation of the criterion depends on determinants of treatment or outcome that the recorded history does not adequately control, which is the ordinary case when testing tracks severity and access. Weighting and missing-data methods for unrecorded eligibility now exist in more than one paper. The harder version remains: eligibility is latent rather than merely missing, since an absent creatinine value is consistent both with a patient who would have failed the criterion and with one who was never tested. When true eligibility among unobserved records is missing not at random, the effect in the truly eligible population is not identified from the main data alone and requires either additiona",
+    "paper": "Target Trial Emulation and Bias Through Missing Eligibility Data: An Application to a Study of Palivizumab for the Prevention of Hospitalization Due to Infant Respiratory Illness.",
+    "doi": "10.1093/aje/kwac202",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Missing gestational age for 2,814 of 8,294 infants (34%) made eligibility unidentifiable for a third of the source population, and the standard responses, excluding them or redefining the trial, are shown by simulation to be biased whenever an eligibility variable modifies the effect. The supplied procedure is to impute the eligibility variables before selection, which was unbiased in every simulated scenario. It does not close the entry: the missing-not-at-random version required the correct sensitivity parameters to be supplied, an assumed missing-at-random imputation under a truly missing-not-at-random mechanism showed notable bias, and inverse probability weighting for the same missingness failed outright.",
+    "quote": "Gestational age, however, is missing for 2,814 (34%) infants in the source population.",
+    "locator": "Case study"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "This is about bias induced by restricting to records with observed eligibility information, including collider bias from the recording process. It does not analyze whether healthcare-use eligibility criteria themselves are colliders or provide a workflow for checking that causal structure.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "ELG-02",
+    "problem_title": "Eligibility criteria built from healthcare-use variables can induce selection through colliders",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An eligibility criterion is a conditioning statement, and conditioning on a variable that is a collider, or a relevant descendant of one, in the graph relating determinants of treatment and outcome opens a noncausal path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables: a required prior visit, a recorded baseline laboratory value, a minimum enrollment period. Being a healthcare-use variable is not sufficient for the bias, and these variables are the ones most likely to sit at the junction, because pre-baseline treatment decisions, incipient disease and the common causes of care-seeking and outcome all feed them. Nothing in the current workflow checks an eligibility definition for that structure before the analysis runs, and the reporting checklist asks what the criteria were rather than what conditioning on them does.",
+    "paper": "Target Trial Emulation and Bias Through Missing Eligibility Data: An Application to a Study of Palivizumab for the Prevention of Hospitalization Due to Infant Respiratory Illness.",
+    "doi": "10.1093/aje/kwac202",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Restricting to observed eligibility conditions on a variable caused by the covariates, opening a collider path and shifting the covariate distribution of the analyzed trial away from the eligible population. Imputation before selection is shown to remove both the selection and the collider component in simulation. The entry stays open because the collider here is created by the recording process rather than by an eligibility criterion built from healthcare use, and the direct collider adjustment, strategy 2, made almost no difference.",
+    "quote": "We demonstrated via simulation that an imputed TT can eliminate sources of selection and collider bias, improve the sample size of a TT, and allow users to investigate sensitivity to changes in the assumptions of the missing eligible data on effect size.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper explicitly links treatment strategies, artificial censoring, and weighting to an observational analogue of a per-protocol effect. That is a meaningful improvement over presenting an unexplained hazard ratio, but it does not fully specify the population, grace-period compatibility, horizon, or effect-measure scale required by the problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-03",
+    "problem_title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.",
+    "paper": "Design considerations for observational studies of drugs for advanced cancer.",
+    "doi": "10.1002/pds.5612",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The causal contrast is named as the observational analogue of the per-protocol effect rather than left implicit behind a hazard ratio, and the machinery producing it is spelled out: artificial censoring to keep compliant person-time and weighting to recover the effect under complete adherence. What remains unaddressed is that the estimand is defined over patients whose baseline data were compatible with a 12-week grace period, a subpopulation that is never described, and no effect measure or its scale is reported.",
+    "quote": "Specification of treatment strategies that consider post-baseline events. Use of artificial censoring to select the person-time compliant with the treatment strategies and inverse probability of treatment weighting to estimate the effect under complete adherence",
+    "locator": "Table 1"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted statement directly rejects the inference that target trial emulation removes confounding caused by lack of randomization. It is a conceptual correction, not a reporting convention or study-specific diagnostic for the separate assumptions needed for identification.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-03",
+    "problem_title": "Calling an analysis a target trial emulation is treated as evidence about its assumption burden",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Target trial specification improves temporal alignment, protocol clarity and estimand definition. It does not establish consistency, conditional exchangeability, positivity, valid measurement, correct estimation or transportability, and those are separate conditions rather than steps on one scale: any of them can hold while the others fail. In practice the label does the work of all of them. An analysis that adopts the framework is read as though the whole set had been secured, and no convention asks a study to state the six requirements separately for the estimand it chose. The reporting evidence shows how weakly the label constrains the practice: of 200 published studies claiming to emulate a trial, 43% did not describe all key emulation components.",
+    "paper": "Target Trial Emulation: A Framework for Causal Inference From Observational Data.",
+    "doi": "10.1001/jama.2022.21383",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The framework's own canonical statement denies that the label settles anything about confounding, saying explicitly that correct emulation of every other component leaves the noncomparability of treatment groups untouched. That is a direct correction to reading the label as evidence. It goes no further: the positive claim it substitutes, that other biases are eliminated so attention can focus on confounding, is itself a claim about assumption burden with no diagnostic attached, and the piece supplies no way to show that the other biases really were eliminated in a given study.",
+    "quote": "Explicit target trial emulation alone cannot eliminate the bias that arises from lack of randomization",
+    "locator": "Limitations of Target Trial Emulation"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Running materially different analytic specifications on the same question and reporting estimates that cross the null demonstrates that analytic choices can matter greatly. The comparison does not establish a principled default estimator or a prospective rule for choosing among alternatives.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "Comparison of a Target Trial Emulation Framework vs Cox Regression to Estimate the Association of Corticosteroids With COVID-19 Mortality.",
+    "doi": "10.1001/jamanetworkopen.2022.34425",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "One data source and one clinical question were run through ten analytic specifications, and the spread was reported: hazard ratios from 0.50 (0.41 to 0.62) to 1.08 (0.80 to 1.47), crossing the null in both directions. That is a direct measurement of how much the estimator and design choice mattered, which most emulations never report. What it does not close is the selection rule: nothing here tells a reader of a single-estimator study how to judge it, and the ten designs are ranked by argument about immortal time rather than by a criterion applicable before the answers are seen.",
+    "quote": "Hazard ratios using methods comparable with current corticosteroid research range in size and direction, from 0.50 (95% CI, 0.41-0.62) to 1.08 (95% CI, 0.80-1.47).",
+    "locator": "Results"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Providing code, an analytic file, and sensitivity-analysis details materially improves reproducibility of parts of the estimation workflow. The quoted release does not establish availability of complete phenotype definitions, weight and learner diagnostics, version history, or rejected protocol decisions.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "Comparison of a Target Trial Emulation Framework vs Cox Regression to Estimate the Association of Corticosteroids With COVID-19 Mortality.",
+    "doi": "10.1001/jamanetworkopen.2022.34425",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A code tutorial, an illustrated analytic file and sensitivity analyses were supplied with the paper, which is more than most emulations release and makes the estimation step reproducible in principle. What remains unavailable is the rest: the severe hypoxia and comorbidity definitions built from flowsheet and abstraction data, the diagnostics for the super learner fits, and the nine alternative designs are reported as comparators rather than as rejected protocol versions.",
+    "quote": "Additional details, including sensitivity analyses, an illustrated analytical file, and code tutorial, are available in eFigure 2",
+    "locator": "Statistical Analysis"
+   }
+  }
+ ]
+}

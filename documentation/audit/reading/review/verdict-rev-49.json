@@ -1,0 +1,182 @@
+{
+ "batch": "rev-49",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted limitation directly distinguishes treating death as missingness from treating the outcome as undefined, thereby exposing the otherwise implicit intervention and identifying assumptions. It addresses the conceptual error targeted by OUT-01 but does not provide a general estimand-selection or implementation workflow.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "A comparison of methods to estimate the survivor average causal effect in the presence of missing data: a simulation study.",
+    "doi": "10.1186/s12874-019-0874-x",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Handling death by weighting is stated to require the outcomes of the deceased to be treated as missing rather than undefined, which builds in the assumptions that survival can be manipulated and that survivors stand in for the dead; that is the identifying assumption made explicit, and the simulation measures what it costs, up to 0.054 on the log odds scale against a true effect of -0.51. What it does not close is the practical side: the survivor average causal effect requires a sensitivity parameter nobody knows how to elicit, and in the 39,918-participant example the estimates from 0.54 to 0.58 are indistinguishable from the complete case 0.57, so the diagnostic cannot detect the bias it quantifies.",
+    "quote": "The use of inverse-probability weighting in the presence of attrition due to death has been criticized in the past because it requires the outcomes of the deceased to be considered as missing, rather than undefined",
+    "locator": "Limitations of these methods"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper bears on continuous-time marginal structural modeling and avoids arbitrary time discretization for the treatment process it considers. Its single-jump setting and lack of treatment-dependent observation modeling leave the dynamic-regime and informative-visit aspects of GMT-02 unresolved.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-02",
+    "problem_title": "Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Discretizing that onto a grid can reverse the temporal ordering of a treatment and an outcome falling in the same interval, merge several events into one, and define an estimand that exists only relative to the chosen interval. Identification and efficient estimation for dynamic interventions in continuous time under counting-process filtrations and irregular monitoring have been established. They do not yet settle the case an emulation on routine data actually faces: a visit process that depends on treatment, combined with effects that occur inside an interval. A continuous-time emulation must define the treatment, covariate, visit, censoring and outcome processes relative to a filtration and impose assumptions linking latent histories to the observed visit proce",
+    "paper": "The additive hazard estimator is consistent for continuous-time marginal structural models.",
+    "doi": "10.1007/s10985-019-09468-y",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A consistency condition and a working estimator are supplied for continuous-time weights when treatment is a single-jump counting process, which removes the need to discretize the interval zero to ten into arbitrary subintervals as the discrete comparator does. What remains open is everything the registry entry names: the treatment process is restricted to one jump, dynamic regimes are not treated at all, and the observation process is assumed away rather than modeled as depending on treatment history.",
+    "quote": "We have considered the treatment process A to be a time-to-event variable, but our strategy can be generalised to handle recurrent, or piecewise constant exposures.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Consistent transformation of a weighted hazard-scale estimate to a more causally interpretable parameter addresses one narrow source of hazard-ratio-centered reporting. It does not specify the intervention, target population, grace-period rule, or per-protocol adherence estimand required by EST-03.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-03",
+    "problem_title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.",
+    "paper": "The additive hazard estimator is consistent for continuous-time marginal structural models.",
+    "doi": "10.1007/s10985-019-09468-y",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A transformation strategy converts weighted cumulative hazard estimates into other survival parameters, so a hazard-scale quantity need not be the reported estimand, and the noncollapsibility of the Cox model is named as the reason for preferring it. This closes the mechanical part of the mismatch. It does not touch the substantive part named in the registry entry: nothing here defines the population a per-protocol contrast refers to, and nothing addresses grace-period compatibility or adherence weighting.",
+    "quote": "Importantly, we also show that causal effect estimates on the hazard scale, e.g. weighted cumulative hazard estimates, can be transformed consistently to estimate other parameters that are easier to interpret causally.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The simulation demonstrates that estimator choice can materially change performance for a defined prediction-model setting, so it supplies the sort of comparative evidence the problem calls for. Its design is too restricted to establish a generally defensible default or a general requirement for sustained-strategy emulations.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "Using marginal structural models to adjust for treatment drop-in when developing clinical prediction models.",
+    "doi": "10.1002/sim.7913",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A measurement of whether the modeling choice mattered is actually supplied here: four strategies were run on identical data across seven parameter values and 1000 replicates each, and three of the four were shown to be biased for the stated target, which is the demonstration the registry entry says studies are never required to produce. The demonstration is narrow. It covers one binary treatment at two timepoints with no unmeasured confounding, no discontinuation and no interaction, so it establishes a default for this configuration only and says nothing about which longitudinal estimator to prefer elsewhere.",
+    "quote": "In all simulation scenarios, all models except the MSM underestimated the risk of outcome given absence of treatment.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Sequential common-support assessment and explicit restriction of the population of inference are genuine improvements over reporting only a marginal weight distribution. The approach remains a covariate-space support diagnostic and does not fully identify policy-specific unsupported treatment histories or define the resulting sustained-strategy estimand.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "The roll-out of a health insurance program and its impact on the supply of healthcare services: a new method to evaluate time-varying continuous interventions.",
+    "doi": "10.1186/s12939-018-0874-1",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A concrete positivity procedure is supplied rather than a weight summary: Gower distances identify recipients too far from the rest in covariate space, elimination is applied sequentially stage by stage so that support is checked at every time point, and the consequence for the estimand is stated openly. What it does not close is the naming of unsupported exposure histories: the criterion operates on recipients and covariates, not on treatment histories, and the accompanying weight report reverts to noting that yearly means sit close to 1.",
+    "quote": "It is important to note that removing the recipients outside common support from the analysis changes the population of inference, restricting it, in principle, to those recipients for which we can produce reliable answers to our causal questions.",
+    "locator": "Covariate balance and common support"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Using an analysis with distinct identifying assumptions as a routine cross-check is a real component of a broader validation workflow. It is not an integrated framework for negative controls, proxies, validation data, or adjudicating disagreement, so it cannot resolve UCF-01.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Antiretroviral Therapy and Mortality in Rural South Africa: A Comparison of Causal Modeling Approaches.",
+    "doi": "10.1093/aje/kwy065",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A concrete cross-check is supplied and recommended as routine: run a design whose identifying assumption differs from conditional exchangeability alongside the weighted analysis, here a threshold-based discontinuity design. That is a usable component of a validation workflow and it did detect the crude association pointing the wrong way. It supplies no negative control outcome, no proxy for the unmeasured confounder, no validation subsample, and no rule for what disagreement between designs would license, so the workflow stops at qualitative comparison.",
+    "quote": "When the data allow, approaches that have different assumptions for validity should be used routinely to strengthen confidence in causal effect estimates.",
+    "locator": "DISCUSSION"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "A calibrated test for a specific long-term direct-effect condition is a concrete example of a diagnosable assumption and therefore bears on the reporting distinction in REG-02. It does not supply a general dashboard or classify the untestable assumptions underlying the analysis.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "Analysis of Longitudinal Studies With Repeated Outcome Measures: Adjusting for Time-Dependent Confounding Using Conventional Methods.",
+    "doi": "10.1093/aje/kwx311",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A concrete diagnosable assumption is supplied with calibration: the bootstrap test for long-term direct effects rejected in 99.7 percent of replicates when such effects existed and 5.2 percent when they did not, so an investigator can be told whether the simple analysis suffices. That covers one assumption. Nothing here separates it from the undiagnosable ones on which every estimate still rests, and no unmeasured confounding sensitivity analysis is reported alongside.",
+    "quote": "In scenario 2, the mean estimate of δ Y was 0.012 (standard deviation, 1.102), and 5.2% of the 95% confidence intervals for δ Y excluded 0, demonstrating approximately correct type I errors.",
+    "locator": "Results from the test for long-term direct effects"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Modeling ICU death and live ICU discharge as competing events rather than censoring one at the other directly addresses the data-cleaning practice identified in OUT-01. The relevant estimand is death before live ICU discharge; estimating that cumulative incidence does not itself require an assumption about post-discharge mortality, but the paper still does not resolve broader estimand-definition issues for competing events.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "Intensive care unit (ICU)-acquired bacteraemia and ICU mortality and discharge: addressing time-varying confounding using appropriate methodology.",
+    "doi": "10.1016/j.jhin.2017.11.011",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Death and discharge are modeled as competing events with separate cause-specific hazards rather than one being censored at the other, and the results are carried through to a cumulative incidence contrast of 20.3% against 18.6% at 60 days, which is more than data cleaning. What is not closed is the status of discharge itself: patients leaving the ICU alive stop contributing, and no assumption is stated about their subsequent death risk, so the 60-day figure conditions on a post-baseline event without naming the condition under which it identifies anything.",
+    "quote": "one of the first studies assessing the effects of ICU-acquired bacteraemia while addressing simultaneously the time-varying nature of this type of exposure, potential time-varying confounding and competing risks",
+    "locator": "Discussion, Strengths and limitations"
+   }
+  }
+ ]
+}

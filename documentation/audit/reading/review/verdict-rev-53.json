@@ -1,0 +1,145 @@
+{
+ "batch": "rev-53",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quote identifies a concrete treatment history with structural zero probability, which is a meaningful departure from reporting only weight tails. It remains a regimen-level illustration rather than a prespecified, localized support diagnostic with a resulting restricted estimand.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Evaluating dose response from flexible dose clinical trials.",
+    "doi": "10.1186/1471-244x-8-3",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Rather than stopping at the weight distribution, the analysis names the unsupported history: an abrupt jump from 5 to 20 mg cannot occur because the protocol allows one increment per step, so the estimated probability of that dose sequence is zero and the corresponding regimen is not in the data. That is the identification of a specific unsupported patient history the entry asks for. It does not close the entry: the naming is ad hoc rather than the output of a procedure, the weights above 100 in the bipolar trial are still handled by truncation without saying whose histories they were, and no threshold separates a tolerable violation from a fatal one.",
+    "quote": "In our analysis, the ETA assumption may have been partially violated in that some dose profiles (e.g. abruptly changing dose from 5 to 20 mg) would not be attainable in a flexible dose trial",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Specifying the target population for a standardized odds ratio does not supply the requested lineage from a decision question through a target trial and observed-data mapping to estimation. The quote supports an estimand interpretation for one case-control estimand, not a decomposition or documentation convention for target-trial emulation.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-01",
+    "problem_title": "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error",
+    "problem_verdict": "overstated",
+    "problem_statement": "Three trials are in play in any emulation and only one is usually named: the ideal trial that would answer the decision-maker's question, the target trial the investigator specifies, and the emulation the data support. Specifying the target trial closely around the available data conceals the distance between the first two, and the paper reports one estimate as though the chain were tight. What is missing is not an additive decomposition; that generally does not exist, because the transitions change populations, interventions, outcomes and scales, so the discrepancies do not add. What is missing is a documented lineage: the change from the decision question to the operational causal estimand, the assumptions mapping that estimand to an observed-data functional, and the estimation uncertainty, each recorded separately so a reader can see which step carries the load. No convention requires",
+    "paper": "Causal analysis of case-control data.",
+    "doi": "10.1186/1742-5573-3-2",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "One component of the target-versus-estimate gap is closed explicitly: the weighted summary is shown to correspond to the exposed as standard population, so it retains a causal reading even under effect modification, whereas the Mantel-Haenszel weights are shown to correspond to no recognizable population at all. It does not close the entry: the remaining components, loss from mapping the source population onto a stationary idealization and estimation error, are not separated from that one, and the reported interval mixes them.",
+    "quote": "With s OR the target population is clearly specified (namely, the exposed population)",
+    "locator": "Simple random sampling"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Different complete-case samples do not make an incremental cost-effectiveness estimand undefined: it can be defined as an incremental mean cost divided by incremental mean QALYs for a stated target population. The real issue is endpoint-specific missingness, linkage selection, and joint uncertainty, for which established missing-data and economic-evaluation methods exist; the proposed universal absence claim is too strong.",
+   "item": {
+    "kind": "new-problem",
+    "proposed_title": "A cost-effectiveness ratio from an emulated trial is assembled from components estimated on different subsamples with no estimand defined for the ratio",
+    "category": "EST",
+    "statement": "Emulations that report an incremental cost-effectiveness ratio estimate survival, utility and cost on nested but different analysis samples, under different censoring and interpolation rules, and then divide one by another; no estimand is defined for the resulting ratio and no procedure propagates the differing identification assumptions of its components.",
+    "why_open": "In this emulation the survival model used 791 patients, the utility model 783 and the cost model 351, the last being the subset with claims linkage, and the reported ICER of CHF 425 852 per QALY is the ratio of an incremental cost estimated on 351 patients to an incremental QALY estimated on 783. Uncertainty is summarized by bootstrapping the components together, but nothing states what counterfactual contrast the ratio identifies, whether the claims-linkage subsample satisfies the exchangeability condition assumed for the full cohort, or how censoring for missing quality-of-life data interacts with cost accrual. The same pattern appears in the emergency surgery emulation for health technology assessment, where quality-adjusted life-years are constructed by attaching published utility weights from other populations to administrative resource-use records.",
+    "paper": "Patients on vitamin K treatment: is switching to direct-acting oral anticoagulation cost-effective? A target trial on a prospective cohort.",
+    "doi": "10.1136/openhrt-2023-002567",
+    "quote": "Of 873 eligible patients in the target trial, 791 were included in the survival analysis, 783 had complete data on QoL and 351 patients had available claims data for cost analysis.",
+    "checked_against_index": "EST-03 concerns an effect measure standing in for a weighted per-protocol contrast and says nothing about ratios whose numerator and denominator are estimated on different samples. GMT-03 concerns shrinkage of the effective sample after eligibility and weighting, not the recombination of components estimated under different assumptions. PRO-01 asks for a decomposition of scientific-target mismatch, protocol compromise, mapping loss and estimation error, which presupposes a single defined estimand rather than a composite ratio that has none."
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "merge",
+   "corrected_effect": null,
+   "merge_into": "REG-02",
+   "confidence": "high",
+   "reason": "The timing of balance assessment after cloning and artificial censoring is a concrete diagnostic-design issue, and the quote directly identifies it as unresolved. It is best retained as a named cloned-design component of REG-02's broader missing diagnostic-panel problem rather than as a separate registry problem.",
+   "item": {
+    "kind": "new-problem",
+    "proposed_title": "No convention fixes when covariate balance is assessed in a cloned and censored design",
+    "category": "REG",
+    "statement": "In a clone-censor-weight analysis every clone is balanced at baseline by construction, and imbalance appears progressively as clones are artificially censored. A balance metric therefore has no natural time at which to be computed, and the time chosen determines what it shows. Assessing at the end of the grace period excludes everyone who had the event before it; assessing at baseline shows the perfect balance that cloning guarantees and tests nothing; assessing at the end of follow-up mixes artificial with classical censoring. No convention picks one, and published analyses do not always say which they used.",
+    "why_open": "The quantity being diagnosed changes with the assessment time rather than being estimated more or less precisely, so there is no criterion internal to the data. The person-time distributions in the two arms differ by construction under cloning, which means a single time cannot be equally informative for both. And any choice excludes some patients from the metric, so the diagnostic is partial at every time.",
+    "paper": "Methodological Challenges of Emulating a Target Trial to Assess Effectiveness of Timing of PCSK9 Inhibitor Treatment Initiation Post Myocardial Infarction",
+    "doi": "10.1002/pds.70354",
+    "quote": "One unanswered question about the CCW method is when to evaluate balance.",
+    "checked_against_index": "REG-02 is the closest: it says no standard diagnostic panel exists and that testable diagnostics are not separated from untestable assumptions. This is narrower and specific to cloned designs, where the metric's value is a function of the assessment time rather than of the analysis quality, and two independent papers in this batch raise it as an open question by name. It could reasonably be folded into REG-02 as a named component rather than registered separately."
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A confirmatory-code algorithm does not inherently create immortal time: defining time zero at confirmation, with an appropriately defined target population and comparator assignment, can avoid that bias. The proposal conflates a potentially biased delayed-confirmation implementation with an unavoidable tradeoff, although phenotype definition and time-zero alignment remain important concerns.",
+   "item": {
+    "kind": "new-problem",
+    "proposed_title": "Raising phenotype specificity buys immortal time, and nothing trades the two against each other",
+    "category": "MER",
+    "statement": "A confirmatory-code requirement is the standard device for raising the specificity of a phenotype, and the interval it waits for is immortal by construction, since the confirming code cannot appear after the outcome that ends follow-up. Specificity and immortal time therefore move together as a function of one parameter, the confirmation window, and no procedure sets that parameter by reference to the estimand. The two failures are also assessed by different people at different stages: the phenotype is validated once, often in a different database and for a different study, while the immortal time it creates is a property of the design that adopts it.",
+    "why_open": "Measured across 11 chronic conditions and five databases, widening the confirmation window monotonically raises positive predictive value and monotonically raises the immortal time incurred, with the immortal share of time at risk largest under short follow-up. A study can therefore reduce misclassification and increase time-related bias with a single choice, and report only the first. The available response is a study-specific quantitative bias analysis whose result depends on the time-at-risk distribution, the background mortality, the association of the outcome with mortality, and the shape of the hazard, so it cannot be precomputed with the phenotype. Alternatives that would decouple the two, such as requiring a procedure within a very short window, are suggested and unevaluated.",
+    "paper": "Comparing broad and narrow phenotype algorithms: differences in performance characteristics and immortal time incurred.",
+    "doi": "10.3389/jpps.2023.12095",
+    "quote": "Attempting to increase the specificity of a health condition algorithm by adding a second code is a potentially valid approach to increase specificity, albeit at the cost of incurring immortal time.",
+    "checked_against_index": "MER-01 says phenotypes enter as error-free binary variables and asks for joint propagation of misclassification, which is about the error, not about a design bias the error correction creates. TZO-01 says no outcome-blind procedure selects the time grid or grace period, which covers intervals the analyst chooses as part of the strategy, not an interval inherited from a validated phenotype definition written for another purpose. DTA-03 concerns whether the same variable means the same thing across sources. None of the three states that specificity and immortal time are coupled through one parameter, which is what makes this actionable: it identifies a trade nobody currently makes explicitly."
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "accept",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Comparator sampling can alter eligibility over calendar time and condition inclusion on future availability, thereby changing the counterfactual contrast rather than merely reducing precision. The cited evidence supports an unresolved design problem that is distinct from unrecorded eligibility variables and from treatment-strategy grace-period selection.",
+   "item": {
+    "kind": "new-problem",
+    "proposed_title": "Nothing bounds the bias a general-population comparator sampling scheme introduces before the study is run",
+    "category": "ELG",
+    "statement": "An emulation of a no-treatment arm is often built by matching each patient to comparators drawn from a population registry. Which sampling scheme is used, without replacement in random order, with replacement, or without replacement in chronological order, changes the outcome rate in the comparator arm, and the direction depends on the sampling ratio and on the comparators' own outcome risk. There is no procedure that bounds the resulting bias from quantities known before the analysis, so the scheme is chosen by convention and its consequences are read off after the fact, one dataset at a time.",
+    "why_open": "Sampling without replacement in random order makes cohort membership depend on the whole study period, which is the same conditioning-on-the-future mechanism as immortal time, and it is demonstrably consequential when comparators are at substantial outcome risk. Sampling without replacement in chronological order fails to find comparators for older patients and returns a cohort skewed young. The empirical demonstration is confined to one registry, two outcomes and one disease, and the authors state that they cannot quantify the differences in general. Published studies using this design mostly do not report the scheme, so the magnitude cannot be recovered from the literature either.",
+    "paper": "Sampling strategies for selecting general population comparison cohorts.",
+    "doi": "10.2147/clep.s164456",
+    "quote": "Although it showed differences between comparison cohorts selected by different sampling strategies in some settings, it did not present means of quantifying the size of these differences in general.",
+    "checked_against_index": "ELG-01 concerns eligibility criteria that the data do not record; here the criteria are recorded and the bias comes from the order in which eligible comparators are consumed. ELG-02 concerns colliders induced by healthcare-use variables in the eligibility definition, not by the sampling scheme. TZO-01 covers the time grid and grace period for the exposed strategy, not comparator construction, and the finding above is filed there only for the conditioning-on-the-future mechanism."
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Limited software availability is an implementation and research-practice constraint, not itself a distinct methodological identification problem. It may explain use of poorly justified estimators, but that consequence belongs under estimator selection and justification such as GMT-04 rather than a new open problem.",
+   "item": {
+    "kind": "new-problem",
+    "proposed_title": "Estimator choice for time-varying treatments is set by which methods have usable implementations",
+    "category": "SFW",
+    "statement": "The estimator applied to a time-varying treatment is chosen from the methods that have a working implementation in the analyst's software, not from the methods that identify the target estimand. Reviews of practice attribute the continued dominance of estimators known to be biased under treatment-confounder feedback to the absence of packages for the alternatives, so software availability, not identification, decides what gets estimated.",
+    "why_open": "The claim is made explicitly and repeatedly across this batch and is never treated as a solved problem. This review states that methodological complexity and the limited availability of implementation packages are why the advanced methods are underused, and that consequently methods with no adjustment strategy and models with time-varying covariates are what is most commonly applied. The same constraint appears as a mechanism elsewhere in the batch: a nephrology tutorial reports that no standard software for Cox regression handles time-updated weights, so a discrete failure time model is substituted, and rates the programming burden of a marginal structural model as tedious against easy for the Cox alternatives; a measurement error paper reports that one of its two proposed corrections cannot be recommended because no package supports two-stage estimation, and recommends the other on that ground. No procedure exists for recording, in a published emulation, that the estimator was selected under this constraint, and no registry entry makes availability a reportable determinant of the analysis.",
+    "paper": "Methods for time-varying exposure related problems in pharmacoepidemiology: An overview.",
+    "doi": "10.1002/pds.4372",
+    "quote": "One of the reasons for this underuse of the methods could be the methodological complexity and the limited availability of implementation packages in commonly used statistical software.",
+    "checked_against_index": "GMT-04 says no estimator is defensible as a default and no study must show its choice mattered; that is about justification after a choice is made, whereas this is about the choice set being restricted before any justification is attempted, which GMT-04 does not name. SFW-01 is specifically about variance estimation after cloning and sequence expansion having no scalable correct default, a narrower object than point estimation of the effect itself. SFW-03 concerns non-availability of an individual study's code, phenotype logic and weight diagnostics to readers, the opposite direction: here the code the analyst needed never existed for anyone."
+   }
+  }
+ ]
+}

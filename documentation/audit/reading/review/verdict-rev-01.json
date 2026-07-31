@@ -1,0 +1,182 @@
+{
+ "batch": "rev-01",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The general-population comparison is a limited negative-control-style check that can expose non-disease-specific associations. It does not integrate negative controls, proxies, and validation data around a common estimand, so partial addressing is the appropriate effect.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Association of Medication Use and 8-Year Mortality Risk in Patients With Parkinson Disease: Drug-Wide Trial Emulation.",
+    "doi": "10.1212/wnl.0000000000213783",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A negative control population is built into the workflow: each of the 23 candidate drugs was re-tested in a 10% sample of Norwegians aged 65 and over, and the contrast was used to argue that mianserin has a disease-specific effect while tadalafil may reflect healthier users. This is a usable, reportable control, and it is not the integrated workflow the entry describes: there are no negative control outcomes, no proxy variables and no validation subsample, and the general population comparison is itself acknowledged to require covariates the registry does not hold.",
+    "quote": "Finally, to explore whether drugs associated with reduced mortality in the PD population were also associated with mortality risk in the general population, we tested these drugs in a random sample of 10% of the Norwegian population aged 65 or older",
+    "locator": "Methods, Statistical Methods"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Posting results for all analyses improves protection against selective reporting, but the registered problem concerns executable code, complete phenotype logic, weight diagnostics, and versioned protocol decisions. The quoted availability statement does not support availability of any of those artifacts.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "Association of Medication Use and 8-Year Mortality Risk in Patients With Parkinson Disease: Drug-Wide Trial Emulation.",
+    "doi": "10.1212/wnl.0000000000213783",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Results from all 219 emulated trials are posted in a public repository rather than only the 23 that reached nominal significance, which removes the selective reporting that a screen of this size invites, and multiplicity-corrected p values accompany the nominal ones. The rest of the entry stands: the phenotype logic that defines Parkinson disease, the weight diagnostics behind the 26 unbalanced trials and the analysis code are not identified as available, and individual-level data require a new ethics application.",
+    "quote": "Full results from all analyses are available at",
+    "locator": "Data Availability"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "downgrade",
+   "corrected_effect": "partially-addresses only by demonstrating sensitivity to a follow-up-rule choice, not by isolating or decomposing protocol-compromise error",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Holding several definitions fixed while comparing ACNU and TVE designs is an informative design comparison. The resulting difference cannot be identified as a single protocol-compromise component because the strategies may define different estimands and the contrast also includes sampling variability.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-01",
+    "problem_title": "No decomposition separates scientific-target mismatch from protocol compromise, mapping loss and estimation error",
+    "problem_verdict": "overstated",
+    "problem_statement": "Three trials are in play in any emulation and only one is usually named: the ideal trial that would answer the decision-maker's question, the target trial the investigator specifies, and the emulation the data support. Specifying the target trial closely around the available data conceals the distance between the first two, and the paper reports one estimate as though the chain were tight. What is missing is not an additive decomposition; that generally does not exist, because the transitions change populations, interventions, outcomes and scales, so the discrepancies do not add. What is missing is a documented lineage: the change from the decision question to the operational causal estimand, the assumptions mapping that estimand to an observed-data functional, and the estimation uncertainty, each recorded separately so a reader can see which step carries the load. No convention requires",
+    "paper": "Caution in handling switchers in pharmacoepidemiologic studies estimating treatment effects: the example of dipeptidyl peptidase-4 inhibitors and inflammatory bowel disease.",
+    "doi": "10.1093/aje/kwaf044",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Holding data source, covariate set, exposure definition and outcome definition fixed and varying only the follow-up rule isolates one term of the error decomposition: the protocol compromise contributed a shift from 1.15 (0.66-2.01) to 1.76 (0.84-3.68) for the thiazolidinedione comparison, traceable to 23 events and 27 932 person-years being reassigned across arms. What remains undecomposed is everything else: residual confounding, comparator mapping loss and estimation error are still bundled, and the exercise required a second full analysis rather than a reported diagnostic.",
+    "quote": "By contrasting the results from the ACNU and TVE designs using the same covariates, exposure (including comparator choice), and outcome definitions",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The study supplies prespecified operational gates that excluded candidate emulations, including an arm-size threshold. Its subjective ratings lack validated stopping thresholds, so it addresses only part of the broader data-fitness problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "DTA-01",
+    "problem_title": "Data-fitness assessment is narrative and has no thresholds that would stop a study",
+    "problem_verdict": "overstated",
+    "problem_statement": "Electronic health records arise from encounters, billing and documentation rather than from scheduled research assessments, so eligibility and follow-up in an emulation partly reflect care-seeking and access rather than the biology the protocol intends. Whether a given database can support a given target trial is a question about the data source and the protocol jointly, and quantitative assessments of that pair now exist. What does not exist is a prespecified stop rule: a threshold agreed before the analysis, on observability, temporal precision, capture continuity, comparator support, outcome validity and linkage completeness, that would halt a study when an essential component fails. Outside tightly gated regulatory and network feasibility processes, most published emulations still assert suitability in a paragraph, and a pipeline with no route to the answer no will always produce an ",
+    "paper": "Systematic Evaluation of Data and Trial Fitness for Oncology Trial Emulation: Empirical Findings from the CARE Initiative.",
+    "doi": "10.1002/cpt.70310",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A stepwise procedure with two quantitative gates is supplied: indication and treatment must be identifiable, and each arm needs at least 1.5 times the RCT arm size. Those gates stopped studies, eliminating 44 of 54 combinations and later 6 of 9 detailed assessments. Everything past those counts stays narrative: elements are scored one to five by team consensus, no cutoff on that scale decides feasibility, interrater agreement was never computed, and readers are warned not to treat rating differences as meaningful. The part of data fitness that concerns quality rather than sample size still has no threshold that would stop a study.",
+    "quote": "Additionally, ratings of how well individual data elements could be operationalized involved a degree of subjectivity, particularly in cases where completeness could not be ascertained, and we did not evaluate agreement metrics, which may have influenced overall feasibility ratings.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "BenchExCal provides a concrete calibration procedure for transferring observed divergence to a second question. Its central cross-stage similarity assumption is neither operationalized nor empirically validated, so it does not supply the requested theory of extrapolation.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "BEN-01",
+    "problem_title": "There is no theory for extrapolating successful replication of selected trials to new questions",
+    "problem_verdict": "overstated",
+    "problem_statement": "A successful replication calibrates one emulation of one trial in one database. Transferring that confidence to a different question, or to the same question in a different database, is not an inference the benchmarking design licenses: it requires a target performance estimand stated in advance, an explicit selection or transport model, conditional exchangeability across the questions being compared, and overlap in whatever modifies emulation quality. Outside that support the transfer is model-dependent rather than identified, and frameworks that have been proposed for it remain unevaluated in that role. The benchmarking corpus is also a selected sample: trials get emulated when they are recent, large and have an accessible active comparator, which are the conditions under which emulation works best. Across 107 paired emulations and trials the effect correlation was 0.59 overall and 0.8",
+    "paper": "A Benchmark, Expand, and Calibration (BenchExCal) Trial Emulation Approach for Using Real-World Evidence to Support Indication Expansions: Design and Process for a Planned Empirical Evaluation.",
+    "doi": "10.1002/cpt.3621",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This is an explicit rule for carrying a replication result to a new question: the stage 1 divergence in log hazard ratio is rescaled by the square root of the variance ratio between the two database studies and becomes the prior mean for the stage 2 divergence, and tipping-point analyses locate the divergence that would flip a regulatory decision. What it does not supply is the theory: the whole construction rests on an assumed equality of net divergence across stages whose plausibility is described only as depending on how close the clinical contexts are, with no measure of closeness and no way to check the assumption without running the second trial.",
+    "quote": "The BenchExCal approach assumes that the net effect of the design differences and bias is similar for the stage 1 completed RCT‐database pair and the stage 2 hypothetical RCT‐database pair.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The continuous log-hazard-ratio divergence is more informative than a simple agreement label and therefore partially addresses the reporting concern. However, binary agreement remains a consequential gate and the approach does not generally separate estimand mismatch from random error with joint uncertainty.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "BEN-02",
+    "problem_title": "Replication is reported as a binary label rather than as a calibrated comparison of estimands",
+    "problem_verdict": "overstated",
+    "problem_statement": "Agreement between an emulation and a trial is informative only when the estimands, populations and measurements are close enough to be comparable, and better design alignment is empirically associated with stronger concordance. The benchmarking programs report this in graded form. What is cited downstream is a binary label, usually derived from interval overlap or direction agreement, and that label discards magnitude and uncertainty and cannot diagnose why two estimates differ: two studies estimating the same quantity imprecisely agree by that criterion, and two estimating different quantities precisely disagree. No reported measure, graded or binary, separates estimand mismatch from random error, because doing so requires aligning the estimands first and then reporting a paired contrast with joint uncertainty, which no benchmarking report currently does as a matter of course.",
+    "paper": "A Benchmark, Expand, and Calibration (BenchExCal) Trial Emulation Approach for Using Real-World Evidence to Support Indication Expansions: Design and Process for a Planned Empirical Evaluation.",
+    "doi": "10.1002/cpt.3621",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Replication stops being a label and becomes a signed, scaled quantity on the log hazard ratio scale, which is exactly the calibrated comparison the entry asks for, and the design paper says outright that binary metrics cannot capture what matters. The binary labels are nonetheless retained as the gate: passing at least one of the three RCT-DUPLICATE metrics decides whether the second stage runs at all, so the same simplistic classification still controls the consequential decision.",
+    "quote": "if we do not meet at least one of the binary agreement metrics described above in the first‐stage emulation of a trial, then we will determine that we do not have sufficient confidence in the design and measurement setup for that clinical scenario and will not proceed to the second stage emulation",
+    "locator": "Methods, Concordance metrics"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "A single net-divergence parameter for design differences, bias, and chance is a calibration device, not a joint sensitivity analysis for specified violations of confounding, selection, measurement, and practical positivity. The quoted limitation expressly confirms that the relevant components cannot be disentangled.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-02",
+    "problem_title": "Sensitivity analyses vary one violated assumption at a time when several are violated together",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A conventional emulation reports a point estimate under exchangeability, positivity and correct measurement, then a sensitivity analysis relaxing one of them. In a longitudinal emulation on routine data several are doubtful at once, and one-at-a-time analyses need not characterize their joint effect. Joint multi-bias analysis of confounding, selection and misclassification exists, with software, and so do longitudinal sensitivity models for sequential confounding. What is not standard, and not required by any reporting practice, is a joint region that also includes practical positivity failure under sustained-strategy g-methods, with the product of marginal analyses remaining the default in practice. Constructing one requires compatible bias parameters, restrictions on how the biases depend on each other, and a stated target population and estimand; without those restrictions the resulti",
+    "paper": "A Benchmark, Expand, and Calibration (BenchExCal) Trial Emulation Approach for Using Real-World Evidence to Support Indication Expansions: Design and Process for a Planned Empirical Evaluation.",
+    "doi": "10.1002/cpt.3621",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Rather than perturbing one assumption at a time, BenchExCal folds design emulation differences, systematic bias and chance into a single divergence parameter and propagates its full distribution, which does move the field past one-at-a-time bias analysis. The cost is that the lumped parameter cannot be attributed: if stage 1 divergence came mostly from measurement error and stage 2 divergence comes mostly from residual confounding, the calibration is wrong in a way the procedure cannot detect.",
+    "quote": "Second, it will often not be possible to empirically disentangle the effects of design differences, biases, and chance, which means that the priors in BenchExCal will be based on divergences stemming from multiple factors",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "downgrade",
+   "corrected_effect": "partially-addresses only by illustrating outcome-blinded protocol development; it does not provide selection-adjusted inference",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Avoiding exposure-stratified outcome review during design reduces one route to outcome-driven protocol selection. It does not establish nominal coverage after broader trial, design, or calibration-stage selection, nor does it incorporate that selection into the stated inferential procedure.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "PRO-02",
+    "problem_title": "Inference conditions on a fixed target trial that was in fact selected after seeing the data",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Eligibility thresholds, comparators, grace periods, washout windows and outcome definitions are routinely revised after investigators inspect the data. When outcome-relevant information from the analysis data is used to select among candidate protocols, a confidence interval calibrated for a protocol fixed in advance need not have nominal coverage for the selected estimand, unless the selection is incorporated into the inference or separated out through independent data. Saying so requires naming the target of inference and whether the coverage claimed is conditional on the selection or marginal over it, and applied reports do neither. Design multiverse analyses of emulations exist and display the spread of estimates across specifications, which is informative and is not a correction: a multiverse shows the sensitivity and leaves the reported interval uncalibrated for the search that pro",
+    "paper": "A Benchmark, Expand, and Calibration (BenchExCal) Trial Emulation Approach for Using Real-World Evidence to Support Indication Expansions: Design and Process for a Planned Empirical Evaluation.",
+    "doi": "10.1002/cpt.3621",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The protocol is fixed before outcomes are seen, with a stated prohibition on examining outcomes stratified by exposure during the design and data-check phase, and registration occurs after those checks. That removes the most direct route by which a target trial gets selected on its results. It does not remove the earlier selection: five pairs were chosen from 571 screened trials through team discussion of what could be learned, and the outcome-blind checks themselves iterate design until the stage 1 divergence is acceptable, so the trial that gets emulated is still chosen conditional on the data.",
+    "quote": "At no point during this process will outcomes be evaluated stratified by exposure status.",
+    "locator": "Methods, Transparent and reproducible approach"
+   }
+  }
+ ]
+}

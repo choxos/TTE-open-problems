@@ -1,0 +1,182 @@
+{
+ "batch": "rev-50",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The package supports evaluating nuisance-model choices against known causal error in simulations, which directly establishes the distinction between predictive fit and causal performance. It does not supply a data-adaptive selection criterion for real longitudinal studies, so partial addressing is the correct scope.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-01",
+    "problem_title": "Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Identifying a sustained-strategy effect requires consistency, sequential exchangeability and positivity, and the estimator families differ in which nuisance components they need. When those components are fitted by machine learning, the model that predicts treatment best is not the model that minimizes the finite-sample error of the causal estimator: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Balance-calibrated weight fitting exists and has been applied, so the field is not selecting on prediction alone. What is missing is a criterion that combines predictive risk with the estimator-specific diagnostics that matter, longitudinal balance, weight tails and the remainder-rate condition, in one selection rule, and a default library tuned that way rather than for prediction.",
+    "paper": "simcausal R Package: Conducting Transparent and Reproducible Simulation Studies of Causal Effect Estimation with Complex Longitudinal Data.",
+    "doi": "10.18637/jss.v081.i02",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The reproduced misspecification study is a direct demonstration that a treatment model selected for predictive quality is worse causally: adding instruments, which predict treatment well and the outcome not at all, moves bias times ten from minus 0.179 to 1.397 for the first period and from 0.157 to 2.014 for the second at n = 300, and roughly triples mean squared error. Because the true coefficient is known by construction, nuisance model choice can be scored on causal error rather than on fit. What is not closed is the real-data case: the scoring depends on knowing the truth, and no criterion is offered for selecting a longitudinal nuisance model when the counterfactual distribution is unavailable.",
+    "quote": "the gold standard defined in this manner provides an objective measure of bias that does not depend on the modeling assumptions of a specific statistical method",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "A transparent common simulation environment is relevant machinery for comparing estimators under specified data-generating conditions. It neither justifies a universal default nor creates a reporting requirement that applied studies assess estimator dependence.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "GMT-04",
+    "problem_title": "No estimator is defensible as a default, and no study is required to show that its choice mattered",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population, discards information, and often leaves its estimand unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust, computationally heavy and sensitive to practical positivity. No estimator is defensible as a universal default, and a study reporting one reports a number whose dependence on that choice is unknown: n",
+    "paper": "simcausal R Package: Conducting Transparent and Reproducible Simulation Studies of Causal Effect Estimation with Complex Longitudinal Data.",
+    "doi": "10.18637/jss.v081.i02",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A shared model-free gold standard makes competing estimators comparable on the same simulated distribution, which is the machinery a defensible default would need; the vignette is reported to compare targeted minimum loss based estimation against inverse probability weighting for a risk difference between two dynamic regimes on exactly this basis. What it does not close is the step from simulation to practice: nothing obliges a published emulation to demonstrate that its estimator choice mattered, and a simulated data-generating process that favors one estimator can be written as easily as one that favors another.",
+    "quote": "one may use simcausal to simulate data from a large variety of data-generating distributions and conduct a simulation study comparing the properties of different statistical procedures",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "A structural equation model with explicitly defined interventions supplies counterfactual ground truth for simulation-based causal evaluation, rather than relying only on observational distributional fidelity. It does not establish whether a model fitted to real patient data has valid counterfactual behavior or realistic support.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-02",
+    "problem_title": "Generative models are evaluated on distributional fidelity and used for causal work",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation does not match the use. Marginal and temporal fidelity do not validate a generator's counterfactual behavior, and cannot: without identifying assumptions or interventional ground truth, two generators indistinguishable on observed data can disagree on some interventions. A model optimized for fidelity can therefore reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those appears in the loss. Privacy mechanisms compound it by suppressing rare patterns, which are often the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and curre",
+    "paper": "simcausal R Package: Conducting Transparent and Reproducible Simulation Studies of Causal Effect Estimation with Complex Longitudinal Data.",
+    "doi": "10.18637/jss.v081.i02",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The generative object here is a structural equation system whose value is judged by whether the causal parameter it defines is recovered, not by how closely its output distribution resembles a real dataset, and the target is fixed as the same functional of the counterfactual distribution regardless of how the equations are parameterized. That is the evaluation standard causal work needs. What remains open is the other half: realism is left as a hope about capturing real-world complexity, with no measure attached, so a simulation study can be internally valid and still say nothing about the data-generating process it was meant to stand in for.",
+    "quote": "the causal parameter is always the same functional of the counterfactual data distribution, regardless of the user-selected parameterization of the SEM",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Treating monitoring events as nodes that may be intervened on is a real structural modeling contribution and makes informative observation mechanisms examinable in simulation. It does not identify effects under informative visiting in observed records or provide a real-data estimator.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MIS-01",
+    "problem_title": "The visit process is treated as a nuisance to be imputed rather than as part of the causal structure",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends o",
+    "paper": "simcausal R Package: Conducting Transparent and Reproducible Simulation Studies of Causal Effect Estimation with Complex Longitudinal Data.",
+    "doi": "10.18637/jss.v081.i02",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Monitoring events are first-class nodes: the observed data can be generated under random clinical monitoring and interventions may set the occurrence or non-occurrence of a monitoring event, so the visit process is part of the structural model rather than a gap to be filled in. This makes the consequences of a visit process that depends on prior treatment and prior covariates measurable in simulation. It does not supply an identification result or an estimator for real records, where the monitoring intensity is itself unknown and confounded.",
+    "quote": "the interventions may represent exposures to treatment regimens, the occurrence or non-occurrence of right-censoring events, or of clinical monitoring events",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Declarative, reproducible simulation code and supplied replication scripts advance auditability of a methods study. They do not provide the applied-study artifacts at issue, especially operational phenotype definitions, weight diagnostics, and protocol-version history.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-03",
+    "problem_title": "Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "The TARGET statement asks for the target protocol, its data mapping, the estimands, the assumptions, the estimates and the sensitivity analyses, and is a transparency instrument rather than a risk-of-bias certification. An emulation is not externally auditable when its final analysis code, its complete versioned phenotype logic and its weight diagnostics are unavailable, and in current practice they are: most emulations are irreproducible in operative detail despite faithful protocol reporting. Where the real data cannot be shared, code plus a documented schema, a container and synthetic fixtures establishes that the pipeline executes and what it does; it does not reproduce the published estimate, and auditability rather than reproduction is what such a release can deliver. Material protocol amendments belong in a versioned decision log, which nothing currently requires.",
+    "paper": "simcausal R Package: Conducting Transparent and Reproducible Simulation Studies of Causal Effect Estimation with Complex Longitudinal Data.",
+    "doi": "10.18637/jss.v081.i02",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The whole data-generating process, the interventions and the target parameter are expressed as declarative code, and the two replications are shipped as supplementary scripts that reproduce the published tables, which is the standard of disclosure emulations are asked for. The reach is limited to simulation: it makes a methods study auditable but supplies nothing for an applied emulation's phenotype logic, weight diagnostics or rejected protocol versions, which are the artifacts a reader of an applied study cannot obtain.",
+    "quote": "careful attention should be paid to the structure and clarity of the simulation code itself",
+    "locator": "Introduction, motivation"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Propensity score calibration using validation data is directly relevant to integrating additional information about unmeasured confounding into an adjustment workflow. The quoted limitation supports the conclusion that this does not yield a general framework for combining validation data, negative controls, and other tools or adjudicating disagreement.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Making fair comparisons in pregnancy medication safety studies: An overview of advanced methods for confounding control.",
+    "doi": "10.1002/pds.4336",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Propensity score calibration is a concrete route for folding an external validation sample into a confounding adjustment, and a triptan safety example is cited in which a cross-sectional study supplied migraine severity and type. What it does not close is verification: surrogacy cannot be checked when the validation sample lacks the outcome, calibration is stated to fail when unmeasured confounding is strong, and negative controls appear only as one of several methods whose agreement is described as reassuring, with no rule for what disagreement implies.",
+    "quote": "If the outcome is not measured in the validation study, the surrogacy assumption is not testable.",
+    "locator": "Methods for incomplete confounder data, Assumptions"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The proposed checks and required descriptive counts constitute a concrete partial reporting panel, while explicitly acknowledging that key assumptions cannot be fully tested. The work does not provide a general assumption dashboard or prespecify how diagnostic results map to an analytic verdict.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "TREATMENT SWITCHING: STATISTICAL AND DECISION-MAKING CHALLENGES AND APPROACHES.",
+    "doi": "10.1017/s026646231600026x",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "A concrete list of assumption investigations is proposed as a reporting expectation: check what prognostic characteristics other trials measured that this one did not, analyze the time from secondary baseline to switch since a long lag makes two-stage adjustment biased, test the common treatment effect by comparing effect estimates in switchers against randomized experimental patients, and report switching proportions with stratum-level cell and event counts. The undiagnosable assumptions are separated honestly, since both no unmeasured confounders and a common treatment effect are stated to be untestable. What is missing is the mapping from those investigations to a verdict.",
+    "quote": "It is impossible to test this assumption fully, but information can be obtained from other trials in similar disease areas to determine whether any likely prognostic characteristics were not measured in the pivotal trial.",
+    "locator": "The view of decision makers"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Reporting switching, stratum sizes, and event counts localizes an overlap-related failure mode more effectively than a marginal weight distribution alone. It remains a context-specific reporting recommendation and provides no policy-specific support threshold, excluded-population definition, or revised estimand.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "TREATMENT SWITCHING: STATISTICAL AND DECISION-MAKING CHALLENGES AND APPROACHES.",
+    "doi": "10.1017/s026646231600026x",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The failure mode of the weighting method is located in the data rather than in the weights: error rises when the switching proportion is very high, when the stratum defined by a combination of covariates is small, or when few events fall in that stratum, and specific patients may take very high weights when few control patients did not switch. The recommendation is to present each of these counts. That is closer to naming which histories are unsupported than a weight summary, but it stops at reporting the inputs, with no rule tying a stratum size or a switching proportion to a conclusion about support.",
+    "quote": "Details on each of these should be presented to allow reviewers to assess the scope for bias.",
+    "locator": "The view of decision makers"
+   }
+  }
+ ]
+}

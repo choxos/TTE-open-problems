@@ -1,0 +1,182 @@
+{
+ "batch": "rev-20",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "agree",
+   "corrected_effect": "partially-addresses",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted framework directly establishes that treating a competing event as censoring targets a controlled direct effect rather than a generic risk contrast. It also makes the required intervention and identification assumptions explicit, without resolving the choice of an estimand for all sustained-strategy settings.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "A causal framework for classical statistical estimands in failure-time settings with competing events.",
+    "doi": "10.1002/sim.8471",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The registry entry says censoring at death is applied as data cleaning rather than as an identifying assumption. This supplies exactly the missing statement: the decision to censor at the competing event changes which causal effect is estimated, and the resulting direct effect needs an intervention that eliminates death, whose consistency and positivity are questionable or violated. It also gives the graphical rules for representing the assumptions. What is not supplied is a defensible estimand for the common case, which the paper leaves to future work.",
+    "quote": "When competing events are defined as censoring events, a contrast in counterfactual risks of the event of interest quantifies a direct effect of treatment on the event of interest that does not capture the treatment's effect on the competing event.",
+    "locator": "Section 10, Discussion"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "agree",
+   "corrected_effect": "partially-addresses",
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper supplies a concrete correction for error in one longitudinal variable using external validation information. Its mediation setting and reliance on a reliability coefficient leave the registry's joint measurement problem across treatment, confounding, eligibility, censoring, and outcomes unresolved.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "MER-01",
+    "problem_title": "Phenotypes enter emulations as error-free binary variables",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquel",
+    "paper": "Time-dependent mediators in survival analysis: Modeling direct and indirect effects with the additive hazards model.",
+    "doi": "10.1002/bimj.201800263",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Measurement error in the time-varying mediator is corrected rather than acknowledged: a reliability coefficient taken from an external validation source is used to produce corrected effect estimates, plotted alongside the uncorrected ones, with bootstrap intervals available for both. That is a worked propagation of error in one longitudinal variable. It is not the joint propagation the entry asks for, since exposure, outcome and eligibility misclassification are untouched, and the correction is not extended to the discretization error the paper also identifies.",
+    "quote": "The red line represents the corrected effect estimates, using the correction approach described in Section 5.3, where κ was set to 0.72 based on results by Filipovsky et al. (2016).",
+    "locator": "Section 6, results, figure 4 caption"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "agree",
+   "corrected_effect": "partially-addresses",
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "Embedding adjustment for time-constant unmeasured confounding within the g-formula is a genuine partial integration of a residual-confounding device into a longitudinal causal estimator. It does not provide a joint workflow for negative controls, proxies, or validation data, and it relies on the restrictive assumption that the unmeasured confounding is time constant.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "The Impact of Unemployment on Antidepressant Purchasing: Adjusting for Unobserved Time-constant Confounding in the g-Formula.",
+    "doi": "10.1097/ede.0000000000000985",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "The registry entry says devices for residual confounding sit outside the standard workflow. Here one such device, individual fixed-effect intercepts absorbing every time-constant unmeasured cause, is built into the g-formula itself rather than run afterward as a sensitivity analysis, and the result is not a caveat but a reversal of the conclusion. What is not delivered is a workflow: the device covers only time-constant confounding, its own validity cost is unquantified, and negative controls, proxies and validation data remain unintegrated.",
+    "quote": "For the first time (to our knowledge), we combine the g-formula with methods to adjust for unobserved time-constant confounding.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "agree",
+   "corrected_effect": "partially-addresses",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper correctly shifts attention from global sample features to intervention-specific cumulative probabilities and truncation. Those diagnostics still do not localize unsupported covariate histories, prespecify a support population, or state the resulting restricted estimand.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Using longitudinal targeted maximum likelihood estimation in complex settings with dynamic interventions.",
+    "doi": "10.1002/sim.8340",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "This gets closer than weight-tail inspection to naming which histories fail to support a strategy: the recommended reporting is the percentage of truncated cumulative inverse probabilities, summaries of the clever covariates, and the data support for each intervention separately, because support varied by rule while sample size and intervention type predicted nothing. The entry is narrowed rather than closed, and the paper says so, calling for diagnostic tools that do not yet exist.",
+    "quote": "what matters is the support in the data for the intervention rule of interest: high levels of truncation and small cumulative probabilities of continuing to follow the rule of interest are typically a sign of problems, likely due to practical positivity violations or poor modeling strategies",
+    "locator": "Conclusions"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "An influence-curve standard error for longitudinal TMLE does not address dependence induced by cloning and repeated sequence eligibility. The quoted claim is generic and supplies no evidence for site clustering, sequence expansion, or flexible weight-estimation uncertainty at the scale named by the problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "SFW-01",
+    "problem_title": "Variance estimation after cloning and sequence expansion has no scalable, correct default",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practic",
+    "paper": "Using longitudinal targeted maximum likelihood estimation in complex settings with dynamic interventions.",
+    "doi": "10.1002/sim.8340",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "For this estimator the variance problem has an answer: standard errors and confidence intervals come analytically from the influence curve, which removes the bootstrap that the g-formula requires and with it the resampling cost that scales with the expanded dataset. The scope is a longitudinal dynamic intervention with censoring, not a cloned and sequence-expanded emulation, so the repeated-participation and clone-level dependence structures the entry names are not covered.",
+    "quote": "It also has the advantage\nof easy-to-calculate analytic standard errors in contrast to the g-formula, which requires bootstrapping.",
+    "locator": "Abstract"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": "partially-addresses",
+   "merge_into": null,
+   "confidence": "medium",
+   "reason": "The paper explicitly distinguishes an associational Cox-model hazard ratio from a g-formula contrast between population-wide interventions. This is a useful applied example of estimand labeling, but it neither establishes a reporting convention nor covers clone-censor-weighted grace-period per-protocol analyses.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "EST-03",
+    "problem_title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.",
+    "paper": "Refining the Association Between Body Mass Index and Atrial Fibrillation: G-Formula and Restricted Mean Survival Times.",
+    "doi": "10.1161/jaha.119.013011",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Two hazard ratios from the same data are reported side by side with an explicit statement that they are not the same quantity, one contrasting groups of people and the other contrasting strategies applied to everyone, and an absolute measure is added because the relative one carries no magnitude. That is the naming discipline the entry asks for, applied to one comparison rather than established as a reporting convention.",
+    "quote": "However, we note that the Cox model and g‐formula HR do not measure the same thing: the Cox model compares nonobese versus obese individuals, while the g‐formula compares everyone had they been nonobese versus everyone had they been obese.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": "partially-addresses",
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quoted passage directly explains that censoring competing events with inverse-probability weights invokes a joint intervention eliminating those events. The paper provides a defensible alternative estimand in its setting, but cannot settle estimand selection or implementation for all emulated sustained-treatment strategies.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "Estimating Counterfactual Risk Under Hypothetical Interventions in the Presence of Competing Events: Crystalline Silica Exposure and Mortality From 2 Causes of Death.",
+    "doi": "10.1093/aje/kwy077",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The competing event is neither censored as a cleaning step nor weighted away. The estimand is chosen deliberately, with the reason stated: weighting for competing events estimates a joint intervention that also eliminates them, which defines no population that exists, and identifying such a target needs strong assumptions like independence of competing events given measured covariates. Subdistribution risk quantifies the effect in a population where competing events occur and are themselves affected by exposure. The paper also separates this from loss to follow-up, which it does assume away, on the ground that a study without dropout is conceivable while a population without death is not.",
+    "quote": "The subdistribution estimates also have advantages over estimates that address competing events with use of inverse probability of censoring weights, which essentially assess the effect of a joint intervention composed of the intervention with respect to the exposure of interest together with an intervention eliminating the competing event ( 40 ).",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "An overall percentage of person-time already following an intervention is a marginal frequency, not a policy-specific diagnostic of support conditional on treatment and confounder history. It cannot identify which histories lack support, the fraction of persons excluded by a criterion, or an estimand after restricting to supported histories.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Estimating Counterfactual Risk Under Hypothetical Interventions in the Presence of Competing Events: Crystalline Silica Exposure and Mortality From 2 Causes of Death.",
+    "doi": "10.1093/aje/kwy077",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Positivity is reported as observed support for the strategy rather than as a property of the weights: even for the most extreme intervention, complete removal of exposure, 18 percent of actively employed person-time was already unexposed. That is a statement a reader can check against the strategy, and it is closer to naming supported histories than a truncated weight distribution. It stops short of identifying which covariate histories lack support, and it addresses only the most extreme rule.",
+    "quote": "Positivity violations were not a major issue, as even in the case of the hypothetical intervention where exposures are completely removed in our study, 18% of the observed, actively employed person-time was actually unexposed.",
+    "locator": "Discussion"
+   }
+  }
+ ]
+}

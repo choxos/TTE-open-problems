@@ -1,0 +1,182 @@
+{
+ "batch": "rev-34",
+ "model": "gpt-5.6-terra",
+ "verdicts": [
+  {
+   "index": 0,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quote offers broad reader-facing credibility questions about design, timing, and confounder measurement. It does not distinguish diagnosable from undiagnosable assumptions, specify diagnostics, or establish a reporting dashboard.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "REG-02",
+    "problem_title": "There is no assumption dashboard, so diagnosable and undiagnosable assumptions are reported alike",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "Exchangeability and consistency cannot be established from observed data. Neither, strictly, can positivity, model correctness or phenotype validity: the available checks reveal or falsify particular problems and certify none of them. Current reports blur both distinctions. A propensity-score overlap plot is offered and the reader infers that the assumptions have been checked, when the plot is a partial diagnostic of one of them and silent on the rest. No standard panel exists, so what appears varies by author and by journal, and an absent diagnostic cannot be distinguished from one that was run and not reported. A single panel cannot be adequate for every design, which is a constraint on the solution rather than an argument against it.",
+    "paper": "Bringing credibility to observational research in critical care: the case of target trial emulation designs.",
+    "doi": "10.62675/2965-2774.20250142",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Three appraisal questions are given in a form a clinician can apply to a published paper, covering the question and target trial, the alignment of the three time points, and data coverage of confounders. It is a reader-facing checklist rather than a dashboard, so it records whether the design was stated and not which of the resulting assumptions can be checked.",
+    "quote": "By evaluating (i) the clarity of the causal question and the specification of the target trial being emulated with observational data, (ii) the proper alignment of the time points for eligibility ascertainment, treatment assignment, and the start of follow-up, and (iii) the quality of the data and the extent to which available variables account for confounding factors, clinicians can make well-informed judgments on the credibility of target trial emulation results.",
+    "locator": "Conclusion"
+   }
+  },
+  {
+   "index": 1,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Mentioning falsification endpoints as one possible sensitivity tool does not integrate negative controls, proxies, validation data, and instrumental variables into a shared emulation workflow. The quote provides neither a joint model nor a convention for reconciling conflicting evidence.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "UCF-01",
+    "problem_title": "Negative controls, proxies and validation data are not integrated into a standard emulation workflow",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confou",
+    "paper": "Comparative Effectiveness Research Using Randomized Trials and Observational Studies: Validity and Feasibility Considerations.",
+    "doi": "10.1055/a-2664-7887",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Falsification endpoints are offered as a partial remedy for unmeasured confounding alongside sensitivity and subgroup analyses, with the qualification that residual confounding remains possible. Instrumental variables are named as the technique that addresses both measured and unmeasured confounders and immediately qualified by the difficulty of finding an instrument meeting the assumptions.",
+    "quote": "Sensitivity analyses and\nsubgroup analyses can help strengthen the robustness of\nthe results, and falsiﬁcation endpoints might partially\nalleviate the concern for unmeasured confounders.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 2,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Weekly sequential trials and gestational-age matching solve a biologically specific temporal-alignment problem. They do not provide an outcome-blind rule for choosing an interval width or grace period across emulations.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "A Post-Authorisation Safety Study of a Respiratory Syncytial Virus Vaccine in Pregnant Women and Their Offspring in a Real-World Setting: Generic Protocol for a Target Trial Emulation.",
+    "doi": "10.3390/vaccines13030272",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "The protocol identifies a deterministic relationship between exposure timing and outcome possibility, vaccination at 35 weeks precluding birth before 35 weeks, and resolves it by making gestational age at vaccination the trial index, enrolling into weekly sequential trials. That is a design derived from the biology of the outcome rather than a convention, and it works because the relevant clock is gestational age.",
+    "quote": "For instance, administering the vaccine at 35 weeks of gestation cannot result in an preterm birth of less than 35 weeks. Therefore, we emphasise the critical importance of matching participants based on gestational age at the time of vaccination.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 3,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Changing or supplementing an outcome to study timing after vaccination does not address competing events, censoring at death, or the estimand implied by such censoring. The quoted passage concerns mechanism and outcome timing, not identifying assumptions for terminal events.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OUT-01",
+    "problem_title": "Censoring at death is applied as data cleaning rather than as an identifying assumption",
+    "problem_verdict": "unverifiable",
+    "problem_statement": "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations default to cause-specific hazards or to censoring at the competing event. Censoring does not select among those estimands: it alters the observed-data analysis, and it corresponds to a hypothetical elimination of the competing event only when that intervention is well defined and its identification conditions hold, which is a claim the analysis has to make and defend. Estimators for competing events inside emulated trials exist and are being applied. Off-the-shelf support for joint recurrent-event and terminal-event contrasts under sustained strate",
+    "paper": "A Post-Authorisation Safety Study of a Respiratory Syncytial Virus Vaccine in Pregnant Women and Their Offspring in a Real-World Setting: Generic Protocol for a Target Trial Emulation.",
+    "doi": "10.3390/vaccines13030272",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A second outcome is added that is continuous rather than categorical, has more power, permits examining how long after vaccination preterm births occur, and does not depend on how accurately gestational age was assessed. Changing the outcome to remove a measurement dependency is a design move rather than an adjustment, and it is specific to this exposure and outcome pair.",
+    "quote": "Also, this approach allows us to examine the median time between vaccination and preterm births, which is crucial for identifying specific underlying mechanisms. For instance, it can reveal whether preterm infants are born days, weeks, or months after vaccination.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 4,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The paper explicitly places data fitness assessment in preanalysis feasibility work and gives a concrete exposure-capture check. It does not supply prespecified multicomponent thresholds or a stop rule, so the claimed partial effect is appropriately limited.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "DTA-01",
+    "problem_title": "Data-fitness assessment is narrative and has no thresholds that would stop a study",
+    "problem_verdict": "overstated",
+    "problem_statement": "Electronic health records arise from encounters, billing and documentation rather than from scheduled research assessments, so eligibility and follow-up in an emulation partly reflect care-seeking and access rather than the biology the protocol intends. Whether a given database can support a given target trial is a question about the data source and the protocol jointly, and quantitative assessments of that pair now exist. What does not exist is a prespecified stop rule: a threshold agreed before the analysis, on observability, temporal precision, capture continuity, comparator support, outcome validity and linkage completeness, that would halt a study when an essential component fails. Outside tightly gated regulatory and network feasibility processes, most published emulations still assert suitability in a paragraph, and a pipeline with no route to the answer no will always produce an ",
+    "paper": "A Post-Authorisation Safety Study of a Respiratory Syncytial Virus Vaccine in Pregnant Women and Their Offspring in a Real-World Setting: Generic Protocol for a Target Trial Emulation.",
+    "doi": "10.3390/vaccines13030272",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Fitness for purpose is named as something to be established in feasibility studies before the emulation runs, and a concrete check is specified for exposure capture: compare recorded vaccination against national statistics. The check is stated for one variable and the general condition is left as a pointer to feasibility work.",
+    "quote": "Data sources that routinely collect data often provide comprehensive information on treatments and outcomes but may lack sufficient detail on clinical factors that require adjustment [ 47 ]. Fitness for purpose of data can be assessed in feasibility studies [ 18 , 19 ].",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 5,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quote correctly links eligibility restrictions to improving the plausibility of positivity by excluding patients unlikely to receive a strategy. It supplies no policy-specific support criterion or history-localized diagnostic, so it only partially bears on the problem.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "OVL-01",
+    "problem_title": "Positivity diagnostics describe weights instead of naming which patient histories are unsupported",
+    "problem_verdict": "partially-addressed",
+    "problem_statement": "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software ",
+    "paper": "Conducting descriptive epidemiology and causal inference studies using observational data: A 10-point primer for stroke researchers.",
+    "doi": "10.1177/23969873251332118",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "medium",
+    "evidence": "Positivity is connected to a design lever rather than left as an assumption: applying the target trial's eligibility criteria raises the chance it holds, since the criteria remove people who would never receive one of the strategies. The connection is stated qualitatively with no diagnostic and no statement of when the criteria are sufficient.",
+    "quote": "The application of eligibility criteria imposed by the target trial framework discussed in Point 6 increases the likelihood of fulfilling this assumption.",
+    "locator": "Point 10"
+   }
+  },
+  {
+   "index": 6,
+   "verdict": "agree",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "Harmonized analyses with reported absolute-risk differences demonstrate why a binary replication label is insufficient. The comparison preserves agreement on a contrast while exposing clinically meaningful population or measurement differences in absolute risks.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "BEN-02",
+    "problem_title": "Replication is reported as a binary label rather than as a calibrated comparison of estimands",
+    "problem_verdict": "overstated",
+    "problem_statement": "Agreement between an emulation and a trial is informative only when the estimands, populations and measurements are close enough to be comparable, and better design alignment is empirically associated with stronger concordance. The benchmarking programs report this in graded form. What is cited downstream is a binary label, usually derived from interval overlap or direction agreement, and that label discards magnitude and uncertainty and cannot diagnose why two estimates differ: two studies estimating the same quantity imprecisely agree by that criterion, and two estimating different quantities precisely disagree. No reported measure, graded or binary, separates estimand mismatch from random error, because doing so requires aligning the estimands first and then reporting a paired contrast with joint uncertainty, which no benchmarking report currently does as a matter of course.",
+    "paper": "Comparative effectiveness of extended-release naltrexone versus buprenorphine-naloxone on treatment interruption: Comparing findings from a reanalysis of the X:BOT RCT and harmonized target trial emulation using population-based observational data.",
+    "doi": "10.1111/add.70040",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "Both studies were run with harmonized protocols and analyses, which is what a calibrated comparison requires, and the result is that they agree on the risk difference while disagreeing on the absolute risks by 14 and 21 percentage points. A binary concordance verdict would record agreement and lose the finding that the same treatment strategies interrupt far more often outside a trial.",
+    "quote": "We found that for both treatment strategies, the risk of treatment interruption was\nsubstantially higher in the observational study, representative of the real-world population of\nMassachusetts, than in the target trial, a multi-site clinical trial in the US.",
+    "locator": "Discussion"
+   }
+  },
+  {
+   "index": 7,
+   "verdict": "reject",
+   "corrected_effect": null,
+   "merge_into": null,
+   "confidence": "high",
+   "reason": "The quote identifies immortal-time bias caused by eligibility and treatment-assignment misalignment. Clone-censor-weighting can accommodate a chosen window, but neither the quote nor the claim supplies an outcome-blind method for selecting that window.",
+   "item": {
+    "kind": "finding",
+    "problem_id": "TZO-01",
+    "problem_title": "No outcome-blind procedure selects the time grid or the grace period",
+    "problem_verdict": "confirmed-open",
+    "problem_statement": "An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation proc",
+    "paper": "A New Target from a Target Trial Emulation: Allow Early Assisted Breathing.",
+    "doi": "10.1164/rccm.202501-0240ed",
+    "claimed_effect": "partially-addresses",
+    "claimed_confidence": "high",
+    "evidence": "A 24-hour window separates eligibility from assignment, and cloning with censoring and weighting is used so that deaths occurring while a patient could still belong to either arm are not attributed to one. That handles the arithmetic correctly and leaves the window length itself unexplained, since a different grace period would define different strategies.",
+    "quote": "This misalignment between study eligibility and treatment assignment is a potential source of immortal time bias, as patients who die before switching to assisted ventilation can never be assigned to the early switching arm.",
+    "locator": "Commentary"
+   }
+  }
+ ]
+}
