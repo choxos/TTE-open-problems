@@ -11,9 +11,16 @@
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { CATEGORIES } from '../build/render_site.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const PROBLEMS = join(ROOT, 'problems')
+
+// Imported rather than restated: render_site.mjs writes the filename from the id
+// and the category page globs by code, so a code that exists in one list and not
+// the other is a page that renders and cannot be reached.
+const BY_CODE = Object.fromEntries(CATEGORIES.map((c) => [c.code, c]))
+const ID_PATTERN = new RegExp(`^(${Object.keys(BY_CODE).join('|')})-\\d{2}$`)
 
 const ENUMS = {
   priority: ['Very high', 'High', 'Medium-high', 'Medium'],
@@ -100,6 +107,19 @@ function main() {
       byId.set(fm.pid, where)
       if (!f.startsWith(`${fm.pid}-`)) {
         errors.push(`${where}: filename does not start with its id '${fm.pid}'`)
+      }
+      // The id prefix is not decoration. render_site.mjs writes the filename from
+      // the id and each category page globs `../problems/<CODE>-*.qmd`, so an id
+      // whose prefix disagrees with the page's category still renders a page and
+      // still vanishes from the listing that should reach it: present, but
+      // unfindable, and nothing else in the pipeline notices.
+      if (!ID_PATTERN.test(fm.pid)) {
+        errors.push(`${where}: id '${fm.pid}' does not match <CODE>-NN for a known category code`)
+      } else {
+        const expected = BY_CODE[fm.pid.split('-')[0]].name
+        if (fm.topic && fm.topic !== expected) {
+          errors.push(`${where}: id '${fm.pid}' belongs to '${expected}' but the page is filed under '${fm.topic}'`)
+        }
       }
     }
 

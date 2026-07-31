@@ -19,7 +19,8 @@ const OUT = join(DIR, 'problems.json')
 const STOP = new Set(`a an the and or of for to in on with without that this these those is are be
 may can could should would must not no non problem problems open remain remains method methods
 effect effects treatment treatments population populations study studies trial trials data model
-models estimate estimates estimation estimand estimands itc paic nma cnma maic stc ml nmr agd ipd`
+models estimate estimates estimation estimand estimands
+tte target emulation emulations emulated emulate emulating causal inference observational rwd rwe`
   .split(/\s+/))
 
 const tokens = (s) =>

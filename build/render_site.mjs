@@ -17,7 +17,7 @@
 // timeline.json costs the dated sections and nothing else.
 
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync, existsSync } from 'node:fs'
-import { join, dirname } from 'node:path'
+import { join, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
@@ -921,4 +921,8 @@ ${closing}
   console.log('Verdicts:', counts)
 }
 
-main()
+// Only when run as a script. CATEGORIES is the single place the eighteen codes
+// are written down, and tools/check-registry.mjs validates ids against it by
+// importing from here; an unconditional main() would make that import render
+// the whole site as a side effect.
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main()
