@@ -1,0 +1,593 @@
+{
+ "batch": "core-06",
+ "papers": [
+  {
+   "id": "L0083",
+   "read": true,
+   "doi": "10.1186/s40249-019-0587-8",
+   "title": "Recommendation on unbiased estimation of population attributable fraction calculated in \"prevalence and risk factors of active pulmonary tuberculosis among elderly people in China: a population based cross-sectional study\".",
+   "relevance": "low",
+   "one_line": "Correspondence correcting a published population attributable fraction, recommending the sample-weighted Miettinen formula or a sample-weighted parametric g-formula, and noting that an attributable fraction is only meaningful for an exposure that can be intervened on.",
+   "what_was_done": "This is a letter about the analysis in a published cross-sectional tuberculosis study. Six points are made. Levin's formula, used in the original, is unbiased only for an unadjusted risk ratio and in the absence of confounding and effect modification, so applying it to an adjusted odds ratio biases the result; recomputing the diabetes fraction with Miettinen's formula gives 3.76 percent rather than the reported 5.52 percent. Attribution carries a causal reading, so a cross-sectional design brings reverse causality and prevalence-incidence bias. The complex survey design was not carried into the prevalence estimates, which need inverse probability weighting for multistage and disproportionate sampling, nor into the attributable fractions, which need a sample-weighted Miettinen or Bruzzi formula or sample-weighted model-based standardization, that is a parametric g-formula. Self-reported exposure biases a quantity that is a function of exposure prevalence. Finally, an attributable fraction is a public health quantity only when the exposure can be intervened on, which age and sex cannot.",
+   "future_research": [
+    {
+     "gap": "The assumptions required for an unbiased attributable fraction are routinely ignored, and no procedure enforces them.",
+     "kind": "stated",
+     "quote": "In sum, unbiased estimation of PAF requires several assumptions which are often ignored in practice.",
+     "locator": "Closing paragraph"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "PRO-05",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "An attributable fraction is a counterfactual quantity that presupposes an intervention removing the exposure. The letter states that computing one for an exposure nobody can intervene on has no clear use, which is the same objection that applies to emulating a target trial of an exposure with no defined assignment mechanism or treatment versions.",
+     "quote": "Therefore, it is less apparent why the attributable fraction for unmodifiable risk factors such as age and sex may be of use.",
+     "locator": "Point vi"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The estimated quantity is a function of exposure prevalence, and prevalence here came from self-report supplemented by a local records search that the original study itself judged insufficient. The error is named and then not propagated into the estimate, which is the pattern the entry describes.",
+     "quote": "As reported in this study, the self-reported and local health documentation search of diabetes was not sufficient to estimate the real distribution.",
+     "locator": "Point v"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0084",
+   "read": true,
+   "doi": "10.1002/bimj.201800263",
+   "title": "Time-dependent mediators in survival analysis: Modeling direct and indirect effects with the additive hazards model.",
+   "relevance": "high",
+   "one_line": "Interventional direct and indirect effects for a time-varying mediator and a survival outcome, obtained by combining the g-formula with an additive hazards model and a linear mediator process, with a measurement error correction applied to the mediator.",
+   "what_was_done": "Natural direct and indirect effects are not defined when the mediator is longitudinal and observation of it stops at death, so the paper takes an interventional approach in which treatment is separated into an aspect acting on the mediator and an aspect acting on survival. In general this yields a version of the nonparametric g-formula; combining it with an additive hazards model and a sequential linear model for the mediator process produces explicit and interpretable expressions for direct and indirect effects on both the cumulative hazard scale and the relative survival scale, generalizing and formalizing dynamic path analysis. Collapsibility of the additive hazard is what makes the explicit solution possible, and the paper states that a Cox model would give a more complex mediational g-formula and probably no closed form. Applied to the SPRINT blood pressure trial with acute kidney injury as the outcome and diastolic blood pressure as the mediator, only a small though significant part of the effect ran through diastolic blood pressure while the direct effect was substantial, with confidence intervals from 200 bootstrap samples and a measurement error correction using a reliability coefficient of 0.72. The stated simplifications are a piecewise constant mediator process, dependence of the hazard on the last observed mediator value only, no exposure-mediator interaction, a fixed treatment, and baseline confounding only.",
+   "future_research": [
+    {
+     "gap": "Time-varying confounding is outside the setting, and can be handled only when it is not itself affected by treatment, which is the case that matters in an emulation.",
+     "kind": "stated",
+     "quote": "Time-dependent confounding is an important issue, but it is beyond the setting we have here.",
+     "locator": "Section 7, Discussion"
+    },
+    {
+     "gap": "A sensitivity analysis for the discretization of the mediator process, generalizing the measurement error model, is named as needed and not done.",
+     "kind": "stated",
+     "quote": "In further work a sensitivity analysis of this issue should be performed, e.g. generalising our measurement error model.",
+     "locator": "Section 7, Discussion"
+    },
+    {
+     "gap": "Multiple mediators and exposure-mediator interaction are believed extendable but are not covered.",
+     "kind": "stated",
+     "quote": "The issue of multiple mediators is also an important theme and we believe the theory can be extended to cover this along the lines of Vansteelandt and Daniel (2017).",
+     "locator": "Section 7, Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OUT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Death does not merely censor the mediator here; it removes the fact that the estimand refers to. The paper states that natural direct and indirect effects are not defined at all in a survival setting with a longitudinal mediator once observation stops at death, and adopts an interventional definition to have anything well defined to estimate. Treating the end of observation at death as a data-handling step would leave an estimand that does not exist.",
+     "quote": "natural direct and indirect effects are not really defined in a survival\nsetting with longitudinal mediator (if observing the mediator stops at death)",
+     "locator": "Section 7, Discussion"
+    },
+    {
+     "problem_id": "GMT-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The underlying mediator process is continuous and unobservable, and the analysis replaces it with a piecewise constant process updated at observation times, following the standard survival convention for time-dependent covariates. The paper concedes this may misspecify the mediator model and may violate one of its identifying assumptions, and states that modeling the underlying process is not attempted because it would be far more complex. That is the continuous-time identification gap conceded rather than closed.",
+     "quote": "Modelling the underlying processes would be far more complex and is usually not attempted.",
+     "locator": "Section 7, Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Measurement error in the time-varying mediator is corrected rather than acknowledged: a reliability coefficient taken from an external validation source is used to produce corrected effect estimates, plotted alongside the uncorrected ones, with bootstrap intervals available for both. That is a worked propagation of error in one longitudinal variable. It is not the joint propagation the entry asks for, since exposure, outcome and eligibility misclassification are untouched, and the correction is not extended to the discretization error the paper also identifies.",
+     "quote": "The red line represents the corrected effect estimates, using the correction approach described in Section 5.3, where κ was set to 0.72 based on results by Filipovsky et al. (2016).",
+     "locator": "Section 6, results, figure 4 caption"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0085",
+   "read": true,
+   "doi": "10.1097/ede.0000000000000985",
+   "title": "The Impact of Unemployment on Antidepressant Purchasing: Adjusting for Unobserved Time-constant Confounding in the g-Formula.",
+   "relevance": "high",
+   "one_line": "Adds individual-level fixed-effect intercepts to the parametric g-formula to absorb unmeasured time-constant confounding, which turns a 5 percent estimated effect of employment on antidepressant purchasing into a null.",
+   "what_was_done": "The parametric g-formula handles time-varying and intermediate confounding but has required that every relevant confounder be measured. This study combines it with individual-level fixed-effect intercepts to absorb unobserved time-constant confounding, and applies the combination to an 11 percent random sample of Finnish register data, 49,753 people aged 30 to 35 in 1995 followed to 2012, about 10 percent of whose person-years were unemployed. Under a hypothetical intervention setting every unemployed person-year to employed, the g-formula adjusting only for measured baseline and time-varying covariates estimated a 5 percent reduction in antidepressant purchasing, with an interval of 2.5 to 7.4 percent. Adding individual intercepts moved the estimate to minus 0.1 percent, with an interval of minus 1.8 to 1.5 percent, and the null held across education and sex strata. A sensitivity analysis replacing the outcome with hospitalization for injuries and accidents, which is far less sensitive to care-seeking, reproduced the pattern, which argues against differential care-seeking as the explanation. The paper also states the cost: conditioning on individual intercepts restricts the effective analysis to people whose employment status changed, which can make time-varying confounding more prominent and can compromise internal validity even for that subpopulation.",
+   "future_research": [
+    {
+     "gap": "Whether the restriction to people who change exposure status compromises internal validity, and by how much, is left unresolved.",
+     "kind": "stated",
+     "quote": "Thereby, adding individual-level intercepts may compromise internal validity, potentially biasing effect estimates even if we restrict our inference to the population of changers.",
+     "locator": "Strengths and Limitations"
+    },
+    {
+     "gap": "Time-varying unobserved confounding such as health shocks remains unaddressed by the fixed-effect approach, which absorbs only time-constant confounding.",
+     "kind": "stated",
+     "quote": "For example, unobserved health shocks may influence both employment status and antidepressant purchasing.",
+     "locator": "Strengths and Limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "UCF-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The registry entry says devices for residual confounding sit outside the standard workflow. Here one such device, individual fixed-effect intercepts absorbing every time-constant unmeasured cause, is built into the g-formula itself rather than run afterward as a sensitivity analysis, and the result is not a caveat but a reversal of the conclusion. What is not delivered is a workflow: the device covers only time-constant confounding, its own validity cost is unquantified, and negative controls, proxies and validation data remain unintegrated.",
+     "quote": "For the first time (to our knowledge), we combine the g-formula with methods to adjust for unobserved time-constant confounding.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Adjusting for unobserved time-constant confounding costs the analysis its sample: the intercepts restrict identification to people whose employment status changed, which is a small share of a register covering nearly 50,000 people. The paper states this can make time-varying confounding more prominent and can bias estimates even for the changers, so a very large database yields a small and differently constituted effective sample once the adjustment the question requires is applied.",
+     "quote": "It is possible that by restricting our analysis (through the use of individual intercepts) to the group that has experienced changes in employment status, the influence of time-varying confounders becomes more prominent.",
+     "locator": "Strengths and Limitations"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The intervention sets unemployed person-years to employed, and employment is not one thing: different kinds of job plausibly differ in their effect on mental health. The paper identifies this as a consistency problem and files it under external validity rather than resolving which versions the estimate averages over.",
+     "quote": "Strictly speaking, different types of employment may have different effects on mental health, which affects the external validity (generalizability) of our study.",
+     "locator": "Strengths and Limitations"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The outcome is a dispensing record standing in for depression, and only about a third of people with major depression or anxiety disorder in this population received antidepressant treatment. Sensitivity is therefore around one third while specificity is about 90 percent, and the analysis enters the variable as a binary indicator with the error argued about in prose rather than propagated.",
+     "quote": "In Finland, only about a third of those with major depression or anxiety disorder received antidepressant treatment.",
+     "locator": "Strengths and Limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0087",
+   "read": true,
+   "doi": "10.1002/sim.8340",
+   "title": "Using longitudinal targeted maximum likelihood estimation in complex settings with dynamic interventions.",
+   "relevance": "high",
+   "one_line": "Applies longitudinal targeted maximum likelihood estimation to a dynamic HIV treatment rule over 30 months with a sample falling to a tenth of its original size, and concludes that what determines success is data support for the intervention rule, for which the available diagnostics are inadequate.",
+   "what_was_done": "Longitudinal targeted maximum likelihood estimation is doubly robust, admits machine learning, and yields analytic standard errors from the influence curve rather than a bootstrap, but had rarely been applied with long follow-up, multiple time-varying confounders and dynamic rules at once. The study estimates the effect of antiretroviral therapy initiation rules on child growth over 30 months in a cohort starting at 2,604 and declining to roughly 10 percent of that, with at least three time-dependent confounders affected by prior treatment, and compares against the parametric g-formula. It reports the first such comparison in a setting of this complexity. Three findings emerge. Long follow-up leaves sample sizes small relative to the number of parameters that machine learning and semiparametric models must fit, producing instability, memory problems and identifiability problems. A small super learner library of simple algorithms produced more reliable and precise results than a flexible additive model informed by clinical knowledge. And performance varied by intervention rather than by sample size or intervention type, tracking data support for the rule: high truncation of cumulative inverse probabilities and small cumulative probabilities of continuing to follow the rule signal practical positivity violations. Reporting truncation percentages, clever covariate summaries and per-intervention data support is recommended, and R code with a set of feasible learners is released.",
+   "future_research": [
+    {
+     "gap": "Diagnostics for practical positivity violations are inadequate and need development beyond the truncation and clever covariate summaries recommended here.",
+     "kind": "stated",
+     "quote": "This highlights the need to develop more diagnostic tools to diagnose practical positivity violations in the data.",
+     "locator": "Conclusions"
+    },
+    {
+     "gap": "Alternative estimation approaches that use the full sample rather than only subjects following the rule exist, and their finite-sample behavior is unknown.",
+     "kind": "stated",
+     "quote": "While there are alternative estimation approaches [12] which utilize the full sample, it remains to be investigated how the performance of these estimators differ in a finite sample.",
+     "locator": "Introduction"
+    },
+    {
+     "gap": "More learners that work with existing software and remain computationally feasible under long follow-up are needed, and analysts are otherwise advised to write their own wrappers.",
+     "kind": "stated",
+     "quote": "it would be beneficial to have more learners available that work with existing software packages and are computationally feasible in settings with long follow-up and therefore multiple variables",
+     "locator": "Conclusions"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This gets closer than weight-tail inspection to naming which histories fail to support a strategy: the recommended reporting is the percentage of truncated cumulative inverse probabilities, summaries of the clever covariates, and the data support for each intervention separately, because support varied by rule while sample size and intervention type predicted nothing. The entry is narrowed rather than closed, and the paper says so, calling for diagnostic tools that do not yet exist.",
+     "quote": "what matters is the support in the data for the intervention rule of interest: high levels of truncation and small cumulative probabilities of continuing to follow the rule of interest are typically a sign of problems, likely due to practical positivity violations or poor modeling strategies",
+     "locator": "Conclusions"
+    },
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The registry claim is that cross-validated nuisance fitting optimizes prediction rather than causal performance. The paper states it directly: super learning delivers a good bias-variance tradeoff for the nuisance models and not necessarily for the target parameter, model selection is unavoidable for both the g-formula and targeted maximum likelihood, and collaborative variants have been proposed for exactly this gap. The empirical result runs the same way, since a small library of simple learners beat a clinically informed flexible model.",
+     "quote": "though super\nlearning provides a good bias-variance tradeoff for the nuisance models and not necessarily the target\nparameter",
+     "locator": "Conclusions"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Follow-up length and effective sample size trade against each other: by 30 months the analysis retained about a tenth of the starting cohort, which is small relative to the parameter count that machine learning and semiparametric models require. The consequences named are not merely wide intervals but instability, memory failure and identifiability problems, so the information available for the contrast ran out before the follow-up did.",
+     "quote": "we have shown that long follow-up\nmay come with sample sizes that are small compared to the number of parameters that need to be fitted\nfor machine learning algorithms, including semi-parametric regression models.",
+     "locator": "Conclusions"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The recommendation is to run several estimators and compare, which concedes that no single one is defensible. When they disagree, the paper reports that the two standard quality signals fail: a well-behaved natural course for the g-formula and considerations of sample size or intervention type do not indicate which estimate to believe. What is left is an intervention-specific support diagnostic, and a clinician choosing the most conservative estimate.",
+     "quote": "Our analyses have shown that neither a\ngood natural course scenario for the g-formula nor considerations of sample size and type of intervention\n(static/dynamic) offers a reasonable guideline to judge the quality of the estimated target quantity",
+     "locator": "Conclusions"
+    },
+    {
+     "problem_id": "SFW-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "For this estimator the variance problem has an answer: standard errors and confidence intervals come analytically from the influence curve, which removes the bootstrap that the g-formula requires and with it the resampling cost that scales with the expanded dataset. The scope is a longitudinal dynamic intervention with censoring, not a cloned and sequence-expanded emulation, so the repeated-participation and clone-level dependence structures the entry names are not covered.",
+     "quote": "It also has the advantage\nof easy-to-calculate analytic standard errors in contrast to the g-formula, which requires bootstrapping.",
+     "locator": "Abstract"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0088",
+   "read": true,
+   "doi": "10.1161/jaha.119.013011",
+   "title": "Refining the Association Between Body Mass Index and Atrial Fibrillation: G-Formula and Restricted Mean Survival Times.",
+   "relevance": "medium",
+   "one_line": "Uses the g-formula with restricted mean survival times to compare obesity strategies for atrial fibrillation, and states plainly that the Cox hazard ratio and the g-formula hazard ratio estimate different quantities.",
+   "what_was_done": "Earlier studies of body mass index and atrial fibrillation adjusted for time-varying covariates that are themselves affected by prior body mass index, which blocks the causal pathway. Using 4,392 Framingham Heart Study participants free of atrial fibrillation at ages 45 to 55 and followed for up to 20 years, the study contrasts a Cox analysis with a parametric g-formula analysis of three interventions: everyone nonobese, everyone obese, and a 10 percent annual decrease in body mass index until normal weight, each against the natural course. The Cox hazard ratio for nonobese versus obese was 0.83 with an interval of 0.72 to 0.97; the g-formula hazard ratio was 0.73 with an interval of 0.58 to 0.91. On the absolute scale the restricted mean atrial-fibrillation-free survival was 19.22 years under nonobese and 19.03 years under obese, a difference of 2.25 months with an interval of minus 0.66 to 5.16 months, and the annual 10 percent reduction strategy gave a hazard ratio of 0.96 with an interval of 0.86 to 1.08. The absolute risk of atrial fibrillation under the natural course was 2.74 percent at 10 years and 10.84 percent at 20 years. Nonobese was operationalized as body mass index 18.5 to 25.0 and obese as 30 to 41 in order to stay inside the observed range.",
+   "future_research": [
+    {
+     "gap": "The reasons for weight change in the cohort are unknown, and weight loss driven by illness cannot be separated from weight loss as an intervention.",
+     "kind": "stated",
+     "quote": "First, we do not know reasons for weight loss in FHS participants and major weight loss is observed infrequently.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "The restricted mean survival time difference has been reported from a g-formula analysis only once before, so its behavior in this class of analyses is barely characterized.",
+     "kind": "stated",
+     "quote": "To our knowledge, the difference in RMSTs using g‐formula methods has only been reported once.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "EST-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Two hazard ratios from the same data are reported side by side with an explicit statement that they are not the same quantity, one contrasting groups of people and the other contrasting strategies applied to everyone, and an absolute measure is added because the relative one carries no magnitude. That is the naming discipline the entry asks for, applied to one comparison rather than established as a reporting convention.",
+     "quote": "However, we note that the Cox model and g‐formula HR do not measure the same thing: the Cox model compares nonobese versus obese individuals, while the g‐formula compares everyone had they been nonobese versus everyone had they been obese.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The strategy is a body mass index category, and body mass index falls for many reasons, including severe illness, which the data do not distinguish. Nothing groups the routes to a lower body mass index into a class within which the effect on atrial fibrillation would be common, so the estimated contrast mixes versions of the intervention.",
+     "quote": "Although we measure weight, variations in weight over time could be attributable to many things, including severe illness.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The bounds defining the two strategies were chosen so that the simulated values would stay inside the observed range, that is, the strategy was trimmed to fit the support rather than the support being reported for the strategy of interest. Which participant histories fail to support a body mass index of 30 to 41 is not stated, and no diagnostic separates the trimming from the estimate.",
+     "quote": "Additionally, we simulated nonobese as 18.5 to 25.0 in BMI and obese as 30 to 41 in BMI to avoid BMIs out of range in our sample.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0089",
+   "read": true,
+   "doi": "10.1002/sim.7628",
+   "title": "Targeted maximum likelihood estimation for a binary treatment: A tutorial.",
+   "relevance": "medium",
+   "one_line": "Step-by-step tutorial implementing targeted maximum likelihood estimation for a binary treatment and outcome in R and Stata, in a cancer example where correct specification and positivity are nearly violated.",
+   "what_was_done": "The tutorial argues that propensity score methods, the g-formula and targeted maximum likelihood are preferable to naive regression, that doubly robust methods need only one of the two working models to be right, and that targeted maximum likelihood improves the odds of correct specification by admitting machine learning for both. It works through the algorithm on a simulated cancer cohort comparing radiotherapy alone against radiotherapy with chemotherapy for one-year mortality, chosen so that correct model specification and positivity are nearly violated, and reports the average treatment effect and the marginal odds ratio. Every identifying assumption is stated and each is labeled untestable. Adding more advanced machine learning algorithms to the fitting step is shown to reduce bias and improve performance, with reproducible R code in the text and a Stata implementation in a public repository. The stated costs are practical: more adaptive libraries need substantially more memory and time, some algorithms fail on small samples or nonbinary outcomes, and choosing the library requires background knowledge of machine learning. The simulations use categorical and binary variables without treatment-covariate interaction, which the paper acknowledges is not realistic.",
+   "future_research": [
+    {
+     "gap": "The simulation omits effect modification between treatment and confounders, which is the setting where naive regression adjustment fails, so the comparison is made where it matters least.",
+     "kind": "stated",
+     "quote": "However, our simulation scenarios were relatively simple. We simulated categorical and binary variables and did not produce interaction between the treatment and the vector of confounders, which might not be a realistic setting.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Targeted maximum likelihood for rare outcomes, collaborative variants, and longitudinal settings with time-dependent confounding are named as active areas outside the tutorial.",
+     "kind": "stated",
+     "quote": "the TMLE for longitudinal settings where time‐dependent confounding is an issue",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The estimator's advantage is said to come from flexible learning of the nuisance functions, and the tutorial then states that selecting the learner library requires machine learning expertise, that some algorithms fail depending on the data, and that how much flexibility the data can carry is a question the analyst must answer. None of these judgments is tied to the causal target; they are judgments about fitting the nuisance models well.",
+     "quote": "Moreover, some theoretical background knowledge of machine learning is required to decide for the most adaptive SL algorithms.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The worked example is deliberately built so that positivity is nearly violated, and the recommended response is the standard one the entry criticizes: summarize the weights, inspect their distribution by treatment level, and truncate if appropriate. Which patient profiles had close to zero probability of the treatment is never named.",
+     "quote": "Using TMLE in practical settings is similar to the strategy used for analysts when applying other double‐robust methods such as AIPTW (eg, summarising the inverse probability of treatment weights, checking the distribution of the weights by levels of the treatment, and considering if appropriate the truncation of the weights).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-01",
+     "effect": "supports-open",
+     "confidence": "low",
+     "evidence": "A timing figure is given for the simplest possible case: one core, 16 gigabytes, 10,000 patients, a point treatment with a binary outcome, and more advanced learners took 5.4 minutes. An emulation that clones each person into every initially compatible strategy and expands to one row per decision point starts from a much larger dataset, and the tutorial's own advice is that large studies will need cluster resources.",
+     "quote": "Adding more adaptive SuperLearner algorithms requires a significant amount of computer memory and computational time.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0091",
+   "read": true,
+   "doi": "10.1093/aje/kwy077",
+   "title": "Estimating Counterfactual Risk Under Hypothetical Interventions in the Presence of Competing Events: Crystalline Silica Exposure and Mortality From 2 Causes of Death.",
+   "relevance": "high",
+   "one_line": "Estimates subdistribution risk under hypothetical occupational exposure limits with the parametric g-formula, choosing that estimand specifically to avoid an intervention eliminating competing events, and reporting the observed support for the intervention.",
+   "what_was_done": "The study estimates counterfactual mortality risk from lung cancer and from nonmalignant respiratory disease under hypothetical limits on crystalline silica exposure, in 2,342 male California diatomaceous earth workers followed from 1942 to 2011. The parametric g-formula is used to handle healthy-worker survivor bias, in which employment status is a time-varying confounder affected by prior exposure, and employment status is predicted under each intervention rather than implicitly fixed as in worst-case risk assessment. Setting a theoretical maximum at the current United States permissible limit of 0.05 milligrams per cubic meter gave a risk ratio of 0.86 for lung cancer mortality, with an interval of 0.63 to 1.22, and 0.69 for nonmalignant respiratory disease, with an interval of 0.52 to 0.93. Compliance would have required intervening on 62 percent of actively employed person-time, and the residual excess risk would still exceed the one-in-a-thousand threshold the United States Supreme Court has called significant. Competing events are handled by estimating subdistribution cumulative incidence rather than by censoring or by weighting, and the reasoning is given: inverse probability of censoring weights assess a joint intervention that also eliminates the competing event, which defines no real population here. Absolute risks are reported because risk differences and risk ratios are collapsible while hazards and odds are not.",
+   "future_research": [
+    {
+     "gap": "Whether the mechanisms producing low exposures in the observed data represent the interventions that would actually reduce exposure is the consistency question, and no procedure answers it.",
+     "kind": "stated",
+     "quote": "In the assessment of interventions in occupational studies, counterfactual consistency may depend on how well the actual interventions necessary to reduce exposure levels are represented (with respect to the outcome) by the mechanisms that result in low exposures in the observed data.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Feasibility constraints bound which limits a regulator may set, so the analytically estimable interventions and the actionable ones do not coincide.",
+     "kind": "stated",
+     "quote": "an intervention setting crystalline silica exposures to zero is not considered feasible for this industry given the ubiquitous nature of the exposure",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The competing event is neither censored as a cleaning step nor weighted away. The estimand is chosen deliberately, with the reason stated: weighting for competing events estimates a joint intervention that also eliminates them, which defines no population that exists, and identifying such a target needs strong assumptions like independence of competing events given measured covariates. Subdistribution risk quantifies the effect in a population where competing events occur and are themselves affected by exposure. The paper also separates this from loss to follow-up, which it does assume away, on the ground that a study without dropout is conceivable while a population without death is not.",
+     "quote": "The subdistribution estimates also have advantages over estimates that address competing events with use of inverse probability of censoring weights, which essentially assess the effect of a joint intervention composed of the intervention with respect to the exposure of interest together with an intervention eliminating the competing event ( 40 ).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The intervention is a cap on exposure, and whether it is well defined depends on whether the ways exposure came to be low in the observed data resemble the engineering and administrative controls a limit would impose. The paper names this as the consistency condition and leaves it as a judgment, which is the versions-of-treatment problem in a non-pharmaceutical setting with no procedure for grouping versions into a class.",
+     "quote": "counterfactual consistency may depend on how well the actual interventions necessary to reduce exposure levels are represented (with respect to the outcome) by the mechanisms that result in low exposures in the observed data",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Positivity is reported as observed support for the strategy rather than as a property of the weights: even for the most extreme intervention, complete removal of exposure, 18 percent of actively employed person-time was already unexposed. That is a statement a reader can check against the strategy, and it is closer to naming supported histories than a truncated weight distribution. It stops short of identifying which covariate histories lack support, and it addresses only the most extreme rule.",
+     "quote": "Positivity violations were not a major issue, as even in the case of the hypothetical intervention where exposures are completely removed in our study, 18% of the observed, actively employed person-time was actually unexposed.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The reported quantity is an absolute counterfactual risk under a named intervention with a stated time horizon, and the choice of scale is argued rather than defaulted: risk differences and risk ratios are collapsible while hazard, rate and odds contrasts are not, so a conditional estimate of the latter need not equal the marginal one even without confounding. This is one analysis reporting an estimand properly, not a convention that would make the entry's failure mode impossible.",
+     "quote": "The property of collapsibility makes it preferable to use risk differences and risk ratio as effect measures, rather than contrasts based on the rate, hazard, or odds, which are not collapsible parameters.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0092",
+   "read": true,
+   "doi": "10.1002/sim.7654",
+   "title": "Bootstrap inference when using multiple imputation.",
+   "relevance": "high",
+   "one_line": "Settles how to combine bootstrap estimation with multiple imputation, motivated by the g-formula, for which no analytic standard errors exist, showing three of four intuitive schemes valid and one systematically too wide.",
+   "what_was_done": "Many modern estimators need a bootstrap for confidence intervals because no analytic standard error exists or because the parameter's distribution is not symmetric, and it had not been established how to combine that bootstrap with multiple imputation for missing data. The paper defines four schemes: bootstrap inside each imputed dataset with pooling by Rubin's rules, bootstrap outside with imputation inside each resample, and pooled-sample variants of each. Three are shown to be valid; the pooled variant of bootstrap-outside is not, because pooling all resample-by-imputation estimates amounts to repeated multiple imputation with one imputation, whose known inefficiency inflates the variance and breaks coverage. Simulations characterize the behavior in finite samples and show the performance depends on the number of imputations and the extent of missingness. Bootstrap-outside is preferred for small numbers of imputations or large imputation uncertainty, bootstrap-inside for the normal case, at the cost that bootstrap-outside was computationally heavier by a factor of 13 in the first simulation and that bootstrap-inside gives symmetric intervals that may not be wanted. The motivating analysis determines the optimal timing of antiretroviral treatment initiation in young children using the g-formula on data with missing values, and the appendix gives the full g-formula implementation, its identifying assumptions and its Monte Carlo algorithm.",
+   "future_research": [
+    {
+     "gap": "Imputation methods that themselves use resampling create nested resampling with the inference bootstrap, and the combined computational structure is described but not optimized.",
+     "kind": "stated",
+     "quote": "many imputation methods use bootstrap methodology as part of the imputation model, that this does not replace the additional bootstrap step needed for the inference in the analysis model, and that – if they are combined – the resampling steps are nested",
+     "locator": "Section 6"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "SFW-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The registry entry says variance estimation for this family of estimators has no correct scalable default. This supplies the correctness half for one common configuration: the g-formula has no analytic standard error, missing data is normal in the databases it runs on, and until this paper the literature did not say how to combine the required bootstrap with multiple imputation. Three schemes are proved valid and one commonly plausible scheme is shown to give invalid intervals. Scalability is untouched and gets worse, since the recommended scheme for small numbers of imputations was 13 times more expensive and the resampling steps nest.",
+     "quote": "The current statistical literature is not clear on how to combine bootstrap with multiple imputation inference.",
+     "locator": "Section 7, Conclusion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Every valid scheme here is valid under missing at random, and the imputation model draws from a posterior predictive distribution given the observed data. Nothing in the machinery interrogates whether the missingness in a longitudinal record is ignorable given what was recorded, which is precisely what the entry says a care-driven visit process makes doubtful.",
+     "quote": "which is valid under the missing at random assumption",
+     "locator": "Section 6"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0093",
+   "read": true,
+   "doi": "10.1177/0962280217694665",
+   "title": "A Bayesian approach to the g-formula.",
+   "relevance": "high",
+   "one_line": "Puts the parametric g-formula in Rubin's Bayesian framework, using shrinkage priors to stabilize under-identified models and Markov chain Monte Carlo in place of the Monte Carlo sample and nonparametric bootstrap.",
+   "what_was_done": "The parametric g-formula requires the outcome model to capture the association with exposures and confounders, which pushes toward flexible specifications; in complex exposure mixtures, complex longitudinal data or small datasets the resulting model is under-identified and smooths over strata holding little or no data, giving unstable estimates. The paper adopts potential outcomes under Rubin's original Bayesian framework and shows the parametric g-formula is readily Bayesian, with the novelty lying in which posterior inferences are of interest. A hierarchical shrinkage prior is used rather than the vague normal priors of earlier Bayesian g-formula work. Simulations show improved accuracy over the standard g-formula in small samples and under high correlation among exposures, through mean squared error reduction, at the cost of bias when the likelihood is correctly specified. The approach is applied to the effect of environmental tobacco smoke on body mass index z-scores in children aged 4 to 9 in a New York birth cohort, and a general algorithm with SAS and Stan code is supplied for time-fixed and longitudinal data. Bayesian versions of exchangeability and positivity are required and are said not to differ greatly from their frequentist counterparts, while consistency, noninterference and correct likelihood specification are assumed as usual.",
+   "future_research": [
+    {
+     "gap": "The g-null paradox survives the move to a Bayesian framework, and its finite-sample implications are unknown.",
+     "kind": "stated",
+     "quote": "The implications of this paradox for\nfinite samples are unknown, however.",
+     "locator": "Section 7, Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The registry entry says large databases yield small effective samples once eligibility, comparator restriction and weighting are applied, and that the resulting estimates are unstable. Shrinkage priors are shown by simulation to reduce mean squared error precisely in that regime, small samples and exposures too correlated to separate, with very little prior information required. The remedy trades bias for stability rather than recovering information, and the entry's structural causes are untouched.",
+     "quote": "Our simulation\nresults suggest that we can improve accuracy over standard g-formula analyses even with very limited prior\ninformation, especially when effects are under-identified due to high correlation among exposures or in small\nsamples.",
+     "locator": "Section 7, Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "low",
+     "evidence": "Priors smooth over strata that happen to be empty, so random departures from positivity produce less bias than they would under maximum likelihood. That is a repair for sparsity, not for structural nonpositivity: where a strategy assigns a treatment that clinicians never give to a covariate history, the prior supplies the missing information rather than revealing that it is missing, which makes the unsupported region harder to see rather than easier.",
+     "quote": "In the Bayesian setting, we may be less prone to bias due to random deviations from positivity,\nbecause our priors help to smooth over the empty strata.",
+     "locator": "Section 7, Discussion"
+    },
+    {
+     "problem_id": "SFW-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Inference comes from the posterior rather than from a nonparametric bootstrap wrapped around a Monte Carlo simulation, and the paper reports that Markov chain Monte Carlo costs no more than the frequentist procedure it replaces. That removes one resampling layer from the variance computation for a g-formula analysis, which is the layer that scales worst on an expanded dataset. It is demonstrated on a birth cohort rather than on a cloned or sequence-expanded emulation.",
+     "quote": "Because standard\ng-formula algorithms typically require large Monte Carlo samples and a non-parametric bootstrap, the use of\nMCMC machinery in the Bayesian g-formula does not result in a substantial computational burden relative\nto the frequentist approach.",
+     "locator": "Section 7, Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A change of inferential framework leaves the g-null paradox in place, since it is a property of the parametric g-formula's model structure rather than of how the parameters are estimated. Whether it matters at the sample sizes analysts actually work with is stated to be unknown, so a study using the parametric g-formula cannot demonstrate that this defect did not affect its result.",
+     "quote": "An issue that is not\nresolved by moving to a Bayesian framework is the g-null paradox, in which model misspecification is induced\nby including an exposure that has no causal effect on the outcome [26].",
+     "locator": "Section 7, Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0095",
+   "read": true,
+   "doi": "10.1186/s12874-016-0282-4",
+   "title": "G-computation of average treatment effects on the treated and the untreated.",
+   "relevance": "medium",
+   "one_line": "Shows the three-step g-computation procedure for the average treatment effect on the treated and on the untreated, making the target population an explicit choice rather than a default.",
+   "what_was_done": "The average treatment effect over the whole population is often not the quantity a decision requires; the effect among those who actually received the treatment, or among those who did not, matters when evaluating an implemented program, when effects are heterogeneous, or when projecting into a subpopulation. The paper sets out g-computation for both by Monte Carlo simulation in three steps: fit an outcome model, generate potential outcome variables separately for the treated and the untreated, and regress each potential outcome on the treatment indicator to obtain a marginal contrast. In the worked example, the effect of at least a high school education on angina in India was a risk difference of minus 0.019, with an interval of minus 0.040 to minus 0.007, among those who had that education, and minus 0.012, with an interval of minus 0.036 to 0.010, among those who did not, with the population average effect between the two as expected. The procedure is offered as an alternative to inverse probability weighted fitting of a marginal structural model and as a teaching target.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "EST-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The population an estimate refers to is made a parameter of the procedure rather than an artifact of it: the same data yield the effect among the treated, among the untreated, and over the whole population, and the three are reported together with the average sitting between the other two. That makes the target population explicit for a point treatment. Naming an intervention, a time horizon and a strategy for each intercurrent event, which is what a sustained-strategy emulation must also do, is outside the scope.",
+     "quote": "The estimates for ATT, ATU and average treatment effect (ATE) were of similar magnitude, with ATE being in between ATT and ATU as expected.",
+     "locator": "Abstract, Results"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0096",
+   "read": true,
+   "doi": "10.1111/1475-6773.12718",
+   "title": "Comparing the Effectiveness of Dynamic Treatment Strategies Using Electronic Health Records: An Application of the Parametric g-Formula to Anemia Management Strategies.",
+   "relevance": "high",
+   "one_line": "Explicit target trial emulation of three erythropoietin dosing strategies in United States renal claims data using the parametric g-formula, in which the time-varying confounder is recorded only when treatment is given and the estimator determines whether the strategies compared are deterministic or random.",
+   "what_was_done": "Dynamic strategies are the norm in chronic care and are rarely randomized, so the study explicitly emulates a target trial of three erythropoietin dosing strategies targeting low, middle and high hematocrit, and estimates the observational analog of the per-protocol effect with the parametric g-formula. The data are United States Renal Data System records for patients with end-stage renal disease and congestive heart failure or ischemic heart disease on outpatient hemodialysis between 2006 and 2010, arranged as one record per patient per month, with a table mapping each component of the target trial protocol onto the database. Of 156,945 eligible patients, 41,970 died during 18 months of follow-up. Against the low-hematocrit strategy the estimated risk of death was 4.6 percentage points higher under the high-hematocrit strategy, with an interval of 4.4 to 4.9, and 1.8 points higher under the mid-hematocrit strategy, with an interval of 1.7 to 1.9, and the composite outcome including myocardial infarction behaved similarly. Two features of the data drive the analysis: hematocrit is recorded in monthly facility claims and is absent in any month with zero erythropoietin dose, so hematocrit was simulated only when the simulated dose was nonzero and otherwise carried forward. The paper contrasts its estimates with the authors' earlier inverse probability weighted analysis of the same question, which estimated effects of random dynamic strategies rather than deterministic ones.",
+   "future_research": [
+    {
+     "gap": "Doubly robust g-methods combining the flexibility of the g-formula with the weaker modeling assumptions of weighting are under development and not available for this comparison.",
+     "kind": "stated",
+     "quote": "Doubly robust g-methods (e.g., targeted maximumlikelihood estimation [Petersen et al. 2014]) that, in theory, combine the\nstrengths of IP weighting and the g-formula are currently under development.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Whether a database records treatment, confounders and outcome adequately for a given question is left to case-by-case judgment.",
+     "kind": "stated",
+     "quote": "In general, researchers considering a database for comparative effectiveness research need to carefully evaluate whether longitudinal\ndata on treatment, confounders, and outcome are adequately recorded.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The time-varying confounder that defines the strategies is observable only when the treatment is given: hematocrit appears in a facility claim in months with a nonzero erythropoietin dose and is absent otherwise. The analysis simulates hematocrit only in months where the simulated dose is nonzero and carries the last value forward elsewhere, which is exactly the treatment-dependent observation process the entry describes, handled as a data-carrying rule rather than as part of the causal structure.",
+     "quote": "Because the hematocrit value is not available for months with zero EPO dose in the USRDS, we only simulated hematocrit when the simulated value of EPO was not zero; otherwise, we carried forward the",
+     "locator": "Methods, implementing the parametric g-formula"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The same question analyzed by the same group with a different estimator produced a different estimand. The inverse probability weighted analysis compared strategies under which the dose is drawn at random from a distribution, which the paper notes is not how clinicians behave, while the g-formula analysis compares deterministic rules assigning a fixed dose. The strategy component of the protocol was therefore settled by what the estimator could represent, and the resulting estimand differs in kind rather than in precision.",
+     "quote": "IP-weighted estimates from this analysis can be interpreted as effects of random dynamic strategies (Taubman et al. 2008), that is,\nstrategies under which individuals receive a dose value randomly drawn\nfrom a distribution.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The recommendation is to repeat the analysis with a different g-method for robustness, and the trade is laid out: weighting relies on fewer modeling assumptions and escapes the g-null paradox, while the g-formula compares clinically natural deterministic rules and is more stable for continuous or rare treatment values. Neither dominates, the doubly robust option is not yet available, and nothing obliges a study to report what the alternative would have given.",
+     "quote": "To increase robustness of analysis, when possible, we also recommend\nconducting analyses that rely on a different g-method.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Fitness of the claims database for this target trial is argued narratively, that the records contain longitudinal hematocrit and hematocrit drives dosing, and the general advice offered to others is to evaluate carefully whether the needed variables are adequately recorded. No threshold is named that would have concluded the data could not support the protocol, and the one variable that is missing by design, hematocrit in untreated months, is handled by carrying values forward rather than by declaring the strategy unemulable.",
+     "quote": "We\nbelieve that this assumption approximately holds in our analysis because the\nUSRD includes longitudinal data on hematocrit value, which is the driving\nfactor of EPO dosing.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Exchangeability rests on an argument about which variable drives prescribing, supported by sensitivity analyses that vary modeling assumptions rather than the confounding assumption. No negative control outcome, no proxy-based correction and no external validation data enter the workflow, so the analysis distinguishing itself from earlier observational studies does so by design and estimator, not by any measurement of residual confounding.",
+     "quote": "We conducted several sensitivity analyses and found our\nresults generally robust to changes in modeling assumptions.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0097",
+   "read": true,
+   "doi": "10.1093/ije/dyw323",
+   "title": "An introduction to g methods.",
+   "relevance": "medium",
+   "one_line": "Education Corner note working a single hypothetical HIV cohort through inverse probability weighting, g-estimation and the g-formula, in which all three recover the known effect and standard regression does not.",
+   "what_was_done": "The note addresses the gap between the availability of g methods and their uptake, which the authors attribute to conceptual and technical difficulty rather than to disagreement. It constructs a hypothetical observational cohort in which treatment for HIV is measured at baseline and once during follow-up, with elevated viral load as the single time-varying covariate measured between the two treatments, and the data are generated from a stated causal diagram so the truth is known: a combined treatment effect of 50 cells per cubic millimeter, 25 from each treatment. Inverse probability weighted estimation of a marginal structural model, g-estimation of a structural nested model, and the g-formula are each worked through on the same table, and each approximates the true effect. Standard regression models fail, with one exception, a model that correctly recovers the effect of the second treatment only, as the causal diagram predicts. The stated distinction is that standard regression requires no feedback between time-varying treatment and time-varying confounders while g methods do not.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "In a two-period example built so the answer is known, the choice between standard regression and a g method changes the estimate by the whole of the effect, and only one of several standard specifications recovers even part of it. Method choice is therefore not a matter of taste at the margin, and nothing in a published analysis obliges an author to show which choice was made or what the alternatives would have given.",
+     "quote": "we know the true effect of combined\ntreatment is indeed 50 cells/mm3 (25 cells/mm3 for each\nexposure main effect) as well approximated by all three g\nmethods, but not by any of the standard regression models\nwe fit, with one exception.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}
