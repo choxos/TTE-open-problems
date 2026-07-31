@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url'
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const AUDIT = join(ROOT, 'documentation/audit')
 
-export const RULE_VERSION = 'adjudicate.v2'
+export const RULE_VERSION = 'adjudicate.v3'
 
 // Auditors whose votes are counted. The refuter is excluded on purpose: it sees the others'
 // opinions, so counting it would double-count whatever it was persuaded by.
@@ -105,9 +105,18 @@ export function adjudicate(record) {
   if (misattr.length >= 1 && counters.length >= 1 && supporters.length === 0) {
     support = 'misattributed'
     path.push('R6:counter-quote-uncontested')
-  } else if (counters.length >= 1 && supporters.length >= 1) {
+  } else if (counters.length >= 1 && supporters.length >= counters.length) {
+    // A contest needs two sides. The ported rule fired on any counter-quote as long as one
+    // auditor voted plainly 'supported', which made a single affirming vote holding no evidence
+    // enough to neutralize two auditors holding quotes. That contradicts this rule's own second
+    // principle, that evidence beats votes, and it matters in practice: on the first run of this
+    // registry, ten of thirteen 'unverifiable' verdicts rested on one affirming vote, eight of
+    // them from the single most permissive auditor. Requiring the affirming side not to be
+    // outnumbered leaves a genuine disagreement contested and lets an outnumbered affirmation
+    // fall through to the overstatement rules below, where the evidence is weighed rather than
+    // cancelled.
     support = 'contested'
-    path.push('R7:counter-and-support-both-present')
+    path.push(`R7:counter-and-support-both-present(support=${supporters.length}/counter=${counters.length})`)
   } else if (majorityOf(over.length, supportVoters)) {
     support = 'overstated'
     path.push(`R8:overstated-majority(n=${over.length}/${pD})`)

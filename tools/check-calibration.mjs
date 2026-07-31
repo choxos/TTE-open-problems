@@ -51,6 +51,7 @@ function main() {
   const skipped = []
   let truthChecked = 0
   let verdictChecked = 0
+  const uninstantiated = []
 
   for (const f of fixtures) {
     const tag = `${f.ref} (${f.type})`
@@ -79,13 +80,25 @@ function main() {
     }
 
     // ---- 2. any registry entry carrying this claim has the expected verdict ----
+    // Two shapes again. An entry decomposed into atomic claims is matched through
+    // claims_to_check; an entry assessed whole is matched against its statement, and against
+    // the statement it had before the audit rewrote it, since a fixture describes a claim the
+    // source made rather than the one that survived. Matching only the first shape is how a
+    // calibration check ends up passing while testing nothing.
     const target = fold(f.claim)
+    let instances = 0
     for (const p of problems) {
-      const carries = (p.claims_to_check || []).some((c) => {
-        const c1 = fold(typeof c === 'string' ? c : c.claim)
+      const fields = [
+        ...(p.claims_to_check || []).map((c) => (typeof c === 'string' ? c : c.claim)),
+        p.statement,
+        p.original_statement,
+      ]
+      const carries = fields.some((c) => {
+        const c1 = fold(c)
         return c1 && (c1 === target || c1.includes(target) || target.includes(c1))
       })
       if (!carries) continue
+      instances++
       verdictChecked++
       if (p.verdict !== f.expected_verdict) {
         failures.push(
@@ -93,10 +106,19 @@ function main() {
           `but a calibrated audit must return '${f.expected_verdict}'.`)
       }
     }
+    // A fixture with no instance in the registry has tested nothing. That is a legitimate
+    // state, since a fixture describes a claim that may or may not have been made, and it must
+    // be visible rather than absorbed into a total that looks like a pass.
+    if (!instances) uninstantiated.push(tag)
   }
 
   console.log(`${fixtures.length} fixtures: ${truthChecked} ground-truth quotes checked, ` +
               `${verdictChecked} registry verdicts checked.`)
+  if (uninstantiated.length) {
+    console.log(`${uninstantiated.length} fixture${uninstantiated.length === 1 ? '' : 's'} ` +
+                `matched no registry entry and therefore tested no verdict: ` +
+                `${uninstantiated.join(', ')}.`)
+  }
   if (skipped.length) {
     console.log(`${skipped.length} ground-truth check(s) skipped:`)
     for (const s of skipped) console.log(`  - ${s}`)

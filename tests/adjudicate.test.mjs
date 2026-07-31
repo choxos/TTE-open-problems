@@ -54,6 +54,34 @@ const cases = [
     ]),
     expect: 'unverifiable', pathIncludes: 'R14:refuter-counter-quote-forces-contested' },
 
+  // R7 needs two sides. Before v3 a single affirming vote cancelled any number of
+  // counter-quotes, which inverted the rule's own principle that evidence beats votes.
+  { name: 'R7: one affirming vote outnumbered by counter-quotes does not force a contest',
+    rec: mk('CON-01', [
+      { auditor: 'codex', status_vote: 'open', support_vote: 'overstated',
+        weakest_true_restatement: 'the weaker claim',
+        counter_evidence: [{ locator: '10.1000/a', quote: 'the opposite is documented' }],
+        rationale: 'overstated' },
+      { auditor: 'grok', status_vote: 'open', support_vote: 'overstated',
+        weakest_true_restatement: 'the weaker claim',
+        counter_evidence: [{ locator: '10.1000/b', quote: 'and here too' }],
+        rationale: 'overstated' },
+      { auditor: 'glm', status_vote: 'open', support_vote: 'supported', rationale: 'reads fine' },
+      { auditor: 'literature', status_vote: 'open', support_vote: 'supported-with-caveat',
+        rationale: 'partly' },
+    ]),
+    expect: 'overstated', pathIncludes: 'R8:overstated-majority' },
+
+  { name: 'R7: an affirming side that is not outnumbered still forces a contest',
+    rec: mk('CON-02', [
+      { auditor: 'codex', status_vote: 'open', support_vote: 'overstated',
+        counter_evidence: [{ locator: '10.1000/a', quote: 'the opposite is documented' }],
+        rationale: 'overstated' },
+      { auditor: 'glm', status_vote: 'open', support_vote: 'supported', rationale: 'reads fine' },
+      { auditor: 'literature', status_vote: 'open', support_vote: 'supported', rationale: 'holds' },
+    ]),
+    expect: 'unverifiable', pathIncludes: 'R7:counter-and-support-both-present' },
+
   { name: 'R0: a solved vote with no locator is downgraded, not counted',
     rec: mk('X-01', [
       { auditor: 'grok', status_vote: 'solved', support_vote: 'supported', rationale: 'I believe this is solved' },
