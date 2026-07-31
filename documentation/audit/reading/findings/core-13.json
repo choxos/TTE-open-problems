@@ -1,0 +1,508 @@
+{
+ "batch": "core-13",
+ "papers": [
+  {
+   "id": "L0273",
+   "read": true,
+   "doi": "10.1038/s41746-022-00722-6",
+   "title": "Matters Arising: Immortal time bias in the analysis of drug prescription trajectories.",
+   "relevance": "high",
+   "one_line": "Shows that survival differences attributed to prescription trajectories in registry data are immortal time bias, because changing from a first to a second line of treatment requires surviving to the change.",
+   "what_was_done": "A study using Danish registries and the UK Biobank had reported that patients changing from an angiotensin-converting enzyme inhibitor to an angiotensin receptor blocker, or the reverse, survived better than those who did not change, and suggested this might matter for treatment guidelines. The comment identifies the structure: at the start of a trajectory it is not known whether a patient will change treatment, and changing requires surviving long enough to change, so the two switching groups carry immortal time between the first and second line. It gives the general rule, that one should not analyze data conditionally on what happens in the future and hence on survival, and notes that the bias favors whichever group has the longest immortal period. Two further arguments are offered against the substantive claim: clinicians intensify or change antihypertensive treatment in patients who did not reach blood pressure targets, so switchers should have more resistant hypertension and worse survival, and the reported effect sizes are implausible against randomized evidence. The comment then sketches the correct alternative, emulating a target trial with well-defined dynamic regimens, for example assigning patients to initiate one drug and change after one year, with patients dying before the change still counted in that group, and notes that this requires modern causal inference tools and identifiability from the data.",
+   "future_research": [
+    {
+     "gap": "Analyzing dynamic treatment regimens properly in observational data requires complex causal inference machinery and rests on the effects being identifiable rather than hidden behind unobserved confounding.",
+     "kind": "stated",
+     "quote": "However, the appropriate statistical analysis of the effects of dynamic treatment regimens in observational data requires the complex statistical tools of modern causal inference [ 8 , 11 ].",
+     "locator": "Matters Arising"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A treatment trajectory is a group definition constructed from the whole follow-up, so anyone whose trajectory contains a switch has survived to the switch by construction. The comment states the general rule that makes this visible, and shows the correct alternative changes the accounting rather than the analysis: under a dynamic regimen assigning a change at one year, patients dying before the change still count in that group.",
+     "quote": "It occurs whenever an exposure or treatment group is defined conditionally on what happens after time zero, causing a period of immortal time for the members of this group.",
+     "locator": "Matters Arising"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The comment adds a clinical prior that runs opposite to the reported result: treatment is changed when the target was not reached, so switchers should be sicker and survive less well. That makes the published finding not merely uncertain but implausible in direction, and the timing bias is what allows a comparison to produce a sign that clinical reasoning contradicts.",
+     "quote": "Thus, we expect that patients who switch from first line to second line treatment have more resistant hypertension and hence have lower survival chances compared to patients who stay on first line treatment.",
+     "locator": "Matters Arising"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0274",
+   "read": true,
+   "doi": "10.1371/journal.pone.0277916",
+   "title": "Reducing the effect of immortal time bias affects the analysis of prevention of delirium by suvorexant in critically ill patients: A retrospective cohort study.",
+   "relevance": "high",
+   "one_line": "Runs the two designs side by side in one intensive care dataset, showing that defining exposure as any receipt before delirium gives an adjusted hazard ratio of 0.21 while restricting exposure to the first 72 hours gives 1.02.",
+   "what_was_done": "Studies reporting that suvorexant prevents delirium classified as exposed anyone who received it at any point before delirium developed, which makes exposure conditional on not having had the outcome. Data on adults admitted to one Japanese intensive care unit from August 2018 to July 2021 were analyzed twice from the same source. The any-time-before analysis, matching the previous studies, included 2,054 patients and gave an unadjusted hazard ratio of 0.16 with an interval of 0.13 to 0.21 and an adjusted 0.21 with 0.16 to 0.27. The within-72-hours analysis fixed the exposure window in advance, excluded the 799 patients developing delirium during that window, included 1,255 patients, and gave an unadjusted 0.54 with 0.36 to 0.82 which lost significance on adjustment, 1.02 with 0.65 to 1.59. The median time to delirium exposes the mechanism: 5 to 6 days in both groups under the second design, against 0.8 days in the control group and 3.9 days in the exposed group under the first. Eight of nine prior observational studies did not distinguish a baseline period from an outcome observation period. The paper notes that non-surgical patients were sicker, often intubated and sedated, and so did not receive the drug early and fell into the control group.",
+   "future_research": [
+    {
+     "gap": "The timing of and reasons for administering the drug cannot be controlled retrospectively, and nurses may have requested it for patients they judged at high risk.",
+     "kind": "stated",
+     "quote": "Nurses in the ICU may have requested orders for suvorexant for patients they felt were at high risk for developing delirium, even though the patient did not complain of insomnia.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The two designs on one dataset give an adjusted hazard ratio of 0.21 and 1.02, and the mechanism is visible in the median time to delirium, 0.8 days in the control arm under the biased design against 5 to 6 days in both arms once the exposure window is prespecified. Patients who develop delirium first can no longer receive prevention, so the control arm collects the early events by construction. Eight of nine previous studies of this question shared the design.",
+     "quote": "This result definitely reflects the influence of immortal time bias since patients who developed delirium earlier would no longer receive prevention, and this difference would have been observed if previously reported studies had been reanalyzed as done in the present study.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Fixing the timing left a comparison in which who receives the drug early is determined by clinical state: non-surgical patients were sicker, more often intubated and sedated, and therefore did not receive it in the first days and became controls. The corrected estimate of 1.02 could reflect no effect or an effect offset by that selection, and the paper cannot separate them.",
+     "quote": "Third, patients admitted to the ICU with non-surgical problems were generally more severely ill than those with surgical conditions, and they were more likely intubated with some degree of sedation and analgesics. Therefore, they did not receive suvorexant in the first several days and were allocated to the control group.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0275",
+   "read": true,
+   "doi": "10.1038/s41746-022-00724-4",
+   "title": "Reply to: Immortal time bias in the analysis of drug prescription trajectories.",
+   "relevance": "medium",
+   "one_line": "Reply accepting that the survival analyses of prescription trajectories carried immortal time, and repositioning the paper's contribution as descriptive rather than causal.",
+   "what_was_done": "The authors accept the criticism directly: being alive is a prerequisite for changing treatment, so the survival analyses were biased by immortal time, and they state that they should have accounted for it. They then reposition the contribution, arguing that the paper's primary purpose was to describe how patients follow prescription trajectories, that the findings are descriptive and cannot readily be read as causal effects, and that they trust this is clear to the reader. They add a substantive point about why a causal reading would fail even with the timing fixed: progression from first to second line treatment is prompted by a change in treatment response that is not directly observed, and treatment response is itself influenced by the nature and severity of the diseases present when the drug was prescribed, which is also unmodelled. Future work is expected to incorporate more patient characteristics to reduce confounding and increase comparability. They defend descriptive analyses as important where good identification strategies for causal effects are hard to construct.",
+   "future_research": [
+    {
+     "gap": "The unobserved variable driving the trajectory, treatment response, is not modelled, and future work would need patient characteristics that make trajectory groups comparable.",
+     "kind": "stated",
+     "quote": "We expect future work to extend the models that we have presented to incorporate more information of patient characteristics to reduce confounding and increase the comparability of patients.",
+     "locator": "Reply"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The defense offered is that the analysis was descriptive rather than causal, in a paper that had reported survival differences between treatment groups and concluded they might matter for treatment guidelines. The boundary between describing trajectories and estimating their effects is not marked by anything in the analysis itself, since the same survival models produce both readings, and the authors rely on the reader to have understood which was intended.",
+     "quote": "We agree with Christensen et al. that the findings in our paper are descriptive and cannot readily be interpreted as causal effects, but we trust that this is clear to the reader.",
+     "locator": "Reply"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The authors identify the confounder that no amount of timing correction reaches: the switch is prompted by treatment response, which is unobserved, and response depends on disease severity at prescription, which is also unmodelled. Comparing trajectory groups therefore compares people selected by a latent prognostic variable, and the registry does not contain it.",
+     "quote": "For example, it seems very likely that progression from a first line treatment to a second line treatment will be prompted by change in treatment response. This treatment response is not directly observed.",
+     "locator": "Reply"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0276",
+   "read": true,
+   "doi": "10.3961/jpmph.22.209",
+   "title": "Statin Intake and Gastric Cancer Risk: An Updated Subgroup Meta-analysis Considering Immortal Time Bias.",
+   "relevance": "medium",
+   "one_line": "Splits a statin and gastric cancer meta-analysis by design and finds a consistent protective effect among the four record-linkage studies and none among the four post-hoc trial analyses.",
+   "what_was_done": "Pharmacoepidemiologic studies are divided into retrospective record-linkage studies built on prescription histories and post-hoc analyses of randomized trials. The first are subject to immortal time bias because a participant must survive from cohort entry to the first prescription, which systematically understates the incidence rate in the exposed group and can make a drug look preventive. Three published systematic reviews of statins and gastric cancer had reported summary hazard ratios below one for the record-linkage subset. This paper reassembles the eight studies included across those reviews into a subgroup meta-analysis by design, selecting the study with the longest follow-up where three papers used the same national insurance cohort. The forest plot shows a consistent preventive effect across the four record-linkage studies and no such effect across the four post-hoc trial analyses. One of the record-linkage studies had run a sensitivity analysis treating all medications as time-varying covariates. The paper notes that record-linkage studies must also address protopathic bias, latency time bias, time-window bias, immeasurable time bias and depletion of susceptibles, and concludes that the trial-based subset gives the more valid reading, that there is no association.",
+   "future_research": [
+    {
+     "gap": "Immortal time is one of at least six time-related biases these designs must address, and the others are named without being resolved.",
+     "kind": "stated",
+     "quote": "However, any RLS should consider other time-related biases, including protopathic bias, latency time bias, time-window bias, immeasurable time bias, and depletion of susceptibility, in addition to ITB [ 3 ].",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "BEN-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Splitting a pooled estimate by design separates a consistent protective signal in the studies vulnerable to the bias from a null signal in the trial-based analyses, in the same literature and for the same drug and outcome. That contrast is available only because the review stratified by design; the three prior syntheses had pooled across and reported a protective summary estimate.",
+     "quote": "A forest plot illustrated that the sHR of the 4 RLSs [ 15 – 18 ] showed a consistent preventive effect, whereas that of the 4 PRTs [ 19 – 22 ] did not ( Figure 1 ).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The paper states the direction of the bias as a property of the design rather than of any particular study: a participant must survive to the first prescription, the incidence rate in the exposed group is therefore understated, and a preventive conclusion follows. That makes any record-linkage estimate of a chemopreventive effect suspect before its details are examined.",
+     "quote": "The ITB systematically underestimates the incidence rate in the group exposed to the medication; thus, a RLS might conclude that the drug prevents the outcome analyzed in the study [ 5 ].",
+     "locator": "Introduction"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0277",
+   "read": true,
+   "doi": "10.1016/s2666-7568(22)00196-9",
+   "title": "Geriatrician assessment and immortal time bias in the FiTR 2 study.",
+   "relevance": "medium",
+   "one_line": "Correspondence questioning a reported mortality benefit of geriatrician assessment in trauma centres, noting that the exposure is undefined, the survival separation occurs in the first days, and weekday scheduling could explain it.",
+   "what_was_done": "The letter responds to a multicentre observational cohort study across 23 major trauma centres in England which concluded that geriatrician assessment was associated with lower mortality in older people with serious injury. It raises three points. The exposure was not clearly defined and the study spanned many centres, so some patients may have received a comprehensive assessment and others only frailty screening, and no information is given on how care was altered after the assessment, both of which the letter regards as necessary to interpret the finding. The survival difference between the assessed and unassessed groups in the published Kaplan-Meier curves is created in the first few days after assessment, which the letter treats as a signal of bias. And it proposes a specific alternative explanation: if geriatrician assessments are performed more routinely on weekdays than at weekends, and weekend mortality is higher, then the assessment indicator partly encodes day of week. It asks for data on assessment performance at weekends against weekdays.",
+   "future_research": [
+    {
+     "gap": "What was actually done differently after a geriatrician assessment was not recorded, so the intervention behind the association is unknown.",
+     "kind": "stated",
+     "quote": "Moreover, there is no\ninformation available on the altered\ncare given to the patient after\ngeriatrician assessment.",
+     "locator": "Correspondence"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The exposure is a clinical activity that varies across 23 centres and may mean a comprehensive assessment in one and a frailty screen in another, with no record of the care changes it produced. An estimate attached to such a label averages over versions that plausibly differ in effect, and the letter asks whether the outcome differed by version because nothing in the design grouped them.",
+     "quote": "Could it be possible that some\npatients received a comprehensive\ngeriatrician assessment whereas\nothers were only screened for\nfrailty?",
+     "locator": "Correspondence"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The letter reads the shape of the published survival curves as the diagnostic: the separation is made in the first few days after assessment, which is where an immortal interval would act. It then offers a competing structural explanation, that assessments cluster on weekdays and weekend mortality is higher, so the timing of the exposure encodes calendar position. Neither can be distinguished from the published report.",
+     "quote": "We wonder if\nthe difference in survival between the\ntwo groups (geriatrician assessment vs\nnon- geriatrician assessment) might\nbe caused by performing assessments\nat the weekend, assuming geriatrician\nassessments are performed more\nroutinely during the week.",
+     "locator": "Correspondence"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0279",
+   "read": true,
+   "doi": "10.1093/jac/dkac374",
+   "title": "The effect of duration of therapy for treatment of Staphylococcus aureus blood stream infection: an application of cloning to deal with immortal-time bias in an analysis of data from a cohort study (BSI-FOO).",
+   "relevance": "high",
+   "one_line": "Applies cloning, censoring and weighting to compare short, intermediate and long antibiotic courses, reducing a naive hazard ratio of 37.4 for short against long therapy to 1.74.",
+   "what_was_done": "Optimal treatment duration for Staphylococcus aureus bloodstream infection is unsettled and previous observational studies have been criticized for immortal time bias. Using the BSI-FOO multicentre cohort, 587 of 1,903 participants were eligible for a comparison of three strategies, short therapy under 10 days, intermediate 10 to 18 days, and long over 18 days, with 28-day all-cause in-hospital mortality as the outcome. Every participant was cloned into all three strategies, each clone censored when the data became inconsistent with its assigned strategy, and inverse probability weights applied for the resulting selection, with weights built from baseline neutrophil count and daily temperature. The weighted hazard ratio for short against long therapy was 1.74 with an interval of 1.36 to 2.24, and for intermediate against long 1.09 with 0.98 to 1.22. The naive analysis ignoring the bias gave 37.4 with an interval of 18.9 to 74.4 and 4.1 with 1.9 to 8.9. A time-updated covariate analysis fell between the two, which the paper attributes to early deaths contributing to all three cloned groups but only to the short therapy group under time-updated covariates. A comparison study had removed the bias by excluding patients dying within 14 days, which the paper notes may introduce selection bias by removing the sickest. Competing risk from hospital discharge could not be modelled alongside time-varying weights, so patients were censored at discharge.",
+   "future_research": [
+    {
+     "gap": "Reasons for stopping or continuing treatment were not recorded, so the censoring weights cannot include the clinical signals that drove those decisions.",
+     "kind": "stated",
+     "quote": "The retrospective nature of the study meant that information on reason for continuing/discontinuing treatment was not captured.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Hospital discharge could not be treated as a competing risk because a competing risk model cannot accommodate the time-varying weights.",
+     "kind": "stated",
+     "quote": "It was not possible to perform a competing risk model while allowing for the time-varying weights.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Duration strategies cannot be distinguished at baseline, which is the case cloning exists for, and the paper shows what the alternatives cost in the same data: 37.4 naively, an intermediate value with time-updated covariates, and 1.74 after cloning, with the ordering explained by where early deaths are allocated. The comparison study's remedy, excluding those dying within 14 days, is identified as trading the timing bias for selection of the sickest. The boundaries defining short, intermediate and long remain conventional.",
+     "quote": "We attempted to eliminate immortal-time bias by implementing a novel approach involving ‘cloning’ and ‘censoring’ that does not require exclusions based on survival time.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Cloning converts the timing problem into an artificial censoring problem, and the estimate then depends on the weights capturing every predictor of deviation associated with the outcome. Here the reasons for stopping therapy were not recorded, and the clinical measurements that would proxy them, C-reactive protein and procalcitonin, were not collected, while the temperature used in the weights could be altered by antipyretics that were also not recorded.",
+     "quote": "We accounted for the artificial censoring using inverse-probability weights that included neutrophil count at baseline and daily temperature measurements, however, it is not possible to rule out unmeasured confounding as factors such as C-Reactive protein or procalcitonin measurement that may be associated with clinicians’ decisions in discontinuing treatment and information on these was not collected in BSI-FOO.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Hospital discharge competes with in-hospital death and is plausibly affected by treatment duration, and it had to be handled as censoring because no competing risk model accommodates the time-varying weights the cloning design requires. The paper states this may overestimate the treatment effect, and offers a sensitivity analysis rather than an estimator.",
+     "quote": "First, the analysis approach did not account for hospital discharge as a competing risk.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The dataset was assembled for a different question, so the variables the design needs are missing in a patterned way: no follow-up blood cultures, no endocarditis, no duration of bacteremia, forcing a surrogate definition of complicated infection, and no record of secondary infections that prolong therapy or side effects that shorten it. The analysis proceeds and reports these afterward, with no assessment that would have concluded the data could not support the emulation.",
+     "quote": "Applying the three-step procedure as described by Hernán resulted in less biased estimates of the effect of duration of treatment, however, the data used in these analyses were collected to answer a different research question, meant that some data items relevant to this research were not collected.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0280",
+   "read": true,
+   "doi": "10.3233/adr-220002",
+   "title": "Metformin and Dementia Risk: A Systematic Review with Respect to Time Related Biases.",
+   "relevance": "high",
+   "one_line": "Reviews 17 observational studies of metformin and dementia against three time-related biases and finds that the studies addressing most of them report no association, while the majority reporting protection do not.",
+   "what_was_done": "Observational studies of metformin and dementia disagree, and the review asks whether time-related biases explain it. Three are distinguished by their expected direction: immortal time bias, which biases toward protection, and time-lag and time-window biases, which can go either way. Searching PubMed, Web of Science and ProQuest from inception to September 2021 gave 17 eligible studies, 13 cohort, two case-control and two nested case-control. Eleven, 64.7 percent, reported reduced dementia risk with metformin, two reported increased risk, and four found no significant association. Eight of the 13 cohort studies, 61.5 percent, had immortal time bias or did not clearly address it; 15 of 17, 88.2 percent, had time-lag bias or did not clearly address it; and two of the four case-control studies did not explicitly address time-window bias. The studies that addressed most of the biases concluded no association. The best-scoring study restricted the exposure window to ten years and matched on age and diabetes duration, finding no association in sensitivity analysis, though its long-term and high-dose findings remained exposed to time-window bias beyond ten years. The review draws a parallel with metformin and cancer, where three studies using time-dependent covariates and new-user designs found no association and the largest randomized trial found no benefit.",
+   "future_research": [
+    {
+     "gap": "No reviewed study clearly addressed all the relevant time-related biases, so the question remains unanswered from the observational literature.",
+     "kind": "stated",
+     "quote": "None of the reviewed studies clearly addressed relevant time-related biases, illustrating time-related biases are common in observational studies investigating the impact of anti-diabetic medications on dementia risk.",
+     "locator": "Conclusion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Three distinct timing decisions are at issue, when follow-up starts relative to exposure, how disease duration is aligned between compared groups, and what window of exposure counts before the outcome, and nearly nine in ten studies mishandled or did not address at least one. The conclusions track the handling rather than the biology: the studies addressing most of the biases found nothing, and a randomized trial in the parallel cancer literature also found nothing.",
+     "quote": "Notably, two studies that addressed most time-related biases concluded no significant associations between metformin use and dementia risk [ 34, 38 ].",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The exposure window is a protocol component with no observable setting, and the review shows both what fixing it buys and what it costs. The best-scoring study restricted exposure to the ten years before diagnosis, which addressed the window bias inside that period and left the long-term and high-dose findings exposed beyond it, because cases and controls were not matched on cumulative exposure past ten years.",
+     "quote": "In this analysis, time-window bias was not explicitly addressed after ten years because cases and controls were not matched on cumulative duration of metformin exposures after ten years or > 1825 daily defined doses, indicating follow-up periods after ten years were not considered.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0281",
+   "read": true,
+   "doi": "10.1002/sim.9503",
+   "title": "Trial emulation and survival analysis for disease incidence registers: A case study on the causal effect of pre-emptive kidney transplantation.",
+   "relevance": "high",
+   "one_line": "Emulates a target trial of pre-emptive against delayed kidney transplantation in a 27-year national register, and finds that weighting for treatment can make the bias worse than not weighting because censoring is informative.",
+   "what_was_done": "Incident end-stage renal disease cases in the Swedish Renal Registry from 1991 to 2017 were used to compare starting treatment with transplantation against starting with dialysis possibly followed by delayed transplantation, on all-cause mortality. Several lessons are drawn that the paper presents as general to long-term disease registers. Case characteristics and versions of treatment evolve over calendar time, so unadjusted Kaplan-Meier curves already carry informative censoring: later cohort entry means shorter administrative censoring time, and later cohorts contain older patients with more comorbidity receiving pre-emptive transplantation. Weighting for treatment upweights exactly those patients and so worsens the bias rather than correcting it, producing a striking divergence between the Cox-adjusted survival curve and the weighted Kaplan-Meier curve. Correcting this would need regular time-varying covariates measured nationwide to model the censoring hazard, which the paper judges unrealistic. It also shows that restricting dialysis starters to those later transplanted, as similar studies have done, nearly annuls the survival difference. Comorbidity and kidney function entered the register only in 1998 and 2008. An accelerated failure time analysis estimates time lost under initial dialysis as roughly fivefold the time gained beyond delayed transplant.",
+   "future_research": [
+    {
+     "gap": "The e-value, a sensitivity measure for unmeasured confounding, needs development for the survival setting.",
+     "kind": "stated",
+     "quote": "To this end, the helpful concept of an e‐value deserves further development in the survival setting.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Socio-economic factors were unavailable and could drive both access to timely transplantation and survival, so the estimated advantage remains confounded.",
+     "kind": "stated",
+     "quote": "We lacked socio‐economic factors, while patients with higher socio‐economic status could have better access to health care and timely treatment with higher chances of receiving PKT.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Administrative censoring in a long register is a function of calendar entry, and calendar entry is correlated with who gets which treatment, so censoring is informative before any analysis choice is made. The consequence is counterintuitive and specific: weighting for treatment, the standard correction for confounding, upweights the later-entering older patients who are censored soonest and therefore makes the survival estimate worse than the unweighted one.",
+     "quote": "The bias is greater even than with unweighted KM‐curves as IPW upweights patients with older age who entered later into the registry and were therefore censored sooner.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The remedy the paper identifies for the informative censoring is regular nationwide time-varying covariate measurement to model the censoring hazard, and it states plainly that this is unrealistic in this register. That is a case where the data cannot support the analysis the question requires, stated as a judgment about cost and feasibility rather than against any threshold.",
+     "quote": "It is also extremely demanding and costly to measure regular time‐varying covariates across the nation, and hence unrealistic in this case.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Results differed vastly across the estimands the paper considered, and it warns against a specific misreading of the standard summary: a ratio of standardized hazard functions is a causal contrast in the sense of comparing potential survival distributions, and it does not mean the surviving subpopulations under the two treatments remain exchangeable at a later time, because different survivor selections have occurred. A hazard ratio reported without that distinction invites the wrong reading.",
+     "quote": "We saw that careful consideration of the target estimand has major importance as results differed vastly over the relevant options.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "ELG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Similar studies selected patients into treatment groups on events occurring after treatment initiation, and this paper measures what that does: restricting dialysis starters to those who went on to be transplanted virtually annuls the large survival difference present in the full population of dialysis starters. The restriction looks like a reasonable comparability adjustment and conditions on a post-baseline event.",
+     "quote": "We found, however, that restriction to the subset of dialysis starters selected upon delayed transplantation, virtually annuls the large survival difference for the full population of dialysis starters (Figure  4 ).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Over 27 years the treatment itself changed, with refined surgical technique and new immunosuppression, so the label pre-emptive transplantation covers versions that differ in effect across the study window. The paper notes this bears directly on extrapolation, since predicting benefit for future patients requires incorporating the trend rather than averaging over it.",
+     "quote": "Not only risk profiles of patients entering over time, but also treatment strategies are evolving. In our context surgical techniques were refined and newer and better immunosuppression therapy was introduced.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0282",
+   "read": true,
+   "doi": "10.3389/fonc.2022.845613",
+   "title": "Immortal Time Bias-Corrected Effectiveness of Traditional Chinese Medicine in Non-Small Cell Lung Cancer (C-EVID): A Prospective Cohort Study.",
+   "relevance": "medium",
+   "one_line": "Prospective multicentre cohort of resected stage II to IIIA non-small cell lung cancer defining the exposure as at least six cumulative months of traditional Chinese medicine, a definition that cannot be met without surviving six months.",
+   "what_was_done": "C-EVID was a nationwide prospective cohort at 13 hospitals in 9 Chinese provinces and cities, enrolling patients aged 18 to 75 with histologically confirmed stage II to IIIA non-small cell lung cancer who had undergone radical resection within the preceding three months, recruited from November 2014 to February 2017 with final follow-up in April 2021. Everyone received four cycles of guideline adjuvant chemotherapy. The exposure group was defined as those receiving Chinese herbal decoction or oral Chinese patent medicine for a cumulative period of not less than six months, with cumulative exposure computed from medical records, and everyone else, including those receiving less than six months, formed the control group. Exclusion criteria included a survival period of less than six months. The primary endpoint was disease-free survival from enrolment to recurrence or death from any cause, assessed by imaging and biopsy under RECIST 1.1, with follow-up every three weeks during chemotherapy and then at widening intervals. Secondary endpoints covered subgroups and adverse events. A previous study by the same group had reported a hazard ratio of 0.42 for disease-free survival with this therapy in stage I to IIIA disease. The conclusion is that the therapy may improve disease-free survival with better tolerability.",
+   "future_research": [
+    {
+     "gap": "The finding is offered as provisional and in need of confirmation.",
+     "kind": "stated",
+     "quote": "TCM may improves DFS and has a better tolerability profile in patients with stage II-IIIA NSCLC receiving standard chemotherapy after complete resection compared with those receiving standard chemotherapy alone. Further studies are warranted.",
+     "locator": "Conclusion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Exposure is defined by accumulating six months of treatment, which nobody who dies or recurs within six months can do, while the outcome is disease-free survival measured from enrolment. The design compounds this with an eligibility criterion excluding a survival period under six months, so the study title claims correction for the bias while the exposure definition and the eligibility rule both condition on surviving the same interval.",
+     "quote": "In this study, patients who received Chinese herbal decoction and (or) oral Chinese patent medicine for a cumulative period of not less than 6 months were defined as the TCM group (exposure group).",
+     "locator": "Study Treatment and Exposure"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The exposure covers any herbal decoction or oral patent medicine, prescribed individually at 13 hospitals, aggregated by cumulative days from medical records. The strategy being estimated is therefore an unspecified mixture of preparations whose only common feature is duration, and the six-month threshold is inherited from the group's own earlier study rather than derived.",
+     "quote": "Our previous study suggested that NSCLC patients treated with TCM for 6 months had a better DFS ( 21 ).",
+     "locator": "Study Treatment and Exposure"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0283",
+   "read": true,
+   "doi": "10.1111/cas.15539",
+   "title": "Immune-related adverse events in urothelial cancer patients: Adjustment for immortal time bias.",
+   "relevance": "medium",
+   "one_line": "Landmark analysis of 755 patients on pembrolizumab for urothelial carcinoma excluding those surviving under three months, which the paper states reduces but does not resolve the immortal time problem.",
+   "what_was_done": "Clinical data on 755 patients with platinum-pretreated advanced urothelial carcinoma receiving pembrolizumab were collected retrospectively and analyzed by landmark, excluding those surviving fewer than three months, leaving 620 evaluable of whom 220, 35.5 percent, had grade 2 or worse immune-related adverse events. Propensity score matching extracted 198 patients with and without such events. Onset of grade 2 or worse events was associated with longer median progression-free survival, 8.3 against 4.5 months, longer overall survival, 20.4 against 14.3 months, and higher objective response, 44.8 against 30.2 percent, with grade 2 events outperforming both grade 1 or less and grade 3 or worse. The three-month landmark was chosen because the median onset of these events is about two months and most appear within three months. A sensitivity analysis moved a random 20 percent of the event-positive survivors into the event-negative group, reflecting the share of events occurring after three months, and the association held. The paper also assesses an alternative from the literature, a time-dependent analysis assigning pre-onset time to the event-free cohort, which it credits while noting that the modified event-free cohort still contains many early deaths. Its own landmark approach is described as reducing rather than resolving the bias, and time to onset was not collected.",
+   "future_research": [
+    {
+     "gap": "Time to onset of the events was not collected, which is the variable a time-dependent analysis would need.",
+     "kind": "stated",
+     "quote": "The time to irAE onset represents useful data, but we could not collect this information in this study.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Neither available remedy removes the problem here, and the paper says so about both. Its own landmark reduces the bias by discarding everyone surviving under three months, and the alternative time-dependent approach leaves early deaths in the unexposed cohort. The landmark was set from the observed distribution of onset times, so the parameter that defines who enters the analysis is chosen from the exposure the analysis is about.",
+     "quote": "Although our landmark analysis did not fully resolve the immortal bias, by excluding patients with survival periods shorter than 3 months in the present study, this underling bias was reduced, thereby strengthening our findings.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Grade 1 events were excluded from the low-grade category against the usual definition, because judging whether a mild event is truly immune related is difficult and separating grade 1 from no event could not be done accurately in retrospective records. The exposure classification therefore depends on a severity threshold chosen for ascertainability, and the paper notes that grouping grades 1 and 2 together would introduce its own problem.",
+     "quote": "However, regarding AEs as truly immune related or not is often challenging especially in lower grades, and it was difficult to collect all grade 1 irAEs retrospectively and accurately separate them from no irAEs, which may lead to bias.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0284",
+   "read": true,
+   "doi": "10.1186/s12874-022-01581-1",
+   "title": "Immortal time bias for life-long conditions in retrospective observational studies using electronic health records.",
+   "relevance": "high",
+   "one_line": "Shows that a life-long condition recorded whenever a physician happens to enter it produces immortal time, comparing five handling methods for life expectancy in intellectual disability across 20 years of English primary care records.",
+   "what_was_done": "Immortal time bias is normally discussed where treatment follows cohort entry, but a life-long condition can also be recorded long after follow-up begins. Using the Clinical Practice Research Datalink linked to national mortality data from 2000 to 2019, life expectancy was compared for 33,867 people with intellectual disability against 980,586 without, aged 10 and over, under five methods: treating immortal time as observation time; excluding time before the first diagnosis; matching cohort entry to the first diagnosis; excluding time before a proxy date of the physician entering the diagnosis; and treating exposure as time-dependent. Ignoring the problem produced a disproportionately high life expectancy in the exposed group in the first calendar period, 65.6 additional years with an interval of 63.6 to 67.6 for 2000 to 2004, against 59.9, 58.0 and 58.2 in the later periods. The proxy entry date was unreliable in this database and cost substantial person-time. The other three methods gave similar answers and appeared to solve the theoretical problem, though residual bias may remain where diagnoses were backdated to birth. The paper notes that the size of the bias depends on the interval to recording, the proportion exposed and the follow-up length, that policy incentives from 2004 onward changed recording practice for this condition specifically, and that similar problems arise for conditions with delayed diagnosis.",
+   "future_research": [
+    {
+     "gap": "The impact was quantified for one condition only, and cannot be transferred to others whose recording practices differ.",
+     "kind": "stated",
+     "quote": "First, we only focused on one life-long condition (intellectual disabilities) so are unable to quantify the impact of immortal time on other conditions.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "Assessment of immortal time bias is not part of the critical appraisal tools used on this kind of study.",
+     "kind": "stated",
+     "quote": "Finally, we recommend adding an assessment of immortal time bias as a key component of critical appraisal tools to assess the quality of observational studies with life-long conditions as exposures, particularly those that use electronic health records.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "For a condition present from birth, the recorded diagnosis date is a property of the record-keeping rather than of the person, and here it moved because of policy: a quality framework in 2004, practice registers in 2006 and 2014, and annual health checks from 2008 each changed when physicians entered the diagnosis. So the exposure onset a study observes is generated by an administrative process that is itself time-varying, and no method can recover a date that was never a clinical event.",
+     "quote": "Intellectual disability itself does not require treatment so, for administrative purposes, may not need to be entered onto GP systems if it is already known or reported in the patients’ notes.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Ignoring the problem inflated life expectancy in the exposed group by roughly seven years in the earliest calendar period relative to later ones, which is a difference produced entirely by recording lag rather than by survival. The paper also states that controlling for the bias in design or analysis does not guarantee an unbiased result, since diagnoses backdated to birth leave residual immortal time that none of the methods removes.",
+     "quote": "We have shown that attempts to control for immortal time bias in the design or analysis stage does not guarantee unbiased results.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "ELG-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Whether someone has the condition is established by a code appearing anywhere in their record, so people whose disability was real but never coded sit in the unexposed group, and people coded on suspicion sit in the exposed group. The paper states both directions and cannot resolve either, and adds that people at practices without computerized records were excluded systematically by birth cohort.",
+     "quote": "Therefore, we may have included individuals with incorrect (or suspected only) diagnoses of intellectual disabilities at birth, thereby overestimating life expectancy in this population.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0289",
+   "read": true,
+   "doi": "10.1186/s12874-021-01393-9",
+   "title": "Analytical challenges in estimating the effect of exposures that are bounded by follow-up time: experiences from the Blood Stream Infection-Focus on Outcomes study.",
+   "relevance": "high",
+   "one_line": "Sets out how to estimate the effect of an exposure whose value is bounded by survival, such as time to starting therapy, by representing it as a cumulative count in a one-row-per-patient-per-day structure.",
+   "what_was_done": "BSI-FOO is a multicentre cohort quantifying the effect of modifiable risk factors, including time to initiation of therapy, on all-cause 28-day mortality in bloodstream infection. The analytical problem is that only someone who survives to a given time can wait until that time to start treatment, so the exposure is bounded by follow-up and comparing people by how long they waited introduces immortal time. The primary analysis used two Cox models, one for non-modifiable risk factors producing a risk score and a second for modifiable factors including that score as a covariate. Follow-up was split at daily intervals from day 0 to 28 with daily-collected values updated at each interval, one row per patient per day, and variables bounded by survival time were represented as cumulative counts, for example the cumulative count of days before first receipt of treatment. Missing data were handled by multiple imputation using chained equations, with conditional imputation so that non-applicable values such as ward data after discharge were not imputed. The paper's conclusion is that this representation reduces the risk of bias while using established methods implementable in standard statistical packages.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "An exposure defined as a delay is bounded by survival by construction, so the usual remedies for treatment received against not received do not apply. The device offered is a representation rather than an estimator: expand follow-up to one row per patient per day and carry the delay as a cumulative count updated daily, so the exposure at each interval uses only information available by then. It is implementable in standard software and is presented as reducing rather than removing the risk.",
+     "quote": "Time-varying covariates representing cumulative counts were used for variables bounded by survival time e.g. the cumulative count of days before first receipt of treatment.",
+     "locator": "Analytical challenges"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "In a daily expanded structure, most cells are missing for reasons that are not missingness at all, since a patient discharged on day 6 has no ward measurements thereafter. The analysis distinguishes these by conditional imputation, imputing only where a value could have existed, which keeps the imputation model from inventing data for periods outside the person's time at risk. It handles inapplicability rather than the informativeness of the observation process.",
+     "quote": "Multiple imputation using chained equations was used to impute missing data, using conditional imputation to avoid imputing non-applicable data e.g. ward data after discharge.",
+     "locator": "Analytical challenges"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}
