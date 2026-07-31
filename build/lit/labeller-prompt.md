@@ -19,7 +19,7 @@ paper is any good. Only: which theme is this gap an instance of?
 ## Inputs
 1. `documentation/audit/reading/gaps/themes.json` — the theme set. Each entry has
    an `id`, a `title` and a `gist`. Ids beginning with a category prefix
-   (`CMP-03`, `HET-11`, …) are registered problems; ids beginning `NEW-` are
+   (`TZO-01`, `GMT-04`, …) are registered problems; ids beginning `NEW-` are
    problems this reading proposed and an independent reviewer accepted. Read this
    FIRST and read all of it. A gap can only be labelled with an id that appears
    here.
@@ -57,9 +57,9 @@ directory.
 
 ```json
 {"batch":"{BATCH}","labels":[
-  {"gap_id":"L0123#4","theme":"HET-03","confidence":"high","also":null},
+  {"gap_id":"L0123#4","theme":"TZO-01","confidence":"high","also":null},
   {"gap_id":"L0123#5","theme":"none","confidence":"high","also":null},
-  {"gap_id":"L0124#0","theme":"NEW-12","confidence":"low","also":"CMP-03"}
+  {"gap_id":"L0124#0","theme":"NEW-12","confidence":"low","also":"GMT-04"}
 ]}
 ```
 

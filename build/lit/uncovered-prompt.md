@@ -110,9 +110,9 @@ using a batch-scoped scratch directory.
    "prior_work":[{"cite":"...","doi_or_url":"...","what_it_does":"..."}],
    "proposed_direction":"...","priority":"High","tractability":3,
    "maturity":"Emerging","severity":"...","verdict":"confirmed-open",
-   "verdict_rationale":"...","related":["DEC-08"]}],
+   "verdict_rationale":"...","related":["REG-02"]}],
  "rejected":[{"absence":"...","why":"already_covered|not-a-field-gap|not-substantiated|resolved",
-   "covered_by":"DEC-04 or null","reasoning":"three or four sentences"}]}
+   "covered_by":"REG-01 or null","reasoning":"three or four sentences"}]}
 ```
 
 Every candidate in your batch must appear exactly once, in `entries` or in

@@ -34,6 +34,7 @@ import argparse
 import glob
 import json
 import os
+import re
 import sys
 from collections import Counter, defaultdict
 
@@ -59,6 +60,13 @@ def year_of(lib, pid):
     return y if 1900 <= y <= 2100 else None
 
 
+def norm(s):
+    """Fold a title for comparison. The drafter rewrites a proposal's wording, so
+    the registered title and the proposed one differ in case and punctuation while
+    naming the same thing."""
+    return re.sub(r"[^a-z0-9]+", " ", (s or "").lower()).strip()
+
+
 def labels():
     """The theme set: registered problems plus accepted new ones.
 
@@ -66,20 +74,48 @@ def labels():
     clustering, so a gap can be attached to something the registry does not yet
     contain. Without that, every gap pointing at a genuinely unregistered theme
     would land in `none` and the most interesting recurrences would be invisible.
+
+    A proposal that has already been applied is dropped, because it is now in the
+    registry under a real id and offering both would split one theme in two: a
+    labeller has no way to choose between them, so the recurrence this pass exists
+    to find would be halved across a duplicate pair.
     """
     out = []
+    by_title, by_origin = {}, {}
     for p in json.load(open(os.path.join(AUDIT, "registry", "problems.json"),
                             encoding="utf8")):
         out.append({"id": p["id"], "title": p.get("title"),
                     "gist": (p.get("statement") or "")[:220]})
+        by_title[norm(p.get("title"))] = p["id"]
+        # The paper an entry was drafted from survives the retitling that an audit
+        # verdict can force, and title matching alone therefore misses exactly the
+        # entries the auditors made us rewrite. It is recorded in the source trail
+        # as batch/paper.
+        raw = ((p.get("source") or {}).get("raw_id") or "")
+        for token in re.findall(r"L\d{4}", raw):
+            by_origin[(p.get("category"), token)] = p["id"]
     path = os.path.join(READING, "proposed-changes.json")
     if os.path.exists(path):
+        applied = []
         for i, c in enumerate(json.load(open(path, encoding="utf8"))
                               .get("new_problem_clusters") or [], 1):
-            out.append({"id": f"NEW-{i:02d}",
-                        "title": c.get("title") or (c.get("members") or [{}])[0]
-                        .get("proposed_title"),
+            title = (c.get("title") or (c.get("members") or [{}])[0]
+                     .get("proposed_title"))
+            # Applied as a new entry, or folded into one; either way the registry
+            # already carries it and the NEW- id is a duplicate of a real one.
+            papers = {m.get("paper") for m in (c.get("members") or [])}
+            hit = (by_title.get(norm(title))
+                   or next((by_origin[(c.get("category"), p)] for p in papers
+                            if (c.get("category"), p) in by_origin), None)
+                   or (c.get("merge_into") or [None])[0])
+            if hit:
+                applied.append(f"NEW-{i:02d} is now {hit}")
+                continue
+            out.append({"id": f"NEW-{i:02d}", "title": title,
                         "gist": (c.get("statement") or "")[:220]})
+        if applied:
+            print("  dropped from the theme set, already registered: "
+                  + "; ".join(applied))
     return out
 
 

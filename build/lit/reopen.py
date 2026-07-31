@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 """Adjudicate the problems an earlier pass closed that the reading found open.
 
-The reading produced `supports-open` findings against 24 problems the first audit
+The reading produced `supports-open` findings against problems the first audit
 had marked `overstated` or `not-supported`. That looks like a contradiction and
 mostly is not, because of how those closures were written: a closure usually
-concedes a residual. EVB-02 says multiverse analysis over the evidence set has
-been demonstrated, and that what remains open is that nobody requires it and no
-criterion says which alternative networks are defensible. A reader who finds a
-2024 paper complaining that nobody requires it has not contradicted the closure.
-It has restated the part the closure already left open.
+concedes a residual. BEN-02 grants that design alignment is empirically
+associated with stronger concordance, and holds open that benchmarking still
+reports a binary label which mixes estimand mismatch with random error. A reader
+who finds a paper reporting replication as agreed or not agreed has not
+contradicted the closure. It has restated the part the closure already left
+open.
 
 So the question is not "does new evidence say this is open", which is what
 produced the list. It is:
@@ -100,7 +101,7 @@ tools, do not spawn sub-agents, do not load skills.
 
 Reply with JSON only, no prose before or after:
 
-{"verdicts":[{"index":0,"problem_id":"EVB-02","verdict":"keep-closed|narrow|reopen","confidence":"high|medium|low","move_to":"...or null","what_to_change":"...or null","decisive_evidence":"...or null","reason":"three or four sentences"}]}
+{"verdicts":[{"index":0,"problem_id":"BEN-02","verdict":"keep-closed|narrow|reopen","confidence":"high|medium|low","move_to":"...or null","what_to_change":"...or null","decisive_evidence":"...or null","reason":"three or four sentences"}]}
 
 Index each verdict by the problem's position in the payload, starting at 0.
 Return exactly one verdict per problem.

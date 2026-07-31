@@ -105,7 +105,7 @@ scratch directory, since the session scratchpad is shared with other readers.
   "one_line":"...",
   "what_was_done":"4-8 sentences, with the numbers",
   "future_research":[{"gap":"...","kind":"stated|implied","quote":"verbatim","locator":"discussion / p. 12"}],
-  "problems":[{"problem_id":"CMP-01","effect":"resolves|partially-addresses|supports-open|contradicts","confidence":"high|medium|low","evidence":"2-3 sentences","quote":"verbatim","locator":"section 4.2 / p. 7"}],
+  "problems":[{"problem_id":"TZO-01","effect":"resolves|partially-addresses|supports-open|contradicts","confidence":"high|medium|low","evidence":"2-3 sentences","quote":"verbatim","locator":"section 4.2 / p. 7"}],
   "new_problems":[{"proposed_title":"...","category":"PRO|ELG|TZO|STR|EST|CNF|GMT|OVL|UCF|MER|MIS|OUT|SEQ|DTA|BEN|REG|SFW|LRN","statement":"...","why_open":"...","quote":"verbatim","checked_against_index":"closest existing ids rejected, and why"}],
   "registry_errata":[{"problem_id":"TZO-03","kind":"misattribution|wrong-year|misdescribed|software-capability","what_the_registry_says":"...","what_is_actually_true":"...","quote":"verbatim from the paper","confidence":"high|medium|low"}]
 }]}

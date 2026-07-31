@@ -130,7 +130,7 @@ directory.
    "from_batches":["tte-12","itb-31"]
  }],
  "merges":[{
-   "into":"CMP-03","from_title":"...",
+   "into":"REG-02","from_title":"...",
    "prior_work":[{"cite":"...","doi_or_url":"...","what_it_does":"..."}],
    "statement_addition":"... or null",
    "disagreement":"... or null"
