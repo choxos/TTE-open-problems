@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>How this was verified – Open Problems in Target Trial Emulation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-685fa9d0fd538efc174fc2b2d80ff99f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-be9cb6f628d7da7ab49bf048d989780e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-685fa9d0fd538efc174fc2b2d80ff99f.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": true,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Open Problems in Target Trial Emulation</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./catalog.html"> 
+<span class="menu-text">Catalog</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-categories" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Categories</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-categories">    
+        <li>
+    <a class="dropdown-item" href="./categories/protocol.html">
+ <span class="dropdown-text">Protocol specification &amp; well-defined interventions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/eligibility.html">
+ <span class="dropdown-text">Eligibility, cohort entry &amp; the new-user question</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/time-zero.html">
+ <span class="dropdown-text">Time zero, alignment &amp; time-related bias</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/strategies.html">
+ <span class="dropdown-text">Treatment strategies, grace periods &amp; cloning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/estimands.html">
+ <span class="dropdown-text">Estimands, causal contrasts &amp; target populations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/confounding.html">
+ <span class="dropdown-text">Confounding control &amp; the assignment assumption</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/g-methods.html">
+ <span class="dropdown-text">G-methods: specification, estimation &amp; inference</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/positivity.html">
+ <span class="dropdown-text">Positivity, structural violations &amp; extrapolation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/unmeasured-confounding.html">
+ <span class="dropdown-text">Unmeasured confounding, negative controls &amp; bias analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/measurement.html">
+ <span class="dropdown-text">Measurement error &amp; misclassification in routine data</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/missing-data.html">
+ <span class="dropdown-text">Missing data, censoring &amp; loss to follow-up</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/outcomes.html">
+ <span class="dropdown-text">Outcomes, competing events &amp; the time scale</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/sequential.html">
+ <span class="dropdown-text">Sequential emulation &amp; nested trials</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/data-sources.html">
+ <span class="dropdown-text">Data sources, linkage &amp; federated infrastructure</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/benchmarking.html">
+ <span class="dropdown-text">Benchmarking, falsification &amp; empirical validation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/reporting.html">
+ <span class="dropdown-text">Reporting, regulation &amp; decision acceptance</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/software.html">
+ <span class="dropdown-text">Software, computation &amp; reproducibility</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./categories/learning.html">
+ <span class="dropdown-text">Machine learning, high-dimensional adjustment &amp; automated emulation</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./agenda.html"> 
+<span class="menu-text">Agenda</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./studies.html"> 
+<span class="menu-text">Studies</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./chronology.html"> 
+<span class="menu-text">Chronology</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./landscape.html"> 
+<span class="menu-text">Landscape</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./methods.html" aria-current="page"> 
+<span class="menu-text">How this was verified</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./references.html"> 
+<span class="menu-text">References</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/choxos/TTE-open-problems"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#where-this-material-came-from" id="toc-where-this-material-came-from" class="nav-link active" data-scroll-target="#where-this-material-came-from">Where this material came from</a>
+  <ul class="collapse">
+  <li><a href="#one-thing-worth-recording-about-the-source" id="toc-one-thing-worth-recording-about-the-source" class="nav-link" data-scroll-target="#one-thing-worth-recording-about-the-source">One thing worth recording about the source</a></li>
+  </ul></li>
+  <li><a href="#what-was-checked-mechanically" id="toc-what-was-checked-mechanically" class="nav-link" data-scroll-target="#what-was-checked-mechanically">What was checked mechanically</a></li>
+  <li><a href="#the-audit" id="toc-the-audit" class="nav-link" data-scroll-target="#the-audit">The audit</a>
+  <ul class="collapse">
+  <li><a href="#literature-verification" id="toc-literature-verification" class="nav-link" data-scroll-target="#literature-verification">Literature verification</a></li>
+  <li><a href="#adversarial-refutation" id="toc-adversarial-refutation" class="nav-link" data-scroll-target="#adversarial-refutation">Adversarial refutation</a></li>
+  <li><a href="#independent-external-auditors" id="toc-independent-external-auditors" class="nav-link" data-scroll-target="#independent-external-auditors">Independent external auditors</a></li>
+  <li><a href="#adjudication" id="toc-adjudication" class="nav-link" data-scroll-target="#adjudication">Adjudication</a></li>
+  </ul></li>
+  <li><a href="#which-fields-are-audited-and-which-are-editorial" id="toc-which-fields-are-audited-and-which-are-editorial" class="nav-link" data-scroll-target="#which-fields-are-audited-and-which-are-editorial">Which fields are audited, and which are editorial</a></li>
+  <li><a href="#what-the-verdicts-do-not-mean" id="toc-what-the-verdicts-do-not-mean" class="nav-link" data-scroll-target="#what-the-verdicts-do-not-mean">What the verdicts do not mean</a></li>
+  <li><a href="#limits-of-this-exercise" id="toc-limits-of-this-exercise" class="nav-link" data-scroll-target="#limits-of-this-exercise">Limits of this exercise</a></li>
+  <li><a href="#reproducing-this" id="toc-reproducing-this" class="nav-link" data-scroll-target="#reproducing-this">Reproducing this</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">How this was verified</h1>
+<p class="subtitle lead">Provenance, audit protocol, and what the verdicts do and do not mean</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="where-this-material-came-from" class="level2">
+<h2 class="anchored" data-anchor-id="where-this-material-came-from">Where this material came from</h2>
+<p>This catalog is derived from a deep-research document produced by a large language model (ChatGPT deep research) in July 2026, covering open methodological, theoretical, practical, data-related and interpretive problems in target trial emulation.</p>
+<p>That origin is the reason this page exists. A machine-generated research agenda is a plausible-sounding artifact whether or not it is correct, and publishing one as settled fact would be a disservice. <strong>Nothing from the source document appears on this site without a verification verdict attached</strong>, and the evidence behind each verdict is shown on the entry itself.</p>
+<p>The source document is kept as working material and is not published here.</p>
+<section id="one-thing-worth-recording-about-the-source" class="level3">
+<h3 class="anchored" data-anchor-id="one-thing-worth-recording-about-the-source">One thing worth recording about the source</h3>
+<p>The source was supplied in three formats. <strong>The markdown export had lost every citation.</strong> ChatGPT’s markdown export replaces each link with private-use-area characters and an opaque handle, so the exported file contained 125 citation tokens, zero DOIs, zero URLs, and zero PubMed identifiers. The <code>.docx</code> of the same document retained the real hyperlinks.</p>
+<p>Extraction therefore runs from the <code>.docx</code>, not the export. That distinction is not cosmetic: had the markdown been used, every entry in this catalog would have been unsourced, and the audit would have had nothing to check a citation against.</p>
+</section>
+</section>
+<section id="what-was-checked-mechanically" class="level2">
+<h2 class="anchored" data-anchor-id="what-was-checked-mechanically">What was checked mechanically</h2>
+<p>Before any of the substantive audit, every resolvable identifier in the source was checked against its registry.</p>
+<p>The source carries 48 numbered references pointing at 35 distinct works.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 40%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Outcome</th>
+<th style="text-align: right;">Count</th>
+<th>What it means</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Resolved to a real work</td>
+<td style="text-align: right;">21</td>
+<td>Identifier and title confirmed against CrossRef, NCBI or arXiv</td>
+</tr>
+<tr class="even">
+<td>Guidance or software</td>
+<td style="text-align: right;">7</td>
+<td>Regulatory guidance, reporting standards and package documentation, correctly cited by URL</td>
+</tr>
+<tr class="odd">
+<td>Unresolved</td>
+<td style="text-align: right;">7</td>
+<td>The publisher page blocks automated access, and no search result matched the prose context closely enough to record</td>
+</tr>
+</tbody>
+</table>
+<p>The seven unresolved references are listed with <code>"confidence": "none"</code> in the working files and <strong>are not cited anywhere in this catalog</strong>. A reference that cannot be confirmed is left out rather than guessed at; an invented citation would discredit every other entry here.</p>
+</section>
+<section id="the-audit" class="level2">
+<h2 class="anchored" data-anchor-id="the-audit">The audit</h2>
+<p>Every problem carries a set of atomic, falsifiable claims extracted from the source. Those claims, not the prose around them, are what was tested.</p>
+<section id="literature-verification" class="level3">
+<h3 class="anchored" data-anchor-id="literature-verification">Literature verification</h3>
+<p>For each problem, an agent with web and PubMed access checked that each cited work actually supports the claim attributed to it, and searched for later work that would resolve or narrow the problem.</p>
+</section>
+<section id="adversarial-refutation" class="level3">
+<h3 class="anchored" data-anchor-id="adversarial-refutation">Adversarial refutation</h3>
+<p>A second agent was instructed to <em>refute</em> the proposition that the problem is open, and to default to “not open” when uncertain. Asking an agent to confirm a claim and asking it to break the claim produce different results; only the second is informative.</p>
+</section>
+<section id="independent-external-auditors" class="level3">
+<h3 class="anchored" data-anchor-id="independent-external-auditors">Independent external auditors</h3>
+<p>Frontier models outside this system were given the same claims, blind to each other and to the literature pass, each with a different lens:</p>
+<ul>
+<li>a <strong>technical and source-code lens</strong>, which checks identification arguments, weight algebra, cloning and censoring bookkeeping, and immortal-time accounting, and which verifies any claim about a software package against that package’s pinned source rather than against the report;</li>
+<li>a <strong>recency and prior-art lens</strong>, which adopts an inverted prior. It assumes each problem has already been solved and goes looking for who solved it, because an agenda that lists a solved problem as open is the most damaging error this site can make: the people most likely to read it are the people who solved it;</li>
+<li>a <strong>third independent lens</strong> on the same claims, so that a majority is a majority of more than two.</li>
+</ul>
+<p>Each entry’s page lists the auditors that voted on it. Coverage is not uniform, because external models run out of quota mid-run; where an entry was reached by fewer auditors, the page says so rather than presenting a thinner audit as an equal one.</p>
+</section>
+<section id="adjudication" class="level3">
+<h3 class="anchored" data-anchor-id="adjudication">Adjudication</h3>
+<p>Opinions become a published verdict by a fixed rule, not by judgment. The rule records its own decision path on every entry, so the route from votes to verdict is visible.</p>
+<p>Two principles govern it:</p>
+<p><strong>A “solved” vote without a locator is not evidence.</strong> It is downgraded rather than counted. An auditor asserting that something has been solved must name the work that solved it.</p>
+<p><strong>Evidence beats votes.</strong> A lone dissenter holding an unrebutted verbatim quote is not silently outvoted by auditors holding opinions.</p>
+<p>Majority rules carry a denominator. A verdict such as <span class="verdict verdict-overstated">Overstated</span> requires at least two independent auditors and at least half of the auditors that actually returned an opinion on that entry. Using the roster size as the denominator would let an entry reached by two auditors be decided on the same evidence as one reached by four.</p>
+</section>
+</section>
+<section id="which-fields-are-audited-and-which-are-editorial" class="level2">
+<h2 class="anchored" data-anchor-id="which-fields-are-audited-and-which-are-editorial">Which fields are audited, and which are editorial</h2>
+<p>This distinction matters and is easy to lose.</p>
+<p><strong>Audited.</strong> The statement, why it is open, the prior work, and the extracted claims. These went through literature verification, adversarial refutation and the independent auditors, and they carry the verdict.</p>
+<p><strong>Editorial.</strong> Maturity, tractability, severity, the proposed research direction, and the protocol-component and data-setting tags. These are one reader’s judgment applied to make the catalog browsable. They were not audited and should not be cited as findings. The proposed direction in particular reads with the same visual authority as the audited statement above it, and it is a research suggestion rather than a verified claim.</p>
+<p><strong>Deliberately rebuilt.</strong> Priority is not carried over from the source. It reflects three observable things: whether the problem blocks a decision-grade estimand, whether any method addresses it at all, and whether any software implements it.</p>
+</section>
+<section id="what-the-verdicts-do-not-mean" class="level2">
+<h2 class="anchored" data-anchor-id="what-the-verdicts-do-not-mean">What the verdicts do not mean</h2>
+<p>A verdict is a judgment about a <strong>claim</strong>, not about a problem’s importance.</p>
+<p><span class="verdict verdict-overstated">Overstated</span> almost never means the problem is fictional. It usually means the underlying difficulty is real and the source pitched its severity, or the claim that no method exists, more strongly than the evidence supports. The entry records the strongest version of the claim that survived.</p>
+<p><span class="verdict verdict-confirmed-open">Confirmed open</span> means the checks agreed and no counterevidence surfaced. It does not mean nobody is working on it, and it is a statement about the literature that was reachable, not about the literature that exists.</p>
+<p><span class="verdict verdict-unverifiable">Unverifiable</span> means the auditors disagreed with evidence on both sides, or that no accessible source could settle it. The disagreement is shown on the entry rather than resolved silently.</p>
+</section>
+<section id="limits-of-this-exercise" class="level2">
+<h2 class="anchored" data-anchor-id="limits-of-this-exercise">Limits of this exercise</h2>
+<p><strong>This is not a systematic review.</strong> There was no protocol registration, no duplicate independent screening with a reported agreement statistic, and no formal risk-of-bias assessment.</p>
+<p><strong>The literature harvest covers PubMed and PubMed Central only.</strong> Conference abstracts and journals indexed in Embase but not PubMed are missing. Embase has no API available without a subscription.</p>
+<p><strong>The auditors are language models.</strong> They are better at finding a paper that closes a gap than at proving no such paper exists, so <span class="verdict verdict-confirmed-open">Confirmed open</span> carries less weight than <span class="verdict verdict-resolved-since-report">Resolved since report</span>. A confirmed absence of evidence is the weakest thing on this site.</p>
+</section>
+<section id="reproducing-this" class="level2">
+<h2 class="anchored" data-anchor-id="reproducing-this">Reproducing this</h2>
+<p>Everything is in the repository. <code>build/render_site.mjs</code> turns the registry into these pages, <code>build/make_audit_batches.mjs</code> produces the auditor prompts, and <code>build/adjudicate.mjs</code> applies the rule. <code>documentation/audit/calibration.json</code> holds known-answer cases verified by hand; any audit configuration that fails to reproduce them is miscalibrated, and they are asserted before the site is built.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/choxos\.github\.io\/TTE-open-problems\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Ahmad Sofi-Mahmudi</p>
+</div>   
+    <div class="nav-footer-center">
+<p>Every entry carries a verification verdict. See <a href="./methods.html">How this was verified</a>.</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/choxos/TTE-open-problems">Source</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
