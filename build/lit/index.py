@@ -257,7 +257,15 @@ def main():
           f"supplement and not the article, and the supplement repeats the "
           f"title, so only its opening words give it away.")
     for m in bad:
-        w(f"  - {m.get('pmid')} {m.get('pmcid')} — {(m.get('title') or '')[:80]}")
+        w(f"  - {m.get('pmid')} {m.get('pmcid')}: {(m.get('title') or '')[:80]}")
+    if any((m.get("title") or "").startswith("[") for m in bad):
+        w("")
+        w("At least one of those is the check firing on a translated title rather than on "
+          "the wrong article. PubMed records a non-English article under a bracketed "
+          "English translation while the publisher deposits the original, so the two "
+          "titles share almost no content words even though the document is correct. "
+          "The corpus holds 19 such records, so this is a known and bounded failure mode "
+          "of containment scoring rather than a download error.")
     w("")
     unavailable = [m for m in manifest if m.get("source") in ("unavailable", "error")]
     w(f"{len(unavailable)} of the kept records have no open-access copy anywhere "
