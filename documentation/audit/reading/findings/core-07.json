@@ -1,0 +1,579 @@
+{
+ "batch": "core-07",
+ "papers": [
+  {
+   "id": "L0094",
+   "read": true,
+   "doi": "10.1093/aje/kwx090",
+   "title": "Invited Commentary: Agent-Based Models-Bias in the Face of Discovery.",
+   "relevance": "medium",
+   "one_line": "Commentary on a comparison of agent-based models against the parametric g-formula, arguing that a simulated counterfactual contrast rests on the assumption that the simulated population represents the real one, and that transportability is required for any estimate to matter yet is almost never justified.",
+   "what_was_done": "The commentary responds to a study estimating the effect of antiretroviral therapy on 12-month mortality in a simulated HIV population by both an agent-based model and the parametric g-formula. Two messages are drawn out. First, when two populations differ in baseline outcome risk or in the distribution of unmeasured confounders, transporting an estimate from one to the other produces bias, and the commentary sets this in a general conundrum: transportability requires strong and largely untestable assumptions, yet no estimate has any consequence until it is transported, because clinicians and policy makers always act on a future population using evidence from a past one. Second, agent-based models handle time-dependent confounding and mediation less well than the g-formula unless parameterized to replicate it, so collider bias is a greater risk in the agent-based model because the distributions of common causes of the outcome and of treatment-affected confounders would have to be known and adjusted. The commentary notes the paradox that simulating a system correctly requires knowing a great deal about a system one simulates precisely because it is not known, and calls for guidance on the scope of sensitivity analyses in agent-based modeling.",
+   "future_research": [
+    {
+     "gap": "There is no guidance on how far sensitivity analyses in agent-based modeling must reach in order to expose the assumption violations that drive the results.",
+     "kind": "stated",
+     "quote": "we call for more guidance\namong epidemiologists regarding the necessary scope of these\nsensitivity analyses, including looking to best practices used in\nother disciplines.",
+     "locator": "Commentary"
+    },
+    {
+     "gap": "Tools that quantify the magnitude, direction and impact of assumption violations, and that combine evidence across sources and disciplines, do not exist.",
+     "kind": "stated",
+     "quote": "we concur that developing tools that enable us to probe those violations in terms of\nmagnitude, direction, and impact can provide a service to science",
+     "locator": "Commentary"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "EST-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The commentary states the transport problem as unavoidable rather than optional: acting on any estimate means applying it to a population other than the one studied, and the assumptions licensing that step are strong and typically untestable. Nothing in the standard workflow accounts for those assumptions separately from the confounding assumptions already made.",
+     "quote": "A fundamental conundrum of the epidemiologic approach is that transportability requires strong assumptions, yet no effect estimate has consequence until it is transported to a new population",
+     "locator": "Commentary"
+    },
+    {
+     "problem_id": "SFW-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A simulation can produce a population that is both treated and untreated, which looks like exchangeability by construction. The commentary points out that the contrast is between simulated populations and inherits an assumption that is almost certainly false, that the simulation represents the real world. Fidelity of the generated data is what the modeler can check; whether the causal structure and parameters transfer is what the causal claim requires.",
+     "quote": "these counterfactual contrasts are between simulated populations and rest on the (almost certainly incorrect) assumption that the simulated population perfectly represents the real-world population",
+     "locator": "Commentary"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0098",
+   "read": true,
+   "doi": "10.1214/15-aos1411",
+   "title": "CAUSAL INFERENCE WITH A GRAPHICAL HIERARCHY OF INTERVENTIONS.",
+   "relevance": "medium",
+   "one_line": "Unifies identification for a wide class of causal targets through a hierarchy of node, edge and path interventions, showing which model each is naturally identified under, and noting that estimators for the resulting edge g-formula exist only in special cases.",
+   "what_was_done": "Identification results for causal parameters had accumulated in fragments: whether a target is identified can depend on which causal model is assumed, and a diversity of models left no single way to answer the question. The paper defines an inclusion hierarchy of interventions tied to graphical features, node interventions on a treatment, edge interventions on the part of the treatment mechanism carried by one outgoing edge, and path interventions on the part carried by one causal pathway. It shows that a large class of targets, including path-specific effects, effects of treatment on the multiply treated and effects with unobserved causes of treatment, are responses to path interventions, so identification for all of them reduces to identification of responses in the hierarchy. Node interventions are naturally identified under Robins's finest fully randomized causally interpretable structure tree graph model via the extended g-formula, and edge interventions under Pearl's nonparametric structural equation model with independent errors via a more general functional the paper calls the edge g-formula. A flowchart summarizes the resulting decision procedure, and a theorem gives the exact condition, edge consistency, for identifiability of a path intervention response. The running example is a two time point fragment of a longitudinal HIV study.",
+   "future_research": [
+    {
+     "gap": "Estimation theory for the edge g-formula is essentially absent outside the point treatment case, although it is the identifying functional for a wide class of targets.",
+     "kind": "stated",
+     "quote": "estimators for functionals\nobtained from the edge g-formula (5) are known only in very special cases\nsuch as the point treatment setting we discussed in section 8",
+     "locator": "Section 9, Discussion"
+    },
+    {
+     "gap": "Whether other submodels beyond the linear structural equation model identify all path intervention responses is open.",
+     "kind": "stated",
+     "quote": "A fruitful open question if whether there are other interesting (for instance maximal) submodels of the MWM where all responses to path interventions are identified.",
+     "locator": "Section 5.4"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Whether a target is identified is shown to depend on which causal model is assumed, so the same data and the same graph can identify a quantity under one model and not another. The choice between those models is not checkable from data, and it sits upstream of every diagnostic a study might report. A reporting scheme that separates diagnosable from undiagnosable assumptions would have to carry it, and none does.",
+     "quote": "may not always be identified even in data where treatment assignment is known and\nunder investigator control, or may be identified under one causal\nmodel but not another.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "For a broad class of identified targets, including path-specific effects and effects with unobserved causes of treatment, the identifying functional is known and no estimator exists beyond the point treatment case. The gap is therefore prior to any choice of default estimator: for these estimands the menu is empty, and the paper's stated motivation for the unification is to make developing that estimation theory possible.",
+     "quote": "developing estimators for general functionals obtained\nfrom the edge g-formula (5) results in estimators for a wide class of targets\nof interest in causal inference",
+     "locator": "Section 9, Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0099",
+   "read": true,
+   "doi": "10.1097/qad.0000000000001243",
+   "title": "The per-protocol effect of immediate versus deferred antiretroviral therapy initiation.",
+   "relevance": "high",
+   "one_line": "Estimates the per-protocol effect in the START trial with the parametric g-formula after 30 percent of the deferred arm deviated, finding benefits about 20 percent larger than the intention-to-treat estimate and showing that naive per-protocol analyses reproduce the intention-to-treat result rather than correcting it.",
+   "what_was_done": "START randomized 4,685 HIV-positive participants with CD4 counts above 500 to immediate antiretroviral therapy or to deferral until CD4 fell below 350 or an AIDS diagnosis occurred, and reported an intention-to-treat benefit for immediate initiation. About 30 percent of the deferred arm started therapy earlier than the protocol allowed, while deviations in the immediate arm were rare, so the intention-to-treat contrast understates the effect of actually following the strategies. The per-protocol effect was estimated with the parametric g-formula, adjusting for post-randomization predictors of deviation as well as baseline variables. Immediate initiation reduced the risk of the composite outcome of serious AIDS events, serious non-AIDS events or death by 2.7 percentage points at three years and 3.8 points at five years, roughly 20 percent larger than the intention-to-treat estimates, with wide confidence intervals. Naive per-protocol analyses, with and without baseline adjustment, gave hazard ratios close to the intention-to-treat result and therefore underestimated the per-protocol effect. Two assumptions are stated as unguaranteeable: that all prognostic predictors of deviation were identified and accurately measured, and that every model is correctly specified. Component-specific estimates could not be obtained because event counts were too small.",
+   "future_research": [
+    {
+     "gap": "Per-protocol effects for the individual components of the composite endpoint could not be estimated because outcome models became unstable, and semiparametric alternatives are suggested but not tried.",
+     "kind": "stated",
+     "quote": "Semiparametric methods, such as inverse-probability\nweighting, may be an alternative to estimate the per-protocol effect for those outcomes.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A trial of 4,685 participants with rich post-randomization measurement could support a per-protocol estimate for the composite endpoint and not for any of its three components, because the event counts left the outcome models unstable. The information available for the contrast was exhausted well before the sample was, which is the entry's claim in a setting with better measurement than a database emulation enjoys.",
+     "quote": "we could not obtain per-protocol effect estimates for each component of the primary endpoint\n(i.e., serious AIDS events, serious non-AIDS events and mortality) because the small number of\nthe events led to unstable outcome models.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Three analyses of the same trial data give three answers: intention-to-treat, naive per-protocol with and without baseline adjustment, which reproduce the intention-to-treat result, and g-formula per-protocol, which is about 20 percent larger. The naive analyses are the ones a reader would recognize as a per-protocol analysis, and they do not estimate the per-protocol effect. Nothing in their reported form reveals that.",
+     "quote": "The hazard ratio estimates from the naïve per-protocol analyses (with and without adjustment for\nbaseline variables) were similar to that from the ITT analysis.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The two assumptions carrying the analysis are stated plainly as unguaranteeable, and each is then supported by an argument rather than a check: that the adjustment set covers the main factors used in clinical decisions, and that the simulated distributions resembled the observed ones. The second is a diagnostic and the first is not, and the report does not distinguish them in status.",
+     "quote": "our adjusted per-protocol analysis assumes that all prognostic\nfactors that predict protocol deviations are identified and accurately measured. While this\ncondition cannot be guaranteed, we adjusted for the main factors used in clinical treatment\ndecisions.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0101",
+   "read": true,
+   "doi": "10.1093/ije/dyp192",
+   "title": "Intervening on risk factors for coronary heart disease: an application of the parametric g-formula.",
+   "relevance": "high",
+   "one_line": "First large-scale application of the parametric g-formula in a cohort study, estimating coronary heart disease risk under joint and dynamic lifestyle interventions, and reporting that absolute risks shift by more than ten percent under a change of covariate ordering alone.",
+   "what_was_done": "Standard analysis cannot adjust for time-dependent confounders affected by prior components of an intervention, which is what a joint or dynamic lifestyle intervention creates. The paper describes the parametric g-formula and applies it to the Nurses' Health Study over 1982 to 2002, where the observed 20-year risk of coronary heart disease was 3.50 percent. Under a joint intervention of no smoking, increased exercise, improved diet, moderate alcohol and reduced body mass index the estimated risk was 1.89 percent, with an interval of 1.46 to 2.41. Model adequacy was checked by simulating data analogous to the observed, which gave 3.64 percent against the observed 3.50 percent. Three limits are reported explicitly. Relative risks were reasonably robust while absolute risks were sensitive to small model changes, with different covariate orderings shifting the risk under no intervention by more than ten percent, and the close agreement of the primary analysis with the observed risk is attributed to the cross-validation used to tune the models. Only interventions for which the null was not believed a priori were considered, in order to avoid the g-null paradox. And the body mass index intervention gave a null estimate where standard methods suggested harm, which is attributed to reverse causation, to the intervention being less well defined, and to measurement error acting differently on the two approaches.",
+   "future_research": [
+    {
+     "gap": "Replication with inverse probability weighted marginal structural models and g-estimation of structural nested models, which impose fewer parametric restrictions and are free of the g-null paradox, is named as an important next step and not done.",
+     "kind": "stated",
+     "quote": "This is beyond the scope of the\ncurrent work, but will be an important next step.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "An approach designed to adjust for reverse causation is needed before the effect of body mass index can be estimated correctly.",
+     "kind": "stated",
+     "quote": "A methodological approach\nspecifically designed to appropriately adjust for\nreverse causation may be needed to correctly estimate\nthe effect of BMI on mortality.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Two properties of the estimator, not of the question, shaped what was reported. The set of interventions was restricted to those the investigators did not believe null, because the g-null paradox would otherwise guarantee misspecification. And absolute risks moved by more than ten percent under a permutation of the covariate ordering, a modeling choice with no substantive content. The paper's own remedy is to rerun the analysis with estimators that make different assumptions, which it leaves undone.",
+     "quote": "To avoid the ‘g-null paradox’, we only considered\ninterventions for which we did not a priori believe\nthat the null is true.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "PRO-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The models were tuned by cross-validation so that the simulated risk under no intervention would closely match the observed risk, and the paper recommends this as general practice. The tuning target is a function of the analysis data, so the specification is chosen after seeing outcome-relevant information. The paper argues the tuning did not bias the intervention-specific risk differences, which is a judgment about this analysis rather than a property of the procedure.",
+     "quote": "When using the g-formula, it may be important to\nfine-tune the model in order to closely predict the\nrisk under no intervention; in our analysis, this\nfine-tuning did not appear to bias estimated intervention-specific risk differences.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Of the five components of the joint intervention, body mass index is singled out as less well defined, and the difficulty is specific: once diet and physical activity are partly controlled by other components of the same intervention, what remains of an intervention on body mass index is unclear. The null estimate for that component is read partly as a consequence. No procedure separates the defensible versions of a body mass index intervention from the rest.",
+     "quote": "it is less\nwell defined, especially when partly controlling for\ndiet and physical activity",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The exposures are self-reported questionnaire measures of smoking, diet, exercise, alcohol and body mass index entered as if error-free. The paper offers differential sensitivity to measurement error as one explanation for the g-formula and standard methods disagreeing about body mass index, which makes measurement error a candidate cause of a substantive conclusion rather than a footnote, and it is not propagated.",
+     "quote": "the impact of measurement error may differ between the g-formula\nand standard methods",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0207",
+   "read": true,
+   "doi": "10.3899/jrheum.2026-0481",
+   "title": "Harnessing Administrative Data for Real-World Evidence in Psoriatic Disease: Opportunities, Challenges, and Methodological Considerations.",
+   "relevance": "medium",
+   "one_line": "Meeting report on administrative and electronic health record data in psoriatic disease, cataloguing confounding by indication, protopathic bias, selection through eligibility criteria, immortal time bias and collider bias, and presenting target trial emulation as the structured remedy.",
+   "what_was_done": "The report summarizes a session on using routinely collected data for questions in psoriatic disease that trials do not answer: treatment sequencing, comparative effectiveness, and progression from psoriasis to psoriatic arthritis. It describes the two main sources, claims data from billing systems with national reach and little clinical granularity, and electronic health records with more detail and narrower coverage. It then works through the biases. Confounding by indication is illustrated with systemic therapy for psoriasis and incident psoriatic arthritis, where severity drives both treatment and outcome; protopathic bias arises when therapy is prescribed for early symptoms of the outcome. Selection bias is illustrated with an eligibility restriction: excluding patients with osteoarthritis or fibromyalgia when studying arthralgia as a predictor of transition removes people less likely to progress and inflates the association. Immortal time bias is illustrated by classifying patients as biologic users on the basis of future initiation. Collider bias is illustrated by risk factor paradoxes in which smoking appears protective. Propensity score methods are said to improve comparability while depending on covariates that claims data may not contain. Target trial emulation is presented as the structured approach that permits causal inference and minimizes selection and immortal time bias.",
+   "future_research": [
+    {
+     "gap": "Which questions these data can and cannot answer is identified as the decisive issue and is not settled.",
+     "kind": "stated",
+     "quote": "Ensuring methodological rigor and knowing which questions can and cannot be answered with these data will be vital to\nrealizing this potential and guiding evidence-based care.",
+     "locator": "Conclusion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "ELG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A worked example shows an eligibility restriction acting as a conditioning statement that opens rather than closes a path: excluding patients with osteoarthritis or fibromyalgia from a study of arthralgia as a predictor of progression preferentially removes people who would not have progressed, so the restriction manufactures the association it then reports. The exclusion looks like ordinary cleaning of a confounded comparison.",
+     "quote": "For example, excluding patients with osteoarthritis or fibromyalgia when evaluating arthralgia as a predictor of PsA transition may preferentially remove individuals less likely to progress, inflating observed associations.",
+     "locator": "Methodological challenges in using RWD"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "After a careful catalogue of confounding by indication, protopathic bias, selection and collider bias, target trial emulation is introduced as the approach that permits causal inference and minimizes selection and immortal time bias. The design does prevent the time-related biases just described; it does not deliver exchangeability, and the framing carries the specification across into the assumption burden without argument.",
+     "quote": "Target trial emulation offers a structured approach permitting causal inference from observational data, and this is particularly valuable when RCTs are unavailable.",
+     "locator": "Target trial emulation section"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The remedy offered for confounding by indication is propensity score matching or weighting, whose validity is then made conditional on covariates that claims data may not hold. No negative control, proxy or validation source is proposed for the residual, so the analysis ends with a named and unquantified confounding assumption.",
+     "quote": "Propensity score methods (eg, matching or weighting) can improve comparability but depend on relevant covariates, which may be missing in claims data, leading to residual confounding.",
+     "locator": "Methodological challenges in using RWD"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0208",
+   "read": true,
+   "doi": "10.4178/epih.e2026026",
+   "title": "Beyond cohort versus case-control: the primacy of exposure assessment over study design in occupational cancer epidemiology.",
+   "relevance": "high",
+   "one_line": "Argues that divergence between cohort and case-control risk estimates in occupational cancer reflects exposure assessment quality rather than design, with group-level assignment attenuating estimates toward the null and immortal time bias compounding the attenuation.",
+   "what_was_done": "Evidence hierarchies rank prospective cohorts above case-control studies, while exposure assessment, which is what an occupational risk estimate actually rests on, attracts less methodological attention. The review argues from three lines that the design label is the wrong discriminator. Variance decomposition shows that assigning exposure at the group level attenuates the effect estimate by a reliability ratio that approaches zero as within-worker variability comes to dominate between-group variability. Berkson error in job-exposure matrices, combined with nonlinearity in the exposure-response model, biases estimates toward the null. And the healthy worker effect, immortal time bias and left truncation compound the misclassification and push cohort estimates further null. Two case studies show the pattern: for night shift work and breast cancer a case-control odds ratio of 1.34 against a cohort relative risk of 0.98, rising to 1.88 and 1.13 at 30 years of cumulative exposure; for welding fumes and lung cancer a pooled cohort relative risk of 1.29 against a case-control odds ratio of 1.87, with a cohort using individual breathing-zone measurements recovering a hazard rate ratio of 2.34 at the highest exposure. The recommendation is that quality assessment tools and meta-analyses stratify evidence by exposure assessment method rather than by design.",
+   "future_research": [
+    {
+     "gap": "Quality assessment instruments and regulatory frameworks do not stratify studies by the precision of exposure information, which the review argues they should.",
+     "kind": "stated",
+     "quote": "should evaluate studies by the precision of their exposure information — distinguishing individual-level",
+     "locator": "Conclusion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The review quantifies what treating an error-prone exposure as error-free costs: with group-level assignment the reliability ratio, and with it the effect estimate, goes to zero as within-worker variability dominates, and Berkson error in a job-exposure matrix combined with model nonlinearity pushes the estimate null. The empirical contrasts are large, a cohort relative risk of 0.98 against a case-control odds ratio of 1.34 for the same question, with a hazard rate ratio of 2.34 recovered once individual breathing-zone measurements are used.",
+     "quote": "assignment attenuates effect estimates by a reliability ratio approaching zero as within-worker variability",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The entry says a methodological label is treated as evidence about a study's assumption burden. This is the same failure with a different label: a prospective cohort outranks a case-control study in every standard hierarchy, and the review shows the ranking inverts once exposure assessment is taken into account, because the design name says nothing about the measurement that carries the estimate.",
+     "quote": "rather than its design label. Group-level assignment attenuates effect estimates and may compromise",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Immortal time bias is named alongside the healthy worker effect and left truncation as a design-induced distortion that compounds measurement error rather than acting independently of it. In this literature the three arise together from how cohort entry and exposure accrual are timed, so a correction addressing only one of them leaves the estimate biased in the same direction.",
+     "quote": "biases estimates toward the null. Third, the healthy worker effect, immortal time bias, and left truncation",
+     "locator": "Abstract"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0210",
+   "read": true,
+   "doi": "10.2147/copd.s603211",
+   "title": "Effect of Exposure to Inhaled Corticosteroids on Lung Cancer Incidence - A Comparison of Earlier Study Methodology on the Financial Database of the Hungarian National Health Insurance Fund.",
+   "relevance": "high",
+   "one_line": "Reproduces two published and contradicting study designs in one national database, finds both give a protective effect, and reports that dropping the latency window reverses the result.",
+   "what_was_done": "Two published studies of inhaled corticosteroids and lung cancer in chronic obstructive pulmonary disease reached opposite conclusions using different designs. This study rebuilt both designs in the financial database of the Hungarian National Health Insurance Fund, which covers the whole population, over 2009 to 2019, ending before the pandemic disturbed routine care. The Suissa-style cohort enrolled 96,686 patients and the Raymakers-style cohort 196,560, with mean ages of 65.7 and 65.3 years, 48.4 and 56 percent women, and 26.2 and 60.8 percent using inhaled corticosteroids for more than a year; 4,941 and 8,969 incident lung cancers were identified. Both models were corrected for immortal time bias. Adjusted Cox models gave hazard ratios of 0.77, with an interval of 0.63 to 0.94, and 0.61, with an interval of 0.53 to 0.70, so both designs showed a protective association in this database although the original studies disagreed. The interpretation offered is that population-level factors mattered more than the analytic approach. A sensitivity analysis found that discarding the latency period strongly changed the outcomes, reducing or reversing the protective effect, while discarding the protopathic period changed the estimates little but changed the cohort size substantially. Smoking is unavailable, lung cancer is not histologically confirmed, and the diagnosis of chronic obstructive pulmonary disease is not confirmed by spirometry.",
+   "future_research": [
+    {
+     "gap": "The comparison required a deliberately limited adjustment model, so whether further confounders change the conclusion is unknown.",
+     "kind": "stated",
+     "quote": "Inclusion of further confounders to investigate their effect is a necessary next step to strengthen our conclusion.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "Censoring at the protopathic window is a crude handling of a competing process; a multi-state model is named as the better treatment and not used.",
+     "kind": "stated",
+     "quote": "Furthermore, the use of a multi-state model instead of simple censoring in case of the protopathic period would provide a more sophisticated outcome.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Two time windows had to be fixed before any estimate existed, a latency period between exposure and a plausible cancer and a protopathic period excluding treatment prompted by early symptoms. The sensitivity analysis shows the latency window is not a detail: removing it reduces or reverses the protective effect, that is, it changes the sign of the conclusion. Nothing in the design selects the window without reference to what it does to the result.",
+     "quote": "discarding latency period had a strong effect on the outcomes, mainly reducing the protective effect of ICS or even reversing it",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "BEN-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Two designs that disagreed in their original databases agree when run in a third, and the reproduction is read as showing that population-level factors outweigh the analytic approach. That is a direct demonstration that a design's performance in one database does not transfer: whichever of the original studies a reader trusted, the reason for the disagreement is not settled by rebuilding both, since the new agreement could equally reflect Hungarian lung cancer incidence, a single-payer system capturing all patients, or a decade in which high-dose prescribing had already disappeared.",
+     "quote": "our results in both cohorts align more closely with those of Raymakers et al, despite using Suissa’s methodology in Cohort 1, suggesting that population-level factors may have a stronger influence on the observed association than the specific analytical approach employed",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The exposure is a dispensing record, the outcome is an administrative lung cancer code with no histologic confirmation, the underlying disease is coded rather than confirmed by spirometry, and the dominant confounder is absent entirely. An exploratory check found that one cohort's exposed group contained more patients whose prescriptions were mostly asthma-coded, which changes baseline lung cancer risk. All of this is discussed and none of it is propagated into the estimate.",
+     "quote": "Finally, through database analysis, it is not possible to access patient level data (like smoking history), histologically validate LC occurrence, or validate the COPD diagnosis by spirometry.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0211",
+   "read": true,
+   "doi": "10.1038/s41531-026-01423-7",
+   "title": "Immortal time bias from conditioning on future events in Parkinson's disease survival analysis.",
+   "relevance": "high",
+   "one_line": "Shows that a widely cited Parkinson's disease survival study defines both case status and exclusions from future prescription patterns while starting follow-up at the first prescription, making cases unable to die for at least 180 days.",
+   "what_was_done": "The comment reanalyzes the design of a published Parkinson's disease survival study. Cases are defined as individuals with at least three consecutive anti-Parkinson prescriptions, each at least 30 days apart, spanning at least 180 days from first to last, while follow-up begins at the first prescription. Anyone meeting that definition cannot have died within the first 180 days, and in an extreme case with prescriptions a year apart would be immortal for two years. A separate exclusion, applied to people under 80, removes those with less than a year of treatment and an off-treatment period over two years, which again conditions on information from after baseline; the comment works through two paired examples showing this exclusion can bias in either direction and may not add net bias, while illustrating the general problem. The bias is visible in the published survival curves, which show no deaths in the Parkinson group during the first 180 days, including among people over 90. Three remedies are given with their trade-offs: start follow-up at the first prescription without using future treatment information, at the cost of exposure misclassification; or take a landmark at 180 days, assess the three-prescription criterion there, and estimate conditional survival, comparing against conditional survival in the general population. The comment notes the bias matters most where mortality is highest, so it bears directly on the original conclusion about survival at ages 85 and above.",
+   "future_research": [
+    {
+     "gap": "Each available remedy answers a slightly different question, and nothing selects among them.",
+     "kind": "stated",
+     "quote": "Each strategy involves trade-offs and targets a slightly different research question, but all avoid conditioning on future events.",
+     "locator": "Comment"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Eligibility is assessed over a 180-day window using prescriptions that had not yet occurred at the moment follow-up begins, so the time eligibility is established and the time follow-up starts are separated by design. The consequence is visible rather than theoretical: no deaths appear in the case group during the immortal window, including in the oldest age band that carries the paper's headline conclusion. The three times a trial fixes in one act came apart, and the published design gives no procedure that would have aligned them.",
+     "quote": "This may introduce immortal time bias, as individuals classified as having PD, by definition, cannot die within the first 180 days.",
+     "locator": "Comment"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Every fix changes the question rather than sharpening the answer. Starting at the first prescription without the confirmatory criterion defines a different, more misclassified exposure; a 180-day landmark estimates survival conditional on surviving six months, which must then be compared against the corresponding conditional survival in the general population. The protocol component that cannot be observed directly, disease onset, forces a different estimand in each case.",
+     "quote": "One option is to define the first prescription as the start of follow-up without relying on future treatment information, although this may increase exposure misclassification.",
+     "locator": "Comment"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0212",
+   "read": true,
+   "doi": "10.1093/ehjdh/ztag105",
+   "title": "Electronic health records research: easy evidence, harder oversight.",
+   "relevance": "high",
+   "one_line": "Distinguishes electronic health record studies built on patient-level data from those built on aggregate query platforms, and shows that the aggregate route cannot define an index date for the unexposed arm, cannot phenotype, and cannot support comparative effectiveness claims.",
+   "what_was_done": "Electronic health record research networks differ in a way that is often unstated: some supply harmonized patient-level data, others are commercial query platforms returning summarized counts from built-in cohort tools. The viewpoint works through what the aggregate route loses. Patient-level data allow phenotypes built from encounter type, repetition and medication history, so diabetes can require an inpatient primary or secondary diagnosis, two outpatient encounters, or documented insulin in the prior year, and myocardial infarction can exclude type two events occurring in the context of sepsis. Aggregate data allow only diagnostic codes, which are reported at under 60 percent accuracy, with no way to tell an acute event from a historical or incidental code, and outcome events are counted from any encounter carrying the code. Baseline medication exposure cannot be distinguished between a single prescription, an inpatient administration and sustained outpatient use, so medication-based adjustment misclassifies. Immortal time bias becomes harder still, because summary counts do not fix when follow-up begins for a non-intervention group. Discordance with trials is cited for beta-blockers in chronic obstructive pulmonary disease and for hormone replacement therapy, both from patient-level studies, with the argument that if patient-level data can fail this way aggregate data will fail worse. Reporting expectations are proposed.",
+   "future_research": [
+    {
+     "gap": "Which questions these data sources can and cannot answer is not codified, and the proposed reporting expectations are offered as norms rather than as requirements anyone enforces.",
+     "kind": "stated",
+     "quote": "Strengthening methodological norms is essential to preserve the credibility of EHR-based evidence as its influence on clinical discourse continues to grow.",
+     "locator": "Abstract"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "On an aggregate query platform there is no mechanism that assigns a start of follow-up to the arm that received nothing, because the output is a count rather than a set of person-times. The comparison is then between a group whose clock starts at an intervention and a group whose clock starts at whatever the platform did, and the study cannot report which.",
+     "quote": "For example, when comparing outcomes after an intervention vs. no intervention, aggregate outputs may not clearly specify when follow-up begins for the non-intervention group.",
+     "locator": "Viewpoint"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A figure is put on the error that emulations enter as an error-free binary variable: diagnostic codes are under 60 percent accurate in these data, and without patient-level access there is no way to tell an active condition from a historical or incidental code, or an acute decompensation from a code carried forward. The same limit applies to baseline medication status, which cannot distinguish one prescription from months of continuous use.",
+     "quote": "This limitation is particularly consequential given that ICD codes demonstrate less than 60% accuracy in EHR-based data.",
+     "locator": "Viewpoint"
+    },
+    {
+     "problem_id": "DTA-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Two studies can both claim to adjust for hypertension and diabetes while meaning entirely different things, because on a query platform the analyst instructs the software to control for a code and on patient-level data the analyst builds a phenotype from encounter type, repetition and medication duration. Harmonized structure does not make the variable mean the same thing, and the viewpoint's first recommendation is that studies declare which level of data they used.",
+     "quote": "In aggregate data, this precision is not currently achievable; the investigator can instruct the software to control for hypertension, diabetes, and medication use at baseline, but the lack of granularity leaves confounders that cannot be fully characterized or mitigated.",
+     "locator": "Viewpoint"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A concrete reporting list is proposed and it is close to what the entry says is missing: the level of data, the code lists and case definitions, the time-zero definition for each group separately, the follow-up, and the outcome definitions. It stops short of the code itself, the weight diagnostics and the rejected protocol versions, and it is a proposal in a viewpoint rather than a requirement anyone applies.",
+     "quote": "Accordingly, studies using EHR-data should clearly report the level of data used (aggregate vs. patient-level data), the code lists and case definitions used, the time-zero definition for each study group, follow-up, and definition of outcomes.",
+     "locator": "Viewpoint"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0214",
+   "read": true,
+   "doi": "10.1111/1759-7714.70261",
+   "title": "Association of Immune-Related Adverse Events and the Efficacy of Immune Checkpoint Inhibitors in Non-Small Cell Lung Cancer: Adjusting for Immortal Time Bias.",
+   "relevance": "high",
+   "one_line": "Shows that an apparent survival benefit of immune-related adverse events disappears once immortal time is handled, using three landmark times and a time-dependent Cox model that agree except at one landmark.",
+   "what_was_done": "Immune-related adverse events develop after treatment starts, so a patient must survive long enough to have one; treating the event as a baseline characteristic makes the group that had them appear to live longer. The study analyzes 129 patients with advanced non-small cell lung cancer on first-line immune checkpoint inhibitors, of whom 58, or 45.0 percent, developed such an event, over a median follow-up of 9.7 months. Unadjusted analyses reproduce the reported literature finding, with a hazard ratio of 0.55 for progression-free survival and 0.42 for overall survival. Handling the immortal time removes it: landmark analyses at 30, 42 and 75 days show no significant survival differences except progression-free survival at the 42-day landmark, where the direction favors the group without events, and a time-dependent Cox model gives 1.16 for progression-free survival and 0.93 for overall survival. Baseline performance status of two or worse and programmed death-ligand 1 expression remained independent predictors. A post hoc calculation reports 22.5 percent power to detect a hazard ratio of 0.70 for overall survival and 35.1 percent for progression-free survival, so a type two error cannot be excluded.",
+   "future_research": [
+    {
+     "gap": "The two immortal-time remedies may themselves introduce new selection or detection biases, and no analysis characterizes that.",
+     "kind": "stated",
+     "quote": "Second, despite the use of two methods (landmark and time‐dependent Cox) to mitigate the immortal time bias, new selection or detection biases may have been introduced",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "There is no accepted validation method for a time-dependent Cox model, so the power calculation had to be done post hoc by an approximate route.",
+     "kind": "stated",
+     "quote": "Given the lack of a robust validation method for time‐dependent Cox models, a post hoc power calculation, based on Schoenfeld's method, revealed that our study had only 22.5% power to detect a moderate clinically relevant effect",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Three landmark times were used, 30, 42 and 75 days, with no stated procedure selecting them, and the results were not invariant to the choice: the single significant finding in the entire analysis occurs at one of the three landmarks and points in the opposite direction to the literature it is testing. A grid chosen by convention, and reported as a set of alternatives rather than as one principled choice, is exactly the situation the entry describes.",
+     "quote": "the results of the landmark analyses were largely consistent with those of the time‐dependent Cox model, with the only significant difference being in PFS at the 42‐day landmark, whereby PFS was longer in the non‐irAE than in the irAE group",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "After the immortal time is removed, the analysis has 22.5 percent power for overall survival, so the null result cannot be distinguished from a moderate real benefit. The correction that makes the design valid is the same one that consumes the information, since the person-time it removes is where the apparent effect lived.",
+     "quote": "This suggests that our negative finding regarding the association between irAEs and OS (HR 0.93) is likely to be the result of a Type II error, and a moderate survival benefit cannot be ruled out.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0217",
+   "read": true,
+   "doi": "10.2188/jea.je20250126",
+   "title": "Evaluation of Time-related Bias With Non-user Control.",
+   "relevance": "high",
+   "one_line": "Derives formulas for misclassified and excluded immortal time bias with non-user controls, compares three time-zero settings by simulation and real-world data, and shows that matching non-users to the treated at the matched initiation date is nearly unbiased even under time-dependent confounding.",
+   "what_was_done": "Two forms of immortal time bias arise when non-users are the comparator: misclassified, where pre-treatment time is counted as treated time, and excluded, where pre-treatment time is dropped. The paper formulates both mathematically for a two time point setting, then compares three time-zero settings by simulation, under no confounding and no effect, and under time-dependent confounding, and by real-world analysis of fibrate added to statin. Method 1 follows both groups from cohort entry, method 2 follows the treated from initiation and non-users from cohort entry, and method 3 follows the treated from initiation and matched non-users from their matched patient's initiation date. Methods 1 and 2 are substantially biased, with method 1 worse, while method 3 is nearly unbiased in both scenarios. The formulas show the magnitude of excluded immortal time bias grows with the proportion who switch to treatment, and that misclassified bias is the more severe of the two. The paper distinguishes method 3 from landmark analysis, which is unbiased only under the null and is susceptible to prevalent user bias unless restricted to incident users, and notes that exposure density sampling implements essentially the same procedure. It also states that the different immortal-time remedies target different estimands even when all report hazard ratios, and connects the requirement to target trial emulation.",
+   "future_research": [
+    {
+     "gap": "The estimands targeted by the different immortal-time remedies differ, and a systematic account of those differences is deferred.",
+     "kind": "stated",
+     "quote": "A detailed discussion of these differences is left for future research, but they should be carefully considered when choosing a method.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "The formulation is limited to two time points and assumes proportional hazards; behavior under later switching or a violated proportionality assumption is unknown.",
+     "kind": "stated",
+     "quote": "In addition, the model assumes proportional hazards, and the extent of bias when this assumption is violated remains unclear.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "The evaluation covers the intention-to-treat effect only, and results may differ for a per-protocol effect.",
+     "kind": "stated",
+     "quote": "Moreover, while this study evaluated time-related biases in estimating the ITT effect using RWD, different results may arise if a per-protocol effect is estimated instead.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This supplies what the entry says is missing for one common design: an analytic account of the direction and magnitude of the bias under each candidate time zero, a demonstration that the ranking survives time-dependent confounding, and a rule that does not depend on inspecting the outcome. The rule is stated precisely and goes beyond the usual formulation, since alignment of time zero, eligibility and assignment within each arm separately is not enough; the assessment times must agree across the whole cohort. The grace period and the time grid are untouched, and the derivation covers two time points under proportional hazards.",
+     "quote": "Therefore, it is necessary to ensure that time-zero, eligibility, and treatment assignment are consistently aligned across the entire cohort, not just within each group.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Several accepted remedies for immortal time all report a hazard ratio, and the paper states that the estimands behind those hazard ratios differ, as do the assumptions each needs. Matching to the treated targets an effect among the treated with time zero at initiation, while an inverse probability weighted time-dependent model targets a population average and may set time zero at cohort entry. A reader given a hazard ratio and the name of the correction cannot recover which quantity was estimated.",
+     "quote": "it should be noted that even when these (like method 3) target estimation of HRs, the corresponding (interpretation of the) estimands being targeted generally differs across methods, and the assumptions required for valid estimation are not identical",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The standard remedy, analyzing treatment as time-dependent in a Cox model, removes immortal time and reintroduces bias when time-varying confounders are adjusted in the same regression, through collider stratification and through conditioning on mediators. So the choice is not between a correct and an incorrect estimator but between estimators that fail in different ways, and the paper's preferred method escapes both by changing the estimand.",
+     "quote": "However, in situations where time-varying confounding is present, using time-dependent Cox regression adjusting for time-varying confounders can introduce bias.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0218",
+   "read": true,
+   "doi": "10.1007/s40123-025-01300-1",
+   "title": "Reassessment of the Collaborative Normal-Tension Glaucoma Study: Statistical Evidence and Implications for Current Management.",
+   "relevance": "high",
+   "one_line": "Reassesses a landmark glaucoma trial whose reported benefit came from shifting the analytical baseline in the treated arm after randomization and censoring a treatment-caused competing event, neither of which survives an intention-to-treat analysis.",
+   "what_was_done": "The Collaborative Normal-Tension Glaucoma Study is cited as evidence that a 30 percent reduction in intraocular pressure slows progression in normal-tension glaucoma. This reassessment re-examines its survival methodology: the definition of time zero, the censoring rules, and the difference between the intention-to-treat and per-protocol comparisons. Two analytical decisions carry the reported effect. The analytical baseline for the treatment group was moved to the point at which intraocular pressure stabilized, which excludes progression events occurring before that point and introduces immortal time bias. And cataract-related visual decline, which was more common in the treatment group and is a consequence of the treatment, was censored rather than modeled as a competing risk or a time-dependent covariate, which further reduces counted progression events in the treated arm. The adjusted per-protocol analysis was statistically significant and the original intention-to-treat analysis, including all randomized eyes from time zero and all progression events, was not. The reassessment traces how the conditional result has been cited since as if it were an unconditional one, calling this citation drift, and works from published data only, without individual time-to-event information, so no survival curves are re-estimated.",
+   "future_research": [
+    {
+     "gap": "Trials in this area need prespecified analysis plans, randomization as time zero for both arms, and competing-risk or time-dependent handling of treatment-caused events rather than censoring.",
+     "kind": "stated",
+     "quote": "These include prespecified analysis plans, consistent use of randomization as time zero for both treatment and control groups, and appropriate handling of treatment-related events such as cataract formation using competing-risk or time-dependent approaches rather than censoring.",
+     "locator": "Conclusions"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Time zero was set differently in the two arms and set by a post-randomization event, stabilization of intraocular pressure, which can occur only in people who remained event free until it happened. The excluded interval is immortal time in a randomized trial, where the correct time zero was available by construction, which shows the failure is not peculiar to observational data.",
+     "quote": "CNTGS shifted the analytical baseline for the treatment group to the point of IOP stabilization, thereby excluding early progression events and introducing immortal time bias.",
+     "locator": "Abstract, Results"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Cataract formation is caused by the treatment and it degrades the visual field measurement that defines the outcome. It was removed by censoring, which is the data-cleaning treatment the entry describes, and censoring an event that the treatment causes and that competes with the outcome removes events differentially from the treated arm. The reassessment names the two alternatives, competing risk or time-dependent covariate, that would have made the choice an identifying assumption.",
+     "quote": "Additionally, cataract-related visual decline, more frequent in the treatment group, was censored rather than treated as a competing risk or time-dependent covariate.",
+     "locator": "Abstract, Results"
+    },
+    {
+     "problem_id": "PRO-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The baseline was redefined after randomization and after the data were in hand, and the reported benefit depends on that redefinition: the same trial analyzed as specified shows nothing. This is the mechanism the entry describes, an analysis conditioning on a protocol that was in fact selected after seeing outcome-relevant information, occurring in a randomized trial where the pre-specified alternative was available for comparison.",
+     "quote": "The potential treatment benefit reported in CNTGS depended largely on post hoc analytical modifications, whereas the original ITT analysis did not support a statistically significant effect of IOP reduction.",
+     "locator": "Abstract, Conclusion"
+    },
+    {
+     "problem_id": "PRO-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The rejected analysis did not disappear from the paper; it disappeared from the literature. The reassessment documents subsequent citations describing the trial as the most compelling evidence for lowering pressure and reporting the per-protocol result without the null intention-to-treat result beside it. What is recorded downstream is the surviving analysis, not the set of analyses that were run, so a reader cannot see that the estimate was one of several.",
+     "quote": "Here, a trial demonstrating potential benefit under specific analytic modifications has, in some contexts, come to be cited as if it had shown clear-cut benefit under ITT conditions.",
+     "locator": "Propagation of Ambiguity into Clinical Interpretation"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}
