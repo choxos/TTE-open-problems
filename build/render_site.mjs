@@ -756,6 +756,19 @@ author's framing.
   const themes = (gaps.themes || []).filter((t) => t.papers >= 3 && t.span >= 8)
   if (themes.length) {
     const dry = themes.filter((t) => !t.progress_years.length)
+    // Whether the most-restated themes are already in the catalog is a fact about this
+    // run, not a standing one. The sibling project asserts they are not, which is true
+    // only while the labellers are running against placeholder ids for proposals that
+    // have yet to be drafted; asserting it after the proposals have been folded in tells
+    // a reader that every entry in the table below is unregistered when all of them are.
+    const unregistered = themes.filter((t) => t.registered === false)
+    const standing = unregistered.length
+      ? `${unregistered.length} of the themes below are not registered problems yet. They are\n` +
+        'candidates from this reading, and they need the same scrutiny as any other entry\n' +
+        'before they become one.'
+      : 'Every theme below is already a registered problem, so this table is a measure of\n' +
+        'how often the catalog\'s own entries are independently restated rather than a list\n' +
+        'of candidates for it.'
     out.push(`## The same gap, named again and again
 
 Papers name the gaps they leave behind, in their own words. Across the corpus the same gap
@@ -768,8 +781,7 @@ chronology falls out.
 ${themes.length} themes were named by three or more papers across eight or more years;
 **${dry.length} of those have no paper in the corpus reporting any progress at all**.
 
-The most-restated of them are not registered problems yet. They are candidates from this
-reading, and they need the same scrutiny as any other entry before they become one.
+${standing}
 
 ::: {.table-scroll}
 
