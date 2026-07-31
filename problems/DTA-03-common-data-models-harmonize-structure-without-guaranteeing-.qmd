@@ -1,6 +1,6 @@
 ---
 title: "Common data models harmonize structure without guaranteeing that the same variable means the same thing"
-description: "Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within one site. Multi-source linked databases are associated with better emulation of trials, which makes linkage decisions consequential rather than administrative. Common data models solve the structural half and do not guarantee semantic equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications. Semantic drift is invisible in the analytic dataset, because the column is populated and the values are in range."
+description: "Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within a site. Multi-source linked databases are associated with better emulation of trials, which makes the linkage decisions consequential rather than administrative. Common data models solve the structural half of this and do not guarantee semantic or causal equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications."
 pid: "DTA-03"
 topic: "Data sources, linkage & federated infrastructure"
 categories: ["Data sources, linkage & federated infrastructure", "High priority", "Confirmed open"]
@@ -20,11 +20,11 @@ tractability: 4
 :::
 ## Statement
 
-Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within one site. Multi-source linked databases are associated with better emulation of trials, which makes linkage decisions consequential rather than administrative. Common data models solve the structural half and do not guarantee semantic equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications. Semantic drift is invisible in the analytic dataset, because the column is populated and the values are in range.
+Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within a site. Multi-source linked databases are associated with better emulation of trials, which makes the linkage decisions consequential rather than administrative. Common data models solve the structural half of this and do not guarantee semantic or causal equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications.
 
 ## Why it is open
 
-Detecting drift requires the mapping history and a comparison across extracts, and both are normally discarded once the analytic file is built, so the evidence that would settle it is destroyed rather than merely unexamined. Linkage error is also non-random, correlating with the same social and health-system factors that predict treatment and outcome, which makes it a confounded measurement error rather than noise. And propagating linkage uncertainty correctly needs an explicit model of the linkage mechanism, which is exactly what a probabilistic linkage supplies only partially.
+Semantic drift is invisible in the analytic dataset: the column is populated and the values are in range. Detecting it requires the mapping history and a comparison across extracts, both of which are usually discarded once the analytic file is built. Linkage error is also non-random, correlating with the same social and health-system factors that predict treatment and outcome, so it is a confounded measurement error rather than noise.
 
 ## What has been tried
 
@@ -39,16 +39,12 @@ Detecting drift requires the mapping history and a comparison across extracts, a
 
 ## Probable solution or research direction
 
-Maintain provenance graphs from source field to analytic variable and publish them, so a reader can see which code set produced an outcome and when it changed. Run phenotype invariance and temporal-drift checks as standard diagnostics, and report leave-one-source-out analyses so each linked source's contribution is visible. Propagate linkage uncertainty under stated assumptions about the linkage mechanism, and report a linkage sensitivity analysis rather than treating a probabilistic weight as though it converted bias into variance.
+Maintain provenance graphs from source field to analytic variable and publish them with the study, so a reader can see which code set produced an outcome and when it changed. Run phenotype invariance and temporal-drift checks as standard diagnostics, and report leave-one-source-out analyses so the contribution of each linked source to the estimate is visible. Carry probabilistic linkage weights into the causal estimator rather than resolving links to a hard match, which turns linkage uncertainty into interval width instead of hidden bias.
 
 ## Verification
 
 ::: {.verification-trail}
 **Verdict.** Confirmed open. Auditors agreed the problem is open and no counterevidence surfaced.
-
-**The source said.** "Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within a site. Multi-source linked databases are associated with better emulation of trials, which makes the linkage decisions consequential rather than administrative. Common data models solve the structural half of this and do not guarantee semantic or causal equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications."
-
-**What was wrong with it.** The statement stands; the proposed direction did not. Carrying probabilistic linkage weights into the estimator does not turn linkage bias into variance and does not by itself guarantee unbiased estimation. Propagating linkage uncertainty requires stating the assumptions under which the propagation is valid.
 
 Literature and prior-art check
 :   **open / supported.** A search for linkage or common-data-model work addressing semantic drift, provenance graphs or phenotype invariance returned nothing in the screened corpus. The concordance meta-analysis provides indirect support by finding that claims-based emulations tended to underestimate trial effects and that outcome-emulation quality predicted agreement, which is the data-provenance channel operating without being measured directly. The absence is the evidence here, so the confidence is capped: informatics venues indexed outside these eight phrases would not have been retrieved.

@@ -781,6 +781,178 @@
   "verdict_rationale": "Part of this problem is addressed by existing work; the entry names which part."
  },
  {
+  "id": "ELG-03",
+  "category": "ELG",
+  "title": "No procedure bounds the bias a comparator sampling scheme introduces before the study is run",
+  "statement": "An emulation without an active comparator often builds its reference arm by drawing matched comparators from a population registry. Three schemes are in use: sampling with replacement, sampling without replacement in random order, and sampling without replacement in chronological order. They are not interchangeable. Sampling without replacement in random order conditions on the future, because a comparator consumed by a later-diagnosed patient was necessarily alive at that later date and is thereby removed from the pool available to an earlier one; this is the immortal time mechanism operating on the comparator arm rather than on the treated. Sampling without replacement in chronological order fails instead by exhaustion, leaving almost a fifth of a 347,882 patient heart failure cohort unmatched at five comparators per patient and returning a reference arm skewed young once unmatched patients are dropped. Which failure dominates, and in which direction, depends on the sampling ratio and on the comparators' own outcome risk: at one comparator per patient the three schemes nearly coincide, and at five per patient in an elderly cohort they do not. No procedure bounds the resulting bias from quantities available before the analysis, so the scheme is picked by convention and its consequences are read off afterward, one dataset at a time.",
+  "why_open": "The bias is a property of the joint distribution of index dates, comparator survival and pool depletion, so it cannot be recovered from the sampled cohort alone: the counterfactual is the comparison cohort that a different scheme would have produced, and only one scheme is ever run. The magnitude is setting-specific rather than universal, and the one empirical demonstration that exists is confined to a single national registry, one disease and two outcomes, with its own report stating that it does not quantify the differences in general. The literature cannot supply the missing calibration either, because most published studies using this design do not report which scheme they used. Nor is it a matter of adjustment after the fact: the scheme is executed during cohort construction, before any model is fitted, so no estimator downstream can price a choice that has already determined who is in the comparison arm.",
+  "prior_work": [
+   {
+    "cite": "Heide-Jorgensen U, et al. Sampling strategies for selecting general population comparison cohorts. Clin Epidemiol 2018;10:1325-1337",
+    "doi_or_url": "10.2147/CLEP.S164456",
+    "what_it_does": "Compares the three schemes against index cohorts whose true outcome rates are known by construction, shows sampling without replacement in random order inflates comparator outcome rates when comparators are at substantial risk, and states that it does not provide a way to quantify the differences in general."
+   },
+   {
+    "cite": "Suissa S. Immortal time bias in pharmacoepidemiology. Am J Epidemiol 2008;167(4):492-499",
+    "doi_or_url": "10.1093/aje/kwm324",
+    "what_it_does": "Characterizes the conditioning-on-the-future mechanism for the treated arm, which is the same mechanism that acts here on comparator availability, without treating comparator sampling as a site where it can arise."
+   },
+   {
+    "cite": "Hernan MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. Am J Epidemiol 2016;183(8):758-764",
+    "doi_or_url": "10.1093/aje/kwv254",
+    "what_it_does": "Requires the comparator to be specified as a trial would specify it, which makes the question askable but does not reach the sampling procedure that realizes it."
+   },
+   {
+    "cite": "Arnold K, Antunes L, Coles B, et al. Application of the target trial emulation framework to external comparator studies. Front Drug Saf Regul 2024",
+    "doi_or_url": "10.3389/fdsfr.2024.1380568",
+    "what_it_does": "Applies the protocol components to externally constructed comparison arms, where the same construction step sits, and addresses eligibility and time zero rather than the order in which eligible comparators are consumed."
+   },
+   {
+    "cite": "Cashin AG, Hansford HJ, Hernan MA, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA 2025",
+    "doi_or_url": "10.1001/jama.2025.13350",
+    "what_it_does": "Requires the comparator and its emulation to be reported; it does not require the sampling scheme that produced the comparison cohort, which is the item whose absence makes the published literature uninformative here."
+   }
+  ],
+  "proposed_direction": "Derive the bias in the comparator hazard as a function of the three quantities an analyst knows before sampling: the sampling ratio, the size of the eligible pool relative to the index cohort within matching strata, and the comparator baseline hazard. The random-order case is tractable analytically, since depletion of the pool by later index dates is a known selection on survival, and it should yield a bound rather than a point correction. Simulate across sampling ratios and comparator risk to locate where the schemes separate, using the design in which index-cohort rates are known by construction so that error is measurable rather than inferred. Make the scheme, the ratio, and the count of unmatched index patients reportable items, since a scheme that leaves a fifth of patients unmatched has changed the study population and not only the reference arm. Sampling with replacement avoids both failures at the cost of dependence between observations, so quantify what that dependence costs in variance and settle whether it is the default.",
+  "priority": "Medium-high",
+  "maturity": "Emerging",
+  "tractability": 4,
+  "severity": "The reference arm's outcome rate is set by a construction step nothing downstream can see.",
+  "protocol_component": null,
+  "data_setting": null,
+  "source": {
+   "slice": "reading",
+   "raw_id": "core-16/L0311",
+   "locator": "proposed by the paper reader on L0311, accepted by the second reviewer"
+  },
+  "_group": "ELG",
+  "related": [
+   "ELG-01",
+   "ELG-02",
+   "TZO-01",
+   "OVL-01"
+  ],
+  "audit": {
+   "opinions": [
+    {
+     "problem_id": "ELG-03",
+     "status_vote": "open",
+     "support_vote": "supported-with-caveat",
+     "confidence": 0.72,
+     "rationale": "Searched against the 1,376-record screened corpus rather than from memory. Exactly one record addresses the object of this entry: the same 2018 Clinical Epidemiology study the entry cites. The searches that would surface a competing treatment return nothing: zero records for risk set sampling, zero for population comparator, zero for comparator selection, and the only record matching sampling with replacement is that same paper. The adjacent literature is the external control and external comparator work, twelve records, and it is about adjusting a comparison arm to a trial population by weighting or matching, not about the order in which eligible comparators are consumed from a finite pool; the three of those records held in full text contain no occurrence of with replacement, without replacement, chronological order or risk set. The mechanism itself is not novel, since conditioning on the future is Suissa's immortal time bias, but no work applies it to comparator pool depletion or bounds the result. The caveat is on scope rather than on existence. The cited study's own headline is that the three schemes agree in the general population setting and separate only when comparators carry substantial outcome risk, and that the separation largely disappears at one comparator per patient; the entry states this, and a reader should not take the failure as general to matched comparator designs.",
+     "weakest_true_restatement": "No procedure bounds, from quantities available before cohort construction, the bias that the choice among comparator sampling schemes introduces, and the published literature using the design mostly does not report which scheme was used, so the magnitude cannot be recovered from it either.",
+     "resolving_work": [],
+     "counter_evidence": [
+      {
+       "locator": "10.2147/CLEP.S164456",
+       "title": "Sampling strategies for selecting general population comparison cohorts",
+       "year": 2018,
+       "what_it_shows": "Bounds the scope rather than the problem: at one comparator per index person the three schemes nearly coincide, so the failure is a property of the sampling ratio and comparator risk together rather than of matched comparator designs in general.",
+       "quote": "when we sampled one to one, the differences between all comparison cohorts decreased, though the mortality rate was still elevated in the comparison cohort sampled without replacement in random order"
+      },
+      {
+       "locator": "10.2147/CLEP.S164456",
+       "title": "Sampling strategies for selecting general population comparison cohorts",
+       "year": 2018,
+       "what_it_shows": "Supports the reporting half of the entry directly: of the published studies using this design that it surveys, most do not state the sampling strategy at all.",
+       "quote": "While a few studies reported sampling with replacement, 5 , 19 the sampling strategy was not described in others."
+      }
+     ],
+     "auditor": "literature"
+    },
+    {
+     "problem_id": "ELG-03",
+     "status_vote": "open",
+     "support_vote": "overstated",
+     "confidence": 0.98,
+     "rationale": "The future-conditioning mechanism under random-order sampling without replacement is correct, and chronological sampling can exhaust sparse matching strata at high sampling ratios. The statement nevertheless overreaches. Bias is undefined until a target comparator distribution, outcome scale, and effect estimand are specified; differences between sampled cohorts are not automatically causal-effect bias. Exhaustion is not unique to chronological sampling, and sampling with replacement guarantees matches only in strata containing at least one eligible comparator. The alternative cohorts are also not intrinsically counterfactual or unavailable: when the source registry and sampling frame are retained, all schemes can be rerun before effect estimation. Known inclusion probabilities, standardization, or selection weighting can address some sampling effects when the necessary frame variables, outcome information, positivity, and identifying assumptions hold. Nonparametric recovery generally fails only when the analyst retains the realized cohort without adequate frame information or when relevant target strata have zero inclusion probability. Conversely, no nontrivial universal bound can be obtained from the sampling ratio, aggregate pool ratio, and marginal baseline hazard alone. Joint information about index dates, matching strata, eligibility histories, survival, competing events, and outcome risk is required; distributions sharing the proposed three summaries can produce different directions and magnitudes. A useful calibration method under explicit assumptions remains an open roadmap item, but the asserted universal absence of procedures and downstream remedies is false, and the severity is substantial only for high sampling fractions in sparse, high-risk strata.",
+     "weakest_true_restatement": "In matched external-comparator designs with high sampling fractions, random-order sampling without replacement can select on future survival or event-free status, while chronological sampling without replacement can deplete sparse matching strata. If only the realized matched cohort is retained and no adequate sampling-frame information or identifying assumptions are available, the comparator risk under an alternative scheme is not point identified. No nontrivial universal bound follows from the sampling ratio, aggregate pool ratio, and marginal baseline hazard alone. Analysts should retain the source frame, prespecify and report the scheme and unmatched counts, rerun feasible schemes, and use design-based adjustment or sensitivity analysis when its assumptions are supportable.",
+     "resolving_work": [],
+     "counter_evidence": [
+      {
+       "locator": "10.2147/CLEP.S164456",
+       "quote": "In this study, we compare the following three sampling strategies for selecting comparison cohorts"
+      },
+      {
+       "locator": "10.2147/CLEP.S164456",
+       "quote": "sampling without replacement failed to sample an adequate number of comparators"
+      }
+     ],
+     "auditor": "codex"
+    },
+    {
+     "problem_id": "ELG-03",
+     "status_vote": "open",
+     "support_vote": "supported",
+     "confidence": 0.74,
+     "rationale": "Under an inverted prior, the literature still treats pre-analysis bias bounds for general-population comparator sampling as missing. Heide-Jørgensen et al. (Clin Epidemiol 2018;10:1325-1337; doi:10.2147/CLEP.S164456) remains the central evidence: it demonstrates that sampling without replacement in random order can inflate comparator outcome rates via conditioning on the future, that chronological sampling without replacement fails by exhaustion (nearly one-fifth unmatched at 5:1 in a 347,882 heart-failure cohort, with a younger residual reference arm), and that the three schemes nearly coincide at 1:1 but separate at 5:1 when comparators are at high risk. Its own Discussion states the decisive limitation: the study “did not present means of quantifying the size of these differences in general.” That is documentation of the phenomenon, not a bound recoverable from sampling ratio, pool-to-index size within matching strata, and comparator baseline hazard before sampling is run.\n\nSearches for a later resolving method returned none. Queries covered: (1) the paper’s own limitation language and its citations; (2) “sampling with/without replacement” + “general population comparison cohort” + chronological/random order + bias/bound/quantify, restricted to 2019–2026; (3) AJE, Epidemiology, IJE, EJE, JCE, PDS, Clin Epidemiol, Stat Med, SMMR, Biometrics, Biostatistics, BMC Med Res Methodol, Observational Studies, BMJ/JAMA/AIM, plus arXiv stat.ME/AP and medRxiv; (4) MatchIt, WeightIt, TrialEmulation, gfoRmula, lmtp, ltmle, cobalt, and related packages for a pre-analysis bias bound for registry comparator sampling (they implement with/without replacement for propensity matching, a different design); (5) TARGET 2025, Arnold et al. Front Drug Saf Regul 2024, STaRT-RWE/HARPER, ENCePP, FDA/EMA external-control guidance. What appears after 2018 is mostly applied uptake: Danish and other registry studies cite Heide-Jørgensen and default to sampling with replacement (or 1:1). That is a design convention, not a bound. Iwagami (Ann Clin Epidemiol 2022) discusses with/without-replacement tradeoffs for matching but supplies no pre-run bias formula for the three schemes. Austin-style PSM order and with/without-replacement results address treated–untreated matching within a study population, not index-date assignment of general-population comparators under pool depletion. TARGET requires reporting the comparator and its emulation, not the sampling scheme that produced the comparison arm, so the published literature remains largely uninformative for calibration.\n\nA method paper that only proposes or recommends with replacement without evaluating a general bound would still leave the problem open. A sensitivity analysis after sampling would price consequences of a choice already executed, not bound bias from quantities known before cohort construction. No retrieved work derives the comparator-hazard bias as a function of the three pre-sampling quantities named in the agenda, or provides a validated simulation protocol that yields bounds rather than one-dataset case reports. Status therefore remains open; the statement is proportionate to the evidence.",
+     "weakest_true_restatement": null,
+     "resolving_work": [],
+     "counter_evidence": [],
+     "auditor": "grok"
+    },
+    {
+     "problem_id": "ELG-03",
+     "status_vote": "abstain",
+     "support_vote": "overstated",
+     "confidence": 0.8,
+     "rationale": "The claim asserts that 'No procedure bounds the resulting bias from quantities available before the analysis,' which reads as a structural impossibility. However, the report's own proposed direction ('Derive the bias in the comparator hazard as a function of the three quantities an analyst knows before sampling... it should yield a bound') demonstrates that the problem is not structurally impossible but rather a gap in current methodology. The claim is overstated, wearing the language of impossibility for what is actually an absence of a standard procedure. I abstain on the status axis because I cannot verify whether such a procedure has already been derived in the literature.",
+     "weakest_true_restatement": "No currently established procedure bounds the resulting bias from quantities available before the analysis, so the scheme is picked by convention and its consequences are read off afterward, one dataset at a time.",
+     "resolving_work": [],
+     "counter_evidence": [],
+     "auditor": "glm"
+    }
+   ],
+   "adjudication": {
+    "rule_version": "adjudicate.v3",
+    "status": "open",
+    "support": "overstated",
+    "decision_path": [
+     "R5:default-open",
+     "R8:overstated-majority(n=2/4)"
+    ],
+    "status_tally": {
+     "open": 3,
+     "abstain": 1
+    },
+    "support_tally": {
+     "supported-with-caveat": 1,
+     "overstated": 2,
+     "supported": 1
+    },
+    "dissent": [
+     {
+      "auditor": "literature",
+      "axis": "support",
+      "verdict": "supported-with-caveat",
+      "evidence": [
+       {
+        "locator": "10.2147/CLEP.S164456",
+        "title": "Sampling strategies for selecting general population comparison cohorts",
+        "year": 2018,
+        "what_it_shows": "Bounds the scope rather than the problem: at one comparator per index person the three schemes nearly coincide, so the failure is a property of the sampling ratio and comparator risk together rather than of matched comparator designs in general.",
+        "quote": "when we sampled one to one, the differences between all comparison cohorts decreased, though the mortality rate was still elevated in the comparison cohort sampled without replacement in random order"
+       },
+       {
+        "locator": "10.2147/CLEP.S164456",
+        "title": "Sampling strategies for selecting general population comparison cohorts",
+        "year": 2018,
+        "what_it_shows": "Supports the reporting half of the entry directly: of the published studies using this design that it surveys, most do not state the sampling strategy at all.",
+        "quote": "While a few studies reported sampling with replacement, 5 , 19 the sampling strategy was not described in others."
+       }
+      ],
+      "rationale": "Searched against the 1,376-record screened corpus rather than from memory. Exactly one record addresses the object of this entry: the same 2018 Clinical Epidemiology study the entry cites. The searches that would surface a competing treatment return nothing: zero records for risk set sampling, zero for population comparator, zero for comparator selection, and the only record matching sampling with replacement is that same paper. The adjacent literature is the external control and external comparator work, twelve records, and it is about adjusting a comparison arm to a trial population by weighting or matching, not about the order in which eligible comparators are consumed from a finite pool; the three of those records held in full text contain no occurrence of with replacement, without replacement, chronological order or risk set. The mechanism itself is not novel, since conditioning on the future is Suissa's immortal time bias, but no work applies it to comparator pool depletion or bounds the result. The caveat is on scope rather than on existence. The cited study's own headline is that the three schemes agree in the general population setting and separate only when comparators carry substantial outcome risk, and that the separation largely disappears at one comparator per patient; the entry states this, and a reader should not take the failure as general to matched comparator designs.",
+      "addressed_by": null
+     }
+    ],
+    "human_review_required": true
+   },
+   "dissent": "literature dissented (supported-with-caveat): Searched against the 1,376-record screened corpus rather than from memory. Exactly one record addresses the object of this entry: the same 2018 Clinical Epidemiology study the entry cites. The searches that would surface a competing treatment return nothing: zero records for risk set sampling, zero for population comparator, zero for comparator selection, and the only record matching sampling with replacement is that same paper. The adjacent literature is the external control and external comparator work, twelve records, and it is about adjusting a comparison arm to a trial population by weighting or matching, not about the order in which eligible comparators are consumed from a finite pool; the three of those records held in full text contain no occurrence of with replacement, without replacement, chronological order or risk set. The mechanism itself is not novel, since conditioning on the future is Suissa's immortal time bias, but no work applies it to comparator pool depletion or bounds the result. The caveat is on scope rather than on existence. The cited study's own headline is that the three schemes agree in the general population setting and separate only when comparators carry substantial outcome risk, and that the separation largely disappears at one comparator per patient; the entry states this, and a reader should not take the failure as general to matched comparator designs."
+  },
+  "verdict": "overstated",
+  "verdict_rationale": "2 independent auditors judged the claim as stated too strong. In matched external-comparator designs with high sampling fractions, random-order sampling without replacement can select on future survival or event-free status, while chronological sampling without replacement can deplete sparse matching strata. If only the realized matched cohort is retained and no adequate sampling-frame information or identifying assumptions are available, the comparator risk under an alternative scheme is not point identified. No nontrivial universal bound follows from the sampling ratio, aggregate pool ratio, and marginal baseline hazard alone. Analysts should retain the source frame, prespecify and report the scheme and unmatched counts, rerun feasible schemes, and use design-based adjustment or sensitivity analysis when its assumptions are supportable."
+ },
+ {
   "id": "EST-03",
   "category": "EST",
   "title": "A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible",
