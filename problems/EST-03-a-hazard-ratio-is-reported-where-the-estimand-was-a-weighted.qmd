@@ -3,21 +3,26 @@ title: "A hazard ratio is reported where the estimand was a weighted per-protoco
 description: "Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. The concrete failure is specific rather than general: a reader sees a hazard ratio and infers an intention-to-treat contrast, while the analysis in fact estimated a per-protocol effect, weighted for informative censoring, among the subset of patients whose observed treatment stayed compatible with a strategy during a grace period. Those are different quantities in different populations and nothing in the presentation distinguishes them."
 pid: "EST-03"
 topic: "Estimands, causal contrasts & target populations"
-categories: ["Estimands, causal contrasts & target populations", "Very high priority", "Unverifiable"]
+categories: ["Estimands, causal contrasts & target populations", "Very high priority", "Partially addressed", "Protocol: Causal contrast", "Protocol: Outcome", "Data: Any setting"]
 priority: "Very high"
 prank: 1
-verdict: "Unverifiable"
-verdictslug: "unverifiable"
+verdict: "Partially addressed"
+verdictslug: "partially-addressed"
 maturity: "Established"
 tractability: 5
 ---
 ::: {.problem-meta}
 [EST-03]{.problem-id}
-[Unverifiable]{.verdict .verdict-unverifiable}
+[Partially addressed]{.verdict .verdict-partially-addressed}
 [Very high priority]{.chip .chip-priority-very-high}
 [Established]{.chip .chip-maturity-established}
 [Tractability 5/5]{.chip}
 :::
+::: {.problem-axes}
+Bites on: [Causal contrast]{.chip .chip-axis} [Outcome]{.chip .chip-axis}  
+Seen in: [Any setting]{.chip .chip-axis}
+:::
+
 ## Statement
 
 Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. The concrete failure is specific rather than general: a reader sees a hazard ratio and infers an intention-to-treat contrast, while the analysis in fact estimated a per-protocol effect, weighted for informative censoring, among the subset of patients whose observed treatment stayed compatible with a strategy during a grace period. Those are different quantities in different populations and nothing in the presentation distinguishes them.
@@ -45,9 +50,11 @@ Require a one-sentence estimand statement naming the intervention, the populatio
 ## Verification
 
 ::: {.verification-trail}
-**Verdict.** Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.
+**Verdict.** Partially addressed. Part of this problem is addressed by existing work; the entry names which part.
 
 **Dissent.** literature dissented (open): The estimand vocabulary is arriving in the emulation literature: a 2026 Trials paper applies a hypothetical strategy to the intercurrent event of non-adherence using the parametric g-formula, which is the ICH E9(R1) discipline executed inside a longitudinal analysis, and a 2026 Journal of Epidemiology paper argues explicitly for going beyond the hazard ratio when censoring, confounding and competing events are present. The entry's claim is about what published reports lead with rather than what is possible, and no reporting requirement in the corpus mandates a one-sentence estimand statement or absolute-risk reporting. The presence of these papers means the entry should not imply the vocabulary is missing. codex dissented (overstated): The reporting concern is valid, but the stated population is wrong. Correct clone-censor weighting does not target only patients whose observed treatment remained compatible. It reweights uncensored clone-time observations to represent artificially censored observations, thereby targeting the baseline eligible population under the specified strategies, subject to exchangeability and positivity. A bare hazard ratio identifies neither an intention-to-treat nor a per-protocol strategy and may lack a causal interpretation altogether. TARGET supplies much of the reporting solution; the residual issue is adoption rather than an unresolved estimand method.
+
+4 of the 4 independent auditors returned an opinion on this entry.
 
 Literature and prior-art check
 :   **open / supported-with-caveat.** The estimand vocabulary is arriving in the emulation literature: a 2026 Trials paper applies a hypothetical strategy to the intercurrent event of non-adherence using the parametric g-formula, which is the ICH E9(R1) discipline executed inside a longitudinal analysis, and a 2026 Journal of Epidemiology paper argues explicitly for going beyond the hazard ratio when censoring, confounding and competing events are present. The entry's claim is about what published reports lead with rather than what is possible, and no reporting requirement in the corpus mandates a one-sentence estimand statement or absolute-risk reporting. The presence of these papers means the entry should not imply the vocabulary is missing.
@@ -61,11 +68,11 @@ GPT-5.6 Sol, technical and source-code lens
 Grok 4.5, recency lens
 :   **open / supported-with-caveat.** The problem is framed as a presentation/practice failure after standards already exist: a reader sees a bare hazard ratio and infers an intention-to-treat contrast, while the analysis estimated a censoring-weighted per-protocol effect among grace-period–compatible (often cloned) patients. Maringe et al. (IJE 2020; 10.1093/ije/dyaa057), already cited, already makes the CCW estimand type explicit; that formalizes the distinction and does not change what applied papers headline. ICH E9(R1) and the TARGET statement (JAMA 2025; 10.1001/jama.2025.13350) require aligned objectives, estimands, and sensitivity analyses; TARGET item structure places target-trial protocol/estimand items (6a–g) beside emulation mapping (7a–g), and item 13 asks for effect estimates with precision including both absolute and relative measures when applicable. Official TARGET resources confirm that scope and provide protocol table and flow-diagram templates. That is real progress on the reporting-standard side and is the caveat on support: the claim is still true about practice, but “standards are missing” would be overstated after TARGET 2025. What remains open is exactly what the report names: applied reporting has not caught up; the HR remains a familiar default that survives estimator upgrades; and nothing forces a one-sentence estimand that names intervention, population induced by cloning/censoring, horizon, and intercurrent-event strategy before the first effect measure. Fourati et al. (Eur J Prev Cardiol 2026 advance article) still notes that relative measures such as hazard ratios are frequently reported and that absolute risks and risk differences at meaningful times communicate better, which is consistent with ongoing practice lag months after TARGET. No package release (TrialEmulation, gfoRmula, gfoRmulaICE, lmtp, ltmle, survtmle, concrete, riskRegression, adjustedCurves) was found that auto-emits an ICH/TARGET-style estimand sentence or demotes the HR to a supplement. Vote open: standards partially codify the proposed direction; the concrete misread of weighted grace-period PP as ITT HR remains an open practice and communication problem.
 
-glm
+GLM-5.2, third independent lens
 :   **open / supported.** The statement is well-scoped and proportionate. It accurately describes the specific mismatch between the reported effect measure (a hazard ratio) and the actual estimand (a per-protocol effect among the grace-period compatible) in clone-censor-weight analyses. The reasons for it being open (cultural inertia of the hazard ratio, difficulty of clinically describing the cloned population, and reluctance to commit to a time horizon for absolute measures) are practical and structural barriers that genuinely support the problem being open.
 
 Decision path
-:   `R3:partially-solved(n=1/4) → R7:counter-and-support-both-present(support=1/counter=1)`
+:   `R3:partially-solved(n=1/4) → R9:substantiated-overstatement(n=1/4):codex`
 
 :::
 
@@ -165,9 +172,10 @@ It is also being **closed in pieces**: partial results come from more than one p
 ## Related problems
 
 ::: {.related-links}
-- [CNF-01 — Convergence of treatment in the comparator arm attenuates the observational intention-to-treat analogue with follow-up length](CNF-01-convergence-of-treatment-in-the-comparator-arm-attenuates-th.qmd)
-- [OUT-01 — Censoring at death is applied as data cleaning rather than as an identifying assumption](OUT-01-censoring-at-death-is-applied-as-data-cleaning-rather-than-a.qmd)
-- [REG-03 — Calling an analysis a target trial emulation is treated as evidence about its assumption burden](REG-03-calling-an-analysis-a-target-trial-emulation-is-treated-as-e.qmd)
+- [CNF-01: Convergence of treatment in the comparator arm attenuates the observational intention-to-treat analogue with follow-up length](CNF-01-convergence-of-treatment-in-the-comparator-arm-attenuates-th.qmd)
+- [EST-04: No mediated effect is defined for a sustained treatment strategy, and emulations report a proportion mediated anyway](EST-04-no-mediated-effect-is-defined-for-a-sustained-treatment-stra.qmd)
+- [OUT-01: Censoring at death is applied as data cleaning rather than as an identifying assumption](OUT-01-censoring-at-death-is-applied-as-data-cleaning-rather-than-a.qmd)
+- [REG-03: Calling an analysis a target trial emulation is treated as evidence about its assumption burden](REG-03-calling-an-analysis-a-target-trial-emulation-is-treated-as-e.qmd)
 :::
 
 ## Source

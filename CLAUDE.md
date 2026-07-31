@@ -40,15 +40,30 @@ read as one voice.
 
 ## The adjudication rule
 
-`build/adjudicate.mjs` turns auditor opinions into the published verdict. Two design principles:
+`build/adjudicate.mjs` turns auditor opinions into the published verdict. Three design principles:
 
 - **An unsubstantiated "solved" vote is not evidence.** It is downgraded, not counted (`R0`).
 - **Evidence beats votes.** A lone dissenter holding an unrebutted verbatim quote is not silently
   outvoted by auditors holding opinions.
+- **A contest needs evidence on both sides** (`R7`, from `adjudicate.v4`). The verdict it produces
+  is published as "the disagreement was evidence-bearing on both sides", so an evidence-free
+  affirmation cannot hold an entry against an auditor who brought a quote. Two further things
+  follow and both were live bugs: a `supported-with-caveat` vote is not a counter no matter what
+  it attaches, because attaching evidence to a supporting vote is what the protocol asks for; and
+  `resolving_work` counts as evidence alongside `counter_evidence`, since which array a locator
+  landed in is an artifact of the schema. Before this, twelve of the forty-three entries published
+  as `unverifiable` and on several of them only one side had brought anything at all.
 
 `INDEPENDENT` must name the auditors that actually run. The sibling ITC project declares a
 `solved-hunter` that casts zero opinions, which leaves one guard permanently inert; do not
-reproduce that. If you add or remove an auditor, bump `RULE_VERSION` and update the golden tests.
+reproduce that. If you add or remove an auditor, or change a rule, bump `RULE_VERSION` and update
+the golden tests. A rule edit is only done when a case in `tests/adjudicate.test.mjs` fails under
+the old rule and passes under the new one; check that both directions hold before keeping it.
+
+**`related` lives in `canonical/problems.json`, not in the registry.** `adjudicate.mjs` rebuilds
+`registry/problems.json` from canonical on every run, so editorial metadata written only into the
+registry survives one render and is erased by the next adjudication. Run
+`node build/symmetrize_related.mjs` after adding an entry; it is idempotent.
 
 Majority rules carry a **per-problem denominator**: a count must be at least two and at least
 half of the independent auditors that returned an opinion on that problem. Coverage is uneven

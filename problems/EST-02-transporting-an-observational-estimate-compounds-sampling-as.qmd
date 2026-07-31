@@ -3,7 +3,7 @@ title: "Transporting an observational estimate compounds sampling assumptions on
 description: "An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Weighting, outcome modeling and doubly robust transport estimators all exist, and all of them require that the effect modifiers be measured, that the populations overlap, and that effects be conditionally exchangeable across samples. Applied transport work still mostly uses conventional sampling weights or outcome models despite the more flexible alternatives. The deeper issue is that transporting an observational estimate stacks the sampling-exchangeability assumption on top of the treatment-exchangeability assumption, and no current reporting practice shows how the two compound or which one a given discrepancy should be charged to."
 pid: "EST-02"
 topic: "Estimands, causal contrasts & target populations"
-categories: ["Estimands, causal contrasts & target populations", "High priority", "Partially addressed"]
+categories: ["Estimands, causal contrasts & target populations", "High priority", "Partially addressed", "Protocol: Eligibility", "Protocol: Causal contrast", "Data: Multi-database", "Data: Federated", "Data: Any setting"]
 priority: "High"
 prank: 2
 verdict: "Partially addressed"
@@ -18,6 +18,11 @@ tractability: 3
 [Promising]{.chip .chip-maturity-promising}
 [Tractability 3/5]{.chip}
 :::
+::: {.problem-axes}
+Bites on: [Eligibility]{.chip .chip-axis} [Causal contrast]{.chip .chip-axis}  
+Seen in: [Multi-database]{.chip .chip-axis} [Federated]{.chip .chip-axis} [Any setting]{.chip .chip-axis}
+:::
+
 ## Statement
 
 An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Weighting, outcome modeling and doubly robust transport estimators all exist, and all of them require that the effect modifiers be measured, that the populations overlap, and that effects be conditionally exchangeable across samples. Applied transport work still mostly uses conventional sampling weights or outcome models despite the more flexible alternatives. The deeper issue is that transporting an observational estimate stacks the sampling-exchangeability assumption on top of the treatment-exchangeability assumption, and no current reporting practice shows how the two compound or which one a given discrepancy should be charged to.
@@ -46,6 +51,8 @@ Develop causal representation learning for transportability that balances sites 
 ::: {.verification-trail}
 **Verdict.** Partially addressed. Part of this problem is addressed by existing work; the entry names which part.
 
+4 of the 4 independent auditors returned an opinion on this entry.
+
 Literature and prior-art check
 :   **partially-solved / supported-with-caveat.** Transport methods are reaching emulation practice faster than the entry allows. A 2026 Clinical Pharmacology and Therapeutics paper performs post hoc population standardization of trial emulation studies in claims data within RCT-DUPLICATE, which is transport applied to the benchmarking corpus itself. Nurse home visiting was emulated in the policy-relevant population using targeted learning and transport, and the scoping review the entry cites documents the practice broadly. What survives is the compounding claim: no reporting practice shows how sampling exchangeability and treatment exchangeability compound, or which of the two a discrepancy should be charged to.
     Cites 10.1002/cpt.70241: Standardizes emulations to trial populations inside the largest benchmarking program, which is transport applied where the entry says it is underused..
@@ -57,7 +64,7 @@ GPT-5.6 Sol, technical and source-code lens
 Grok 4.5, recency lens
 :   **open / supported.** Transport estimators (IOSW, outcome modeling, doubly robust/TMLE, calibration) are mature for trials and increasingly documented for observational sources; that is already acknowledged by the report’s Westreich citation and does not close the problem. The open core is accounting: transporting an observational estimate stacks treatment-exchangeability on sampling-exchangeability, both largely untestable, and no standard reporting practice decomposes a discrepancy between those failure modes. Scelo et al. (Front Epidemiol 2024; 10.3389/fepid.2024.1335241) explicitly lists the internal-validity and external-validity assumption blocks side by side, notes that most are untestable, and demonstrates TMLE transport from an observational birth cohort to a registry target; that formalizes the stack and does not provide joint sensitivity or attribution. Manke-Reimers et al. (Eur J Epidemiol 2025; 10.1007/s10654-025-01217-w), already cited, maps applied transport studies and underuse of flexible estimators; a scoping review of practice is evidence the gap remains, not a solution. Adamson et al. (Pharmacoepidemiol Drug Saf 2026; 10.1002/pds.70396) offers a stepwise transportability framework for comparative effectiveness and urges sensitivity for unmeasured effect modifiers, e-values, and tipping-point analyses; that is guidance and one-parameter sensitivity, not a joint compounding account that charges residual bias to confounding versus selection/effect-modification structure. Separate sensitivity tools for unmeasured confounding and for unmeasured selection/effect modification exist; they do not identify effects when both fail in correlated ways, and the discipline rule forbids treating sensitivity as solving identification. Causal representation learning for transport that preserves effect modification (rather than predictive invariance) remains workshop/early-methods work; no 2024–2026 applied TTE package (lmtp, ltmle, WeightIt, TrialEmulation, zEpid) was found that ships joint internal-plus-external fragility bounds with attribution. Queries run: transportability observational compounding/joint sensitivity; unmeasured effect modification bounds transport; Manke-Reimers and Adamson follow-ups; Scelo 2024 full text; CRL transport effect modifiers; CRAN/GitHub keyword checks for transport modules. Vote open: methods and guidance expanded; the compounding-accounting and attribution problem as stated is not solved.
 
-glm
+GLM-5.2, third independent lens
 :   **open / supported.** The claim is coherent and pitched at the right level of generality. It accurately describes the compounding of sampling-exchangeability and treatment-exchangeability assumptions in transportability, and notes the lack of reporting practices to disentangle them. The reasons given for it being open (correlated failures of untestable assumptions, undetectable unmeasured effect modification, and the tension between predictive and causal invariance in representation learning) are valid and support the claim being open.
 
 Decision path
@@ -128,7 +135,9 @@ This problem is **recurrent**: three or more papers spanning at least eight year
 ## Related problems
 
 ::: {.related-links}
-- [DTA-02 — Averaging site estimates in a federated emulation can conceal that the sites emulated different trials](DTA-02-averaging-site-estimates-in-a-federated-emulation-can-concea.qmd)
+- [DTA-02: Averaging site estimates in a federated emulation can conceal that the sites emulated different trials](DTA-02-averaging-site-estimates-in-a-federated-emulation-can-concea.qmd)
+- [EST-05: An emulation enters a synthesis with randomized trials through a discrepancy parameter that nothing identifies](EST-05-an-emulation-enters-a-synthesis-with-randomized-trials-throu.qmd)
+- [LRN-05: A counterfactual prediction is validated under the assumptions that produced it, and nothing maps its output to a decision](LRN-05-a-counterfactual-prediction-is-validated-under-the-assumptio.qmd)
 :::
 
 ## Source

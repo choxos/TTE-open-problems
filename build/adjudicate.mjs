@@ -19,7 +19,7 @@ import { fileURLToPath } from 'node:url'
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const AUDIT = join(ROOT, 'documentation/audit')
 
-export const RULE_VERSION = 'adjudicate.v3'
+export const RULE_VERSION = 'adjudicate.v4'
 
 // Auditors whose votes are counted. The refuter is excluded on purpose: it sees the others'
 // opinions, so counting it would double-count whatever it was persuaded by.
@@ -92,7 +92,28 @@ export function adjudicate(record) {
   }
 
   // ---- Axis B: is the claim, as stated, faithful and proportionate? ----
-  const counters = indep.filter((o) => (o.counter_evidence || []).length > 0)
+  // A counter is an auditor arguing against the claim AND holding something to show for it.
+  // Both halves are load-bearing. Through v3 this filtered on the quote alone, which counted
+  // an auditor who voted `supported-with-caveat` and documented the caveat with a quote as a
+  // vote against the claim; attaching evidence to a supporting vote is the behavior the whole
+  // protocol asks for, and it was the one thing that could turn a supported entry contested.
+  // Three of the ten `unverifiable` verdicts on this registry were produced that way, and on
+  // one of them the only auditor actually voting against the claim had supplied no evidence at
+  // all, so the page told readers auditors had disagreed with evidence on both sides when
+  // neither side had brought any. A caveat now qualifies the wording through R11 and still
+  // reaches the dissent list below, which is where a documented reservation belongs.
+  const AGAINST_CLAIM = new Set(['overstated', 'misattributed'])
+  const brought = (o) =>
+    (o.counter_evidence || []).length > 0 || (o.resolving_work || []).some(hasLocator)
+  const counters = indep.filter((o) => brought(o) && AGAINST_CLAIM.has(o.support_vote))
+  // The other half of a contest, and through v3 there was no such thing: the affirming side
+  // was counted by votes while the opposing side was counted by quotes, so one auditor who
+  // read nothing could hold an entry against one who had. The verdict this produces is
+  // published as "auditors disagreed and the disagreement was evidence-bearing on both
+  // sides", and that sentence is only true if both sides brought something. A caveat is not
+  // on either side of a contest: it agrees the claim stands and says it needs narrowing,
+  // which is what R9 and R11 exist to publish.
+  const affirmers = indep.filter((o) => o.support_vote === 'supported' && brought(o))
   const supporters = indep.filter((o) => o.support_vote === 'supported')
   const over = indep.filter((o) => o.support_vote === 'overstated')
   const misattr = indep.filter((o) => o.support_vote === 'misattributed')
@@ -105,18 +126,20 @@ export function adjudicate(record) {
   if (misattr.length >= 1 && counters.length >= 1 && supporters.length === 0) {
     support = 'misattributed'
     path.push('R6:counter-quote-uncontested')
-  } else if (counters.length >= 1 && supporters.length >= counters.length) {
-    // A contest needs two sides. The ported rule fired on any counter-quote as long as one
-    // auditor voted plainly 'supported', which made a single affirming vote holding no evidence
-    // enough to neutralize two auditors holding quotes. That contradicts this rule's own second
-    // principle, that evidence beats votes, and it matters in practice: on the first run of this
-    // registry, ten of thirteen 'unverifiable' verdicts rested on one affirming vote, eight of
-    // them from the single most permissive auditor. Requiring the affirming side not to be
-    // outnumbered leaves a genuine disagreement contested and lets an outnumbered affirmation
-    // fall through to the overstatement rules below, where the evidence is weighed rather than
-    // cancelled.
+  } else if (counters.length >= 1 && affirmers.length >= 1 &&
+             affirmers.length >= counters.length) {
+    // A contest needs two sides, both of them holding something, and neither clearly
+    // outweighed. The ported rule fired on any counter-quote as long as one auditor voted
+    // plainly 'supported', which made a single evidence-free affirmation enough to neutralize
+    // two auditors holding quotes. That contradicts this rule's own second principle, that
+    // evidence beats votes, and it mattered in practice: on the first run of this registry ten
+    // of thirteen 'unverifiable' verdicts rested on one affirming vote, eight of them from the
+    // single most permissive auditor. Requiring the affirming side to have brought evidence and
+    // not to be outnumbered leaves a genuine standoff contested and lets everything else fall
+    // through to the overstatement and caveat rules below, where the evidence is weighed rather
+    // than cancelled.
     support = 'contested'
-    path.push(`R7:counter-and-support-both-present(support=${supporters.length}/counter=${counters.length})`)
+    path.push(`R7:counter-and-support-both-present(support=${affirmers.length}/counter=${counters.length})`)
   } else if (majorityOf(over.length, supportVoters)) {
     support = 'overstated'
     path.push(`R8:overstated-majority(n=${over.length}/${pD})`)

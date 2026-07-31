@@ -3,21 +3,26 @@ title: "Identification of dynamic regimes in continuous time under treatment-dep
 description: "Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Almost every applied g-method assumes a prespecified discrete grid, and discretization can reverse temporal ordering between a treatment and an outcome that fell in the same interval, merge multiple events into one, or define an estimand that exists only relative to the chosen interval. General identification results for dynamic regimes under irregular observation, treatment-dependent visiting and within-interval effects remain limited, so the applied analyst working in continuous time has a modeling apparatus without an identification theorem to sit under it."
 pid: "GMT-02"
 topic: "G-methods: specification, estimation & inference"
-categories: ["G-methods: specification, estimation & inference", "High priority", "Unverifiable"]
+categories: ["G-methods: specification, estimation & inference", "High priority", "Overstated", "Protocol: Follow-up", "Protocol: Analysis plan", "Data: EHR", "Data: Linked records"]
 priority: "High"
 prank: 2
-verdict: "Unverifiable"
-verdictslug: "unverifiable"
+verdict: "Overstated"
+verdictslug: "overstated"
 maturity: "Emerging"
 tractability: 2
 ---
 ::: {.problem-meta}
 [GMT-02]{.problem-id}
-[Unverifiable]{.verdict .verdict-unverifiable}
+[Overstated]{.verdict .verdict-overstated}
 [High priority]{.chip .chip-priority-high}
 [Emerging]{.chip .chip-maturity-emerging}
 [Tractability 2/5]{.chip}
 :::
+::: {.problem-axes}
+Bites on: [Follow-up]{.chip .chip-axis} [Analysis plan]{.chip .chip-axis}  
+Seen in: [EHR]{.chip .chip-axis} [Linked records]{.chip .chip-axis}
+:::
+
 ## Statement
 
 Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Almost every applied g-method assumes a prespecified discrete grid, and discretization can reverse temporal ordering between a treatment and an outcome that fell in the same interval, merge multiple events into one, or define an estimand that exists only relative to the chosen interval. General identification results for dynamic regimes under irregular observation, treatment-dependent visiting and within-interval effects remain limited, so the applied analyst working in continuous time has a modeling apparatus without an identification theorem to sit under it.
@@ -45,9 +50,11 @@ Combine marked point-process models, continuous-time structural nested models an
 ## Verification
 
 ::: {.verification-trail}
-**Verdict.** Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.
+**Verdict.** Overstated. 2 independent auditors judged the claim as stated too strong. Discretizing asynchronous clinical processes can obscure temporal ordering and change the intervention being estimated. A continuous-time emulation must define treatment, covariate, visit, censoring and outcome processes relative to a filtration and impose assumptions connecting latent histories to the observed visit process. Grid-refinement analyses can reveal sensitivity to discretization, but they cannot establish identification.
 
-**Dissent.** literature dissented (supported-with-caveat): The entry says general implementable identification results for dynamic regimes under irregular, treatment-dependent observation remain limited. Estimation in that setting is further along than the entry allows. Continuous-time marginal structural model weights built from a marked point process have been constructed and applied where visit times are irregular and informative and treatment history carries duration and dose. G-computation and doubly robust standardization for continuous-time data have been compared with inverse probability weighting. What has not been supplied is the general identification theorem the entry asks for, stated in filtration terms and covering within-interval effects, so the theoretical half of the claim stands while the estimation half is weaker than written. grok dissented (overstated): The claim that continuous-time dynamic-regime identification under irregular, process-driven observation is essentially without an identification theorem is stronger than the literature allows. Rytgaard, Gerds, and van der Laan (Annals of Statistics 2022) give a continuous-time counting-process TMLE for intervention-specific means when treatment, covariates, and outcomes occur at subject-specific times; intensities track monitoring; dynamic regimes on treatment assigned are defined with visit times kept as they naturally occur; and identification is via continuous-time g-computation under sequential exchangeability and positivity on the product-integral likelihood. Røysland, Ryalen, Nygård, and Didelez (JRSS-B 2025; arXiv:2202.02311) supply nonparametric graphical identification criteria for marginal effects of interventions on treatment-process intensities in continuous-time survival and event-history models, including structural conditions on censoring beyond classical independent censoring. Earlier continuous-time MSM and structural nested model work (Røysland; Ryalen et al. on prostate cancer) already stated filtration-based sequential exchangeability. What remains open, and why this is only partial: applied g-methods still default to discrete grids (Tankpinou et al. arXiv:2603.15924 still treats time partitioning as a consequential modeling choice); Rytgaard's main identification path intervenes on treatment decisions while leaving the visit intensity natural, so full dynamic control of a treatment-dependent informative visit process plus within-interval effects is not a closed applied recipe for EHR; software for continuous-time LTMLE is not yet a routine TTE default. Proposal papers that add unmeasured confounding (for example arXiv:2604.00544) are not resolutions. Identification theory exists; the residual gap is completeness for treatment-dependent observation, within-interval estimands, and routine practice.
+**Dissent.** literature dissented (supported-with-caveat): The entry says general implementable identification results for dynamic regimes under irregular, treatment-dependent observation remain limited. Estimation in that setting is further along than the entry allows. Continuous-time marginal structural model weights built from a marked point process have been constructed and applied where visit times are irregular and informative and treatment history carries duration and dose. G-computation and doubly robust standardization for continuous-time data have been compared with inverse probability weighting. What has not been supplied is the general identification theorem the entry asks for, stated in filtration terms and covering within-interval effects, so the theoretical half of the claim stands while the estimation half is weaker than written.
+
+4 of the 4 independent auditors returned an opinion on this entry.
 
 Literature and prior-art check
 :   **partially-solved / supported-with-caveat.** The entry says general implementable identification results for dynamic regimes under irregular, treatment-dependent observation remain limited. Estimation in that setting is further along than the entry allows. Continuous-time marginal structural model weights built from a marked point process have been constructed and applied where visit times are irregular and informative and treatment history carries duration and dose. G-computation and doubly robust standardization for continuous-time data have been compared with inverse probability weighting. What has not been supplied is the general identification theorem the entry asks for, stated in filtration terms and covering within-interval effects, so the theoretical half of the claim stands while the estimation half is weaker than written.
@@ -63,11 +70,11 @@ Grok 4.5, recency lens
     Cites 10.1093/jrsssb/qkae056: States nonparametric graphical identification criteria for marginal effects of interventions on continuous-time treatment-process intensities using local independence / counting-process graphs, including structural conditions on censoring; directly supplies the filtration-style identification theorem the agenda says is missing..
     Cites arxiv:2603.15924: Does not close identification; documents that discrete time partitioning remains a consequential open modeling choice in applied TTE, which supports residual openness after continuous-time theory..
 
-glm
+GLM-5.2, third independent lens
 :   **open / supported.** The claim is coherent and proportionate. It says general identification results 'remain limited' rather than asserting they do not exist, which correctly frames this as a gap in current theory rather than a structural impossibility. The reason given for openness is substantive: in continuous time, exchangeability must be stated over filtrations, conditions are strictly stronger than discrete counterparts, and event-count-based asymptotics do not scale the way patient-count asymptotics do. These are genuine theoretical obstacles, not mere inconveniences. The scope is appropriately narrow—dynamic regimes under irregular observation and treatment-dependent visiting—rather than overgeneralizing to all continuous-time causal inference.
 
 Decision path
-:   `R3:partially-solved(n=2/4) → R7:counter-and-support-both-present(support=1/counter=1)`
+:   `R3:partially-solved(n=2/4) → R8:overstated-majority(n=2/4)`
 
 :::
 
@@ -116,8 +123,8 @@ It is also being **closed in pieces**: partial results come from more than one p
 ## Related problems
 
 ::: {.related-links}
-- [MIS-01 — The visit process is treated as a nuisance to be imputed rather than as part of the causal structure](MIS-01-the-visit-process-is-treated-as-a-nuisance-to-be-imputed-rat.qmd)
-- [TZO-01 — No outcome-blind procedure selects the time grid or the grace period](TZO-01-no-outcome-blind-procedure-selects-the-time-grid-or-the-grac.qmd)
+- [MIS-01: The visit process is treated as a nuisance to be imputed rather than as part of the causal structure](MIS-01-the-visit-process-is-treated-as-a-nuisance-to-be-imputed-rat.qmd)
+- [TZO-01: No outcome-blind procedure selects the time grid or the grace period](TZO-01-no-outcome-blind-procedure-selects-the-time-grid-or-the-grac.qmd)
 :::
 
 ## Source

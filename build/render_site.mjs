@@ -19,6 +19,10 @@
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync, existsSync } from 'node:fs'
 import { join, dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+// The roster comes from the rule that uses it, so the page and the adjudication can never
+// disagree about who counts as an independent auditor. Adding one to INDEPENDENT changes
+// both at once; naming it twice is how the published number and the executed rule drift.
+import { INDEPENDENT } from './adjudicate.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const REGISTRY = join(ROOT, 'documentation/audit/registry/problems.json')
@@ -216,10 +220,40 @@ function studySection(s) {
   return out
 }
 
+// The second browse axis. Category follows the shape of the methodological problem;
+// these two follow the shape of the study, so an entry filed under estimands and an
+// entry filed under g-methods can both be reached from "analysis plan" or from "claims".
+// Both are controlled vocabularies, and an unlisted value would otherwise render as a
+// raw slug, so an unknown value is titled rather than silently dropped.
+const PROTOCOL_LABEL = {
+  eligibility: 'Eligibility',
+  'treatment-strategies': 'Treatment strategies',
+  assignment: 'Assignment',
+  'follow-up': 'Follow-up',
+  outcome: 'Outcome',
+  'causal-contrast': 'Causal contrast',
+  'analysis-plan': 'Analysis plan',
+  'cross-cutting': 'Cross-cutting',
+}
+const SETTING_LABEL = {
+  claims: 'Claims',
+  ehr: 'EHR',
+  registry: 'Registry',
+  linked: 'Linked records',
+  'trial-data': 'Trial data',
+  'multi-database': 'Multi-database',
+  federated: 'Federated',
+  any: 'Any setting',
+}
+const titleize = (s) => String(s).replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase())
+const axisLabels = (vals, map) => (vals || []).map((v) => map[v] || titleize(v))
+
 function problemPage(p) {
   const cat = BY_CODE[p.category] || { name: p.category, slug: slugify(p.category) }
   const verdictLabel = VERDICT_LABEL[p.verdict] || p.verdict
   const rank = PRIORITY_RANK[p.priority] ?? 4
+  const components = axisLabels(p.protocol_component, PROTOCOL_LABEL)
+  const settings = axisLabels(p.data_setting, SETTING_LABEL)
 
   const fm = [
     '---',
@@ -227,7 +261,13 @@ function problemPage(p) {
     `description: ${y(p.statement)}`,
     `pid: ${y(p.id)}`,
     `topic: ${y(cat.name)}`,
-    `categories: [${[cat.name, `${p.priority} priority`, verdictLabel].map(y).join(', ')}]`,
+    `categories: [${[
+      cat.name,
+      `${p.priority} priority`,
+      verdictLabel,
+      ...components.map((c) => `Protocol: ${c}`),
+      ...settings.map((s) => `Data: ${s}`),
+    ].map(y).join(', ')}]`,
     `priority: ${y(p.priority)}`,
     `prank: ${rank}`,
     `verdict: ${y(verdictLabel)}`,
@@ -248,6 +288,24 @@ function problemPage(p) {
     p.implementation_specific ? '[Implementation-specific]{.chip}' : null,
     ':::',
     '',
+    // Editorial, not audited: which protocol components the problem bites on and which
+    // data settings it has been observed in. Said so, because the audited statement is
+    // directly above and an unlabeled row inherits its authority.
+    components.length || settings.length
+      ? [
+          '::: {.problem-axes}',
+          [
+            components.length
+              ? `Bites on: ${components.map((c) => `[${c}]{.chip .chip-axis}`).join(' ')}`
+              : null,
+            settings.length
+              ? `Seen in: ${settings.map((s) => `[${s}]{.chip .chip-axis}`).join(' ')}`
+              : null,
+          ].filter(Boolean).join('  \n'),
+          ':::',
+          '',
+        ].join('\n')
+      : null,
   ].filter(Boolean).join('\n')
 
   const out = [fm, meta]
@@ -358,12 +416,30 @@ function problemPage(p) {
   // A definition list reads better than bullets here: each auditor is a named term with
   // its finding underneath, and the trail is meant to be skimmed by auditor.
   const opinions = p.audit?.opinions || []
+  // Every auditor that can appear needs an entry here, or it renders as its own bare
+  // lowercase key. `solved-hunter` is deliberately absent: it is the sibling project's
+  // roster, it casts nothing here, and a label for it would advertise a lens that never ran.
   const label = {
     literature: 'Literature and prior-art check',
-    'solved-hunter': 'Prior-art search (inverted prior)',
     codex: 'GPT-5.6 Sol, technical and source-code lens',
     grok: 'Grok 4.5, recency lens',
+    glm: 'GLM-5.2, third independent lens',
     refuter: 'Adversarial refutation',
+  }
+  // Coverage is uneven, because an auditor can run out of quota or return an empty envelope,
+  // and the majority rules are sized by who actually answered on this entry. Saying so here
+  // is what makes the decision path below readable: a 2-of-3 is a different fact from a 2-of-4.
+  const reached = new Set(opinions.map((o) => o.auditor).filter((a) => INDEPENDENT.includes(a)))
+  if (reached.size) {
+    out.push(
+      `${reached.size} of the ${INDEPENDENT.length} independent auditors returned an opinion on ` +
+        `this entry` +
+        (reached.size < INDEPENDENT.length
+          ? `; ${INDEPENDENT.filter((a) => !reached.has(a)).join(', ')} did not, and the majority ` +
+            'rules below are sized accordingly.'
+          : '.'),
+      ''
+    )
   }
   for (const o of opinions) {
     const votes = [o.status_vote, o.support_vote].filter(Boolean).join(' / ')
@@ -452,7 +528,7 @@ function problemPage(p) {
     out.push('::: {.related-links}')
     for (const r of p.related) {
       const t = REGISTRY_INDEX[r]
-      if (t) out.push(`- [${r} — ${t.title}](${t.filename})`)
+      if (t) out.push(`- [${r}: ${t.title}](${t.filename})`)
     }
     out.push(':::', '')
   }
@@ -559,7 +635,7 @@ catalog is about.
   if (done.length) {
     out.push('## Completed', '')
     for (const [pid, s] of done) {
-      out.push(`### ${link(pid)} — ${s.title}`, '')
+      out.push(`### ${link(pid)}: ${s.title}`, '')
       if (alsoOn[pid]?.length) {
         out.push(`Also bears on ${alsoOn[pid].map(link).join(', ')}.`, '')
       }
@@ -618,8 +694,8 @@ catalog is about.
   )
   for (const [i, r] of (queue.queue || []).entries()) {
     out.push(
-      `| ${i + 1} | ${link(r.id)} ${r.title} | ${(r.methods || []).join(', ') || '—'} ` +
-        `| ${r.study_type} | ${r.answerable} | ${r.feasibility ?? '—'}/5 | ${r.priority} |`
+      `| ${i + 1} | ${link(r.id)} ${r.title} | ${(r.methods || []).join(', ') || 'none stated'} ` +
+        `| ${r.study_type} | ${r.answerable} | ${r.feasibility ?? 'n/a'}/5 | ${r.priority} |`
     )
   }
   out.push('', ':::', '')

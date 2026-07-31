@@ -3,21 +3,26 @@ title: "Sensitivity analyses vary one violated assumption at a time when several
 description: "A conventional emulation reports a point estimate under exchangeability, positivity and correct measurement, and then a sensitivity analysis that relaxes one of them. In a longitudinal emulation on routine data all of them are doubtful simultaneously: unmeasured confounding, selection into the cohort, misclassification of exposure and outcome, and practical positivity failure all operate at once and interact. There is little theory for the joint case, so the reported uncertainty is a sampling interval around a point that is identified only under a conjunction the analysis has already conceded is false. What is missing is a way to report an identification region reflecting all the violations together, separately from the sampling interval."
 pid: "UCF-02"
 topic: "Unmeasured confounding, negative controls & bias analysis"
-categories: ["Unmeasured confounding, negative controls & bias analysis", "High priority", "Unverifiable"]
+categories: ["Unmeasured confounding, negative controls & bias analysis", "High priority", "Overstated", "Protocol: Analysis plan", "Data: Any setting"]
 priority: "High"
 prank: 2
-verdict: "Unverifiable"
-verdictslug: "unverifiable"
+verdict: "Overstated"
+verdictslug: "overstated"
 maturity: "Emerging"
 tractability: 3
 ---
 ::: {.problem-meta}
 [UCF-02]{.problem-id}
-[Unverifiable]{.verdict .verdict-unverifiable}
+[Overstated]{.verdict .verdict-overstated}
 [High priority]{.chip .chip-priority-high}
 [Emerging]{.chip .chip-maturity-emerging}
 [Tractability 3/5]{.chip}
 :::
+::: {.problem-axes}
+Bites on: [Analysis plan]{.chip .chip-axis}  
+Seen in: [Any setting]{.chip .chip-axis}
+:::
+
 ## Statement
 
 A conventional emulation reports a point estimate under exchangeability, positivity and correct measurement, and then a sensitivity analysis that relaxes one of them. In a longitudinal emulation on routine data all of them are doubtful simultaneously: unmeasured confounding, selection into the cohort, misclassification of exposure and outcome, and practical positivity failure all operate at once and interact. There is little theory for the joint case, so the reported uncertainty is a sampling interval around a point that is identified only under a conjunction the analysis has already conceded is false. What is missing is a way to report an identification region reflecting all the violations together, separately from the sampling interval.
@@ -43,9 +48,9 @@ Construct modular bias models whose parameters describe each violation separatel
 ## Verification
 
 ::: {.verification-trail}
-**Verdict.** Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.
+**Verdict.** Overstated. 2 independent auditors judged the claim as stated too strong. Several material threats may coexist in a longitudinal routine-data emulation, and one-at-a-time sensitivity analyses need not characterize their joint effect. A joint analysis must specify compatible bias parameters, dependence restrictions, the target population, and the estimand, then distinguish the resulting partial-identification set from finite-sample uncertainty; without such restrictions, the causal-effect bounds may be vacuous.
 
-**Dissent.** grok dissented (overstated): The agenda claim that there is little theory for joint violations is not faithful. Multi-bias quantitative bias analysis is textbook material (Lash–Fox–Fink), with simultaneous adjustment methods, multiple-bias bounds, and released software. Smith, Mathur, and VanderWeele (2021) give composite bounds for unmeasured confounding, selection, and differential exposure/outcome misclassification and explicitly warn that one-at-a-time analysis can misstate joint impact. Brendel, Torres, and Arah (2023) develop simultaneous multi-bias adjustment via imputation and/or regression weighting for uncontrolled confounding, selection bias, and misclassification together; the CRAN package multibias (v1.7.3, still maintained 2026) implements that framework and advertises use for observational longitudinal real-world evidence. The EValue ecosystem documents multiple-bias bound examples. Gerlach-Wood et al. (2025) review QBA software and catalog tools that adjust several bias sources simultaneously (multibias, episensr variants, others), while still noting gaps and uneven simultaneous versus sequential implementations. For longitudinal time-varying treatment settings closer to sustained-strategy emulation, Tan (2025, Biometrika) formulates multi-period sensitivity models under sequential unmeasured confounding and contrasts joint versus product sensitivity models, which directly engages the report’s point that product-of-marginals can be the wrong answer. These works partially deliver the proposed direction: modular bias parameters, joint regions or adjusted estimates under several systematic errors, and (in probabilistic QBA) separation of systematic from sampling uncertainty. They do not fully close the problem as stated for a complete longitudinal g-methods target trial emulation in which unmeasured confounding, selection, measurement error, and practical positivity failure all enter one modular identification region reported as standard practice. Gao et al. (2025, Biometrics) still describe joint multi-assumption sensitivity for externally controlled trials as largely unexplored outside their omnibus contribution, which is useful counterweight to over-claiming full solution. No journal mandate for joint identification regions in TTE was found; professional cost of wide regions remains a social, not a mathematical, barrier. Package checks of TrialEmulation/gfoRmula/lmtp did not show native multi-bias identification-region reporting. So the correct status is partial solution of the joint multi-bias theory/software agenda for standard observational designs, with residual open work for full sustained-strategy TTE g-method modules and for ID-region-versus-sampling-interval reporting as a field norm. The claim of little joint theory is overstated relative to Smith–VanderWeele bounds, Brendel simultaneous multi-bias, multibias software, and Tan’s joint longitudinal sensitivity models.
+4 of the 4 independent auditors returned an opinion on this entry.
 
 Literature and prior-art check
 :   **open / supported.** No work in the corpus reports a joint identification region over simultaneous unmeasured confounding, selection, misclassification and positivity failure in a longitudinal emulation, nor separates an identification region from a sampling interval in its reporting. Multiverse analysis of design choices is the nearest neighbor and varies design rather than bias parameters. The absence is consistent with the entry, and the confidence is capped because a partial-identification literature exists outside the eight search phrases used to build this corpus and would not have been retrieved.
@@ -60,11 +65,11 @@ Grok 4.5, recency lens
     Cites 10.32614/CRAN.package.multibias: Released, maintained R software that simultaneously adjusts for any combination of uncontrolled confounding, exposure/outcome misclassification, and selection bias, based on Brendel et al. (2023), and marketed for observational longitudinal real-world evidence..
     Cites 10.1093/biomet/asae044: Develops multi-period sensitivity models and sharp/conservative bounds for longitudinal causal effects under sequential unmeasured confounding, and formulates joint versus product sensitivity models, addressing interaction of time-indexed assumption violations rather than a single one-at-a-time parameter..
 
-glm
+GLM-5.2, third independent lens
 :   **open / supported.** The claim is internally consistent and correctly scoped as a gap in current practice and available theory rather than a structural impossibility. The reasons given for it being open (bias parameters living on different scales, non-product joint regions due to interactions, and professional costs) genuinely support the claim that joint sensitivity analyses are not standard and lack established, convenient theory. The severity is proportionate to the methodological gap.
 
 Decision path
-:   `R3:partially-solved(n=1/4) → R7:counter-and-support-both-present(support=2/counter=1)`
+:   `R3:partially-solved(n=1/4) → R8:overstated-majority(n=2/4)`
 
 :::
 
@@ -144,8 +149,8 @@ This problem is **recurrent**: three or more papers spanning at least eight year
 ## Related problems
 
 ::: {.related-links}
-- [OVL-01 — Positivity diagnostics describe weights instead of naming which patient histories are unsupported](OVL-01-positivity-diagnostics-describe-weights-instead-of-naming-wh.qmd)
-- [UCF-01 — Negative controls, proxies and validation data are not integrated into a standard emulation workflow](UCF-01-negative-controls-proxies-and-validation-data-are-not-integr.qmd)
+- [OVL-01: Positivity diagnostics describe weights instead of naming which patient histories are unsupported](OVL-01-positivity-diagnostics-describe-weights-instead-of-naming-wh.qmd)
+- [UCF-01: Negative controls, proxies and validation data are not integrated into a standard emulation workflow](UCF-01-negative-controls-proxies-and-validation-data-are-not-integr.qmd)
 :::
 
 ## Source

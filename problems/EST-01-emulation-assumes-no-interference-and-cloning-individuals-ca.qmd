@@ -3,7 +3,7 @@ title: "Emulation assumes no interference, and cloning individuals can produce j
 description: "One person's treatment can change another's outcome through infection, provider behavior, household exposure or a shared resource constraint. Target trial emulation as normally practiced assumes this does not happen. Methods under partial interference define direct and spillover effects and are well developed in their own literature, but they are rarely joined to emulation, and the join is not cosmetic: eligibility, assignment and positivity all become cluster- or network-dependent quantities. Cloning individuals independently, which is the standard device for grace periods, can assign a set of clones a joint strategy that no cluster could actually receive, so the artificial censoring is then censoring on an impossible world. The TARGET reporting guideline currently offers no cluster-trial extension."
 pid: "EST-01"
 topic: "Estimands, causal contrasts & target populations"
-categories: ["Estimands, causal contrasts & target populations", "High priority", "Confirmed open"]
+categories: ["Estimands, causal contrasts & target populations", "High priority", "Confirmed open", "Protocol: Assignment", "Protocol: Causal contrast", "Data: Registry", "Data: Linked records", "Data: Multi-database"]
 priority: "High"
 prank: 2
 verdict: "Confirmed open"
@@ -18,6 +18,11 @@ tractability: 2
 [Emerging]{.chip .chip-maturity-emerging}
 [Tractability 2/5]{.chip}
 :::
+::: {.problem-axes}
+Bites on: [Assignment]{.chip .chip-axis} [Causal contrast]{.chip .chip-axis}  
+Seen in: [Registry]{.chip .chip-axis} [Linked records]{.chip .chip-axis} [Multi-database]{.chip .chip-axis}
+:::
+
 ## Statement
 
 One person's treatment can change another's outcome through infection, provider behavior, household exposure or a shared resource constraint. Target trial emulation as normally practiced assumes this does not happen. Methods under partial interference define direct and spillover effects and are well developed in their own literature, but they are rarely joined to emulation, and the join is not cosmetic: eligibility, assignment and positivity all become cluster- or network-dependent quantities. Cloning individuals independently, which is the standard device for grace periods, can assign a set of clones a joint strategy that no cluster could actually receive, so the artificial censoring is then censoring on an impossible world. The TARGET reporting guideline currently offers no cluster-trial extension.
@@ -46,6 +51,8 @@ Define network target trials in which the exposure mapping is part of the protoc
 ::: {.verification-trail}
 **Verdict.** Confirmed open. Auditors agreed the problem is open and no counterevidence surfaced.
 
+4 of the 4 independent auditors returned an opinion on this entry.
+
 Literature and prior-art check
 :   **open / supported.** Nothing in the corpus defines a network target trial with an explicit exposure mapping, cluster-level clone-censor-weighting, or a positivity condition stated for joint neighborhood exposure. The interference literature is present in the corpus only through its own methodological line, and the multi-site and distributed-analysis papers address data governance rather than interference. The claim that individual cloning can assign clones a joint strategy no cluster could receive is a structural argument the entry makes rather than one the corpus states, and it follows from the definitions.
 
@@ -55,7 +62,7 @@ GPT-5.6 Sol, technical and source-code lens
 Grok 4.5, recency lens
 :   **open / supported.** Inverted-prior search did not find a solution that joins partial-interference identification to target-trial emulation in a way that closes the gaps named in the statement. Papadogeorgou et al. (2019), already cited, supplies cluster/population allocation estimands under interference; it does not supply an emulation protocol, joint-neighborhood positivity diagnostics, or clone-censor rules that keep cluster strategies feasible. Buchanan et al. (Stat Med 2022; 10.1002/sim.9427) is the closest prior art: it defines a target-trial protocol for disseminated (spillover) effects of MOUD within provider-based clusters using routinely collected data, so the “rarely joined” claim should be read as rare rather than never. That paper is an application and estimation sketch under partial interference for a specific provider-cluster exposure mapping; it does not invent cluster-level clone-censor-weighting, does not resolve non-canonical exposure mappings, and does not evaluate network mismeasurement. Lu et al. (arXiv 2604.12900, 2026) propose emulating stepped-wedge cluster randomized trials for staggered policy adoption; that covers group-level policy emulation and mentions spillovers as a shared design concern, not individual-treatment cloning that assigns impossible joint strategies. Official TARGET resources (target-guideline.org, retrieved 2026) still scope the checklist to parallel-group, individually randomized target trials, list “Emulation of a cluster target trial” as a possible future extension, and state that no extensions are currently in development, which confirms rather than repairs the reporting gap. Searches across AJE/Epidemiology/IJE/EJE/JCE/PDS/Stat Med/Biometrics, arXiv stat.ME, medRxiv, and package activity (TrialEmulation, gfoRmula, gfoRmulaICE, lmtp, ltmle, CICI, WeightIt) found no merged software that implements network/cluster-compatible clone-censor-weighting or network TMLE for TTE. Contagion/homophily/spillover non-separability and joint-neighborhood positivity remain structural; sensitivity to edge deletion is proposed in the agenda and was not found as a standard TTE tool. Vote open: prior art proposes joins in narrow settings; none solves exposure-mapping canonicity, joint positivity, network error, or cluster-compatible cloning as stated.
 
-glm
+GLM-5.2, third independent lens
 :   **open / supported.** The statement is internally consistent and proportionate. It correctly identifies that standard target trial emulation assumes no interference, and that joining interference methods to emulation is non-trivial because eligibility, assignment, and positivity become cluster-dependent. The reasons given for it being open (lack of canonical exposure mapping, stronger positivity requirements for joint exposures, and network measurement error) are valid structural methodological challenges that entail the problem is open. It does not assert an impossibility, but rather a current gap in joined practice.
 
 Decision path
@@ -102,7 +109,7 @@ It is also being **closed in pieces**: partial results come from more than one p
 ## Related problems
 
 ::: {.related-links}
-- [PRO-05 — Emulation is proposed for non-pharmaceutical and policy interventions whose treatment versions and assignment units are not defined](PRO-05-emulation-is-proposed-for-non-pharmaceutical-and-policy-inte.qmd)
+- [PRO-05: Emulation is proposed for non-pharmaceutical and policy interventions whose treatment versions and assignment units are not defined](PRO-05-emulation-is-proposed-for-non-pharmaceutical-and-policy-inte.qmd)
 :::
 
 ## Source

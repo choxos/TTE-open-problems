@@ -72,13 +72,78 @@ const cases = [
     ]),
     expect: 'overstated', pathIncludes: 'R8:overstated-majority' },
 
+  // From v4 the affirming side has to have brought something too, so this case carries a
+  // locator on one of the two supporting votes. That is what makes the published sentence,
+  // "the disagreement was evidence-bearing on both sides", true of the entry.
   { name: 'R7: an affirming side that is not outnumbered still forces a contest',
     rec: mk('CON-02', [
       { auditor: 'codex', status_vote: 'open', support_vote: 'overstated',
         counter_evidence: [{ locator: '10.1000/a', quote: 'the opposite is documented' }],
         rationale: 'overstated' },
       { auditor: 'glm', status_vote: 'open', support_vote: 'supported', rationale: 'reads fine' },
+      { auditor: 'literature', status_vote: 'open', support_vote: 'supported',
+        counter_evidence: [{ locator: '10.1000/z', quote: 'and the claim is stated exactly so' }],
+        rationale: 'holds, and here is where' },
+    ]),
+    expect: 'unverifiable', pathIncludes: 'R7:counter-and-support-both-present' },
+
+  // v4. An evidence-free affirmation cannot hold an entry against an auditor who brought a
+  // quote. This is the case v3 published as evidence-bearing disagreement when only one side
+  // had any evidence at all.
+  { name: 'R7 (v4): affirmations that brought nothing do not make a contest',
+    rec: mk('CON-06', [
+      { auditor: 'codex', status_vote: 'open', support_vote: 'overstated',
+        weakest_true_restatement: 'the weaker claim',
+        counter_evidence: [{ locator: '10.1000/a', quote: 'the opposite is documented' }],
+        rationale: 'overstated' },
+      { auditor: 'glm', status_vote: 'open', support_vote: 'supported', rationale: 'reads fine' },
       { auditor: 'literature', status_vote: 'open', support_vote: 'supported', rationale: 'holds' },
+    ]),
+    expect: 'confirmed-open', pathIncludes: 'R9:substantiated-overstatement' },
+
+  // v4. A quote attached to a supporting vote documents a caveat; it is not a vote against
+  // the claim, and through v3 it was the only thing needed to make an entry contested. Every
+  // auditor here thinks the claim holds, so publishing it as a disagreement with evidence on
+  // both sides would describe a dispute that did not happen. Under v3 this returned
+  // `unverifiable` on R7; the dissent loop still records the caveat either way.
+  { name: 'R7 (v4): a caveat backed by a quote is not a counter, so no contest is forced',
+    rec: mk('CON-03', [
+      { auditor: 'grok', status_vote: 'open', support_vote: 'supported-with-caveat',
+        counter_evidence: [{ locator: '10.1000/c', quote: 'the scope is narrower than stated' }],
+        rationale: 'real, and narrower than written' },
+      { auditor: 'codex', status_vote: 'open', support_vote: 'supported', rationale: 'holds' },
+      { auditor: 'glm', status_vote: 'open', support_vote: 'supported', rationale: 'reads fine' },
+      { auditor: 'literature', status_vote: 'open', support_vote: 'supported', rationale: 'holds' },
+    ]),
+    expect: 'confirmed-open', pathIncludes: 'R12:supported' },
+
+  // And when the caveats are not outnumbered, the qualification reaches the support axis
+  // through R11 rather than being cancelled into a contest, which is what v3 did whenever any
+  // caveat carried a quote. The published badge stays CONFIRMED OPEN by design, since a
+  // qualified framing is not a partial solution; what changes is that the entry is no longer
+  // published as evidence-bearing disagreement that never happened.
+  { name: 'R11 (v4): quoted caveats that are not outnumbered qualify rather than contest',
+    rec: mk('CON-05', [
+      { auditor: 'grok', status_vote: 'open', support_vote: 'supported-with-caveat',
+        counter_evidence: [{ locator: '10.1000/c', quote: 'the scope is narrower than stated' }],
+        rationale: 'real, and narrower than written' },
+      { auditor: 'codex', status_vote: 'open', support_vote: 'supported-with-caveat',
+        rationale: 'narrower' },
+      { auditor: 'glm', status_vote: 'open', support_vote: 'supported', rationale: 'reads fine' },
+    ]),
+    expect: 'confirmed-open', pathIncludes: 'R11:caveated' },
+
+  // The other half of the same edit: a quote attached to a vote that IS against the claim
+  // still counts, so the fix narrows the rule rather than disabling it.
+  { name: 'R7 (v4): a quote attached to an overstated vote still counts as a counter',
+    rec: mk('CON-04', [
+      { auditor: 'grok', status_vote: 'open', support_vote: 'overstated',
+        counter_evidence: [{ locator: '10.1000/d', quote: 'the opposite is documented' }],
+        rationale: 'overstated' },
+      { auditor: 'glm', status_vote: 'open', support_vote: 'supported', rationale: 'reads fine' },
+      { auditor: 'literature', status_vote: 'open', support_vote: 'supported',
+        counter_evidence: [{ locator: '10.1000/z', quote: 'the claim is stated exactly so' }],
+        rationale: 'holds, and here is where' },
     ]),
     expect: 'unverifiable', pathIncludes: 'R7:counter-and-support-both-present' },
 

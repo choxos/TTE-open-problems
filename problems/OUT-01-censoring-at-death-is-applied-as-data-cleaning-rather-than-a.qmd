@@ -3,21 +3,26 @@ title: "Censoring at death is applied as data cleaning rather than as an identif
 description: "Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations nonetheless default to cause-specific hazards or censor competing events without matching the estimator to the causal question, and recurrent and terminal events are seldom modeled jointly. The step where an analyst censors follow-up at death is an identifying decision that selects among these estimands, and it is normally executed silently inside data preparation, where no reviewer sees it as a decision at all."
 pid: "OUT-01"
 topic: "Outcomes, competing events & the time scale"
-categories: ["Outcomes, competing events & the time scale", "High priority", "Unverifiable"]
+categories: ["Outcomes, competing events & the time scale", "High priority", "Partially addressed", "Protocol: Outcome", "Protocol: Causal contrast", "Protocol: Analysis plan", "Data: Any setting"]
 priority: "High"
 prank: 2
-verdict: "Unverifiable"
-verdictslug: "unverifiable"
+verdict: "Partially addressed"
+verdictslug: "partially-addressed"
 maturity: "Established"
 tractability: 4
 ---
 ::: {.problem-meta}
 [OUT-01]{.problem-id}
-[Unverifiable]{.verdict .verdict-unverifiable}
+[Partially addressed]{.verdict .verdict-partially-addressed}
 [High priority]{.chip .chip-priority-high}
 [Established]{.chip .chip-maturity-established}
 [Tractability 4/5]{.chip}
 :::
+::: {.problem-axes}
+Bites on: [Outcome]{.chip .chip-axis} [Causal contrast]{.chip .chip-axis} [Analysis plan]{.chip .chip-axis}  
+Seen in: [Any setting]{.chip .chip-axis}
+:::
+
 ## Statement
 
 Death, treatment discontinuation and competing clinical events change what an outcome contrast means. ICH E9(R1) requires that intercurrent events be handled explicitly, and the causal competing-risks literature distinguishes total effects, controlled direct effects and separable effects, each answering a different question. Applied emulations nonetheless default to cause-specific hazards or censor competing events without matching the estimator to the causal question, and recurrent and terminal events are seldom modeled jointly. The step where an analyst censors follow-up at death is an identifying decision that selects among these estimands, and it is normally executed silently inside data preparation, where no reviewer sees it as a decision at all.
@@ -44,9 +49,11 @@ Prespecify the estimand as a cumulative incidence, a restricted mean event-free 
 ## Verification
 
 ::: {.verification-trail}
-**Verdict.** Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.
+**Verdict.** Partially addressed. Part of this problem is addressed by existing work; the entry names which part.
 
-**Dissent.** literature dissented (open): The methodological apparatus the entry asks for exists further than it allows. A 2026 Journal of Epidemiology paper treats causal inference from time-to-event data with dependent censoring, confounding and competing events together, and a 2025 Journal of Clinical Epidemiology paper works a trial emulation with competing risks in a surgical application. The entry's claim is nonetheless about practice rather than method: that applied emulations default to cause-specific hazards or censor at competing events without matching the estimator to the question, and that censoring at death is executed inside data preparation. Nothing in the corpus contradicts that, and the reporting requirement the entry proposes does not exist. codex dissented (overstated): The central warning is valid and potentially high severity: handling death or another intercurrent event is part of defining the estimand, and total, controlled direct, and separable effects answer different questions. The entry is nevertheless conceptually imprecise. An estimand is defined by its counterfactual outcomes and contrast; identification assumptions are separate. Simply censoring at death does not select or identify one of those causal effects. Depending on the analysis, it can instead produce a cause-specific risk-set quantity or an unidentified hypothetical contrast. The claims that censoring is normally silent and that recurrent and terminal events are seldom modeled jointly are empirical frequency claims not established by the cited package source. Pinned lmtp source exports lmtp_tmle, lmtp_sdr, and lmtp_survival; accepts longitudinal treatment, censoring, and competing-risk nodes; incorporates competing-event status in its recursion; and tests two treatment times with two competing-risk times. Pinned gfoRmula source exports gformula_survival and static and implements sustained intervention risks with an explicit competing-event model and an option governing whether that event is treated as censoring. These implementations address competing risks under longitudinal strategies, but neither exposes an explicit joint recurrent-event and terminal-event estimand. The narrower implementation and protocol gap therefore remains. grok dissented (supported-with-caveat): Inverted-prior search shows the methodological core of OUT-01 is older and better equipped than a pure 'open' label implies, while the applied silence problem remains. Young, Stensrud, Tchetgen Tchetgen and Hernán (2020) already formalize that treating a competing event as censoring selects a controlled-direct-effect style question rather than a total-effect cumulative incidence, so the 'identifying assumption vs data cleaning' distinction is settled in the causal competing-risks literature. Software already embeds that choice for sustained or feasible longitudinal interventions: gfoRmula documents explicit options for competing events under time-varying treatment strategies, and lmtp implements time-to-event outcomes with competing risks for modified treatment policies, including a later 'total effect' option in version 1.5.0 (citing Díaz, Hoffman and Hejazi). Janvin, Young, Ryalen and Stensrud (2024) formalize causal estimands for recurrent events with and without a terminal competing event. None of that fully closes OUT-01 as stated. Applied primers still describe censor-at-death plus Fine-Gray sensitivity as common practice (Terman et al., 2025). ICH E9(R1) still governs trials more tightly than routine emulation protocols; TARGET (2025) improves TTE reporting generally but does not by itself force an intercurrent-event strategy for death the way E9(R1) does for trials. Separable effects remain a substantive product claim, not a software switch. Joint recurrent-plus-terminal estimation under longitudinal confounding is advancing (Prosepe et al., 2025 multistate g-computation; D'Alessio et al., 2026 arXiv g-computation for recurrent and semi-competing events with time-varying actions) but those are method papers and proposals, not field-wide defaults or head-to-head evaluations of multistate g-computation, joint frailty, separable effects and recurrent-event targeted learning on a known competing-event DGP. Net: estimator and formal estimand machinery for competing death under many sustained strategies exist; silent preprocessing and incomplete recurrent/terminal tooling keep the problem only partially solved. Queries run included competing risks/censoring at death in target trial emulation; intercurrent events in RWE/TTE; separable effects software; multistate g-computation sustained strategies; lmtp/gfoRmula/gfoRmulaICE NEWS and CRAN; TARGET 2025 checklist coverage; arXiv/medRxiv 2024–2026; Janvin recurrent competing; Díaz LMTP competing risks.
+**Dissent.** literature dissented (open): The methodological apparatus the entry asks for exists further than it allows. A 2026 Journal of Epidemiology paper treats causal inference from time-to-event data with dependent censoring, confounding and competing events together, and a 2025 Journal of Clinical Epidemiology paper works a trial emulation with competing risks in a surgical application. The entry's claim is nonetheless about practice rather than method: that applied emulations default to cause-specific hazards or censor at competing events without matching the estimator to the question, and that censoring at death is executed inside data preparation. Nothing in the corpus contradicts that, and the reporting requirement the entry proposes does not exist. codex dissented (overstated): The central warning is valid and potentially high severity: handling death or another intercurrent event is part of defining the estimand, and total, controlled direct, and separable effects answer different questions. The entry is nevertheless conceptually imprecise. An estimand is defined by its counterfactual outcomes and contrast; identification assumptions are separate. Simply censoring at death does not select or identify one of those causal effects. Depending on the analysis, it can instead produce a cause-specific risk-set quantity or an unidentified hypothetical contrast. The claims that censoring is normally silent and that recurrent and terminal events are seldom modeled jointly are empirical frequency claims not established by the cited package source. Pinned lmtp source exports lmtp_tmle, lmtp_sdr, and lmtp_survival; accepts longitudinal treatment, censoring, and competing-risk nodes; incorporates competing-event status in its recursion; and tests two treatment times with two competing-risk times. Pinned gfoRmula source exports gformula_survival and static and implements sustained intervention risks with an explicit competing-event model and an option governing whether that event is treated as censoring. These implementations address competing risks under longitudinal strategies, but neither exposes an explicit joint recurrent-event and terminal-event estimand. The narrower implementation and protocol gap therefore remains.
+
+4 of the 4 independent auditors returned an opinion on this entry.
 
 Literature and prior-art check
 :   **open / supported-with-caveat.** The methodological apparatus the entry asks for exists further than it allows. A 2026 Journal of Epidemiology paper treats causal inference from time-to-event data with dependent censoring, confounding and competing events together, and a 2025 Journal of Clinical Epidemiology paper works a trial emulation with competing risks in a surgical application. The entry's claim is nonetheless about practice rather than method: that applied emulations default to cause-specific hazards or censor at competing events without matching the estimator to the question, and that censoring at death is executed inside data preparation. Nothing in the corpus contradicts that, and the reporting requirement the entry proposes does not exist.
@@ -69,11 +76,11 @@ Grok 4.5, recency lens
     Cites arxiv:2603.10169: Proposes g-computation algorithms for time-varying actions with recurrent and semi-competing events; progress on the exact joint structure OUT-01 says is missing, but still a method proposal rather than a completed evaluation suite or standard package default..
     Cites doi:10.3389/fphar.2024.1223858: Shows joint use of ICH-style estimands (including intercurrent-event strategies) with target trial emulation in observational external-control work, partial inheritance of E9(R1) discipline into emulation design..
 
-glm
+GLM-5.2, third independent lens
 :   **open / supported.** The statement is internally consistent and proportionate. It accurately characterizes a well-known methodological tension in causal inference and target trial emulation: handling competing events (like death) via censoring during data preparation implicitly imposes an identifying assumption and selects an estimand, often without explicit protocol-level justification. The reason given for the problem being open—that estimands differ in their assumptions and a mismatched choice yields a well-behaved but wrong analysis without downstream flags—logically supports the assertion that this remains an open issue in applied practice. The scope is appropriate, addressing current applied practice rather than asserting a structural impossibility.
 
 Decision path
-:   `R3:partially-solved(n=2/4) → R7:counter-and-support-both-present(support=1/counter=1)`
+:   `R3:partially-solved(n=2/4) → R9:substantiated-overstatement(n=1/4):codex`
 
 :::
 
@@ -148,7 +155,8 @@ It is also being **closed in pieces**: partial results come from more than one p
 ## Related problems
 
 ::: {.related-links}
-- [EST-03 — A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible](EST-03-a-hazard-ratio-is-reported-where-the-estimand-was-a-weighted.qmd)
+- [EST-03: A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible](EST-03-a-hazard-ratio-is-reported-where-the-estimand-was-a-weighted.qmd)
+- [EST-04: No mediated effect is defined for a sustained treatment strategy, and emulations report a proportion mediated anyway](EST-04-no-mediated-effect-is-defined-for-a-sustained-treatment-stra.qmd)
 :::
 
 ## Source

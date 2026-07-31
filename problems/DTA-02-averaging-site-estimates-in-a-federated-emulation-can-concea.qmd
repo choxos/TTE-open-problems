@@ -3,7 +3,7 @@ title: "Averaging site estimates in a federated emulation can conceal that the s
 description: "Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been proposed and demonstrated for distributed effect estimation. The statistical machinery for combining site estimates is not the hard part. The hard part is that sites differ in coding systems, treatment availability, confounding structure and time resolution, so the same executable protocol can define materially different eligibility, exposure and outcome at each site. Averaging the resulting estimates produces a number whose estimand is the average of several different questions, and nothing in the aggregation step detects that."
 pid: "DTA-02"
 topic: "Data sources, linkage & federated infrastructure"
-categories: ["Data sources, linkage & federated infrastructure", "High priority", "Partially addressed"]
+categories: ["Data sources, linkage & federated infrastructure", "High priority", "Partially addressed", "Protocol: Cross-cutting", "Protocol: Eligibility", "Protocol: Outcome", "Data: Federated", "Data: Multi-database"]
 priority: "High"
 prank: 2
 verdict: "Partially addressed"
@@ -18,6 +18,11 @@ tractability: 4
 [Emerging]{.chip .chip-maturity-emerging}
 [Tractability 4/5]{.chip}
 :::
+::: {.problem-axes}
+Bites on: [Cross-cutting]{.chip .chip-axis} [Eligibility]{.chip .chip-axis} [Outcome]{.chip .chip-axis}  
+Seen in: [Federated]{.chip .chip-axis} [Multi-database]{.chip .chip-axis}
+:::
+
 ## Statement
 
 Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been proposed and demonstrated for distributed effect estimation. The statistical machinery for combining site estimates is not the hard part. The hard part is that sites differ in coding systems, treatment availability, confounding structure and time resolution, so the same executable protocol can define materially different eligibility, exposure and outcome at each site. Averaging the resulting estimates produces a number whose estimand is the average of several different questions, and nothing in the aggregation step detects that.
@@ -46,6 +51,8 @@ Combine federated nuisance estimation with site-specific diagnostics and an expl
 ::: {.verification-trail}
 **Verdict.** Partially addressed. Part of this problem is addressed by existing work; the entry names which part.
 
+4 of the 4 independent auditors returned an opinion on this entry.
+
 Literature and prior-art check
 :   **partially-solved / supported-with-caveat.** Federated emulation has advanced past the feasibility demonstration the entry cites. POLARIS supplies a one-shot likelihood approach for federated emulation with time-to-event outcomes that claims pooled-equivalent estimates, and a 2026 JAMIA paper sets out ten principles for high-quality multi-site studies using privacy-preserving distributed algorithms, which is directly the site-validation discipline the entry asks for. The entry's specific claim, that averaging site estimates can conceal that sites emulated different trials and that nothing in the aggregation detects it, is not answered by either: both improve the statistics of pooling rather than detecting semantic incompatibility.
     Cites 10.21203/rs.3.rs-9613167/v1: Provides pooled-equivalent federated estimation for emulated trials with survival outcomes, well past feasibility..
@@ -57,7 +64,7 @@ GPT-5.6 Sol, technical and source-code lens
 Grok 4.5, recency lens
 :   **open / supported.** The report's own cited work, Li et al. (FL-TTE, 2025), demonstrates that distributed effect estimation for an emulated trial is feasible without pooling patient-level data. That is estimation machinery, not a solution to semantic incompatibility: sites can still implement different eligibility, exposure, or outcome mappings under the same executable protocol, and averaging site estimates does not detect that. Manke-Reimers et al. (2025) is a scoping review of transportability practice; it clarifies when a multi-site average needs an explicit transport model, but does not supply site-level diagnostics that separate mapping failure from true effect modification using only the aggregates federation is allowed to share. Recent federated causal-inference methods (for example Khellaf, Bellet, and Josse on propensity-score aggregation across sites; LATTE one-shot federated TTE showcased at OHDSI 2025) again address statistical pooling and privacy-preserving nuisance estimation, not semantic trial equivalence. Queries across AJE/Epidemiology/IJE/EJE/PDS/SiM, arXiv stat.ME, medRxiv, and package ecosystems (TrialEmulation, lmtp, ltmle, WeightIt, MatchIt, gfoRmula) did not surface a released method that gates secure aggregation behind site-level trial-component validation or that diagnoses coding-system and phenotype discordance from sufficient statistics and aggregate balance alone. Heterogeneity statistics remain confounded between real effect modification and mapping failure, exactly as the problem states. Status remains open as stated.
 
-glm
+GLM-5.2, third independent lens
 :   **open / supported.** The claim is coherent and pitched at the right level of generality. It accurately identifies that the core difficulty in federated emulation is semantic incompatibility rather than statistical combination. The reasons given for it being open (diagnostics require patient-level data that federation restricts, and heterogeneity statistics conflate mapping failure with effect modification) directly support the claim that the problem remains open.
 
 Decision path
@@ -94,8 +101,8 @@ Decision path
 ## Related problems
 
 ::: {.related-links}
-- [DTA-03 — Common data models harmonize structure without guaranteeing that the same variable means the same thing](DTA-03-common-data-models-harmonize-structure-without-guaranteeing-.qmd)
-- [EST-02 — Transporting an observational estimate compounds sampling assumptions on top of confounding assumptions with no accounting](EST-02-transporting-an-observational-estimate-compounds-sampling-as.qmd)
+- [DTA-03: Common data models harmonize structure without guaranteeing that the same variable means the same thing](DTA-03-common-data-models-harmonize-structure-without-guaranteeing-.qmd)
+- [EST-02: Transporting an observational estimate compounds sampling assumptions on top of confounding assumptions with no accounting](EST-02-transporting-an-observational-estimate-compounds-sampling-as.qmd)
 :::
 
 ## Source

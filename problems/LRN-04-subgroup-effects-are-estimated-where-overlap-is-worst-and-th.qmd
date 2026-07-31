@@ -3,7 +3,7 @@ title: "Subgroup effects are estimated where overlap is worst, and the groups wi
 description: "Causal forests and meta-learners estimate heterogeneous treatment effects, and they inherit every identification assumption of the base analysis without relaxing any of them. Subgroup discovery adds three specific hazards: confounding that varies by subgroup, multiplicity across the many subgroups a flexible learner implicitly examines, and limited overlap within small strata. Apparent heterogeneity can therefore reflect differential measurement, differential healthcare access or model extrapolation rather than differential biology. The distributional problem is that the groups with the least data and the poorest overlap are frequently the protected groups whose effects the analysis was undertaken to examine, so the least reliable estimates carry the most weight in interpretation."
 pid: "LRN-04"
 topic: "Machine learning, high-dimensional adjustment & automated emulation"
-categories: ["Machine learning, high-dimensional adjustment & automated emulation", "High priority", "Partially addressed"]
+categories: ["Machine learning, high-dimensional adjustment & automated emulation", "High priority", "Partially addressed", "Protocol: Causal contrast", "Protocol: Analysis plan", "Data: EHR", "Data: Claims", "Data: Any setting"]
 priority: "High"
 prank: 2
 verdict: "Partially addressed"
@@ -18,6 +18,11 @@ tractability: 4
 [Promising]{.chip .chip-maturity-promising}
 [Tractability 4/5]{.chip}
 :::
+::: {.problem-axes}
+Bites on: [Causal contrast]{.chip .chip-axis} [Analysis plan]{.chip .chip-axis}  
+Seen in: [EHR]{.chip .chip-axis} [Claims]{.chip .chip-axis} [Any setting]{.chip .chip-axis}
+:::
+
 ## Statement
 
 Causal forests and meta-learners estimate heterogeneous treatment effects, and they inherit every identification assumption of the base analysis without relaxing any of them. Subgroup discovery adds three specific hazards: confounding that varies by subgroup, multiplicity across the many subgroups a flexible learner implicitly examines, and limited overlap within small strata. Apparent heterogeneity can therefore reflect differential measurement, differential healthcare access or model extrapolation rather than differential biology. The distributional problem is that the groups with the least data and the poorest overlap are frequently the protected groups whose effects the analysis was undertaken to examine, so the least reliable estimates carry the most weight in interpretation.
@@ -46,6 +51,8 @@ Use honest sample splitting, restrict conditional effect estimation to regions w
 ::: {.verification-trail}
 **Verdict.** Partially addressed. Part of this problem is addressed by existing work; the entry names which part.
 
+4 of the 4 independent auditors returned an opinion on this entry.
+
 Literature and prior-art check
 :   **partially-solved / supported-with-caveat.** Subgroup estimation inside emulations is being done carefully in places the entry does not credit. A 2026 European Journal of Epidemiology paper extends a CONFIRM emulation to subgroups explicitly, a 2026 Alzheimer's and Dementia paper estimates heterogeneous statin effects on dementia with causal machine learning inside an emulation, and a 2026 Epidemiology paper nests a target study within a target trial specifically to evaluate intervention effects on disparities, which is the equity question the entry raises. What remains is the reporting requirement: none of these establishes that subgroup-specific data support and calibration must be reported alongside every subgroup effect, and none tests whether the emulation's assumptions differ across groups.
     Cites 10.1097/ede.0000000000002024: Provides a framework for the equity question the entry raises, within the emulation setting..
@@ -58,7 +65,7 @@ GPT-5.6 Sol, technical and source-code lens
 Grok 4.5, recency lens
 :   **open / supported-with-caveat.** Feuerriegel et al. (2024) again bind individualized causal ML to classical identification assumptions; that supports the problem's premise without solving subgroup practice. Tools already recommended in the agenda exist in partial form: honest sample splitting in causal forests (Wager and Athey lineage), propensity trimming and common-support restriction, and various hierarchical or shrinkage approaches to unstable strata. Recent applied causal-forest work still documents poor within-stratum overlap and relies on post hoc trimming (e.g., 2025 Scientific Reports-style pipelines). What remains open is the joint operational problem the statement names: subgroup and protected-group HTE is often the scientific target; those strata systematically have the worst overlap and measurement quality; and there is no adopted standard that reports subgroup-specific data support, calibration, and differential assumption plausibility next to every CATE so that a poorly supported protected-group estimate cannot be read as a finding. Overlap is a data property no estimator repairs. Fairness-aware HTE and group-bias CATE work is active on arXiv and conference tracks but has not certified subgroup effects under differential access and measurement. Status remains open; the caveat is that honesty, trimming, and shrinkage are available components, not a field solution to protected-stratum extrapolation.
 
-glm
+GLM-5.2, third independent lens
 :   **open / supported.** The claim is internally consistent and correctly identifies that overlap is a property of the data that cannot be fixed by the estimator, and that this disproportionately affects protected groups. The reasons given for it being open logically support the claim. The scope and severity are proportionate to the real-world cost of misinterpreting subgroup effects.
 
 Decision path
@@ -110,8 +117,9 @@ This problem is **recurrent**: three or more papers spanning at least eight year
 ## Related problems
 
 ::: {.related-links}
-- [LRN-01 — Flexible estimation is presented as a remedy for identification failure](LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.qmd)
-- [OVL-01 — Positivity diagnostics describe weights instead of naming which patient histories are unsupported](OVL-01-positivity-diagnostics-describe-weights-instead-of-naming-wh.qmd)
+- [LRN-01: Flexible estimation is presented as a remedy for identification failure](LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.qmd)
+- [LRN-05: A counterfactual prediction is validated under the assumptions that produced it, and nothing maps its output to a decision](LRN-05-a-counterfactual-prediction-is-validated-under-the-assumptio.qmd)
+- [OVL-01: Positivity diagnostics describe weights instead of naming which patient histories are unsupported](OVL-01-positivity-diagnostics-describe-weights-instead-of-naming-wh.qmd)
 :::
 
 ## Source

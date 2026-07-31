@@ -3,7 +3,7 @@ title: "Positivity diagnostics describe weights instead of naming which patient 
 description: "A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail, which reduces variance, changes the implicit estimand and can leave substantial bias in place. What the diagnostic does not report is the quantity a reader needs: what fraction of the target population has no support for the strategy under study, which histories are the unsupported ones, and what estimand remains identified once they are set aside. A 2026 study of non-mutually exclusive assignment found that poor overlap defeated adjustment methods that were otherwise well specified, which is the failure mode a weight histogram is least able to show."
 pid: "OVL-01"
 topic: "Positivity, structural violations & extrapolation"
-categories: ["Positivity, structural violations & extrapolation", "Very high priority", "Partially addressed"]
+categories: ["Positivity, structural violations & extrapolation", "Very high priority", "Partially addressed", "Protocol: Treatment strategies", "Protocol: Causal contrast", "Data: Any setting"]
 priority: "Very high"
 prank: 1
 verdict: "Partially addressed"
@@ -18,6 +18,11 @@ tractability: 4
 [Promising]{.chip .chip-maturity-promising}
 [Tractability 4/5]{.chip}
 :::
+::: {.problem-axes}
+Bites on: [Treatment strategies]{.chip .chip-axis} [Causal contrast]{.chip .chip-axis}  
+Seen in: [Any setting]{.chip .chip-axis}
+:::
+
 ## Statement
 
 A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail, which reduces variance, changes the implicit estimand and can leave substantial bias in place. What the diagnostic does not report is the quantity a reader needs: what fraction of the target population has no support for the strategy under study, which histories are the unsupported ones, and what estimand remains identified once they are set aside. A 2026 study of non-mutually exclusive assignment found that poor overlap defeated adjustment methods that were otherwise well specified, which is the failure mode a weight histogram is least able to show.
@@ -48,6 +53,8 @@ Replace deterministic interventions that the data cannot support with modified t
 
 **Dissent.** literature dissented (open): The entry's core claim, that diagnostics describe weights rather than naming which histories are unsupported, holds against the corpus. Two pieces of work sharpen rather than resolve it. A 2025 study measures the impact of near-positivity violations on IPTW-estimated marginal structural survival models with time-dependent covariates, which supplies the consequence the entry asserts. A 2026 American Journal of Epidemiology paper on target trial emulation under non-mutually exclusive assignment sets out structural pitfalls and remedies for exactly the overlap failure the entry cites. Neither produces a causal support map over histories, an unsupported-fraction statistic, or partial-identification bounds for the unsupported strata, so the specific artifacts the entry says are missing are still missing. codex dissented (overstated): A marginal weight histogram cannot localize poor support to particular histories, and structural nonpositivity is a decision-grade identification failure. However, the report conflates structural nonpositivity, practical near-nonpositivity, and finite-sample instability. Weight truncation does not convert an identification failure into variance reduction or necessarily define a coherent alternative causal estimand. It changes the estimating functional and usually biases estimation of the stated target, while structural nonpositivity remains unidentified. The claim that the high-dimensional object cannot be plotted is also too absolute because reduced history-specific diagnostics are possible. Pinned CICI 1.0 is a direct partial counterexample: its NAMESPACE exports feasible, plot.feasible, and summary.feasible; feasible() estimates conditional treatment densities, returns per-observation feasible intervention values and low_matrix objects, and reports the proportion below its threshold by strategy and time. Its gformula accepts the resulting individual intervention matrices. This implementation is limited to continuous interventions and an analyst-chosen alpha threshold, does not provide general partial-identification bounds, and does not cover arbitrary binary or categorical sustained strategies. Its threshold implementation also normalizes densities using bin widths but calculates cumsum(sort(row)) without bin-width weighting, so the advertised probability-mass threshold is miscalibrated whenever bin widths differ from one. Later-time diagnostics are evaluated over observed histories, which need not equal the history distribution induced by the intervention. Pinned lmtp 1.5.4 implements longitudinal modified treatment policies and an ipsi policy factory, but such intervention classes do not automatically restore positivity; policy-specific absolute continuity remains necessary, and lmtp trims estimated density ratios by default. Very-high severity is warranted when the prespecified strategy materially lacks support, but a universal support map and bounds are roadmap extensions rather than requirements for every adequately supported analysis.
 
+4 of the 4 independent auditors returned an opinion on this entry.
+
 Literature and prior-art check
 :   **open / supported-with-caveat.** The entry's core claim, that diagnostics describe weights rather than naming which histories are unsupported, holds against the corpus. Two pieces of work sharpen rather than resolve it. A 2025 study measures the impact of near-positivity violations on IPTW-estimated marginal structural survival models with time-dependent covariates, which supplies the consequence the entry asserts. A 2026 American Journal of Epidemiology paper on target trial emulation under non-mutually exclusive assignment sets out structural pitfalls and remedies for exactly the overlap failure the entry cites. Neither produces a causal support map over histories, an unsupported-fraction statistic, or partial-identification bounds for the unsupported strata, so the specific artifacts the entry says are missing are still missing.
     Cites 10.1093/aje/kwag014: Names the structural pitfalls of overlapping assignment and proposes remedies, which is the setting in which the entry's overlap failure was demonstrated..
@@ -71,7 +78,7 @@ What remains open, so a full "solved" vote would be wrong: (1) no agreed support
     Cites 10.1002/sim.70194: Lightweight hat-value style positivity diagnostic for continuous exposures in Statistics in Medicine; complements tree and kernel approaches for the continuous case where weight histograms are least informative..
     Cites https://cran.r-project.org/package=RISCA: Released software that turns PoRT into a callable diagnostic returning character summaries of positivity-violating subgroups rather than a weight distribution alone..
 
-glm
+GLM-5.2, third independent lens
 :   **open / supported.** The problem statement accurately identifies a gap in current positivity diagnostics: they focus on weight distributions rather than identifying unsupported patient histories and the resulting estimand. The reasons given for it being open (high-dimensionality of histories, lack of agreed thresholds for support) are valid and support the claim that this is an open methodological challenge. The claim is proportionate and does not overstate the issue as an impossibility where it is merely a current practice gap, though it correctly notes the structural difficulty of plotting high-dimensional objects.
 
 Decision path
@@ -232,10 +239,11 @@ It is also being **closed in pieces**: partial results come from more than one p
 ## Related problems
 
 ::: {.related-links}
-- [GMT-03 — Large databases yield small effective samples after eligibility, comparator restriction and weighting](GMT-03-large-databases-yield-small-effective-samples-after-eligibil.qmd)
-- [LRN-01 — Flexible estimation is presented as a remedy for identification failure](LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.qmd)
-- [LRN-04 — Subgroup effects are estimated where overlap is worst, and the groups with worst overlap are often the protected ones](LRN-04-subgroup-effects-are-estimated-where-overlap-is-worst-and-th.qmd)
-- [UCF-02 — Sensitivity analyses vary one violated assumption at a time when several are violated together](UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.qmd)
+- [ELG-03: No procedure bounds the bias a comparator sampling scheme introduces before the study is run](ELG-03-no-procedure-bounds-the-bias-a-comparator-sampling-scheme-in.qmd)
+- [GMT-03: Large databases yield small effective samples after eligibility, comparator restriction and weighting](GMT-03-large-databases-yield-small-effective-samples-after-eligibil.qmd)
+- [LRN-01: Flexible estimation is presented as a remedy for identification failure](LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.qmd)
+- [LRN-04: Subgroup effects are estimated where overlap is worst, and the groups with worst overlap are often the protected ones](LRN-04-subgroup-effects-are-estimated-where-overlap-is-worst-and-th.qmd)
+- [UCF-02: Sensitivity analyses vary one violated assumption at a time when several are violated together](UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.qmd)
 :::
 
 ## Source

@@ -3,7 +3,7 @@ title: "Cross-validation for longitudinal nuisance models optimizes prediction, 
 description: "Marginal structural models, the parametric g-formula, g-estimation and longitudinal targeted learning all identify sustained-regime effects under sequential exchangeability and positivity, and all of them require nuisance models for treatment, censoring and outcome. When those nuisance models are fitted by machine learning, the model that predicts treatment best is not the model that produces the best causal estimate: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Standard cross-validation selects on prediction loss and is blind to all three. No selection criterion in routine use combines treatment prediction with longitudinal balance, weight dispersion and an estimate of the influence-function remainder, and no default library is tuned for the causal objective rather than the predictive one."
 pid: "GMT-01"
 topic: "G-methods: specification, estimation & inference"
-categories: ["G-methods: specification, estimation & inference", "Very high priority", "Partially addressed"]
+categories: ["G-methods: specification, estimation & inference", "Very high priority", "Partially addressed", "Protocol: Analysis plan", "Data: EHR", "Data: Claims", "Data: Any setting"]
 priority: "Very high"
 prank: 1
 verdict: "Partially addressed"
@@ -18,6 +18,11 @@ tractability: 4
 [Promising]{.chip .chip-maturity-promising}
 [Tractability 4/5]{.chip}
 :::
+::: {.problem-axes}
+Bites on: [Analysis plan]{.chip .chip-axis}  
+Seen in: [EHR]{.chip .chip-axis} [Claims]{.chip .chip-axis} [Any setting]{.chip .chip-axis}
+:::
+
 ## Statement
 
 Marginal structural models, the parametric g-formula, g-estimation and longitudinal targeted learning all identify sustained-regime effects under sequential exchangeability and positivity, and all of them require nuisance models for treatment, censoring and outcome. When those nuisance models are fitted by machine learning, the model that predicts treatment best is not the model that produces the best causal estimate: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Standard cross-validation selects on prediction loss and is blind to all three. No selection criterion in routine use combines treatment prediction with longitudinal balance, weight dispersion and an estimate of the influence-function remainder, and no default library is tuned for the causal objective rather than the predictive one.
@@ -47,6 +52,8 @@ Construct SuperLearner libraries whose loss combines treatment prediction with l
 ::: {.verification-trail}
 **Verdict.** Partially addressed. Part of this problem is addressed by existing work; the entry names which part.
 
+4 of the 4 independent auditors returned an opinion on this entry.
+
 Literature and prior-art check
 :   **partially-solved / supported-with-caveat.** The general claim, that predictive cross-validation is the wrong criterion for a nuisance model whose purpose is causal, is correct and is not new. What the entry misses is that criteria other than prediction are already in use for the weight model specifically. Calibrated weights fitted with SuperLearner have been implemented and applied to longitudinal diabetes cohorts, and calibration is precisely a balance criterion rather than a prediction criterion. Super learner for weight estimation under unknown weight-model specification was studied for marginal structural models as early as 2017. So the entry's claim that no selection criterion in routine use combines prediction with balance overstates: balance-based weight fitting exists and is published. The part that survives is the combination the entry actually asks for, a single loss spanning prediction, longitudinal balance, weight dispersion and an influence-function remainder, and the absence of a default library tuned that way.
     Cites 10.1109/jbhi.2022.3175862: Fits marginal structural model weights with SuperLearner under a calibration criterion rather than a prediction criterion, in a longitudinal EHR setting with dynamic regimes..
@@ -59,7 +66,7 @@ GPT-5.6 Sol, technical and source-code lens
 Grok 4.5, recency lens
 :   **open / supported.** Inverted-prior search did not find a routine selection criterion that jointly optimizes treatment prediction, longitudinal balance, weight dispersion, and an influence-function remainder for longitudinal nuisance models. SuperLearner (as used by ltmle and related stacks) still cross-validates predictive risk; CV-TMLE and related work improve targeting of the final parameter after nuisance fitting but do not replace predictive CV for the treatment, censoring, and outcome libraries themselves. Collaborative TMLE (C-TMLE) is the closest prior art: it selects confounder models using a targeted, collaborative criterion rather than pure prediction, and longitudinal/scalable C-TMLE variants exist. That is covariate-and-collaborative selection for TMLE, not a multi-metric SuperLearner loss for sustained-regime MSM, g-formula, g-estimation, or LTMLE libraries. Point-treatment work on balance-versus-discrimination for propensity scores (for example Diaz on balancing criteria) does not cover sequential longitudinal nuisance selection. Package surfaces checked in search (ltmle SuperLearner interface, SuperLearner defaults, SAS SUPERLEARNER 2024/2025) still select on predictive CV. No 2024 to 2026 AJE/Epidemiology/SiM-style paper or CRAN default library was found that implements the combined causal objective the problem names. Searches included: causal cross-validation SuperLearner longitudinal TMLE balance weight dispersion; causal loss OR targeted cross-validation nuisance MSM; collaborative TMLE longitudinal SuperLearner; propensity SuperLearner balance loss 2023 to 2026.
 
-glm
+GLM-5.2, third independent lens
 :   **open / supported.** The claim is internally consistent and well-scoped. It asserts that no selection criterion in routine use combines treatment prediction with longitudinal balance, weight dispersion, and an influence-function remainder—this is a claim about current practice, not about impossibility. The reason given for openness is structural: the causal loss (counterfactual contrast) is never observed, so there is no label to cross-validate against, and computable surrogates like balance are not proper decision-theoretic losses. This genuinely supports the problem being open. The one sentence about no default library being tuned for the causal objective touches on software, but the core claim is methodological. The severity is proportionate: a wrong default selection criterion would propagate bias into every downstream causal estimate.
 
 Decision path
@@ -121,8 +128,9 @@ It is also being **closed in pieces**: partial results come from more than one p
 ## Related problems
 
 ::: {.related-links}
-- [GMT-04 — No estimator is defensible as a default, and no study is required to show that its choice mattered](GMT-04-no-estimator-is-defensible-as-a-default-and-no-study-is-requ.qmd)
-- [LRN-01 — Flexible estimation is presented as a remedy for identification failure](LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.qmd)
+- [GMT-04: No estimator is defensible as a default, and no study is required to show that its choice mattered](GMT-04-no-estimator-is-defensible-as-a-default-and-no-study-is-requ.qmd)
+- [LRN-01: Flexible estimation is presented as a remedy for identification failure](LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.qmd)
+- [LRN-05: A counterfactual prediction is validated under the assumptions that produced it, and nothing maps its output to a decision](LRN-05-a-counterfactual-prediction-is-validated-under-the-assumptio.qmd)
 :::
 
 ## Source

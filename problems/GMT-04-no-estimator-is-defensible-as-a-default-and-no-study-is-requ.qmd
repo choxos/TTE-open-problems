@@ -3,7 +3,7 @@ title: "No estimator is defensible as a default, and no study is required to sho
 description: "The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population and discards information, with an estimand that is often left unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust and computationally heavy and sensitive to practical positivity. A study reporting one of these reports a number whose dependence on that choice is unknown, and nothing requires that at least one weighting, one outcome-modeling and one doubly robust estimator be compared on the same data."
 pid: "GMT-04"
 topic: "G-methods: specification, estimation & inference"
-categories: ["G-methods: specification, estimation & inference", "High priority", "Confirmed open"]
+categories: ["G-methods: specification, estimation & inference", "High priority", "Confirmed open", "Protocol: Analysis plan", "Data: Any setting"]
 priority: "High"
 prank: 2
 verdict: "Confirmed open"
@@ -18,6 +18,11 @@ tractability: 5
 [Established]{.chip .chip-maturity-established}
 [Tractability 5/5]{.chip}
 :::
+::: {.problem-axes}
+Bites on: [Analysis plan]{.chip .chip-axis}  
+Seen in: [Any setting]{.chip .chip-axis}
+:::
+
 ## Statement
 
 The available estimators differ in what they assume rather than only in how they perform. Active-comparator new-user designs with regression or propensity adjustment handle baseline initiation and not treatment-confounder feedback. Matching gives a transparent population and discards information, with an estimand that is often left unstated. Marginal structural models represent regime effects directly and are unstable under extreme weights. The parametric g-formula supports flexible estimands and is sensitive to sequential outcome-model misspecification. G-estimation avoids modeling the treatment-free outcome distribution and is technically demanding. Longitudinal targeted learning is doubly robust and computationally heavy and sensitive to practical positivity. A study reporting one of these reports a number whose dependence on that choice is unknown, and nothing requires that at least one weighting, one outcome-modeling and one doubly robust estimator be compared on the same data.
@@ -48,6 +53,8 @@ Require that every emulation compare at least one weighting method, one outcome-
 ::: {.verification-trail}
 **Verdict.** Confirmed open. Auditors agreed the problem is open and no counterevidence surfaced.
 
+4 of the 4 independent auditors returned an opinion on this entry.
+
 Literature and prior-art check
 :   **open / supported-with-caveat.** The claim that no estimator is defensible as a default is well supported by the fragmentation the corpus shows, and the proposed remedy is partly in progress. Benchmarking of data-adaptive against investigator-specified confounding adjustment exists, and a 2026 evaluation compares statistical and deep learning methods for bias in a heart failure emulation. Neither supplies the public benchmark under a common generating mechanism that the entry asks for, and neither establishes a requirement that each study compare a weighting, an outcome-modelling and a doubly robust estimator. The overstatement is small: the entry's implication that no comparative evidence exists is wrong, while its claim that no synthesis or requirement exists holds.
     Cites 10.1093/jamia/ocaf204: Benchmarks adjustment strategies against one another, which is the comparison the entry says is not done..
@@ -59,7 +66,7 @@ GPT-5.6 Sol, technical and source-code lens
 Grok 4.5, recency lens
 :   **open / supported.** No estimator family is established as a default for longitudinal target-trial emulation of sustained strategies, and no current reporting or protocol standard requires a three-family comparison (weighting, outcome modeling, doubly robust) on the same data. Prior art that does not close the gap: (i) simulation comparisons of g-computation, IPTW/OW, and TMLE exist but are fragmented across data-generating mechanisms and often point-treatment or externally controlled trial settings (for example Schuler and Rose; Ren et al. 2023); (ii) software already makes multi-family analysis feasible (ltmle implements LTMLE, IPTW, and g-computation; lmtp implements sequential DR and related estimators; TrialEmulation covers sequence-of-trials ITT/PP), which lowers cost but does not create a requirement or a shared benchmark; (iii) TARGET 2025 (JAMA/BMJ) is a reporting guideline for target-trial emulations and does not mandate multi-estimator families; HARPER and STaRT-RWE structure protocols and sensitivity analyses without requiring weighting-plus-outcome-plus-DR comparison under a common estimand. No public continuous-time or informative-visit benchmark synthesizing the fragmented simulations was found. The problem's claim about incentives against multi-estimator reporting remains accurate. Searches: comparing IPTW g-formula TMLE longitudinal target trial multi-method 2024 2025; TARGET checklist multiple estimators; HARPER STaRT-RWE sensitivity g-methods; Schuler Rose TMLE IPW g-computation.
 
-glm
+GLM-5.2, third independent lens
 :   **open / supported-with-caveat.** The claim is largely coherent and the reason given for openness (cost of comparison, no accepted reporting framework for disagreement, fragmented simulation evidence) genuinely supports it. However, the headline assertion 'no estimator is defensible as a default' is stronger than the body of the statement warrants. The body argues that estimators differ in assumptions and that no synthesis exists to justify a universal default, which is defensible. But 'no estimator is defensible as a default' could be read as claiming that in no specific setting is any estimator a reasonable default, which would be overstated—there are settings where, given known structure, one family is clearly preferred. The intended reading is that no single estimator is defensible as a universal default across the heterogeneous landscape of longitudinal causal problems, and on that reading the claim holds. The severity is proportionate: the cost of a wrong default estimator choice is a biased or unstable causal estimate presented without context.
 
 Decision path
@@ -260,8 +267,8 @@ It is also being **closed in pieces**: partial results come from more than one p
 ## Related problems
 
 ::: {.related-links}
-- [GMT-01 — Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance](GMT-01-cross-validation-for-longitudinal-nuisance-models-optimizes-.qmd)
-- [LRN-01 — Flexible estimation is presented as a remedy for identification failure](LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.qmd)
+- [GMT-01: Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance](GMT-01-cross-validation-for-longitudinal-nuisance-models-optimizes-.qmd)
+- [LRN-01: Flexible estimation is presented as a remedy for identification failure](LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.qmd)
 :::
 
 ## Source

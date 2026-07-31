@@ -3,21 +3,26 @@ title: "The visit process is treated as a nuisance to be imputed rather than as 
 description: "Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so record-based covariate histories are irregular and selectively missing in a way that carries clinical information. Missing-at-random conditional on the recorded history can therefore fail precisely because the recording is itself informative. Standard handling, and last observation carried forward in particular, constructs an artificial history in which a patient's state is asserted to be unchanged over an interval during which the absence of measurement was itself evidence about their state."
 pid: "MIS-01"
 topic: "Missing data, censoring & loss to follow-up"
-categories: ["Missing data, censoring & loss to follow-up", "Very high priority", "Unverifiable"]
+categories: ["Missing data, censoring & loss to follow-up", "Very high priority", "Overstated", "Protocol: Follow-up", "Protocol: Analysis plan", "Data: EHR", "Data: Linked records"]
 priority: "Very high"
 prank: 1
-verdict: "Unverifiable"
-verdictslug: "unverifiable"
+verdict: "Overstated"
+verdictslug: "overstated"
 maturity: "Emerging"
 tractability: 3
 ---
 ::: {.problem-meta}
 [MIS-01]{.problem-id}
-[Unverifiable]{.verdict .verdict-unverifiable}
+[Overstated]{.verdict .verdict-overstated}
 [Very high priority]{.chip .chip-priority-very-high}
 [Emerging]{.chip .chip-maturity-emerging}
 [Tractability 3/5]{.chip}
 :::
+::: {.problem-axes}
+Bites on: [Follow-up]{.chip .chip-axis} [Analysis plan]{.chip .chip-axis}  
+Seen in: [EHR]{.chip .chip-axis} [Linked records]{.chip .chip-axis}
+:::
+
 ## Statement
 
 Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so record-based covariate histories are irregular and selectively missing in a way that carries clinical information. Missing-at-random conditional on the recorded history can therefore fail precisely because the recording is itself informative. Standard handling, and last observation carried forward in particular, constructs an artificial history in which a patient's state is asserted to be unchanged over an interval during which the absence of measurement was itself evidence about their state.
@@ -44,9 +49,9 @@ Model visits as recurrent events or point processes jointly with treatment and o
 ## Verification
 
 ::: {.verification-trail}
-**Verdict.** Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.
+**Verdict.** Overstated. 2 independent auditors judged the claim as stated too strong. Estimators that model the observation process jointly with treatment and outcome exist in three separate families; applied emulations continue to use complete case or last observation carried forward, and healthcare use is entered as a baseline confounder rather than as a process.
 
-**Dissent.** literature dissented (overstated): The entry says standard handling constructs artificial histories and that modeling visits jointly with treatment and outcome multiplies nuisance components without a worked solution. Three separate estimator families in the corpus contradict the strong reading. A 2024 Biometrics paper proposes a multiply robust estimator for marginal structural models under irregularly spaced, covariate-driven observation times and shows it is more flexible and more efficient than the previously proposed doubly weighted estimator. A 2023 BMC Medical Research Methodology paper gives calibrated inverse probability weights for marginal structural models under irregular visits with an unmeasured confounder. A 2025 Statistics in Medicine paper builds continuous-time weights from a marked point process for the same reason. What survives is an adoption claim rather than a methods claim: these estimators exist and applied emulation pipelines do not use them, and healthcare use is still entered as a baseline confounder rather than modeled as a process. grok dissented (supported-with-caveat): Inverted-prior search finds methods that put the visit process in the causal or estimating structure, so the problem is not open as a pure absence of methodology. It is not fully solved either: the report’s hard tradeoffs remain live, and the comparative evaluation it proposes has not been delivered for sustained-strategy target trial emulation under a known, treatment-dependent visiting mechanism.
+**Dissent.** grok dissented (supported-with-caveat): Inverted-prior search finds methods that put the visit process in the causal or estimating structure, so the problem is not open as a pure absence of methodology. It is not fully solved either: the report’s hard tradeoffs remain live, and the comparative evaluation it proposes has not been delivered for sustained-strategy target trial emulation under a known, treatment-dependent visiting mechanism.
 
 Cited works first. Goldstein et al. (JAMIA 2019; 10.1093/jamia/ocz148) characterize when informative visits bias EHR association analyses; that paper diagnoses the mechanism and does not close it. Wang et al. (npj Digit Med 2026; 10.1038/s41746-026-02563-z) elevate the observation process to an operational constraint on whether an EHR can realize a target trial protocol element. Secondary commentary on that paper treats the contribution as specification-versus-realization discipline, not as a solved estimator. Both strengthen the claim that the issue is still on the agenda; neither resolves identification or estimation under treatment-dependent visiting.
 
@@ -59,6 +64,8 @@ Package and guidance scan. IrregLong and gfoRmula implement visit or measurement
 Caveat on the claim as stated. Applied TTE and EHR pipelines still often grid time and carry forward or impute under MAR, so the nuisance framing is still a fair description of common practice. The methodological literature has long refused that framing, so a reader who only knows IIW, gfoRmula visitprocess, or continuous-time marked point process MSMs would find the absolute statement overstated. The agenda item that remains is comparative, practical, and identification-theoretic under realistic visit heterogeneity, not the invention of the first joint visit model.
 
 Queries run (among others): Goldstein informative visit JAMIA 2019; Wang operational TTE npj Digit Med 2026; informative visit process inverse intensity EHR TTE 2024–2026; joint modeling visit process treatment outcome causal; site:arxiv.org informative visit inverse intensity; gfoRmula/lmtp/TrialEmulation visit process; CRAN IrregLong; Kalia MSM irregular visits; Kalia continuous-time marked point process 2025; Pullenayegum IIW 2025 Biometrics; Coulombe ITR IIV; FDA/EMA/TARGET visit observation process TTE.
+
+4 of the 4 independent auditors returned an opinion on this entry.
 
 Literature and prior-art check
 :   **partially-solved / overstated.** The entry says standard handling constructs artificial histories and that modeling visits jointly with treatment and outcome multiplies nuisance components without a worked solution. Three separate estimator families in the corpus contradict the strong reading. A 2024 Biometrics paper proposes a multiply robust estimator for marginal structural models under irregularly spaced, covariate-driven observation times and shows it is more flexible and more efficient than the previously proposed doubly weighted estimator. A 2023 BMC Medical Research Methodology paper gives calibrated inverse probability weights for marginal structural models under irregular visits with an unmeasured confounder. A 2025 Statistics in Medicine paper builds continuous-time weights from a marked point process for the same reason. What survives is an adoption claim rather than a methods claim: these estimators exist and applied emulation pipelines do not use them, and healthcare use is still entered as a baseline confounder rather than modeled as a process.
@@ -88,11 +95,11 @@ Queries run (among others): Goldstein informative visit JAMIA 2019; Wang operati
     Cites 10.1016/j.patter.2020.100008: Released software for sustained treatment strategies that models a random measurement or visit process jointly with intermittently observed covariates (visitprocess), so visits enter the g-formula rather than being only a pre-analysis cleaning step; CRAN description still advertises handling of a random measurement/visit process..
     Cites cran:IrregLong: Maintained CRAN implementation of inverse-intensity weights and IIW-GEE for irregular, potentially informative observation times, providing operational infrastructure for visit-process adjustment outside pure LOCF or MAR imputation..
 
-glm
+GLM-5.2, third independent lens
 :   **open / supported.** The problem statement accurately describes a methodological tension in EHR-based target trial emulation: the visit process is informative, yet standard practice treats it as a nuisance to be imputed. The reasons given for it being open (collider bias from conditioning on observation, instability of inverse-intensity weights, and positivity violations from joint modeling) are valid structural tradeoffs that genuinely support the claim being open. The claim is proportionate and does not assert an impossibility, but rather highlights a difficult modeling tradeoff that remains unresolved in standard practice.
 
 Decision path
-:   `R3:partially-solved(n=2/4) → R7:counter-and-support-both-present(support=1/counter=1)`
+:   `R3:partially-solved(n=2/4) → R8:overstated-majority(n=2/4)`
 
 :::
 
@@ -208,8 +215,9 @@ It is also being **closed in pieces**: partial results come from more than one p
 ## Related problems
 
 ::: {.related-links}
-- [GMT-02 — Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved](GMT-02-identification-of-dynamic-regimes-in-continuous-time-under-t.qmd)
-- [MER-01 — Phenotypes enter emulations as error-free binary variables](MER-01-phenotypes-enter-emulations-as-error-free-binary-variables.qmd)
+- [EST-04: No mediated effect is defined for a sustained treatment strategy, and emulations report a proportion mediated anyway](EST-04-no-mediated-effect-is-defined-for-a-sustained-treatment-stra.qmd)
+- [GMT-02: Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved](GMT-02-identification-of-dynamic-regimes-in-continuous-time-under-t.qmd)
+- [MER-01: Phenotypes enter emulations as error-free binary variables](MER-01-phenotypes-enter-emulations-as-error-free-binary-variables.qmd)
 :::
 
 ## Source
