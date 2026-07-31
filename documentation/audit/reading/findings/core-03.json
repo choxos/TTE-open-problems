@@ -1,0 +1,507 @@
+{
+ "batch": "core-03",
+ "papers": [
+  {
+   "id": "L0047",
+   "read": true,
+   "doi": "10.1093/aje/kwae023",
+   "title": "Exposure effects on count outcomes with observational data, with application to incarcerated women",
+   "relevance": "medium",
+   "one_line": "Gives weighted, g-formula and doubly robust estimators of the causal mean ratio for count outcomes that handle overdispersion, zero-inflation and heaping.",
+   "what_was_done": "Estimators of the causal mean ratio, the ratio of counterfactual mean counts under exposure and under no exposure, for a point exposure with a count outcome. Three are given, based on inverse probability of treatment weighting, the parametric g-formula, and doubly robust estimation, each constructed to accommodate three features real count data have and standard methods do not: overdispersion, zero-inflation, and heaping, where reported counts cluster on round numbers. The estimators are compared in simulation and applied to the Women's Interagency HIV Study, estimating the effect of incarceration on the number of sexual partners and the number of cigarettes smoked afterwards.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Three estimator families targeting the same estimand are developed and compared in simulation rather than one being offered, which is the practice the entry asks for. The comparison is within one paper for one estimand class, so it demonstrates the discipline without establishing the requirement or the common benchmark.",
+     "quote": "This paper considers estimators of the causal mean ratio based on inverse probability of treatment weights, the parametric g-formula, and doubly robust estimation",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Heaping is a measurement artifact of self-reported counts, where respondents round, and the estimators accommodate it rather than treating the reported count as the true one. That is measurement structure carried into the estimator instead of discarded before it, for a specific and common reporting error.",
+     "quote": "each of which can account for overdispersion, zero-inflation, and heaping in the measured outcome",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "supports-open",
+     "confidence": "low",
+     "evidence": "The estimand is a mean ratio of counts accumulated after exposure, which presumes everyone remains observable for the accrual period; the paper does not treat death or other terminal events that would truncate the count. In the applied setting, incarcerated women followed after release, that assumption is doing work the analysis does not examine.",
+     "quote": "the estimand is often the causal mean ratio, i.e., the ratio of the counterfactual mean count under exposure to the counterfactual mean count under no exposure",
+     "locator": "Abstract"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0048",
+   "read": true,
+   "doi": "10.1093/aje/kwae127",
+   "title": "Empirical Sandwich Variance Estimator for Iterated Conditional Expectation g-Computation",
+   "relevance": "high",
+   "one_line": "Recasts iterated conditional expectation g-computation as stacked estimating equations so the sandwich variance replaces the bootstrap, substantially faster even against a parallel bootstrap.",
+   "what_was_done": "Iterated conditional expectation g-computation handles time-varying confounding for longitudinal and time-to-event data and, unlike other g-computation implementations, avoids specifying a model for each time-varying covariate. Variance estimation for it previously rested on the bootstrap, which is computationally intense. This paper presents the estimator as a set of stacked estimating equations, from which the empirical sandwich variance estimator follows and is consistent. A simulation study confirms the sandwich estimator recovers the variance appropriately, and an applied example on the effect of cigarette smoking on hypertension prevalence shows it is substantially faster than the bootstrap even when the bootstrap replicates are run in parallel.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "SFW-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is the shape of the answer the entry asks for in the g-computation setting: derive the estimator's influence function structure, in this case by writing it as stacked estimating equations, and get a closed-form variance rather than resampling. The runtime comparison against a parallelized bootstrap is the point, since the entry's claim is that the correct route is often prohibitive. It covers iterated conditional expectation g-computation rather than the cloning and sequence expansion the entry is about.",
+     "quote": "Here, we present ICE g-computation as a set of stacked estimating equations. Therefore, the variance for the ICE g-computation estimator can be consistently estimated using the empirical sandwich variance estimator.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "GMT-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The iterated conditional expectation form removes the requirement to model every time-varying covariate, which is the specification burden that makes nuisance-model selection consequential in the standard g-formula. Fewer models to choose is a direct reduction in the surface the entry describes, achieved by reformulating rather than by supplying a selection criterion.",
+     "quote": "Unlike other gcomputation implementations, ICE avoids the need to specify models for each time-varying covariate.",
+     "locator": "Abstract"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0049",
+   "read": true,
+   "doi": "10.1093/aje/kwae274",
+   "title": "Single World Intervention Graphs (SWIGs): A Practical Guide",
+   "relevance": "medium",
+   "one_line": "A practical guide to making potential outcomes explicit in causal diagrams, including how a SWIG makes the g-formula's identification visible.",
+   "what_was_done": "A step-by-step guide to single world intervention graphs, motivated by the limitations of directed acyclic graphs under the potential outcomes framework: a DAG shows the causal structure of the observed world and does not display the counterfactual quantities the analysis targets. The guide sets out how to transform a DAG into a SWIG by splitting intervened nodes, works through confounding, mediation and sequential randomization, and shows how the resulting graph makes the identification of the g-formula visually explicit, so a causal estimand can be read off the diagram rather than derived separately.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "REG-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A SWIG makes the target estimand and the conditions under which it is identified visible in one object, which is part of what the entry asks a reporting panel to separate: what the analysis assumes as against what it can diagnose. It is a tool for making assumptions inspectable rather than a reporting requirement, so it supplies the vocabulary without establishing the convention.",
+     "quote": "we illustrate their application in identifying the g-formula, showcasing their capacity to make causal estimands visually explicit",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "ELG-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The entry's proposed direction rests on domain-grounded causal review of a proposed eligibility definition against an assumed graph, and this supplies the graphical apparatus for doing that under sequential randomization, which is the structure an emulation has. It gives a reviewer something to draw and does not supply the audit itself.",
+     "quote": "The article provides a step-by-step guide on transforming DAGs into SWIGs that includes practical insights into constructing SWIGs under various scenarios such as confounding, mediation, and sequential randomization.",
+     "locator": "Abstract"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0050",
+   "read": true,
+   "doi": "10.1093/aje/kwad097",
+   "title": "Causal Effects of Stochastic PrEP Interventions on HIV Incidence Among Men Who Have Sex With Men",
+   "relevance": "high",
+   "one_line": "Estimates incremental propensity score interventions on PrEP uptake in electronic health records, benchmarks the implied uptake against pilot trials, and states why it chose the simpler estimator.",
+   "what_was_done": "Longitudinal electronic health record data on HIV-negative men who have sex with men at Fenway Health, Boston, January 2012 through February 2018 with two years of follow-up, used to estimate the effect on HIV incidence of stochastic interventions that raise the probability of initiating preexposure prophylaxis in high-priority subgroups. The estimand is an incremental propensity score intervention rather than a deterministic assignment, estimated by a new inverse probability weighted estimator of the generalized g-formula adjusting for baseline and time-varying confounders, together with an estimator of cumulative treatment uptake so the implied uptake is on the same scale as pilot trial results. One intervention at a shift of 0.1 reproduced the uptake increase seen in a published behavioral pilot trial, 22.0% against 24.4%. The largest estimated relative risk reduction was 66%, under an intervention reaching 62% of all men, which the authors note falls short of the federal 75% by 2025 target. Interference is stated to be unaddressed and hard to address in record-based studies because sexual contacts are not recorded. The authors explain that they used simple weighting rather than targeted or augmented estimators because their estimator guarantees monotonic cumulative incidence over time in the survival setting, which they say existing targeted methods do not outside time-fixed treatment.",
+   "future_research": [
+    {
+     "gap": "Bounds for weighted estimates under working assumptions about the structure of interference, particularly when the outcome is rare and treatment is highly effective",
+     "kind": "stated",
+     "quote": "Future work for optimizing g-methods with EHR data might include the development of bounds for IPW estimates and related methods that consider working assumptions related to the structure of interference, particularly when the outcome is rare and treatment is highly effective, as in the PrEP context.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is the entry's proposed direction executed on real data: the intervention shifts the probability of initiation rather than forcing it, which keeps the estimand inside observed practice, and the paper reports the resulting uptake so a reader can see how far the shifted world is from the observed one. The uptake estimator exists precisely so the intervention's plausibility is checkable rather than assumed.",
+     "quote": "We also developed an IPW estimator of cumulative treatment uptake associated with such interventions, which provides estimates of PrEP uptake on a more comparable scale to those of ongoing pilot trials and may be more intuitive to subject-matter experts than hazard-based measures.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "BEN-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The paper benchmarks an intermediate quantity rather than the effect: the uptake a stochastic intervention implies is compared against the uptake a published pilot trial achieved, 22.0% against 24.4%. That calibrates the intervention's realism against trial evidence without claiming the effect estimate has been validated, which is a narrower and more defensible use of a trial comparison than the concordance inference the entry says nothing licenses.",
+     "quote": "For example, intervention 1 with a choice of δ = 0.1 provided a stochastic intervention analogue for a behavioral intervention to promote PrEP uptake among MSM and resulted in a similar increase in PrEP initiation (22.0% vs. 24.4%)",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Interference is unaddressed and the paper says why it cannot be addressed here: exchangeability may require the covariates of connected individuals, and record data hold no sexual contacts. In an HIV transmission study the no-interference assumption is known to be false, and the authors' response is to name agent-based models as a complementary approach rather than to extend the emulation, which is the entry's claim.",
+     "quote": "Our approach does not address interference, including that the covariates of connected individuals may need to be measured to ensure exchangeability (64, 65). Interference is difficult to address in EHR-based studies because of a lack of data on sexual contacts",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The estimator choice is argued explicitly and turns on a property neither family dominates on: weighting guarantees monotonic cumulative incidence over time, which the authors say targeted methods do not outside time-fixed treatment, while targeted and augmented methods keep root-n consistency under machine-learned nuisances. The paper also cites computing requirements and accessibility. That is a defensible justification of a prespecified estimator, offered voluntarily, which is what the entry asks studies to be required to give.",
+     "quote": "Our IPW approach has the advantage of guaranteeing monotonic cumulative incidence estimates over time in the survival setting. To our knowledge, this is not guaranteed by existing TMLE methods outside of the time-fixed treatment setting",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Patients may transfer care and disappear from the record, and the authors considered artificially censoring after a gap without an encounter and chose not to, on a stated precision and bias trade. Whether a person is still under observation is inferred from whether they attend, which is the informative observation process the entry describes, handled here by a judgment call rather than a model.",
+     "quote": "One approach to mitigating bias from loss to follow-up is artificially censoring after a certain amount of time without a health-care encounter (59), but we chose not to do this given the limited duration of follow-up, rarity of the outcome, and precision/bias tradeoff.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0052",
+   "read": true,
+   "doi": "10.1093/ije/dyae100",
+   "title": "Bias due to coarsening of time intervals in the inference for the effectiveness of cancer screening",
+   "relevance": "high",
+   "one_line": "Establishes the direction of the bias from time-interval coarsening theoretically, quantifies its magnitude by simulation, and supplies a method for choosing interval length.",
+   "what_was_done": "A theoretical and simulation study of the interaction between time-varying confounding and the discretization that g-methods require when treatment and outcome occur on a continuous scale, worked through colorectal cancer screening. The direction of the coarsening bias is established analytically and its magnitude studied by simulation across levels of discretization, screening frequency and study length, with a simulated randomized study as the benchmark. The bias runs in opposite directions for different outcomes: the relative diagnosis rate under faecal immunochemical testing against no screening is attenuated as coarsening increases, while the relative mortality rate is amplified. The mechanism is specific: screening is an intermittent series of discrete actions with long gaps, and each screening event has a near-instantaneous effect on diagnosis of a neoplasm, which is itself the key time-varying confounder and itself a discrete event, so coarsening mislabels diagnostic against preventative exams. The authors supply general formulas for assessing coarsening bias in a given setting and recommend the shortest computationally feasible intervals plus sensitivity analysis over interval size. The bias is stated to arise separately from unmeasured confounding.",
+   "future_research": [
+    {
+     "gap": "Extending the coarsening-bias assessment to comparisons across screening modalities with long study periods, such as colonoscopy at ten-year intervals, where the literature does not yet supply the needed diagnosis rates",
+     "kind": "stated",
+     "quote": "While our formulas can still be used, we did not analyse this context as the existing literature did not provide sufficient details to specify diagnosis rates across multiple screening regimens and over a long study period.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is the most direct treatment of the entry's interval-width half found so far: the direction of the coarsening bias is derived, its magnitude is simulated across interval lengths, and general formulas are supplied so an analyst can assess it in their own setting and choose an interval. The procedure requires a simulated model of the setting rather than the treatment and observation processes alone, and it is outcome-aware, so the entry's outcome-blind claim survives while its claim that nothing selects the interval does not.",
+     "quote": "we hope to have simplified the process of evaluating the potential influence of coarsening for researchers and suggest methods for selecting more optimal intervals",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-02",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The paper identifies exactly when discretization is most damaging: when the treatment is an intermittent discrete action and the key time-varying confounder is itself a discrete event that the treatment affects almost instantaneously, so coarsening merges the two and mislabels which came first. That is the temporal-ordering failure the entry describes, characterized rather than asserted, and shown to be separate from unmeasured confounding.",
+     "quote": "This is related to two unique features of cancer screening: (i) screening is an intermittent series of discrete actions with significant gaps in between; (ii) in each discrete application, the event of screening itself may produce a nearly instantaneous effect on the diagnosis of a neoplasm, the key time-varying confounder, which is itself a discrete event.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The same coarsening biases two outcomes from the same study in opposite directions, attenuating the diagnosis-rate contrast and amplifying the mortality-rate contrast. An analyst who checks the sensitivity of one endpoint to interval length learns nothing about the other, which means the choice of endpoint and the choice of interval interact rather than being separable decisions.",
+     "quote": "We observe that the relative diagnosis rate under the faecal immunochemical tests (FIT) CRC screening regimen, compared with no screening, is artificially attenuated with a larger degree of coarsening, whereas the relative CRC mortality rate is amplified.",
+     "locator": "Key messages"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The bias is driven by recorded event times: mislabelling an event into the wrong interval increases the bias, and it increases more the coarser the intervals. Timing precision in the source data is therefore a measurement property that determines how fine a grid the analysis can honestly use, which links the entry's phenotype concern to the design choice directly.",
+     "quote": "Specifically, mislabelling the event to a wrong interval will increase the bias of the inference with the wider, coarsened intervals.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0053",
+   "read": true,
+   "doi": "10.1002/sim.10102",
+   "title": "G-Formula for Observational Studies under Stratified Interference, with Application to Bed Net Use on Malaria",
+   "relevance": "high",
+   "one_line": "Extends the parametric g-formula to partial interference so spillover effects are estimable in large clusters, and states what the design still cannot do.",
+   "what_was_done": "The parametric g-formula extended to settings with partial interference, where one person's treatment affects another's outcome within a cluster but not across clusters. Estimators are given for overall effects, effects when treated, and the corresponding contrasts under different levels of cluster coverage. The motivation is that existing inverse probability weighted estimators for partial interference do not handle large clusters, and the g-formula version does; it also avoids the g-null paradox that afflicts the g-formula without interference. The approach requires only cluster-level covariates, exposures and outcomes, which suits settings where individual-level data are unavailable, and works by treating clusters as independent units. Applied to Demographic and Health Survey data from the Democratic Republic of Congo, increasing the proportion of children using bed nets reduced the proportion with malaria, with a larger protective effect among children who themselves used nets. The authors note that defining the unit as the cluster does not permit inference about the direct effect, and that consistency requires the cluster-level parametric models to be correct while making no explicit assumption about the individual-level data-generating process.",
+   "future_research": [
+    {
+     "gap": "Relaxing partial interference to more general, for example spatial, interference structures",
+     "kind": "stated",
+     "quote": "Extensions of the proposed method which relax the partial interference assumption and thereby allowing for more general (e.g., spatial) interference42,43 could be considered.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Joint effects of multivariate exposures under partial interference, such as bed nets together with insecticide spraying or vaccination",
+     "kind": "stated",
+     "quote": "Future research could extend the methods in this paper to draw inference about the joint effects of multivariate exposures in the presence of partial interference.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Direct effects under this design, which defining the unit as the cluster does not permit",
+     "kind": "stated",
+     "quote": "Finally, the approach in this paper defines the unit as the cluster, which has advantages but does not easily permit inference about the direct effect.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Optimal allocation of a constrained resource across clusters based on cluster characteristics",
+     "kind": "stated",
+     "quote": "As the total number of bed nets may be limited in practice, it may be helpful to extend the proposed methods to estimate an optimal bed net allocation strategy based on cluster characteristics, subject to some constraints on the total number of bed nets available",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "EST-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The entry says interference-aware emulation needs a feasible joint or stochastic policy, an exposure mapping and joint support, and that individual clone-censor rules do not identify those effects. This supplies exactly that machinery for partial interference: the exposure is cluster coverage, the estimands are overall and treated-specific effects at stated coverage levels, and the g-formula version works where the weighted estimators fail at large cluster sizes. It does not join this to an emulation protocol, and it cannot deliver direct effects because the unit is the cluster.",
+     "quote": "Inverse probability weighted estimators have previously been developed for observational studies with partial interference. Unfortunately, these estimators are not well suited for studies with large clusters. Therefore, in this paper, the parametric g-formula is extended to allow for partial interference.",
+     "locator": "Summary"
+    },
+    {
+     "problem_id": "PRO-05",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The entry says a policy emulation must specify the assignment unit, the exposure mapping and a cluster-level estimand, and that causal information comes from independent clusters rather than patient counts. This paper does all of that explicitly, taking the cluster as the unit, requiring only cluster-level data, and estimating what a stated coverage level would deliver, which is the quantity a policymaker acts on.",
+     "quote": "the approach in this paper accommodates partial interference by essentially reframing as a 'classic causal inference' problem where the clusters as units and i.i.d. unit-level data are observed",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Consistency requires the cluster-level parametric models to be correctly specified, and the authors note this implicitly assumes away individual-level data-generating processes that do not marginalize to the assumed cluster-level one. The assumption is invisible in the cluster-level fit and is named as a target for relaxation through semiparametric or machine learning methods, which the paper does not supply.",
+     "quote": "Future research could explore relaxing these parametric assumptions, perhaps by using semiparametric or nonparametric (i.e., machine learning) methods.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The paper positions its estimator against the weighted alternatives on the grounds of what each fails at: weighting is unsuited to large clusters, the g-formula avoids the g-null paradox, and the nonparametric doubly robust estimators for the no-interference analogue have smaller bias and larger variance. Choosing among them is a judgment about the setting, made here explicitly and nowhere required.",
+     "quote": "Kennedy proposes nonparametric doubly robust estimators, which tend to have smaller bias but larger variance than the parametric approach considered in this paper.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0054",
+   "read": true,
+   "doi": "10.3310/nihropenres.13473.1",
+   "title": "Early special educational needs provision and its impact on unplanned hospital utilisation and school absences in children with isolated cleft lip and/or palate: a demonstration target trial emulation study protocol using ECHILD",
+   "relevance": "high",
+   "one_line": "A protocol demonstrating emulation in linked education and health records, which prints the ideal and emulated protocols side by side and makes positivity assessment a prespecified analysis step.",
+   "what_was_done": "A published protocol for a demonstration target trial emulation in ECHILD, which links education and health records across England, estimating the effect of special educational needs provision by Year One on unplanned hospital contacts and school absences by Year Six in children with isolated cleft lip and palate. The protocol prints the ideal target trial and the emulated target trial as adjacent columns for every component, so each substitution is visible: born in England becomes has a birth record in Hospital Episode Statistics linked to the National Pupil Database, and diagnosed with cleft before Year One becomes identified in Hospital Episode Statistics with cleft before Year One. Positivity is a prespecified explorative analysis rather than an afterthought: propensity scores for the three provision categories are estimated and pairwise common support examined for none against support, none against an education health and care plan, and support against a plan, with causal inference conducted only for pairs that have common support, and the propensity model triangulated against classification and regression trees. Representativeness is checked against published external rates, and clustering of pupils within local authority is handled by mixed models or robust inference.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "PRO-04",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The entry asks for a component-by-component table carrying the conceptual specification, the operational realization and what changed between them. This protocol prints exactly that, and the substitutions are legible as substitutions: birth in England is realized as the presence of a birth record in a hospital dataset linked to an education one, which is a different criterion selecting a different population. It does this for one study rather than establishing it as a requirement.",
+     "quote": "TTE consists of one, defining the specifications of a hypothetical target experimental trial of the causal question",
+     "locator": "Methods, target trial emulation; the ideal and emulated protocols are set out column by column in Table 6"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Positivity is assessed before the causal analysis and determines which contrasts are estimated at all: pairwise common support is examined across the three provision categories and only pairs with common support proceed. That is the support criterion prespecified and acted on, which is what the entry asks for, in place of a weight summary reported afterwards.",
+     "quote": "Once explanatory analyses have been completed, causal inference will be conducted for pairs of interventions which have common support.",
+     "locator": "Analysis, causal inference"
+    },
+    {
+     "problem_id": "DTA-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Eligibility here is the conjunction of appearing in a hospital dataset, having a birth record in it, and being linked to the education dataset. Each linkage step changes who is in the study, and the protocol makes that visible by writing the operational criteria out, which is the provenance record the entry says publications rarely preserve.",
+     "quote": "Identified in HES with cleft lip and/or palate before start of Year One | Has a birth record in HES | Linked to NPD",
+     "locator": "Table 6, emulated target trial"
+    },
+    {
+     "problem_id": "PRO-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Publishing the protocol before the analysis, with the estimands, the positivity assessment and the estimation strategy stated in advance, is the prespecification the entry says registrations do not capture for emulations. It is a protocol rather than a versioned decision log, so it records the plan and not the chronology of revisions to it.",
+     "quote": "To reduce confounding and other sources of bias affecting observational data, we will adopt a Target Trial Emulation (TTE)",
+     "locator": "Methods"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0055",
+   "read": true,
+   "doi": "10.34172/aim.2023.79",
+   "title": "Impact of Alcohol Consumption on Multiple Sclerosis Using Model-based Standardization and Misclassification Adjustment Via Probabilistic Bias Analysis",
+   "relevance": "high",
+   "one_line": "Corrects a self-reported exposure for misclassification with probabilistic bias analysis before standardizing, and reports intervals that carry both the measurement and the sampling uncertainty.",
+   "what_was_done": "A population-based incident case-control study of 547 multiple sclerosis patients and 1,057 controls, estimating the causal effect of alcohol consumption. A minimally sufficient adjustment set was derived from a causal directed acyclic graph. Self-reported alcohol consumption was corrected for misclassification by probabilistic bias analysis, with sensitivity and specificity drawn from beta, logit-logistic and triangular distributions, and the causal effect estimated by model-based standardization. Intervals are Monte Carlo sensitivity analysis intervals rather than conventional confidence intervals, and the bootstrap handles random error separately from the bias correction. Across the three distributional assumptions the adjusted risk ratio ranged from 1.93 to 2.02, the risk difference was 0.0001 in all three, and the population attributable fraction ranged from 0.15 to 0.17 with intervals from 0.001 to 0.50.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "MER-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is the propagation the entry says is not done: a self-reported exposure is treated as mismeasured, sensitivity and specificity are given distributions rather than point values, and the correction is carried through the standardization to the reported interval. Reporting the result under three different distributional assumptions makes the dependence on the measurement model visible instead of hiding it in a single number.",
+     "quote": "The probabilistic bias analysis method (PBAM) using beta, logit-logistic, and triangular probability distributions for sensitivity/specificity to adjust for misclassification bias in self-reporting alcohol consumption and model-based standardization (MBS) to estimate the causal effect of alcohol consumption were used.",
+     "locator": "Abstract, methods"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The reported interval is a Monte Carlo sensitivity analysis interval reflecting the measurement uncertainty, with the bootstrap handling random error separately, so two sources of uncertainty are kept apart rather than collapsed into a sampling interval. That is the separation the entry asks for, done for one violation, misclassification, rather than jointly with confounding, selection and positivity.",
+     "quote": "Population attributable fraction (PAF) estimates with 95% Monte Carlo sensitivity analysis (MCSA) intervals were calculated using PBAM and MBS analysis. Bootstrap was used to deal with random errors.",
+     "locator": "Abstract, methods"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0056",
+   "read": true,
+   "doi": "10.1186/s12874-024-02328-w",
+   "title": "Longitudinal mediation analysis with multilevel and latent growth models: a separable effects causal approach",
+   "relevance": "high",
+   "one_line": "Gives multilevel and latent growth models a causal interpretation through separable effects, then shows by simulation that misspecification bias grows over time.",
+   "what_was_done": "A causal interpretation for two model classes widely used in applied longitudinal research, multilevel models and latent growth models, based on separable effects rather than natural mediational effects. Natural effects are hard to identify in longitudinal settings because of post-treatment confounding, and these model classes add a second difficulty in that they contain latent variables. The paper derives identifiability conditions for separable mediational effects in this setting and their analytical expressions through the g-formula, then runs a simulation varying moderate and severe model misspecification and violation of the identifiability assumptions. Misspecification affects the estimates substantially under severe misspecification and, importantly, the bias worsens as follow-up lengthens. Violating the identifiability assumptions affects the two model classes in very different ways, so the consequence of an assumption failure depends on which model was chosen.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Separable effects are the estimand family the entry names as one of the three that competing-event handling has to choose among, and this extends them to longitudinal mediation with latent variables and supplies identifiability conditions. It works in the mediation setting rather than the competing-risk setting directly, so it widens where separable effects are usable rather than resolving the entry's choice.",
+     "quote": "we propose a causal interpretation of these two classes of models based on a novel type of causal effects called separable, which overcome some of the issues of natural effects",
+     "locator": "Abstract, background"
+    },
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The simulation makes the entry's point quantitatively: misspecification of the nuisance structure biases the causal estimate and the bias grows with follow-up, so a longitudinal analysis is more exposed to model choice the longer it runs. Nothing in a predictive criterion would surface a bias that accumulates over time rather than appearing at any one time point.",
+     "quote": "The results show how model misspecification impacts the estimates of mediational effects, particularly in the case of severe misspecification, and that the bias worsens over time.",
+     "locator": "Abstract, results"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Violating the identifiability assumptions affects the mixed-effect and latent growth models in very different ways, so the model class determines not only precision but how the analysis fails when its assumptions do. A study reporting one of them gives no indication of how the other would have behaved, which is the entry's claim about an undisclosed dependence on estimator choice.",
+     "quote": "The violation of assumptions affects separable effect estimates in a very different way for the mixed effect and the latent growth models.",
+     "locator": "Abstract, results"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0057",
+   "read": true,
+   "doi": "10.1093/biostatistics/kxae036",
+   "title": "Characterizing quantile-varying covariate effects under the accelerated failure time model",
+   "relevance": "medium",
+   "one_line": "Lets covariate effects vary across survival quantiles under the accelerated failure time model, with g-formula standardization for marginal effects and handling of left truncation and complex censoring.",
+   "what_was_done": "A framework for effects that vary across quantiles of the survival distribution under the accelerated failure time model. The standard model imposes a constant multiplicative shift across all quantiles, a restriction the authors call analogous to permitting only proportional hazards in a Cox model, and which therefore cannot detect an effect that differs between early and late failures. Flexible regression structures are embedded within the model, a formula is derived for interpretable effects on the quantile scale, and a g-formula regression standardization scheme yields both covariate-conditional and marginal effects for an exposure of interest. Estimation is Bayesian with uncertainty quantification, accounting for left truncation and complex censoring, and the paper emphasizes graphical and numerical tools for interpreting the resulting quantile-varying effects.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "EST-03",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The entry's complaint is that a single summary is reported where the underlying effect is not constant. This makes the constancy an explicit modeling restriction rather than a convention, shows what it hides when effects differ across quantiles, and reports the effect as a function of the quantile with tools for reading it. The parallel it draws to proportional hazards names the same problem in the measure the entry says is the default headline.",
+     "quote": "Though parsimonious, this structure cannot detect or capture effects that differ across quantiles of the distribution, a limitation that is analogous to only permitting proportional hazards in the Cox model.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Left truncation and complex censoring are handled inside the estimation rather than by restricting the analysis to fully observed follow-up, which is the treatment the entry says the observation process deserves. It addresses the censoring structure and not the visit process that generates covariate observations.",
+     "quote": "We implement a user-friendly Bayesian approach for estimation and quantification of uncertainty, while accounting for left truncation and complex censoring.",
+     "locator": "Abstract"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0058",
+   "read": true,
+   "doi": "10.1093/aje/kwae018",
+   "title": "Estimating Subgroup Effects in Generalizability and Transportability Analyses",
+   "relevance": "high",
+   "one_line": "Supplies g-formula, weighting and augmented weighting estimators for subgroup-specific effects in a target population, where transport conditions on many covariates but the decision is about a few.",
+   "what_was_done": "Estimators for subgroup-specific potential outcome means and average treatment effects in generalizability and transportability analyses, motivated by a mismatch the authors state plainly: extending a trial's inference to a target population requires conditioning on a large covariate set sufficient for exchangeability between the randomized and non-randomized groups, while decision-makers want effects in subgroups defined by a few discrete covariates. Outcome model-based, weighting, and augmented weighting estimators are given for the whole target population and for its non-randomized subset, the latter also applicable to non-nested designs where trial and non-randomized samples are collected separately. The augmented estimators combine a trial-participation model with an outcome model, which the authors argue should be preferred because they are robust to misspecification of one and admit valid inference when the nuisance models are fitted by data-adaptive or machine learning methods. Illustrated on Coronary Artery Surgery Study materials.",
+   "future_research": [
+    {
+     "gap": "Adapting tree-based subgroup discovery to generalizability and transportability analyses, for data-driven rather than prespecified subgroups",
+     "kind": "stated",
+     "quote": "the methods we describe can form the basis of exploratory approaches for data-driven subgroup discovery (e.g., by adapting tree-based subgroup discovery approaches [19] to generalizability and transportability analyses)",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "EST-02",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The entry says a sufficient set is weaker than every effect modifier and that no accounting shows how the transport and treatment assumptions compound. This supplies estimators that keep those separate by construction: a trial-participation model and an outcome model, combined so that misspecification of one is tolerated, with valid inference when either is fitted by machine learning. It is estimation for the transport step rather than the apportionment of error the entry asks for.",
+     "quote": "Our augmented weighting estimators, which combine models for the probability of trial participation and the expectation of the outcome, may be preferred in practice because they offer robustness to model misspecification [39] and allow for valid inference when the models are estimated using data-adaptive methods [9], including machine learning techniques [54, 55].",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "LRN-04",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This addresses the entry's setting directly: subgroup effects in a target population, with the estimators built for prespecified effect modifiers identified from substantive knowledge rather than discovered adaptively. The authors are explicit that subgroup estimates matter when effect modification is strong enough that the average does not guide a decision, particularly where resources force targeting, which is the entry's motivation. Selection-aware inference for adaptively chosen subgroups is named as future work rather than provided.",
+     "quote": "Estimates of these subgroup-specific treatment effects can be useful in the presence of strong effect modification, when the average treatment effect is not sufficient for guiding decisions in the target population, particularly in limited resource settings when we need to focus intervention efforts on subgroups that are most likely to benefit from treatment",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The paper's premise is a gap between the estimand the identification argument supports, conditional on a large covariate set, and the estimand a decision-maker wants, conditional on a few discrete covariates. That the two differ, and that closing the gap needs new estimators rather than reinterpretation of an existing number, is the entry's point about what a reported effect actually refers to.",
+     "quote": "Methods for extending – generalizing or transporting – inferences from a randomized trial to a target population involve conditioning on a large set of covariates that is sufficient for rendering the randomized and non-randomized groups exchangeable. Yet, decision-makers are often interested in examining treatment effects in subgroups of the target population defined in terms of only a few discrete covariates.",
+     "locator": "Abstract"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0059",
+   "read": true,
+   "doi": "10.1371/journal.pone.0287037",
+   "title": "BayesGmed: An R-package for Bayesian causal mediation analysis",
+   "relevance": "medium",
+   "one_line": "An R package implementing the Bayesian g-formula for mediation, motivated by frequentist methods being unreliable at small sample sizes.",
+   "what_was_done": "An R package, BayesGmed, implementing causal mediation analysis through a Bayesian g-formula, on the argument that the mediation tools developed over the past decade are almost all frequentist and may not be robust at small sample sizes. The methodology and the software are demonstrated on a secondary analysis of the MUSICIAN study, a randomized controlled trial of remotely delivered cognitive behavioural therapy for chronic pain.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "GMT-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The package exists because the available estimators are unreliable in the small-sample regime, which is the entry's concern, and a Bayesian formulation is one of the routes the entry names for it. It supplies an implementation for mediation rather than establishing where asymptotic inference fails for sustained-strategy emulation.",
+     "quote": "most analytic tools developed so far rely on frequentist methods which may not be robust in the case of small sample sizes",
+     "locator": "Abstract, background"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "A named, installable package rather than a description is what makes a method reproducible in operative detail, which is the standard the entry says applied emulations do not meet. This addresses the supply side: the tool exists and is citable.",
+     "quote": "We created BayesGmed, an R-package for fitting Bayesian mediation models in R.",
+     "locator": "Abstract, methods"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}
