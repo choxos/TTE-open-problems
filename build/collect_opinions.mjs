@@ -11,6 +11,7 @@
 // build/adjudicate.mjs consumes.
 
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs'
+import { INDEPENDENT } from './adjudicate.mjs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -28,11 +29,14 @@ function readJson(path) {
   }
 }
 
-// Grok output needs a forgiving reader. A run can concatenate several whole JSON documents
-// at top level as it revises, and the clean object may sit under `structuredOutput` or at the
-// root. Scan the raw text for every parseable object and keep whichever carries the most
-// opinions; the early emissions are usually empty placeholders.
-function unwrapGrok(raw) {
+// Grok and GLM both need a forgiving reader. A grok run can concatenate several whole JSON
+// documents at top level as it revises, and the clean object may sit under `structuredOutput`
+// or at the root; GLM ignores Ollama's `format` schema often enough that its answer arrives
+// inside a code fence. Scanning the raw text for every parseable object and keeping whichever
+// carries the most opinions handles both, and handles clean output unchanged. The early
+// emissions are usually empty placeholders, which is why the count and not the position picks
+// the winner.
+function unwrapNoisy(raw) {
   if (typeof raw !== 'string') return null
   let best = null
   for (let i = 0; i < raw.length; i++) {
@@ -76,7 +80,8 @@ function main() {
   const sources = [
     { dir: OPINIONS, auditor: 'literature', unwrap: null, skip: ['records-with-opinions.json'] },
     { dir: join(AUDIT, 'auditors/codex/out'), auditor: 'codex', unwrap: null },
-    { dir: join(AUDIT, 'auditors/grok/out'), auditor: 'grok', unwrap: unwrapGrok },
+    { dir: join(AUDIT, 'auditors/grok/out'), auditor: 'grok', unwrap: unwrapNoisy },
+    { dir: join(AUDIT, 'auditors/glm/out'), auditor: 'glm', unwrap: unwrapNoisy },
   ]
 
   const perAuditor = {}
@@ -125,6 +130,17 @@ function main() {
   }
   if (orphans.size) {
     console.log(`\n  ${orphans.size} opinions referenced unknown problem ids: ${[...orphans].slice(0, 8).join(' ')}`)
+  }
+
+  // adjudicate.mjs sizes every majority by how many INDEPENDENT auditors returned an opinion.
+  // An auditor that is named there and casts nothing does not abstain neutrally: it makes the
+  // published rule and the executed rule different numbers, silently and permanently. The
+  // sibling project shipped in exactly that state, so this is a gate rather than a warning.
+  const silent = INDEPENDENT.filter((a) => !(perAuditor[a]?.opinions > 0))
+  if (silent.length) {
+    console.error(`\n${silent.join(', ')} named in adjudicate.mjs INDEPENDENT but cast no opinions.`)
+    console.error('Either run them, or remove them from INDEPENDENT. Do not adjudicate around it.')
+    process.exit(1)
   }
 }
 
