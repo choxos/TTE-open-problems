@@ -48,7 +48,13 @@ PHRASES = {
               # handful that are ours include a propensity-score paper that no other phrase
               # retrieves, and screening 40 obvious excludes is cheaper than missing it.
               "pseudotrial", "pseudotrials", "pseudo-trial", "pseudo-trials"],
-    "gform": ["parametric g-formula", "parametric g formula", "g-formula", "g formula"],
+    # PubMed normalizes the hyphen, so "g formula" and "g-formula" return an identical 558 and
+    # only one is needed. It also breaks a quoted phrase it cannot find in its phrase index into
+    # words and ANDs them, so "g-formula" is really "g AND formula" and retrieves infant formula,
+    # intraocular lens power formulas, MDRD, and chemical formulas. "parametric g-formula" is
+    # clean but returns 223 of the 558. The broad form is kept: this is a systematic search, the
+    # noise is obvious on sight during screening, and a missed methods paper is not recoverable.
+    "gform": ["parametric g-formula", "g-formula"],
     "msm":   ["marginal structural model", "marginal structural models"],
     "itb":   ["immortal time bias", "immortal person-time bias", "immortal time"],
     "tte":   ["target trial emulation", "target trial emulations", "emulation of a target trial"],
