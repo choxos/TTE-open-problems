@@ -1,0 +1,696 @@
+{
+ "batch": "core-19",
+ "papers": [
+  {
+   "id": "L0027",
+   "read": true,
+   "doi": "10.1016/j.eclinm.2022.101628",
+   "title": "Estimating the effect of donor sex on red blood cell transfused patient mortality: A retrospective cohort study using a targeted learning and emulated trials-based approach.",
+   "relevance": "high",
+   "one_line": "Emulates sex-stratified trials of donor-sex transfusion policy in 90,917 Danish patients with targeted maximum likelihood estimation and super learning, finding a 2.06 percentage point survival gain for male patients and defending exchangeability on the ground that donor sex is not considered when selecting units.",
+   "what_was_done": "A transfusion database from the Capital Region of Denmark with more than 900,000 transfusion events supplied 90,917 eligible adults transfused between 2008 and 2018, each at least 18, receiving a leukocyte-reduced unit with no transfusion in the previous year. Doubly robust targeted maximum likelihood estimation with an ensemble super learner emulated sex-stratified target trials comparing exclusive transfusion from male against female donors, adjusting for daily transfusion counts, hospital, calendar period, patient age and sex, blood group, Charlson score, prior transfusions and daily counts of units from donors under 40. For male patients, 28-day survival was 2.06 percentage points higher under exclusively male donors, interval 1.81 to 2.32. For female patients both exclusive policies beat current practice by around 0.6 points with no donor-sex effect. The super learner assigned large weights to non-linear learners, indicating that linear models alone would impose misspecification bias, and a directed acyclic graph identified daily transfusion count as a confounder unadjusted in previous studies. An ongoing randomized trial has 11 percent non-compliance from uncontrollable stock levels, excludes massive bleeding, and is powered only for a 2 point difference.",
+   "future_research": [
+    {
+     "gap": "Whether the treatment effect varies across clinical patient subgroups has not been determined and is needed to optimize the policy.",
+     "kind": "stated",
+     "quote": "Thus, studies determining whether the observed treatment effects vary across clinical patient subgroups are warranted to optimize treatment effects.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "No mechanism explains how donor sex would affect recipient outcome beyond residual plasma, and other mechanisms remain uninvestigated.",
+     "kind": "stated",
+     "quote": "Whether also other mechanisms are responsible for our findings remains to be investigated.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Exchangeability is argued from the physical selection process rather than diagnosed: because blood banks do not consider donor sex when choosing units, the assignment is treated as random by nature. The argument is then partly retracted by adjusting for hospital and daily transfusion count, which are named as things that do affect the probability of receiving male or female units, and no negative control or bias analysis tests what remains.",
+     "quote": "We believe that this assumption holds because the donors’ sex is not in any way considered when selecting RBC units in the blood banks and thus the selection process is random by nature.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Positivity is asserted by the same argument used for exchangeability, that donor sex is not taken into account, rather than checked against the data. The intervention is an exclusive-source policy over a whole transfusion history, so the histories with support for exclusively male or exclusively female units are exactly what a diagnostic would need to identify, and none is reported.",
+     "quote": "Given that the donor's sex is not taken into account when selecting RBC units, we assume the positivity condition to hold, requiring the probability of receiving the treatment of each trial arm to be greater than zero conditional on the adjusted covariates.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Consistency is secured by restricting to one product code, leukoreduced filtered refrigerated units, which is an explicit definition of the treatment version. The paper immediately notes that other blood components transfused alongside were not accounted for, so the strategy is well defined for one component within a co-intervention pattern that is not.",
+     "quote": "Further, we restricted our analyses to leukoreduced, filtered, and refrigerated RBC units (product code: E3846), hereby ensuring treatment consistency. However, our analyses did not account for transfusions received with blood components other than RBC units.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "BEN-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The randomized trial running on the same question is stated to be underpowered for the effect size found here, has 11 percent non-compliance driven by stock levels, excludes massive bleeding, and cannot estimate the comparison against current practice that the emulation reports. A future concordance verdict between the two would be comparing different estimands at different power.",
+     "quote": "Even though the RCT is large and well-designed, it is unfortunately not sufficiently powered to detect the effect size estimates found in this study if the effect depends on the sex of the patient.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0028",
+   "read": true,
+   "doi": "10.1371/journal.pone.0268807",
+   "title": "Emulating the MERINO randomised control trial using data from an observational cohort and trial of rapid diagnostic (BSI-FOO).",
+   "relevance": "high",
+   "one_line": "Emulates the MERINO antibiotic trial in UK bloodstream infection data, finds 121 eligible patients from 6,371, and reports an odds ratio of 1.31 against the trial's 3.69 with mortality more than double, alongside contamination that makes the intention-to-treat contrast uninterpretable.",
+   "what_was_done": "MERINO compared piperacillin-tazobactam with meropenem for bloodstream infection caused by ceftriaxone-nonsusceptible E coli or Klebsiella. Data from an observational bloodstream infection study and a randomized trial of a rapid diagnostic supplied 6,371 participants, of whom 1,968 had a relevant infection and 121 met the trial's eligibility criteria. In the emulation 14 of 82 patients on piperacillin-tazobactam and 6 of 39 on meropenem met the primary outcome, unadjusted odds ratio 1.13 with interval 0.40 to 3.21, rising to 1.31 with interval 0.40 to 4.26 after propensity adjustment, against 3.69 with interval 1.48 to 10.41 in the trial. Overall mortality in the emulated population was more than double the trial's, attributed to demographic and severity differences, the trial's consent process potentially excluding the sickest, the trial's exclusion of patients unlikely to survive 96 hours which the emulation deliberately did not impose, and the trial's preponderance of urinary tract infections. Follow-up was 25 days rather than 30. The per-protocol analysis could not be emulated because restricting to four days of allocated treatment would create immortal time, and many patients assigned piperacillin-tazobactam switched to meropenem.",
+   "future_research": [
+    {
+     "gap": "Whether the treatment effect differs by infection severity could not be examined for want of sample size, and this may explain the conflict between the trial and observational studies.",
+     "kind": "stated",
+     "quote": "Further research is required to investigate this, but this may in part explain the conflicting results published in the MERINO trial to other observational studies where the populations and severity of illness are likely to differ.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "BEN-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The emulation and the trial differ in effect size by a factor of nearly three, and the paper lists five candidate explanations spanning population composition, consent-driven selection, an eligibility criterion deliberately not imported, infection site mix and residual confounding. Nothing apportions the discrepancy among them, and the reconciliation offered is that the trial estimate lies inside the emulation's wide interval.",
+     "quote": "Our findings suggest that the discrepancies between the MERINO trial and observational studies estimates could be partly explained by differences in the populations and also due to the bias that arises from observational studies e.g. survival bias and bias from unmeasured or uncontrolled confounding.",
+     "locator": "Discussion, summary"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Many participants classed as receiving piperacillin-tazobactam switched to meropenem, and empirical therapy before classification and treatments after it were not controlled for. What the two arms denote is therefore a first recorded antibiotic rather than a sustained strategy, and the paper states this compromises its ability to conclude anything.",
+     "quote": "Our approach made it hard to attribute differences in the intention-to-treat analysis because some participants received both treatments with many of the participants assigned to piperacillin-tazobactam swapping to meropenem leading to contamination of drug exposure.",
+     "locator": "Strengths and limitations"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Two time-related traps are handled explicitly: the trial's 96-hour survival exclusion was not imported because it would have created survival bias, and the per-protocol requirement of four days on allocated treatment was refused for the same reason. Both decisions are stated as judgments about which criteria may be carried across from a trial protocol, with no rule generating them.",
+     "quote": "Secondly, it was not possible to emulate the per-protocol analysis fully as few participants received allocated treatment for four days, and restricting analyses to those who are in receipt for four or more days would introduce immortal time bias (bias induced by a period of follow-up during which, by design, the outcome cannot occur).",
+     "locator": "Strengths and limitations"
+    },
+    {
+     "problem_id": "ELG-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The trial required consent and excluded patients judged unlikely to survive 96 hours, both of which select on severity, and the emulation required neither. The comparison is therefore between two differently selected populations, and the paper identifies the trial's own selection as a reason its mortality was less than half the emulation's.",
+     "quote": "Secondly, the process of obtaining patient consent in MERINO could result in the sickest patients not being captured.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0030",
+   "read": true,
+   "doi": "10.1093/jamiaopen/ooaa048",
+   "title": "Framework for identifying drug repurposing candidates from observational healthcare data.",
+   "relevance": "high",
+   "one_line": "Builds a configurable pipeline that emulates hundreds of trials per disease, demonstrates it on 259 drugs for Parkinson's disease across two databases covering 150 million patients, and reports that 6 to 18 percent of drugs failed its own bias-elimination check.",
+   "what_was_done": "The framework provides an interface for specifying study design parameters and extracting cohorts, outcomes and confounders from observational databases, then applies causal inference to emulate hundreds of randomized trials per drug with multiple-testing correction. A Parkinson's disease case study evaluated 259 drugs on several progression measures in two databases covering more than 150 million patients, with substantial agreement between databases for the most promising candidates. Confounder handling starts by extracting a very large candidate feature set and then selecting on statistical association with the outcome, because adjusting for everything risks non-positivity, high variance and over-adjustment. Two control constructions are offered: a random-drug control, where the comparator is anyone with the disease starting any other treatment, which is large and comparable across drugs but risks dissimilar populations, and an ATC-based control restricted to pharmacologically related alternatives, which matches better but can obscure the effect when the alternative acts similarly. Balancing weights double as a check on whether biases were eliminated, and 6 to 18 percent of tested drugs failed it; regression approaches such as Cox offer no such check. The framework claims to be the first to correct selection bias from associations between outcome-related variables and follow-up or treatment duration.",
+   "future_research": [
+    {
+     "gap": "Time-varying confounders and treatments are not supported and are named as an extension needed to capture temporal causal structure, along with dosage.",
+     "kind": "stated",
+     "quote": "Other future directions include supporting time-varying confounders and treatments to better capture temporal causal trends, incorporating drug dosage in the analysis, and inspecting the effect of inactive drug ingredients.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Only average effects for the whole population are estimated, and identifying the subpopulations that benefit is left open.",
+     "kind": "stated",
+     "quote": "Currently, we estimate the average effect for the entire population, although effects may be heterogeneous with large differences across population strata.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "Balancing weights are used as a pass or fail gate on whether identified biases were removed, and between 6 and 18 percent of drugs failed it and were flagged rather than reported. The paper contrasts this with regression approaches that provide no such check. The gate operates on aggregate balance and does not name the patient histories that lack support, and it is exactly the trade-off with adjusting for many confounders that motivated the confounder selection step.",
+     "quote": "Regression-based methods, such as Cox model, which were commonly used in previous drug-repurposing studies, do not allow one to determine whether identified biases have been eliminated. 26",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "ELG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The comparator arm is a design parameter with two settings that trade different failures against each other: a random-drug control that is large and cross-comparable but demographically dissimilar, and an ATC-restricted control that matches better but can null out the estimate when the alternative acts like the study drug. No rule selects between them, and the choice determines which population the estimate refers to.",
+     "quote": "However, as the estimated effect is a comparative measure, it may be obscured when the trial and alternative drugs similarly affect the measured outcome.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The causal effect estimation method is explicitly a modifiable component, with balancing weights and outcome prediction tested and a doubly robust combination named as a straightforward extension. The paper's own recommendation is to run several and see whether the effects are sensitive to modeling decisions, which converts the absence of a default into a robustness exercise the user must perform.",
+     "quote": "Using different inference methods allows the reader to evaluate the sensitivity of identified effects to modeling decisions, as suggested by Brookhart et al. 35",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Confounders are selected by statistical association with the outcome, and the paper notes that only monotone associations were tested for non-binary variables and that other selection methods exist. The set of variables adjusted for is thus determined by a screening rule whose failure modes, non-monotone relationships and unrecorded constructs approximated by observed proxies, are acknowledged and not analyzed.",
+     "quote": "In the PD case study, we focused on monotone associations for non-binary variables, testing high vs. low variable values, but advanced examinations may consider non-monotone associations as well.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0031",
+   "read": true,
+   "doi": "10.1186/s12916-021-02151-w",
+   "title": "Risk of bias in observational studies using routinely collected data of comparative effectiveness research: a meta-research study.",
+   "relevance": "high",
+   "one_line": "Assesses 77 comparative effectiveness studies from high impact journals against the alignment requirement and finds a third at unclear or high risk of selection or immortal time bias, with a solution described in only five and cloning never used once.",
+   "what_was_done": "PubMed was searched for comparative effectiveness observational studies of therapeutic interventions using routinely collected data published in high impact journals between June 2018 and June 2020, yielding 77 articles with a median sample size of 24,000 and 69 percent evaluating drugs. Each was assessed for whether the time of eligibility, treatment assignment and start of follow-up were synchronized, following the target trial emulation framework. Twenty percent inadequately reported essential design information. Twenty-five articles raised concerns, six through unclear reporting and nineteen at high risk of selection or immortal time bias. Only five of those described a solution, and the described solutions were judged inadequate to remove the bias; six discussed the biases as limitations. Two mechanisms recur: selecting individuals who adhered to treatment for a given period, and using a grace period so that anyone starting within a window is counted as exposed, which increases the eligible sample but leaves outcomes inside the window unclassifiable. Cloning with censoring and weighting is the recommended remedy for both and was reported in no study in the sample. New-user restriction avoids the biases while reducing power, with sensitivity analysis for prevalent users as the offered compromise. A checklist is proposed.",
+   "future_research": [
+    {
+     "gap": "Cloning has been available since 2016 and is applied in only a few studies because of methodological and logistical difficulty.",
+     "kind": "stated",
+     "quote": "Although Hernan et al. proposed this approach in 2016, there are only a few studies applying this approach due to methodological and logistical challenges.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "The magnitude of the bias in the affected studies could not be determined.",
+     "kind": "stated",
+     "quote": "Second, we were unable to determine the magnitude of the bias.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A grace period is adopted because too few patients start treatment immediately, so its length is set by how many eligible patients are needed rather than by anything clinical, and the paper's worked example is a 48-hour window for hydroxychloroquine after admission. Outcomes occurring inside the window cannot be assigned to an arm, which is the exact failure the grace period creates.",
+     "quote": "However, a challenge of having a grace period is that we could not assign patients to one of the intervention groups at the start of the follow-up as in an RCT. If a patient had an outcome within 48 h since admission, it is uncertain if they should be classified as exposed or control group.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Cloning with censoring and weighting is the recommended fix for both failure modes the review identifies, and across 77 studies in high impact journals it was used zero times, attributed to methodological and logistical difficulty. The gap between the recommended method and what is implementable in practice is measured here rather than asserted.",
+     "quote": "However, the use of such an approach was never reported in our sample.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "One in five articles did not report enough about eligibility, assignment and follow-up start for the risk of bias to be assessed at all, and six more were unclear. The review's proposed remedy is a checklist so that readers and reviewers can judge whether the methodology used to address the bias was appropriate, which is to say no such requirement currently exists.",
+     "quote": "By explicitly reporting these components and the decision made when emulating the target trials, researchers could help readers in assessing the extent that results might be influenced by bias and whether the choice of methodology to address this bias was appropriate to ensure the validity of results.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "ELG-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Whether patients with a contraindication to one of the compared treatments were excluded was frequently unreported, and in one study such patients formed the control group. Exchangeability fails by construction there, and the reader cannot tell from the report whether it happened.",
+     "quote": "For example, in a study, patients who had contraindication with evaluated treatments were classified as the control group [ 43 ]. It means that patients in the intervention and control groups were not exchangeable, which violated a fundamental condition of causal inference.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The new-user design that removes prevalent-user bias also shrinks the sample and the power, and the review's answer is a sensitivity analysis assessing what including prevalent users would do. The design constraint and the statistical one pull against each other with no rule for setting the balance.",
+     "quote": "The selection of only new users, however, might reduce the sample size and the study power [ 41 , 42 ].",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0032",
+   "read": true,
+   "doi": "10.2147/clep.s274466",
+   "title": "Using the Causal Inference Framework to Support Individualized Drug Treatment Decisions Based on Observational Healthcare Data.",
+   "relevance": "medium",
+   "one_line": "Proposes deriving individualized treatment rules from claims data by modeling heterogeneous treatment effects, then using emulated trials to predict what applying those rules would do, and requires the data source to first reproduce known randomized main effects before individual effects are studied.",
+   "what_was_done": "Where guidelines give no single best option, the proposal is to estimate heterogeneous treatment effects from routine claims data, convert predicted probabilities of benefit and harm into decision rules, incorporate patient preferences, and then use emulated trials in the same observational data to predict the effect of applying those rules in routine care. The methodological requirements are set out: confounding by indication must be handled simultaneously with effect measure modification, using machine learning or parametric regression, and the individual treatment effect is framed as a missing-data problem in the Roy-Rubin model since only one arm is observed per patient. Two limits of claims data are named. Effect modifiers such as laboratory measurements and quality of life are absent, though they may become available from other sources after a model is implemented; and accuracy of comorbidity and outcome classification is uncertain, disease severity is difficult to determine, and patient preferences are absent entirely. A pre-validation step is proposed: if main effects from randomized trials can be consistently replicated in the claims data, the clinical situation is considered sound for studying individual effects, and the data source may then be trimmed to the patient's characteristics.",
+   "future_research": [
+    {
+     "gap": "Predictive models rarely reach patient care partly because they stop at probabilities and do not define the action space mapping probabilities to possible decisions.",
+     "kind": "stated",
+     "quote": "One obvious reason may be that most developments do not define ITR beyond mere probabilities and the models thus lack the necessary “action space” defined as a mapping of the probabilities to the set of all possible medical decisions. 40",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "BEN-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "A gate is proposed before individualized estimation begins: the data source must reproduce known randomized main effects, and only then is it deemed suitable for studying individual effects. It is a data-fitness test with an explicit criterion, and it is stated as a proposal without a threshold for what consistent replication means or an argument that passing on main effects licenses conclusions about effect modification.",
+     "quote": "By pre-validation, we mean that promising (literature) findings must demonstrate the consistency in routine claims data and thus indicate that the claims data are suitable for further steps of modelling and HTE assessment.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "LRN-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The whole proposal turns on estimating how effects vary across individuals, and the two conditions it requires are that variation exists and that it is large enough to matter clinically. The information needed to characterize that variation, laboratory values and quality of life, is exactly what the data source lacks, so the subgroups the rules will discriminate between are defined by the variables that happen to be billed.",
+     "quote": "First, relevant information on potential effect modifiers and outcomes is required, which usually excludes laboratory measurements or estimates of quality of life in this data source.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Comorbidity and outcome classification accuracy in claims is described as not always clear, severity of disease as often difficult to determine, and patient preferences as unavailable. These are the inputs to a decision rule intended to reach the bedside, and the paper's restriction is that effect modifiers should only be studied where the exposure-outcome relationship allows valid inference in routine data.",
+     "quote": "Although health insurance claims contain a wealth of information, it is not always clear how accurate they are with respect to co-morbidities or outcome classification. Although of importance, severity of disease is often difficult to determine, and patient preferences are not available at all.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "CNF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The paper states that confounding must be adjusted for at the same time as heterogeneous effects are assessed, and that state-of-the-art methods are rarely applied to non-randomized data. Treating the two as separable is the failure mode it warns against, and no procedure is given for doing both at once.",
+     "quote": "However, we highlight how necessary it is to simultaneously adjust for confounding when assessing HTE to derive treatment recommendations from such observational data sources. This is particularly important because state-of-the-art methods are rarely applied to non-randomized data. 17",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0033",
+   "read": true,
+   "doi": "10.1093/aje/kwac066",
+   "title": "Invited Commentary: Conducting and Emulating Trials to Study Effects of Social Interventions.",
+   "relevance": "high",
+   "one_line": "Argues that a social intervention raises several causal questions at once, intention-to-treat, per-protocol, adjacent protocols, subgroup and interference effects, and that a trial or emulation should be designed to support as many of them as the data collection allows.",
+   "what_was_done": "Grounded in a randomized study of a fourfold increase in the Earned Income Tax Credit and psychological distress, the commentary works through five estimands and what each demands. The intention-to-treat effect requires strong assumptions about loss to follow-up when only 69 percent had outcome data at three years, and requires design-stage collection of measures related to remaining in the study, plus data on competing or truncation events. The per-protocol effect matters because the common defence of intention-to-treat, that non-adherence also happens in the real world, holds only if trial non-adherence matches outside non-adherence in degree and type; a poverty programme with 52 percent adherence at one site, driven by a belief that accepting livestock meant agreeing to religious conversion, illustrates the failure. Estimating it needs either instrumental variables, whose assumptions are undermined by lack of blinding, or g-methods requiring measured reasons for non-adherence. Adjacent questions, refining versions of treatment into well-defined interventions, are restated as new target trials to be emulated within the trial's own data. Subgroup effects require design for the groups that will bear implementation. Interference requires network structure data and clarity about the level of intervention.",
+   "future_research": [
+    {
+     "gap": "When rich in-trial data collection is not feasible, bounding or bias analysis is the fallback and is left as a direction.",
+     "kind": "stated",
+     "quote": "When collecting such data is not feasible, bounding or bias analytical strategies may be considered ( 24 ).",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "EST-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Interference is treated as the normal case for social interventions rather than an exception, and it multiplies the estimands into direct, spillover and overall effects while forcing a decision about whether the unit of intervention is the individual, the cluster or the network. The commentary also raises effects on people ineligible for the intervention but connected to those who receive it, which no individual-level protocol can express.",
+     "quote": "Interference also requires being clear about the level of intervention, as there are some settings in which the trial should be designed to intervene on a cluster (or network structure) level as well as or instead of at an individual level ( 18 ).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The commentary dismantles the standard defence of the intention-to-treat quantity by showing that it depends on the non-adherence in the study matching the non-adherence outside it, and gives a case where the reason for non-adherence was local to the implementing organization. The reported effect is therefore specific to a pattern of protocol deviation that is not part of its description.",
+     "quote": "It is often inappropriately said that even with nonadherence, the ITT effect is desirable because nonadherence will also occur in the “real world,” but that logic only applies if the nonadherence in the trial perfectly mimics the degree and type of nonadherence that would occur outside the trial setting ( 7 ).",
+     "locator": "Signal paragraph, per-protocol effect"
+    },
+    {
+     "problem_id": "PRO-05",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Multiple versions of a social intervention are treated as a design problem to be resolved by restating each refined version as a new target trial, which is a framing rather than a procedure. It also requires anticipating those versions at design time and collecting the confounders for each, so an intervention whose versions were not foreseen cannot be recovered afterward.",
+     "quote": "Note that such data collection requires forethought and at minimum needs to include assessments of the anticipated adapted intervention definitions and associated confounders ( 9 , 15 , 16 ).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "With 31 percent of outcome data missing at three years, even the simplest estimand needs assumptions about why and how people left, and the only remedy offered is designing the study in advance to collect measures related to staying in it. The suggestion of linking to passively collected administrative data comes with the caveat that data collection is itself a social intervention.",
+     "quote": "In settings with incomplete follow-up (such as the 69% who had outcome information at 3 years in the Courtin et al. study ( 1 )), even estimating the ITT effect requires strong assumptions about the reasons why and how people are lost to follow-up.",
+     "locator": "Signal paragraph, intention-to-treat"
+    },
+    {
+     "problem_id": "LRN-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The commentary states that failing to power subgroup analyses has consequences that fall unequally when results are implemented, and gives the example of a trial of remote-learning software whose positive result would be used to expand its use despite too few students with disabilities to detect harm in that group. The groups that go unestimated are the ones the implementation will reach.",
+     "quote": "Though estimating effects in subgroups will often require larger sample sizes, the costs of not doing so are felt inequitably when trial results get implemented ( 9 ).",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0034",
+   "read": true,
+   "doi": "10.1093/ije/dyaa057",
+   "title": "Reflection on modern methods: trial emulation in the presence of immortal-time bias. Assessing the benefit of major surgery for elderly lung cancer patients using observational data.",
+   "relevance": "high",
+   "one_line": "Gives the step-by-step clone-censor-weight tutorial with R and Stata code on lung cancer surgery in patients aged 70 to 89, where a naive analysis shows a 22 point survival benefit, ignoring informative censoring shows 17, and the weighted analysis shows 11.",
+   "what_was_done": "Five steps are set out: specify the target trial and inclusion criteria, clone patients, define censoring and survival times, estimate weights for the informative censoring the design introduces, and analyze. Applied to patients aged 70 to 89 diagnosed with early-stage lung cancer, a naive Kaplan-Meier comparison of surgery against no surgery overstated the one-year survival difference at 22 percentage points, an analysis of the cloned data ignoring informative censoring gave 17, and the weighted analysis gave 11. The paper is explicit that the informative censoring is created by the method rather than present in the data, that it reflects confounding over time, and that it differs from loss to follow-up, for which a second set of weights would be multiplied in. The estimand differs from that of Cox regression with a time-updated treatment or delayed entry models: those estimate the effect once treated, while the emulated trial treats the waiting time to treatment as part of the intervention. Grace period length is a choice. A complete-case analysis excluded 10.8 and 13.5 percent for missing stage and performance status. Model-based standard errors are blocked by artificial inflation of events from patients dying during the grace period, 6.7 percent of patients and 156 deaths.",
+   "future_research": [
+    {
+     "gap": "No appropriate variance estimator exists for this design, because deaths during the grace period artificially inflate the event count.",
+     "kind": "stated",
+     "quote": "Further methodological investigation is needed to develop an appropriate variance estimator in this context.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "The performance of clone-censor-weight against time-updated Cox and delayed entry models has not been compared by simulation across scenarios.",
+     "kind": "stated",
+     "quote": "Simulation studies are needed to empirically compare the performance of these different approaches in a wide range of scenarios.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "SFW-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The tutorial recommends non-parametric bootstrap for intervals and states it is computationally intensive for large datasets, then explains why the model-based alternative is unavailable: deaths during the grace period inflate the number of events artificially. A named methodological gap sits at the point where the method must produce an interval.",
+     "quote": "If one wants to estimate model-based standard errors, a current limitation is the presence of an artificial inflation of the number of events due to patients dying during the grace period and before being exposed (before receiving surgery in our example, 6.7% of patients, 156 deaths).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Choosing the length of the grace period is listed as one of the operations the method requires, alongside cloning and defining survival times, with no criterion supplied. Because the emulated trial makes waiting time to treatment part of the intervention, the grace period is not a nuisance parameter but a component of the strategy being estimated.",
+     "quote": "We illustrated how cloning patients at the start of follow-up, carefully defining the survival time and vital status for each clone, and choosing the length of the grace period, as proposed by Hernàn et al. , 9 , 10 can address both confounding and immortal-time biases.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Three methods addressing the same bias target different quantities, and the paper says so: time-updated Cox and delayed entry estimate the effect once treated, while the emulated trial includes the waiting time in the intervention. Survival was lower in both arms of the emulation for reasons including different estimands, and the hazard ratio is stated to lack causal interpretation here because cloning makes hazards non-proportional.",
+     "quote": "However, both lead to the estimation of the treatment effect once treated and does not capture the effect of the time lag between diagnosis and treatment receipt.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A complete-case analysis dropped over a tenth of patients, and the paper says complete-case is rarely appropriate for marginal effects. Neither available remedy is usable: multiple imputation combined with the bootstrap that cloning requires is computationally very intensive, and the multiplied-weights alternative is inefficient at moderate sample sizes.",
+     "quote": "However, multiple imputation combined with bootstrap, which is required when patients are cloned, can be challenging and very computationally intensive.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Censoring weights were estimated with Cox proportional hazards models while more flexible hazard-based models are named as available, and the survival analysis used Kaplan-Meier where flexible time-to-event models could have been used. The choices are stated as defensible rather than derived, and the paper calls for simulations to compare the alternatives.",
+     "quote": "Second, we estimated censoring weights using Cox proportional hazards regression models, which allowed us to estimate weights achieving balance over time, but more flexible modelling approaches (such as flexible hazard-based regression models) could be considered. 22",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0336",
+   "read": true,
+   "doi": "10.1093/jamiaopen/ooag102",
+   "title": "Assessing the quality of electronic health record data and the claims linked data for target trial emulation studies.",
+   "relevance": "high",
+   "one_line": "Measures a single academic health system's electronic health record against linked Medicare claims for 12,895 older adults with type 2 diabetes per year and finds it captures one third of encounters, half of HbA1c tests, 70 percent of deaths, and incident diagnoses and drug initiations poorly.",
+   "what_was_done": "Annual University of Florida Health electronic health record cohorts linked to Medicare claims for patients aged 65 or older with type 2 diabetes from 2013 to 2020, averaging 12,895 patients per year, were assessed on completeness, accuracy, plausibility and concordance for elements each target trial emulation component needs: eligibility, new-user ascertainment, baseline covariates, outcomes and follow-up. Demographics were complete and accurate and body mass index well documented. Completeness ran 34.1 to 78.4 percent for conditions and 53.7 to 63.4 percent for glucose-lowering drugs. The record captured about a third of Medicare encounters, just over half of HbA1c tests and nearly 70 percent of deaths. Accuracy was high for prevalent conditions and drug use but low for incident measures, with newer agents such as GLP-1 receptor agonists and SGLT2 inhibitors showing higher error rates than metformin and sulfonylureas. Values were plausible above 98.5 percent and HbA1c concordance with a diabetes diagnosis was 98.6 percent. Linkage substantially improved encounters, mortality, incident diagnoses and medications. Linkage was at person level, not encounter level, so visit-level concordance and prescription against dispensing could not be assessed.",
+   "future_research": [
+    {
+     "gap": "Definitions of incident conditions and drug initiation depend on the look-back window and should be evaluated under alternative windows with quantitative bias analysis.",
+     "kind": "stated",
+     "quote": "Third, incident condition and initiation definitions can be evaluated under alternative washout/look-back windows (supported by continuous enrollment) and assessed with quantitative sensitivity/bias analyses to understand robustness to definitional choices. 36",
+     "locator": "Discussion, future work"
+    },
+    {
+     "gap": "Lifestyle factors and symptom burden are poorly captured in both records and claims and would need patient-reported outcomes, registries or text extraction.",
+     "kind": "stated",
+     "quote": "Second, we were unable to assess data quality for certain clinical domains (eg, lifestyle factors, symptom burden) that are poorly captured in both EHRs and claims.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "DTA-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "This is a data-fitness assessment mapped element by element onto the protocol components an emulation needs, with an external reference supplying the denominators, and it produces a differentiated verdict: single-system records suffice for in-system clinical detail such as laboratory values and vital signs, and linkage is essential when the emulation depends on cross-setting capture. What it does not supply is a threshold; the recommendation is that investigators assess adequate completeness without saying what adequate is.",
+     "quote": "Before conducting a target trial emulation, investigators should also assess whether key elements needed for eligibility, treatment assignment, baseline covariates, outcomes, and follow-up are captured with adequate completeness and internal consistency in the available data.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "ELG-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Accuracy was high for prevalent conditions and drug use and low for incident ones, which is precisely the distinction a new-user design depends on. A patient whose earlier exposure happened outside the system is indistinguishable from a genuine initiator, and the paper attributes this to fragmented care plus a one-year look-back that is too short to see prior exposure.",
+     "quote": "Accuracy was particularly poor for incident use, suggesting limited ability of EHRs to capture therapy initiation, which may be caused by the following reasons.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Error rates were higher for the newer glucose-lowering agents than for metformin and sulfonylureas, so exposure misclassification varies systematically with the drug under study, and the newer agents are the ones current effectiveness and safety questions concern. The paper states this could bias pharmacoepidemiologic studies if not addressed.",
+     "quote": "The documentation of prevalent GLD use was more accurate for older agents such as MET and SUs, while newer agents including GLP-1RAs, SGLT2is, and DPP4is showed higher error rates.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Capturing about a third of encounters and 70 percent of deaths means the visit record is not a sample of care but a record of one system's share of it, driven by where each patient sought care. The paper draws the consequence for follow-up directly, and notes that patients getting more care elsewhere appear to have lower completeness across every domain.",
+     "quote": "Incomplete encounter data can also complicate follow-up and censoring definitions.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "DTA-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Linkage was performed at person level rather than encounter level, so the two sources could not be compared on whether a diagnosis occurred at the same visit, on event ordering, or on prescription against dispensing. Genuine out-of-system care could not be separated from differences in how each source defines and records an encounter, which is a semantic mismatch surviving a successful structural link.",
+     "quote": "Moreover, linkage was performed at the person level rather than the encounter/visit level, which precluded visit-level concordance analyses (eg, assessing whether diagnoses occurred on the same visit across EHR and claims), evaluation of event ordering or duplicate events, assessment of prescriptions vs dispensing at the event level, and limited our ability to distinguish true out-of-system care from discrepancies driven by differences in how encounters are defined and recorded in EHR vs claims data.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0343",
+   "read": true,
+   "doi": "10.64898/2026.06.02.26354704",
+   "title": "Agentic Authoring of OMOP Concept Sets from Natural Language.",
+   "relevance": "high",
+   "one_line": "Automates authoring of OMOP concept sets with a language model agent, validates it against 457 concept-vocabulary pairs from 15 emulation studies, and finds published codelists for the same named concept disagree because phenotype boundaries are study dependent.",
+   "what_was_done": "Turning a free-text description into an OMOP concept set is a manual iterative process requiring clarification of clinical intent, exploration of synonyms and hierarchies, decisions about descendants, documentation of exclusions and validation against the local data. An agent was built combining vocabulary tools, RxClass, LOINC and Disease Ontology extensions, and procedural guidance delivered progressively rather than all at once. On a 22-pair development set the best configuration reached Recall@100 of 0.965 and average precision of 0.875, and cohort-level validation against OMOP-mapped records gave precision 0.970, recall 0.998 and Jaccard 0.968. On a silver-standard benchmark of 457 concept-vocabulary pairs drawn from 15 Alzheimer's and related dementia target trial emulation studies, recall fell to 0.835 and precision to 0.786. Task-specific tools beat unrestricted SQL and the PHOEBE recommender. Cohort metrics ran consistently above concept-level recall because patient identification is dominated by a few high-prevalence codes, so concept-level retrieval judges vocabulary coverage while overstating the practical effect of missing rare concepts. The benchmark inherits between-study variability in published codelists, which limits its ability to separate system error from legitimate design difference.",
+   "future_research": [
+    {
+     "gap": "Boundary-ambiguous concepts need structured input templates or interactive clarification, and validation rules for vocabulary membership, domain consistency and exclusion logic need formalizing.",
+     "kind": "stated",
+     "quote": "Future systems should combine automated\nretrieval with either structured input templates or interactive clarification for boundary-ambiguous concepts, and\nshould further formalize validation rules for vocabulary membership, domain consistency, and exclusion logic.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The ceiling on automated authoring is that there is no single right answer: published codelists for the same named concept differ because the phenotype boundary depends on the study, so the system can disagree with a reference set without being wrong. The phenotype that enters an emulation as a binary variable is thus a study-specific construction, and this paper measures the disagreement across 15 emulation studies.",
+     "quote": "Published codelists for the\nsame named concept often differ because phenotype boundaries are study dependent3,25.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The paper attacks reproducibility at its source: independent teams implementing the same study produce materially different cohorts, in part because the natural-language description is ambiguous, and codelist differences come from design choices, database-specific validation history, expert judgment and coding practice change. Automating the authoring makes the artifact reproducible without making the underlying judgment explicit.",
+     "quote": "Even when working\nwithin a CDM, independent teams attempting to implement the same observational study can produce materially\ndifferent patient cohorts, in part due to the ambiguity of natural language study descrip",
+     "locator": "Introduction"
+    },
+    {
+     "problem_id": "LRN-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "This is protocol translation automated at the phenotype layer, and the paper identifies the failure mode precisely: when the input is a short natural-language label, some inclusion and exclusion decisions are underdetermined, so the agent produces a valid concept set that encodes a boundary nobody chose. Its own remedy is to have the agent flag boundary-ambiguous descendants for human adjudication, which is future work.",
+     "quote": "When the input is only a short\nnatural-language label, some inclusion and exclusion decisions are underdetermined.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "BEN-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Concept-level and cohort-level metrics disagree systematically because a few high-prevalence codes dominate patient identification, so a concept set can look poor by coverage and excellent by cohort overlap. The paper's recommendation to report both is an argument that a single agreement number cannot be read as a validity verdict.",
+     "quote": "Cohort metrics were\nconsistently higher than concept-level recall because patient identification is dominated by a small number of highprevalence codes.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0349",
+   "read": true,
+   "doi": "10.1038/s41746-026-02563-z",
+   "title": "An operational target trial emulation framework for causal inference using electronic health record data.",
+   "relevance": "high",
+   "one_line": "Separates the specification of a target trial from its realization in electronic health record data and argues that healthcare-driven data generation often changes the estimand rather than adding noise, so a valid outcome of the framework is deciding the question is not identifiable and abandoning the emulation.",
+   "what_was_done": "Electronic health record data arise from encounters, billing and documentation rather than from disease onset or a scheduled protocol, so observations are irregular, selectively missing and tied to care-seeking behavior. The review works through each protocol component under that constraint. Treatment strategy definition is undermined because initiation may be delayed, incompletely recorded or inferred retrospectively, so groups identified in data need not match strategies specified in the protocol; an intention-to-treat-like analysis may survive where assignment is reliably captured by a policy or system-level decision, while per-protocol or sustained effects risk bias when baseline assignment is not separated from prognosis-driven switching. Mitigations for follow-up and censoring are set out with their limits: inverse probability of censoring weighting, Fine-Gray for well-defined competing events, and linkage to claims or death registries to capture events after disengagement. The paper states these do not restore the causal contrasts the target trial defined, do not recover exchangeability, do not resolve structural non-overlap and do not undo risk-set changes from competing events; they make dependence on unverifiable assumptions explicit. Restrictions to common support should be framed as targeting a restricted estimand.",
+   "future_research": [
+    {
+     "gap": "Diagnostics and sensitivity analyses should be tailored to the assumptions implied by specific design choices rather than applied as a generic package.",
+     "kind": "stated",
+     "quote": "Sensitivity analyses and diagnostics should therefore be used to evaluate assumptions implied by design choices, not applied generically 64 .",
+     "locator": "Conclusion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "PRO-04",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The framework's central move is exactly the distinction between a protocol component and its realization, and it names the consequence: when a component cannot be implemented without conditioning on post-baseline information or selective observation, the intended estimand is not identifiable and what is estimated is a data-constrained target trial. This is a conceptual framework rather than a decomposition, offering no procedure that separates and quantifies the sources of loss.",
+     "quote": "EHR-based TTE should therefore be understood as defining a data-constrained target trial. When target trial components cannot be implemented without conditioning on post-baseline information, selective observation, or unobserved processes, the intended causal estimand is not identifiable from the EHR data alone.",
+     "locator": "Conclusion"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "A stopping rule is stated outright: determining that a question is not identifiable in the available data is a valid outcome and the emulation should not be pursued. The conditions given are qualitative, a defensible baseline for eligibility and assignment, routinely captured outcomes and comparable patients on different strategies, so the rule names what to check without setting a threshold for any of it.",
+     "quote": "Importantly, a valid outcome of this framework is the determination that a given causal question is not identifiable using available EHR data, in which case TTE should not be pursued.",
+     "locator": "Conclusion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The review insists that restricting to common support changes the estimand and should be reported that way, rather than treated as a technical fix, and states that statistical adjustment cannot recover a contrast the data do not support. Structural non-overlap is distinguished from finite-sample imbalance, and the diagnostics offered remain balance, overlap and weight stability rather than identification of unsupported histories.",
+     "quote": "Even when an estimand is identifiable in principle, limited overlap can yield high-variance, model-sensitive estimates, and restrictions to regions of common support should be framed as targeting a restricted estimand supported by the observed data.",
+     "locator": "Conclusion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Informative censoring is attributed to auxiliary variables that are difficult or impossible to identify, and unobserved competing events to system exit that the record cannot see. The paper places these as fundamental constraints on survival and incidence estimates rather than as modelling problems, so weighting and linkage narrow the gap without closing it.",
+     "quote": "Both informative censoring, which arises from auxiliary variables that are difficult or impossible to identify, and unobserved competing events impose fundamental constraints on the validity of survival and incidence estimates, and, by extension, on treatment effect estimates derived from EHR-based TTE.",
+     "locator": "Signal paragraph, mitigating strategies"
+    },
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Ambiguous assignment timing is traced to three distinct record failures, delayed initiation, incomplete recording and retrospective inference, with the conclusion that the groups in the data may not be the strategies in the protocol. The asymmetry noted is that assignment-based estimands can survive this while sustained-strategy estimands cannot.",
+     "quote": "Treatment initiation may be delayed, incompletely recorded, or inferred retrospectively, making assignment timing ambiguous. Consequently, the treatment groups identified in the data may not correspond to the strategies specified in the target trial.",
+     "locator": "Signal paragraph, treatment strategies"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0356",
+   "read": true,
+   "doi": "10.1136/bmjopen-2025-109205",
+   "title": "Causal language jumps and non-alignments between clinical practice guidelines and original studies: a systematic evaluation of diabetes guidelines and their cited evidence.",
+   "relevance": "high",
+   "one_line": "Traces the strength of causal claims from cited studies through guideline statements to recommendations in four diabetes guidelines, finding 27 percent of causal statements stronger than any reference they cite and 35 percent of recommendations requiring more causation than their statements supply.",
+   "what_was_done": "Three hundred guideline statements were randomly sampled from four guidelines on non-pharmacological treatment and prevention for adult type 2 diabetes. Causation strength in each statement, and the dependence on causation in the recommendations they support, were rated with existing scales, and the cited original studies were rated the same way. A causal language jump was recorded when the causation expressed at one step exceeded the previous step in the flow from original study to statement to recommendation. Of 300 statements, 114 were causal and 76 of those expressed strong causation. Thirty-one of the 114 causal statements, 27.2 percent, stated stronger causation than any of their references. Twenty-nine of 83 recommendations, 34.9 percent, required stronger causation than the statements supplied. Reporting of target trial emulation components was used as a proxy for reliability across the 53 eligible original studies, and most did not report treatment assignment or causal contrast in detail. The authors note that several pieces of weaker causal evidence could be synthesized into support for a stronger claim, which their semantic-level assessment cannot detect.",
+   "future_research": [
+    {
+     "gap": "Whether several weaker pieces of evidence jointly support a stronger causal claim cannot be assessed at the semantic level and is left unexamined.",
+     "kind": "stated",
+     "quote": "Several causal evidence pieces, each with weaker strength, could be synthesised into stronger evidence to sufficiently support a causal claim or recommendation, but we cannot look into the characteristics of such ‘joint support’ at semantic level.",
+     "locator": "Strengths and limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Reporting of protocol components was used as the measure of whether a cited study could support a causal claim, and the two most often missing were treatment assignment and the causal contrast. Those are the components that determine which effect was estimated, so a guideline reading these studies cannot recover what quantity it is passing on.",
+     "quote": "Of the 53 eligible studies for TTE rating, most did not report treatment assignment and causal contrast in detail.",
+     "locator": "Abstract, Results"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "More than a quarter of causal guideline statements assert more causation than any study they cite, and a third of recommendations demand more than their supporting statements provide. The strength of a causal claim is therefore acquired in transmission rather than earned by the underlying design, which is the same substitution as treating a study's label as evidence about its assumptions.",
+     "quote": "27.2% (31/114) of causal guideline statements stated stronger causation than any of their references and demonstrated ‘causal language jump’; 34.9% (29/83) of guideline recommendations required stronger causation than provided in statements.",
+     "locator": "Abstract, Results"
+    },
+    {
+     "problem_id": "REG-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Guideline recommendations about giving or withholding treatment are necessarily causal because they compare consequences of alternatives, yet no threshold governs how much causal support a recommendation of a given strength requires. The paper's own conclusion is that jumps are sometimes inevitable and should be justified, which leaves the justification to the writer.",
+     "quote": "Guideline recommendations that aim to inform practitioners about giving or withholding treatment are necessarily causal in nature, because they compare the consequences of two (or more) potential treatment options.",
+     "locator": "Introduction"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The mechanism identified is that observational studies use associational language while being cited to support causal statements, so a quantity reported without a causal claim is read as one downstream. The estimand travels without its qualifications, and the reader of the guideline sees only the final formulation.",
+     "quote": "For example, observational studies often use associational language 3 4 but are still used to support causal statements in guidelines.",
+     "locator": "Introduction"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0360",
+   "read": true,
+   "doi": "10.1055/a-2765-8811",
+   "title": "Causal inference in health services research: concepts, methods and application perspectives.",
+   "relevance": "medium",
+   "one_line": "Reviews causal inference for German health services research, placing target trial emulation alongside in silico trials as approaches to hypothetical interventions, and flags interference across practices and care facilities as a routine problem requiring explicit cluster modeling.",
+   "what_was_done": "The review sets out the identifying assumptions common to all designs, exchangeability requiring no confounders associated with both intervention and outcome, positivity requiring a non-zero probability of each intervention state for every covariate combination, consistency requiring a clearly defined and standardized intervention, and no interference requiring that one person's intervention does not affect others, with consistency and no interference together forming the stable unit treatment value assumption. It notes these are prerequisites for internal validity and hold regardless of design. Two approaches to hypothetical interventions are then described. Target trial emulation replicates a hypothetical randomized trial in observational data in two steps, defining the target trial with inclusion criteria, time zero, intervention groups, follow-up and endpoints, which reduces immortal time bias and unclean follow-up, then replicating it in observational data to limit violations of the causal assumptions, and it can absorb quasi-experimental methods such as inverse probability weighting or difference-in-differences. In silico trials simulate interventions in synthetic cohorts. Emulation is judged particularly suitable for routine data from statutory health insurers or clinical registries, allowing evaluation of interventions such as disease management programmes without a randomized trial.",
+   "future_research": [],
+   "problems": [
+    {
+     "problem_id": "EST-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Interference is described as often problematic in health services research because interventions are delivered through practices and care facilities, and the remedy given is that clusters must be explicitly modeled. That converts a stated assumption into a modelling requirement without stating what happens when the cluster structure is unknown or when spillover crosses cluster boundaries.",
+     "quote": "Often problematic in\nhealth services research,\ne. g. in clustering\n(practices, care facilities).\nMust be explicitly taken\ninto account by modelling\nthe clusters.",
+     "locator": "Table 1, no interference"
+    },
+    {
+     "problem_id": "PRO-05",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The interventions this literature targets are things like disease management programmes, and the consistency assumption as stated requires an intervention that is clearly defined and standardized in its effect. A programme delivered across practices is neither, and the review states the requirement without addressing how a service intervention would meet it.",
+     "quote": "Consistency requires a clearly\ndefined intervention that is consistent and standardised in its effect.",
+     "locator": "Chapter 2, assumptions"
+    },
+    {
+     "problem_id": "REG-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Emulation is described as reducing immortal time bias and unclean follow-up by design, and then qualified: it remains a pragmatic design requiring detailed knowledge of the data, the causal structure, confounders and selection mechanisms, because there is neither blinding nor randomization. The framework's name does not carry those requirements with it.",
+     "quote": "However, TTEs remain pragmatic studies that require detailed knowledge of the data and the causal relationship, as well as possible confounders and selection mechanisms, since the intervention in a TTE is always carried out without\nblinding and randomisation.",
+     "locator": "Target Trial Emulation section"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}
