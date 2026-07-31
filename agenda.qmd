@@ -1,17 +1,202 @@
 ---
-title: "The prioritized agenda"
-subtitle: "What to change now, what to build next, and what is high-risk and high-reward"
+title: "A prioritized agenda"
+subtitle: "What should change in practice now, what to build next, and what is worth the risk"
 toc: true
 ---
 
-::: {.callout-note}
-## Not yet written
+The catalog lists problems. This page ranks them, in three tiers plus a list of work the field
+does not need. Tier 1 requires no new methodology: every item is something an analyst could do
+differently in the next study. Tiers 2 and 3 are research programs.
 
-This page is derived from the finished registry: it ranks entries by whether they block a
-decision-grade estimand, whether any method addresses them at all, and whether any software
-implements them. The registry is still being assembled and audited, so ranking it now would
-mean ranking a list that is about to change.
+The priority field carried on each entry is weak evidence and is treated as such: 10 of the 43
+entries are graded Very high and 27 High, which is under half a bit of information. The ranking
+below rests on three observable things instead. Whether the problem changes what the estimate
+means rather than how precisely it is measured. Whether any method addresses it at all, which
+is what the verdict records. And whether anything runnable implements it, which is checked
+against the version-pinned source in
+[the method landscape](landscape.qmd).
 
-Browse [the catalog](catalog.qmd) in the meantime, or read
-[how this was verified](methods.qmd).
+## Tier 1: change current practice now
+
+These need no new theory. Every one is a convention the field could adopt in its next protocol.
+
+1. **Report the estimand you estimated, not the one you set out to estimate.** A hazard ratio
+   published where the design targeted a weighted per-protocol effect among the grace-period
+   compliers is a different quantity with the same name.
+   See [EST-03](problems/EST-03-a-hazard-ratio-is-reported-where-the-estimand-was-a-weighted.qmd).
+
+2. **State the grace period and the time grid before looking at the outcome, and report the
+   estimate under at least one other choice.** Both are modeling decisions that move the
+   estimand, and neither has an outcome-blind selection procedure.
+   See [TZO-01](problems/TZO-01-no-outcome-blind-procedure-selects-the-time-grid-or-the-grac.qmd).
+
+3. **Name which patient histories are unsupported, not how heavy the weights got.** A weight
+   distribution is a symptom. The decision-relevant quantity is the fraction of person-time for
+   which the assigned strategy was never observed, and the estimate with and without it.
+   See [OVL-01](problems/OVL-01-positivity-diagnostics-describe-weights-instead-of-naming-wh.qmd).
+
+4. **Treat censoring at a competing event as an identifying assumption and say which estimand it
+   selects.** Censoring at death is currently applied as data cleaning, which chooses a
+   counterfactual quantity by default rather than by argument.
+   See [OUT-01](problems/OUT-01-censoring-at-death-is-applied-as-data-cleaning-rather-than-a.qmd).
+
+5. **Separate the assumptions that can be diagnosed from those that cannot, and report them
+   separately.** An analysis that lists positivity diagnostics beside an assertion of
+   exchangeability invites a reader to treat both as checked.
+   See [REG-02](problems/REG-02-there-is-no-assumption-dashboard-so-diagnosable-and-undiagno.qmd).
+
+6. **Do not treat the phrase target trial emulation as evidence about the analysis.** The label
+   describes a design discipline, not a discharged assumption burden, and it is currently cited
+   as though it were the second thing.
+   See [REG-03](problems/REG-03-calling-an-analysis-a-target-trial-emulation-is-treated-as-e.qmd).
+
+7. **Publish the phenotype logic, the weight diagnostics and the rejected protocol versions, not
+   only the final protocol.** A registration recording only what survived hides the researcher
+   degrees of freedom it exists to constrain.
+   See [SFW-03](problems/SFW-03-code-phenotype-logic-weight-diagnostics-and-rejected-protoco.qmd)
+   and [PRO-03](problems/PRO-03-registrations-record-the-final-protocol-and-not-the-alternat.qmd).
+
+8. **Report benchmarking as a calibrated comparison of estimates, not as agreed or not
+   agreed.** A binary replication label mixes estimand mismatch with random error, and it is the
+   label that gets cited.
+   See [BEN-02](problems/BEN-02-replication-is-reported-as-a-binary-label-rather-than-as-a-c.qmd).
+
+9. **Vary violated assumptions jointly.** Confounding, measurement error and informative visits
+   occur together; a one-at-a-time sensitivity analysis can make a cancellation accident look
+   like robustness.
+   See [UCF-02](problems/UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.qmd).
+
+10. **Show that the estimator choice did not decide the answer.** No estimator is defensible as a
+    default, and nothing currently requires a study to demonstrate that a different one would
+    have agreed.
+    See [GMT-04](problems/GMT-04-no-estimator-is-defensible-as-a-default-and-no-study-is-requ.qmd).
+
+::: {.callout-note appearance="simple"}
+## The one-page test
+
+A committee-facing summary should answer nine questions. If an analysis cannot, the problem is
+not the statistics.
+
+What is being estimated, on what scale, at what horizon? For whom? When is time zero, and do
+eligibility, assignment and the start of follow-up coincide there? What is the treatment
+strategy, and what grace period makes it achievable? Which variables are assumed to make
+treatment as good as randomized at each time point? What fraction of person-time had no support
+for the assigned strategy? Which variables are algorithms rather than measurements? Which
+assumptions were diagnosed and which were asserted? How much assumption violation changes the
+recommendation?
 :::
+
+## Tier 2: develop and validate next
+
+Tractable programs where a first publishable contribution is within reach. Everything here is
+graded 4 or 5 out of 5 for tractability in the catalog.
+
+- An outcome-blind procedure for selecting the grace period and the time grid, and a reporting
+  convention that shows the estimand moving with them
+- A positivity account that names unsupported histories and reports the estimate restricted to
+  the supported region, in place of weight diagnostics
+- Cross-validation criteria for longitudinal nuisance models that target causal error rather
+  than predictive error
+  ([GMT-01](problems/GMT-01-cross-validation-for-longitudinal-nuisance-models-optimizes-.qmd))
+- A scalable and correct default for variance after cloning and sequence expansion
+  ([SFW-01](problems/SFW-01-variance-estimation-after-cloning-and-sequence-expansion-has.qmd))
+- End-to-end propagation of phenotype misclassification through a longitudinal estimator, rather
+  than a validation study reported beside an analysis that assumes error-free variables
+  ([MER-01](problems/MER-01-phenotypes-enter-emulations-as-error-free-binary-variables.qmd))
+- Thresholds for data fitness that can stop a study, and a route to publishing a negative fitness
+  assessment
+  ([DTA-01](problems/DTA-01-data-fitness-assessment-is-narrative-and-has-no-thresholds-t.qmd))
+- Semantic conformance checking for common data models, so harmonized structure is not mistaken
+  for harmonized meaning
+  ([DTA-03](problems/DTA-03-common-data-models-harmonize-structure-without-guaranteeing-.qmd))
+- Federated diagnostics that surface between-site estimand heterogeneity instead of averaging
+  over it
+  ([DTA-02](problems/DTA-02-averaging-site-estimates-in-a-federated-emulation-can-concea.qmd))
+- Person-clustered and calendar-time-aware inference for sequential nested trials, validated in
+  finite samples rather than asymptotically
+  ([SEQ-01](problems/SEQ-01-sequential-emulation-creates-repeated-participation-and-cale.qmd))
+- Bias bounds for comparator sampling schemes computable before cohort construction
+  ([ELG-03](problems/ELG-03-no-procedure-bounds-the-bias-a-comparator-sampling-scheme-in.qmd))
+- Verification that automated protocol translation preserves the estimand, not only that it
+  produces running code
+  ([LRN-02](problems/LRN-02-automated-protocol-translation-can-change-the-estimand-while.qmd))
+- Subgroup estimation that reports overlap per subgroup, since the groups with the worst overlap
+  are the ones the analysis exists to serve
+  ([LRN-04](problems/LRN-04-subgroup-effects-are-estimated-where-overlap-is-worst-and-th.qmd))
+- Evaluation of generative models on causal quantities rather than on distributional fidelity
+  ([SFW-02](problems/SFW-02-generative-models-are-evaluated-on-distributional-fidelity-a.qmd))
+- A discrepancy prior for entering an emulation into a synthesis with randomized trials,
+  calibrated on the existing benchmarking literature
+  ([EST-05](problems/EST-05-an-emulation-enters-a-synthesis-with-randomized-trials-throu.qmd))
+
+## Tier 3: high risk, high reward
+
+Where the payoff is large and a clean result is not likely. These are the entries the catalog
+grades 2 or 3 for tractability, and the ones where the obstacle is identification rather than
+engineering.
+
+- Identification of dynamic regimes in continuous time under a treatment-dependent observation
+  process, which is the ordinary situation in electronic health records and the one the discrete
+  g-formula assumes away
+  ([GMT-02](problems/GMT-02-identification-of-dynamic-regimes-in-continuous-time-under-t.qmd))
+- Interference and the joint strategies cloning can construct that no policy could implement
+  ([EST-01](problems/EST-01-emulation-assumes-no-interference-and-cloning-individuals-ca.qmd))
+- The visit process as part of the causal structure rather than as missingness to impute
+  ([MIS-01](problems/MIS-01-the-visit-process-is-treated-as-a-nuisance-to-be-imputed-rat.qmd))
+- Negative controls, proxies and validation data integrated into one bias account instead of
+  three separate reassurances
+  ([UCF-01](problems/UCF-01-negative-controls-proxies-and-validation-data-are-not-integr.qmd))
+- A mediated estimand defined for a sustained strategy realized by cloning and artificial
+  censoring, with a protocol slot that fixes the mediator before the analysis
+  ([EST-04](problems/EST-04-no-mediated-effect-is-defined-for-a-sustained-treatment-stra.qmd))
+- Clinically defensible equivalence classes of treatment versions, which is what consistency
+  quietly assumes
+  ([STR-01](problems/STR-01-no-procedure-defines-clinically-defensible-equivalence-class.qmd))
+- Inference that accounts for the target trial having been selected after seeing the data
+  ([PRO-02](problems/PRO-02-inference-conditions-on-a-fixed-target-trial-that-was-in-fac.qmd))
+- Counterfactual prediction validated outside the assumptions that produced it, with operating
+  characteristics under exchangeability failure
+  ([LRN-05](problems/LRN-05-a-counterfactual-prediction-is-validated-under-the-assumptio.qmd))
+- Regulatory thresholds for adequate emulation, acceptable residual confounding and sufficient
+  data fitness, which is a governance problem carrying a methodological core
+  ([REG-01](problems/REG-01-regulators-have-no-thresholds-for-adequate-emulation-accepta.qmd))
+- Emulation of non-pharmaceutical and policy interventions whose treatment versions are not
+  enumerable, the one entry in the catalog the auditors could not settle
+  ([PRO-05](problems/PRO-05-emulation-is-proposed-for-non-pharmaceutical-and-policy-inte.qmd))
+
+## What the field does not need
+
+Stated plainly, because an agenda that only adds is not an agenda. Each of these is refused for
+a reason recorded in the catalog or in the rejected candidates.
+
+- **Another emulation demonstrating that immortal time bias exists.** It is the most-restated
+  finding in the entire reading and has been settled since 2008.
+- **Another package reimplementing inverse probability weighting under a new function name.**
+  The gap named in the catalog is a missing default for variance after cloning, not a missing
+  weighting routine.
+- **Simulation studies run where every method works.** Correct specification, good overlap,
+  measured confounders and complete follow-up describe conditions under which the estimator
+  choice cannot matter, which is the question the study was meant to answer.
+- **Adopting a more flexible estimator in place of an identification argument.** This is a
+  catalogued error, not a research direction
+  ([LRN-01](problems/LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.qmd)).
+- **Papers observing that applied subfields have not adopted existing methods.** Named
+  independently by four gap labellers and rejected on assessment: the sources themselves say the
+  methods are available in standard software and simply not used, which is a fact about
+  diffusion rather than a gap in the field.
+- **Requests for someone to write a package.** Named independently by three labellers, rejected
+  twice on the same ground. It closes with engineering and funding, not with research, and the
+  methodological residue is already carried by
+  [GMT-04](problems/GMT-04-no-estimator-is-defensible-as-a-default-and-no-study-is-requ.qmd)
+  and [SFW-03](problems/SFW-03-code-phenotype-logic-weight-diagnostics-and-rejected-protoco.qmd).
+- **Reporting checklists that stop where the disputes start.** A guideline covering what to
+  report about eligibility and time zero, and nothing about grace periods, cloning or
+  time-varying confounding, standardizes the easy half.
+
+## The organizing discipline
+
+> No effect estimate without a stated estimand at a stated horizon. No time zero without
+> eligibility, assignment and follow-up aligned at it. No sustained strategy without the grace
+> period that makes it achievable and the positivity account that makes it estimable. No
+> exchangeability claim without a bias analysis that says how much violation the conclusion
+> survives.
