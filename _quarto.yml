@@ -1,0 +1,90 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    # A bare "*.qmd" is expanded to "**/*.qmd" by Quarto, so anchor it to root.
+    - "/*.qmd"
+    - "/categories/*.qmd"
+    - "/problems/*.qmd"
+
+website:
+  title: "Open Problems in Target Trial Emulation"
+  description: "An audited catalog of open methodological problems in target trial emulation."
+  site-url: https://choxos.github.io/TTE-open-problems/
+  repo-url: https://github.com/choxos/TTE-open-problems
+  repo-actions: [issue]
+  search:
+    location: navbar
+    type: overlay
+    copy-button: true
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: catalog.qmd
+        text: Catalog
+      # Ordered by the target trial protocol, not alphabetically: a reader
+      # working through a protocol meets these problems in this sequence.
+      - text: Categories
+        menu:
+          - categories/protocol.qmd
+          - categories/eligibility.qmd
+          - categories/time-zero.qmd
+          - categories/strategies.qmd
+          - categories/estimands.qmd
+          - categories/confounding.qmd
+          - categories/g-methods.qmd
+          - categories/positivity.qmd
+          - categories/unmeasured-confounding.qmd
+          - categories/measurement.qmd
+          - categories/missing-data.qmd
+          - categories/outcomes.qmd
+          - categories/sequential.qmd
+          - categories/data-sources.qmd
+          - categories/benchmarking.qmd
+          - categories/reporting.qmd
+          - categories/software.qmd
+          - categories/learning.qmd
+      - href: agenda.qmd
+        text: Agenda
+      # chronology.qmd is written by render_site.mjs only once the full-text
+      # reading has produced a timeline, so it is added here in that phase and
+      # not before: a navbar entry pointing at a missing file fails the render.
+      - href: landscape.qmd
+        text: Landscape
+      - href: methods.qmd
+        text: How this was verified
+      - href: references.qmd
+        text: References
+    right:
+      - icon: github
+        href: https://github.com/choxos/TTE-open-problems
+        aria-label: GitHub repository
+  page-footer:
+    left: "Ahmad Sofi-Mahmudi"
+    center: "Every entry carries a verification verdict. See [How this was verified](/methods.qmd)."
+    right: "[Source](https://github.com/choxos/TTE-open-problems)"
+
+bibliography: references.bib
+csl: vancouver.csl
+link-citations: true
+
+format:
+  html:
+    # styles.scss carries the rules and must appear in BOTH lists: Quarto emits
+    # one stylesheet per mode, so a rule listed only under light does not exist
+    # in dark. The theme-*.scss files carry only per-mode variable values.
+    theme:
+      light: [cosmo, theme-light.scss, styles.scss]
+      dark: [darkly, theme-dark.scss, styles.scss]
+    toc: true
+    toc-depth: 3
+    toc-expand: true
+    html-math-method: mathjax
+    code-copy: true
+    code-overflow: wrap
+    callout-appearance: simple
+    anchor-sections: true
+    fig-responsive: true
+    link-external-newwindow: true
+    link-external-icon: false

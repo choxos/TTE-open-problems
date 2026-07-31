@@ -1,0 +1,68 @@
+# ---------------------------------------------------------------------------
+# documentation/ holds the source documents, the reference corpus and every
+# audit working file. It runs to gigabytes, so it is excluded by default, with
+# a few deliberate exceptions.
+#
+# Those exceptions are what makes `node build/render_site.mjs` runnable on a
+# fresh clone. render_site.mjs reads the registry, so ignoring the registry
+# means the site can be re-rendered only on the machine that built it; the
+# published pages survive because problems/*.qmd are committed, but nothing can
+# regenerate them.
+#
+# Git cannot re-include a file whose parent directory is excluded, so each level
+# is excluded by its contents (dir/*) and the next level down re-included, all
+# the way to the files that are kept.
+# ---------------------------------------------------------------------------
+documentation/*
+!documentation/audit/
+documentation/audit/*
+!documentation/audit/calibration.json
+!documentation/audit/seed-citations.json
+!documentation/audit/seed-citation-map.json
+!documentation/audit/registry/
+!documentation/audit/canonical/
+!documentation/audit/schema/
+documentation/audit/registry/*
+!documentation/audit/registry/problems.json
+!documentation/audit/registry/human-queue.json
+documentation/audit/canonical/*
+!documentation/audit/canonical/problems.json
+documentation/audit/schema/*
+!documentation/audit/schema/*.json
+
+# Quarto render output and caches
+/docs/
+/_site/
+/.quarto/
+*_files/
+/site_libs/
+
+# Per-file HTML left in the source tree by an interrupted Quarto render
+/*.html
+/problems/*.html
+/categories/*.html
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+*.rds
+
+# Node (site build script)
+node_modules/
+
+# Working directories the reading agents extract paper text into. Regenerable
+# from the PDFs and large enough to dominate the repository.
+/scratch/
+/scratchpad/
+
+# OS / editor cruft
+.DS_Store
+*~
+.vscode/
+.idea/
+
+**/*.quarto_ipynb
+__pycache__/
+*.pyc

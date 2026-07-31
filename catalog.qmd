@@ -1,0 +1,63 @@
+---
+title: "Catalog"
+subtitle: "Every open problem in the collection, with its verification verdict"
+page-layout: full
+toc: false
+listing:
+  id: all-problems
+  contents: "/problems/*.qmd"
+  type: table
+  # A field must appear in `fields:` to be sortable or filterable at all. The
+  # -rank companions are here only so sorting is semantic: as text, "Very high"
+  # sorts after "High" and "Medium". They are hidden by CSS.
+  fields: [pid, title, topic, priority, verdict, maturity, prank, tractability]
+  field-display-names:
+    pid: "ID"
+    title: "Problem"
+    topic: "Category"
+    priority: "Priority"
+    verdict: "Verdict"
+    maturity: "Maturity"
+    prank: "Priority"
+  field-types:
+    prank: number
+    tractability: number
+  field-links: [pid, title]
+  sort: ["prank asc", "pid asc"]
+  sort-ui: [pid, title, topic, prank, verdict, maturity]
+  filter-ui: [pid, title, topic, priority, verdict, maturity]
+  categories: numbered
+  # Deliberately larger than the catalog: paginating interacts badly with
+  # client-side filtering, because a filter would appear to lose matches that are
+  # simply on another page.
+  page-size: 250
+  table-hover: true
+---
+
+Use the search box to filter across ID, title, category, priority, verdict, and maturity;
+the column headers to sort; and the category list in the margin to narrow to one topic. Each
+row links to the full entry: what the problem is, why it is open, what has already been tried,
+and the probable solution or research direction.
+
+**Read the verdict column first.** It records what happened when the claim was checked against
+the literature and against independent external auditors, not what the source document asserted.
+A verdict is a judgment about the claim, not about the problem's importance. The auditors that
+voted on each entry, and how many reached it, are listed on that entry's own page.
+
+::: {.callout-note collapse="true"}
+## What the verdicts mean
+
+| Verdict | Meaning |
+|---|---|
+| [Confirmed open]{.verdict .verdict-confirmed-open} | Genuinely open. Auditors agreed and no counterevidence was found. |
+| [Partially addressed]{.verdict .verdict-partially-addressed} | Real, but existing work covers part of it. The entry names which part. |
+| [Overstated]{.verdict .verdict-overstated} | The underlying difficulty is real, but a claim about its severity, or about no method existing, is stronger than the evidence supports. |
+| [Resolved since report]{.verdict .verdict-resolved-since-report} | Closed in the literature or in code, either already or since the source was written. Kept because knowing something was recently closed is as useful as knowing it is open. |
+| [Not supported]{.verdict .verdict-not-supported} | No accessible source substantiates the claim as stated. Retained, with the reasons shown. |
+| [Unverifiable]{.verdict .verdict-unverifiable} | Auditors disagreed with evidence on both sides, or the evidence was insufficient to decide. The disagreement is shown on the entry. |
+
+Full protocol: [How this was verified](methods.qmd).
+:::
+
+::: {#all-problems}
+:::

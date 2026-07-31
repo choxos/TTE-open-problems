@@ -1,0 +1,158 @@
+---
+title: "How this was verified"
+subtitle: "Provenance, audit protocol, and what the verdicts do and do not mean"
+---
+
+## Where this material came from
+
+This catalog is derived from a deep-research document produced by a large language model
+(ChatGPT deep research) in July 2026, covering open methodological, theoretical, practical,
+data-related and interpretive problems in target trial emulation.
+
+That origin is the reason this page exists. A machine-generated research agenda is a
+plausible-sounding artifact whether or not it is correct, and publishing one as settled fact
+would be a disservice. **Nothing from the source document appears on this site without a
+verification verdict attached**, and the evidence behind each verdict is shown on the entry
+itself.
+
+The source document is kept as working material and is not published here.
+
+### One thing worth recording about the source
+
+The source was supplied in three formats. **The markdown export had lost every citation.**
+ChatGPT's markdown export replaces each link with private-use-area characters and an opaque
+handle, so the exported file contained 125 citation tokens, zero DOIs, zero URLs, and zero
+PubMed identifiers. The `.docx` of the same document retained the real hyperlinks.
+
+Extraction therefore runs from the `.docx`, not the export. That distinction is not cosmetic: had
+the markdown been used, every entry in this catalog would have been unsourced, and the audit
+would have had nothing to check a citation against.
+
+## What was checked mechanically
+
+Before any of the substantive audit, every resolvable identifier in the source was checked
+against its registry.
+
+The source carries 48 numbered references pointing at 35 distinct works.
+
+| Outcome | Count | What it means |
+|---|---:|---|
+| Resolved to a real work | 21 | Identifier and title confirmed against CrossRef, NCBI or arXiv |
+| Guidance or software | 7 | Regulatory guidance, reporting standards and package documentation, correctly cited by URL |
+| Unresolved | 7 | The publisher page blocks automated access, and no search result matched the prose context closely enough to record |
+
+The seven unresolved references are listed with `"confidence": "none"` in the working files and
+**are not cited anywhere in this catalog**. A reference that cannot be confirmed is left out
+rather than guessed at; an invented citation would discredit every other entry here.
+
+## The audit
+
+Every problem carries a set of atomic, falsifiable claims extracted from the source. Those
+claims, not the prose around them, are what was tested.
+
+### Literature verification
+
+For each problem, an agent with web and PubMed access checked that each cited work actually
+supports the claim attributed to it, and searched for later work that would resolve or narrow the
+problem.
+
+### Adversarial refutation
+
+A second agent was instructed to *refute* the proposition that the problem is open, and to
+default to "not open" when uncertain. Asking an agent to confirm a claim and asking it to break
+the claim produce different results; only the second is informative.
+
+### Independent external auditors
+
+Frontier models outside this system were given the same claims, blind to each other and to the
+literature pass, each with a different lens:
+
+- a **technical and source-code lens**, which checks identification arguments, weight algebra,
+  cloning and censoring bookkeeping, and immortal-time accounting, and which verifies any claim
+  about a software package against that package's pinned source rather than against the report;
+- a **recency and prior-art lens**, which adopts an inverted prior. It assumes each problem has
+  already been solved and goes looking for who solved it, because an agenda that lists a solved
+  problem as open is the most damaging error this site can make: the people most likely to read
+  it are the people who solved it;
+- a **third independent lens** on the same claims, so that a majority is a majority of more than
+  two.
+
+Each entry's page lists the auditors that voted on it. Coverage is not uniform, because external
+models run out of quota mid-run; where an entry was reached by fewer auditors, the page says so
+rather than presenting a thinner audit as an equal one.
+
+### Adjudication
+
+Opinions become a published verdict by a fixed rule, not by judgment. The rule records its own
+decision path on every entry, so the route from votes to verdict is visible.
+
+Two principles govern it:
+
+**A "solved" vote without a locator is not evidence.** It is downgraded rather than counted. An
+auditor asserting that something has been solved must name the work that solved it.
+
+**Evidence beats votes.** A lone dissenter holding an unrebutted verbatim quote is not silently
+outvoted by auditors holding opinions.
+
+Majority rules carry a denominator. A verdict such as
+[Overstated]{.verdict .verdict-overstated} requires at least two independent auditors and at
+least half of the auditors that actually returned an opinion on that entry. Using the roster size
+as the denominator would let an entry reached by two auditors be decided on the same evidence as
+one reached by four.
+
+## Which fields are audited, and which are editorial
+
+This distinction matters and is easy to lose.
+
+**Audited.** The statement, why it is open, the prior work, and the extracted claims. These went
+through literature verification, adversarial refutation and the independent auditors, and they
+carry the verdict.
+
+**Editorial.** Maturity, tractability, severity, the proposed research direction, and the
+protocol-component and data-setting tags. These are one reader's judgment applied to make the
+catalog browsable. They were not audited and should not be cited as findings. The proposed
+direction in particular reads with the same visual authority as the audited statement above it,
+and it is a research suggestion rather than a verified claim.
+
+**Deliberately rebuilt.** Priority is not carried over from the source. It reflects three
+observable things: whether the problem blocks a decision-grade estimand, whether any method
+addresses it at all, and whether any software implements it.
+
+## What the verdicts do not mean
+
+A verdict is a judgment about a **claim**, not about a problem's importance.
+
+[Overstated]{.verdict .verdict-overstated} almost never means the problem is fictional. It
+usually means the underlying difficulty is real and the source pitched its severity, or the
+claim that no method exists, more strongly than the evidence supports. The entry records the
+strongest version of the claim that survived.
+
+[Confirmed open]{.verdict .verdict-confirmed-open} means the checks agreed and no counterevidence
+surfaced. It does not mean nobody is working on it, and it is a statement about the literature
+that was reachable, not about the literature that exists.
+
+[Unverifiable]{.verdict .verdict-unverifiable} means the auditors disagreed with evidence on both
+sides, or that no accessible source could settle it. The disagreement is shown on the entry
+rather than resolved silently.
+
+## Limits of this exercise
+
+**This is not a systematic review.** There was no protocol registration, no duplicate independent
+screening with a reported agreement statistic, and no formal risk-of-bias assessment.
+
+**The literature harvest covers PubMed and PubMed Central only.** Conference abstracts and
+journals indexed in Embase but not PubMed are missing. Embase has no API available without a
+subscription.
+
+**The auditors are language models.** They are better at finding a paper that closes a gap than
+at proving no such paper exists, so [Confirmed open]{.verdict .verdict-confirmed-open} carries
+less weight than [Resolved since report]{.verdict .verdict-resolved-since-report}. A confirmed
+absence of evidence is the weakest thing on this site.
+
+## Reproducing this
+
+Everything is in the repository. `build/render_site.mjs` turns the registry into these pages,
+`build/make_audit_batches.mjs` produces the auditor prompts, and `build/adjudicate.mjs` applies
+the rule. `documentation/audit/calibration.json` holds known-answer cases verified by hand; any
+audit configuration that fails to reproduce them is miscalibrated, and they are asserted before
+the site is built.

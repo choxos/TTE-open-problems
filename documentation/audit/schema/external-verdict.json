@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "External auditor verdict batch",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["batch_id", "auditor", "opinions"],
+  "properties": {
+    "batch_id": { "type": "string" },
+    "auditor": { "type": "string" },
+    "opinions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "problem_id", "status_vote", "support_vote", "confidence", "rationale",
+          "weakest_true_restatement", "resolving_work", "counter_evidence"
+        ],
+        "properties": {
+          "problem_id": { "type": "string" },
+          "status_vote": {
+            "description": "Is the problem still open?",
+            "enum": ["open", "partially-solved", "solved", "not-a-problem", "abstain"]
+          },
+          "support_vote": {
+            "description": "Is the claim, as stated, faithful and proportionate?",
+            "enum": ["supported", "supported-with-caveat", "overstated", "misattributed", "unverifiable", "abstain"]
+          },
+          "confidence": { "type": "number" },
+          "rationale": { "type": "string" },
+          "weakest_true_restatement": {
+            "type": ["string", "null"],
+            "description": "Required when support_vote is overstated or misattributed: the strongest version of the claim that is still defensible. Null otherwise."
+          },
+          "resolving_work": {
+            "type": "array",
+            "description": "Required to substantiate a solved or partially-solved vote. A vote without this is downgraded to open. Empty array otherwise.",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["locator", "title", "year", "what_it_resolves", "quote"],
+              "properties": {
+                "locator": { "type": "string", "description": "doi, arxiv id, pmid, CRAN package, or owner/repo@sha" },
+                "title": { "type": "string" },
+                "year": { "type": ["integer", "null"] },
+                "what_it_resolves": { "type": "string" },
+                "quote": { "type": ["string", "null"] }
+              }
+            }
+          },
+          "counter_evidence": {
+            "type": "array",
+            "description": "Verbatim text from a cited work or source file that contradicts the claim. Empty array if none.",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["locator", "quote"],
+              "properties": {
+                "locator": { "type": "string" },
+                "quote": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
