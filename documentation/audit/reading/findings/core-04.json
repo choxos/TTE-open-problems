@@ -1,0 +1,582 @@
+{
+ "batch": "core-04",
+ "papers": [
+  {
+   "id": "L0060",
+   "read": true,
+   "doi": "",
+   "title": "Optimizing Dynamic Antibiotic Treatment Strategies against Invasive Methicillin-Resistant Staphylococcus Aureus Infections using Causal Survival Forests and G-Formula on Statewide Electronic Health Record Data.",
+   "relevance": "medium",
+   "one_line": "Applied comparison of causal survival forests and the g-formula for sequential antibiotic switching in statewide electronic health record data, conceding that its three clinical time points do not remove immortal time bias.",
+   "what_was_done": "The study optimizes time-varying antibiotic treatment against invasive methicillin-resistant Staphylococcus aureus infection using statewide electronic health record data from Florida. Adults admitted with invasive MRSA were followed through three sequential antibiotic choices, an empiric treatment, a directed treatment after culture and susceptibility results, and a sustaining treatment on day eight of directed treatment, with 30-day mortality as the outcome. Causal survival forests and the g-formula were applied under several clinical intervention policies, with a directed acyclic graph placing nephrotoxicity as the time-varying confounder affecting later prescriptions. Over 95 percent of patients received empiric vancomycin, but only 56 percent stayed on vancomycin at all three time points. Switching from vancomycin to another antibiotic improved survival probability, while initiating vancomycin was better than never using it. Evidence of treatment effect heterogeneity was low, which the study attributes to possible lack of power.",
+   "future_research": [
+    {
+     "gap": "The three decision times are a conceptual abstraction that does not match how institutions actually confirm MRSA, and the resulting paths can still carry immortal time bias.",
+     "kind": "stated",
+     "quote": "even if the measurement time points are the same across all patients, there can be also chance of including immortal time bias which differs among treatment paths",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "Vancomycin dosage is not modeled although it drives the nephrotoxicity that determines switching.",
+     "kind": "stated",
+     "quote": "Secondly, our analysis does not consider the dosage of vancomycin therapy.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "Infection site is not distinguished, although pharmacodynamics differ by anatomic source.",
+     "kind": "stated",
+     "quote": "we considered all MRSA infections in this analysis and did not differentiate between specific types of infections",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The three decision times were fixed by clinical convention, an admission interval, the first day of directed treatment and day eight, rather than by any procedure that selects a grid. The study then concedes that even a grid identical across patients leaves immortal time that varies by treatment path, which is precisely the failure a principled selection procedure would have to rule out.",
+     "quote": "It is important to note here that, even if the measurement time points are the same across all patients, there can be also chance of including immortal time bias which differs among treatment paths.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A statewide electronic health record extract still could not support a heterogeneity analysis, and the study reads the null heterogeneity result as possible lack of power rather than as absence of heterogeneity. Database size did not translate into information about the contrasts of interest.",
+     "quote": "We found low evidence of heterogeneity, although it could have been due to lack of power.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0061",
+   "read": true,
+   "doi": "10.1002/sim.9969",
+   "title": "Inverse probability of treatment weighting with generalized linear outcome models for doubly robust estimation.",
+   "relevance": "medium",
+   "one_line": "Canonical link GLM fitted by propensity-weighted maximum likelihood and then standardized is doubly robust, while the combination of a propensity score and an adjusted outcome model in general is not.",
+   "what_was_done": "The paper addresses a misuse pattern in the applied literature: the belief that pairing a propensity score with a covariate-adjusted outcome model automatically yields a doubly robust estimator. It proves analytically and by simulation that a canonical link generalized linear model fitted by inverse probability of treatment weighted maximum likelihood and followed by regression standardization is doubly robust for the average causal effect, and that the same reasoning fails for a noncanonical link. It shows that residual confounding left after propensity score weighting cannot be repaired by adjusting for the unbalanced remainder in the outcome model, even when the two working models jointly contain all confounders. It derives and implements a closed-form standard error from the influence function, shows nominal coverage in finite samples, and shows the bootstrap is valid when one working model is correct. It demonstrates asymptotic equivalence to the estimator of Funk and colleagues with no notable finite-sample difference, and supplies step-by-step R code with an open dataset. Longitudinal and missing-data structures are explicitly excluded.",
+   "future_research": [
+    {
+     "gap": "The result is not extended to longitudinal or missing data, and ad hoc extensions of the weighted GLM to those structures are discouraged rather than developed.",
+     "kind": "stated",
+     "quote": "We have also not considered more complex data structures, such as missing or longitudinal data.",
+     "locator": "Section 8, Discussion"
+    },
+    {
+     "gap": "Which combinations of propensity weighting and common survival models retain double robustness is left unresolved.",
+     "kind": "stated",
+     "quote": "Although it is beyond the scope of this article, this is particularly true for propensity score weighting of common survival models.",
+     "locator": "Section 8, Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The stated motivation is that applied analysts select and combine estimators believing properties they do not have. That is direct evidence that estimator choice is neither defensible by default nor examined, since the difference between a doubly robust and a singly robust combination is invisible in the reported output.",
+     "quote": "there is a concerning trend in the applied literature to believe that the combination of a propensity score and an adjusted outcome model automatically results in a doubly robust estimator and/or to misuse more complex established doubly robust estimators",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "UCF-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A common informal response to suspected residual confounding is to adjust the outcome model for whatever the weights left unbalanced. Simulation and proof here show that this does not recover the causal effect even when the two models jointly contain every confounder, so the workflow lacks a route from a failed balance check back to a valid estimate.",
+     "quote": "Thus, one cannot adjust for residual confounding not captured in the propensity score, for example, by adjusting only for that residual confounding in the outcome model.",
+     "locator": "Section 8, Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0062",
+   "read": true,
+   "doi": "10.1177/09622802221146311",
+   "title": "Intervention treatment distributions that depend on the observed treatment process and model double robustness in causal survival analysis.",
+   "relevance": "high",
+   "one_line": "Sufficient conditions for doubly robust estimation when the intervention distribution depends on the observed treatment process, with a new multiplicative shift incremental propensity score intervention.",
+   "what_was_done": "Doubly robust estimation of the g-formula is well developed for deterministic sustained strategies and much less so for stochastic strategies whose assignment at each time depends on the observed treatment process. The paper gives sufficient conditions for the existence of doubly robust estimators for such intervention distributions in the point-treatment case, and exhibits a class of intervention distributions that guarantee doubly and multiply robust estimators in the longitudinal case, with a general form for the associated efficient influence functions. Motivated by pre-exposure prophylaxis initiation, it proposes a multiplicative shift incremental propensity score intervention that raises treatment uptake among people at high outcome risk but low treatment exposure. Estimators are given for both parametric and machine learning nuisance fitting, including a weighted iterated conditional expectation estimator and a targeted maximum likelihood estimator with sample splitting and cross-fitting. Two simulation studies show the weighted ICE more robust to misspecification than IPW and ICE under parametric nuisance models, and TMLE with cross-fitting outperforming singly robust estimators when machine learning is used. The estimators are applied to a real PrEP dataset.",
+   "future_research": [
+    {
+     "gap": "Whether flexible learners such as neural networks or random forests carry more or less bias than parametric models in this setting is unknown, and the Super Learner library that worked in simulation carries no guarantee in application.",
+     "kind": "stated",
+     "quote": "Even though the Super Learner ensemble performed well in the simulation study as it included learners that converged to the truth at fast enough rates, in real-world applications there is no guarantee that such learners exist.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Machine learning nuisance estimation may be computationally infeasible on very large datasets and where privacy rules block access to computing resources.",
+     "kind": "stated",
+     "quote": "they are also computationally complex and may be practically infeasible for very large datasets without powerful computing systems",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Reading the estimand as the effect of a real policy such as offering PrEP counseling requires assumptions the paper does not make.",
+     "kind": "stated",
+     "quote": "Additional assumptions are needed to give our effect estimates of this interpretation",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The estimators are built to tolerate machine learning nuisance fitting, and the discussion concedes that whether a flexible learner reduces or increases bias in a given application is not known in advance and that the ensemble's simulation performance came from containing learners that converged fast enough, a property no application can check.",
+     "quote": "When more flexible learners such as neural networks or random forests are required, it is unclear if these machine learning methods will exhibit more or less bias compared with parametric models.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The identified estimand is the effect of a stochastic draw from the proposed intervention distribution. Reading it as the policy a decision maker would implement, offering counseling to a defined group, turns the strategy into a deterministic rule on an unmeasured treatment and needs further assumptions, which is the mechanism by which an unobservable protocol component yields a different estimand rather than a noisy one.",
+     "quote": "g in this case really refers to a deterministic strategy relative to the unmeasured treatment “offered PrEP counseling.”",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0063",
+   "read": true,
+   "doi": "10.1002/psp4.12894",
+   "title": "An introduction to causal inference for pharmacometricians.",
+   "relevance": "low",
+   "one_line": "Tutorial orienting pharmacometricians to potential outcomes, the g-formula and directed acyclic graphs, with propensity-based adjustment explicitly out of scope.",
+   "what_was_done": "This is a tutorial rather than a methodological contribution. It argues that pharmacometrics has always reasoned causally while rarely mathematizing the reasoning, and that the explicit causal apparatus now used in biostatistics, epidemiology and machine learning is worth acquiring. It introduces three concepts in sequence: potential outcomes notation, the g-formula as the formal statement of covariate-adjusted causal estimation, and directed acyclic graphs. It notes that covariate-adjusted estimation in pharmacometrics is usually an implicit use of the g-formula, and that propensity-based alternatives rest on the same conditional exchangeability assumption. It traces the field's own causal pedigree through Sheiner's what-if framing and his critique of intention-to-treat estimands. No new estimator, simulation or dataset is contributed.",
+   "future_research": [
+    {
+     "gap": "Application-oriented instruction on using these concepts in pharmacometric analyses does not yet exist and is deferred.",
+     "kind": "stated",
+     "quote": "Our present intent is rather to lay the groundwork for future application‐oriented instruction by establishing the fundamental terminological and notation distinctions that are used in causal inference.",
+     "locator": "Background and objectives"
+    },
+    {
+     "gap": "Propensity-based adjustment, which is what regulatory exposure-response analyses actually use, is left out.",
+     "kind": "stated",
+     "quote": "Propensity‐based methods are out of scope for the current tutorial",
+     "locator": "Other adjustment strategies"
+    }
+   ],
+   "problems": [],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0064",
+   "read": true,
+   "doi": "10.1097/ede.0000000000001555",
+   "title": "Causal Mediation Analysis with Multiple Time-varying Mediators.",
+   "relevance": "medium",
+   "one_line": "Extends the mediational g-formula from one mediator to multiple time-varying mediators, and states that no bias formula for sensitivity analysis exists in that setting.",
+   "what_was_done": "The mediational g-formula of VanderWeele and Tchetgen Tchetgen handles one mediator at a time, which makes it ambiguous whenever several time-varying mediators share overlapping paths. The paper develops two variants that extend it to multiple time-varying mediators, the first treating the mediators as a single multivariate mediator and the second targeting path-specific effects, and gives nonparametric identification results for each. The trade-off between them is stated explicitly: the path-specific variant returns more information at the cost of more assumptions. Time-varying path-specific effects are given a structural equation interpretation, and a parametric Monte Carlo estimation method is implemented in an R algorithm. Applied to a chronic obstructive pulmonary disease cohort, the effects of lung function impairment mediated by dyspnea symptoms and by physical activity accounted for 13.7 percent and 10.8 percent of the total effect. All mediators are assumed fully observed and no competing event is allowed.",
+   "future_research": [
+    {
+     "gap": "No sensitivity analysis exists for unmeasured confounding of multiple time-varying mediators; the available bias formulas cover time-invariant mediators only.",
+     "kind": "stated",
+     "quote": "Several bias formulas of sensitivity analysis (27, 28) have been proposed in the context of time-invariant mediators, but a bias formula for multiple time-varying mediators is lacking.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Mediators truncated by death or censored by loss to follow-up are outside the method, so survival outcomes are not covered.",
+     "kind": "stated",
+     "quote": "In such cases, the mediators of some participants may be truncated by death or be censored due to loss to follow-up.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A method is published for multiple time-varying mediators with no accompanying sensitivity analysis, and the reason given is that the bias formulas in the literature were derived for time-invariant mediators. The gap is not that analysts choose to vary one assumption at a time but that the machinery for varying the relevant assumption in a longitudinal structure has not been derived.",
+     "quote": "a bias formula for multiple time-varying mediators is lacking",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Identification here requires every mediator to be observed, which death and loss to follow-up break. Truncation by death is named as an unsolved extension rather than handled as an identifying assumption, which is the pattern the registry entry describes.",
+     "quote": "In the present study, we assume that all mediators are fully observed. However, this assumption is not satisfied in some medical or biological studies, especially for survival outcomes.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0065",
+   "read": true,
+   "doi": "10.1177/09622802221098429",
+   "title": "Estimating and testing the influence of early diagnosis on cancer survival via point effects of diagnoses and treatments.",
+   "relevance": "medium",
+   "one_line": "Identifies sequential causal effects of diagnosis and treatment regimes through point effects and blip effects so that estimation and hypothesis testing can both be carried out with ordinary regression.",
+   "what_was_done": "Evaluating whether earlier diagnosis improves cancer survival requires the sequential causal effect of a regime of diagnoses and treatments, including the optimal regime, and requires confidence intervals and tests for it rather than a point estimate alone. The paper identifies these sequential effects through the point effects of diagnoses and treatments, which reduces the problem to the familiar single-point causal inference framework. Estimation proceeds in three steps: estimate and test the point effect, use it to estimate and test the blip effect, then use the blip effects to estimate and test the sequential causal effect, each step using ordinary regression and standard modeling diagnostics. The method is applied to a Swedish stomach cancer prognosis study with continuous covariates, estimating and testing survival under several regimes of diagnosing and treating hospitals including the optimal regime, and estimating modification of the effect by age. The stated motivation for the three-step construction is that a single algorithm delivering both reliable estimation and reliable testing of a sequential effect is hard to obtain.",
+   "future_research": [
+    {
+     "gap": "Extending point-effect estimation beyond ordinary regression, to targeted maximum likelihood or machine learning, and to semiparametric or nonparametric estimation when the observable distribution cannot be specified, is proposed but not done.",
+     "kind": "stated",
+     "quote": "we believe that we may also apply more advanced methods than the usual regression, such as the targeted maximum likelihood method and even machine learning, to estimate the point effects.",
+     "locator": "Section 6, Conclusion"
+    },
+    {
+     "gap": "The worked setting is a single cancer type with a simple diagnosing structure; multistage screening, biomarker-based diagnosis and progression outcomes are named as extensions rather than demonstrated.",
+     "kind": "stated",
+     "quote": "With its simple setting, we can readily extend this example to various cancer types; to different cancer outcomes such as cancer progression, quality of life and others; to different diagnosing techniques such as the biomarkers or a sequence of screening steps",
+     "locator": "Section 6, Conclusion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The reason given for decomposing the sequential effect into point effects is that no single procedure delivers both reliable estimation and reliable hypothesis testing of a sequential causal effect, because the estimand involves the whole data-generating mechanism across stages. That is a structural argument that estimator choice is a live and consequential decision, not a matter of taste.",
+     "quote": "the SCE is such a parameter that involves the entire data-generating mechanism of all covariates, treatments and the outcome across different diagnosing and treating stages, and consequently, it is highly difficult for a single procedure or algorithm to achieve both reliable estimation and hypothesis testing of the SCE",
+     "locator": "Section 6, Conclusion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0066",
+   "read": true,
+   "doi": "10.1093/ije/dyab090",
+   "title": "Educational note: causal decomposition of population health differences using Monte Carlo integration and the g-formula.",
+   "relevance": "low",
+   "one_line": "Implements the Jackson and VanderWeele causal decomposition through the parametric g-formula and Monte Carlo integration, avoiding closed-form decomposition equations at a substantial computational cost.",
+   "what_was_done": "Causal decomposition asks how much of a health difference between social groups is attributable to a given explanatory variable, anchored in counterfactual theory rather than in regression algebra. The paper implements that decomposition using the parametric g-formula with Monte Carlo integration, generating natural-course and counterfactual pseudo-populations rather than deriving a closed-form equation for each estimand. Two advantages follow: any outcome distribution in the generalized linear model family can be decomposed by changing the regression type, and different contrasts such as a risk ratio or an odds ratio can be obtained from the same simulated populations by changing the summary regression. Pseudocode and R code are supplied through the cfdecomp package. The worked example decomposes the age-adjusted mortality risk ratio for men relative to women in South Korea and finds that smoking explains 27 percent of the male disadvantage at ages 50 and above. The stated cost is computational, with large datasets taking hours to days, and the causal reading rests on exchangeability, positivity and consistency, discussed in a supplementary appendix.",
+   "future_research": [
+    {
+     "gap": "Computational cost of the simulation approach on large datasets is a real barrier and no variance-reduction or approximation strategy is offered.",
+     "kind": "stated",
+     "quote": "decompositions with large data sets may take hours to even days to complete even when considerable computational power is available",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "The identifying assumptions are acknowledged and then handled outside the main text, so the note does not say how a user would assess them for a given decomposition.",
+     "kind": "implied",
+     "quote": "We discuss these three issues in more detail in Supplementary Appendix 1, available as Supplementary data at IJE online, for interested readers.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "SFW-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Monte Carlo simulation of pseudo-populations is the same computational pattern that sequence expansion and cloning produce, one simulated or expanded row per unit per interval, and here it is reported as taking hours to days on large data even with considerable computing power. The scalability obstacle to resampling-based inference for g-formula style estimators is therefore real in a setting simpler than a cloned emulation.",
+     "quote": "Compared with the closed-form equations, our approach requires substantial computational power and time.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "An educational note written to make the method usable states the three identifying conditions in a single sentence and moves their discussion to a supplementary appendix, while the estimate and its interpretation occupy the main text. That is the reporting asymmetry the registry entry describes, in a document whose explicit purpose is to teach correct practice.",
+     "quote": "the causal validity of the decomposition results hinges on assumptions of exchangeability (also known as no unmeasured confounding), common support (positivity), and consistency",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0067",
+   "read": true,
+   "doi": "10.2147/clep.s328342",
+   "title": "Avoiding Time-Related Biases: A Feasibility Study on Antidiabetic Drugs and Pancreatic Cancer Applying the Parametric g-Formula to a Large German Healthcare Database.",
+   "relevance": "high",
+   "one_line": "Feasibility emulation applying the parametric g-formula to German claims data, in which the time interval was chosen because the finer grid would not converge and the important time-varying confounder had to be dropped from it.",
+   "what_was_done": "The study emulates a target trial in the German Pharmacoepidemiological Research Database comparing sustained metformin monotherapy against combination therapy with a DPP-4 inhibitor after one year of metformin, with pancreatic cancer incidence over seven years as the outcome. It included 77,330 people with type 2 diabetes who started metformin between 2005 and 2011, of whom 652 were diagnosed with pancreatic cancer during follow-up. Under an assumption of no unobserved confounding the combination strategy raised risk, with a risk ratio of 1.47 and a bootstrap confidence interval of 1.07 to 1.94; the risk ratio was 1.26 at two years and fell in sensitivity analyses addressing protopathic bias. The analysis used the GFORMULA SAS macro. The reported obstacles are as informative as the estimate: convergence failed when many low-prevalence covariates were included, forcing covariates to be combined into scores; the 91-day interval model would not accommodate poor glycemic control, so a 365-day model was used as the main analysis at a stated loss of information; and inverse probability weighting was rejected because it is less stable under the near-positivity violations present in these data. Only treated extreme cases of lifestyle confounders appear in claims, and resolution of those conditions is not recorded at all.",
+   "future_research": [
+    {
+     "gap": "A quantitative bias analysis that models minimum latency time explicitly, rather than excluding cancer cases under an assumed latency, is deferred to future work.",
+     "kind": "stated",
+     "quote": "A more extensive and thorough quantitative bias analysis 45 which should also include the explicit modelling of minimal latency time as in Danaei et al 27 will be addressed in future work.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Formal quantitative bias analysis able to operate in time-dependent settings and to use external prior information is named as a general need, not just a need of this study.",
+     "kind": "stated",
+     "quote": "our study underlines the importance of formal methods for quantitative bias analyses that can deal with challenging time-dependent settings and exploit any available prior knowledge or outside information",
+     "locator": "Conclusions"
+    },
+    {
+     "gap": "Convergence behavior of the g-formula algorithm with many low-prevalence covariates and short intervals is an unsolved practical obstacle, expected to be milder only for more common outcomes.",
+     "kind": "stated",
+     "quote": "It is to be expected that convergence problems are less common when addressing outcomes with a higher incidence like in previous studies.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "TZO-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The time interval was not selected by any procedure that reasons about the resolution the question requires. The 91-day grid was abandoned because the model would not converge with poor glycemic control included and because predicted covariate means disagreed with observed ones, and the 365-day grid became the main analysis. The consequence is stated plainly as a loss of information, and the selection criterion was estimation behavior on the analysis data rather than anything outcome-blind.",
+     "quote": "Because poor glycaemic control as an important time-varying confounder could not be included in the 91-days model, again due to convergence problems and poor agreement between observed means of certain time-varying covariates with those predicted by the model, the 365-day model was used as main model. However, this choice is accompanied by a loss of information and reduced level of detail.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Near-positivity violations were present and were handled by choosing an estimator less sensitive to them rather than by identifying which patient histories were unsupported. The alternative considered, restricting the study population, is rejected on the explicit ground that it would answer a different question, which is the trade the registry entry says has no principled resolution.",
+     "quote": "Further restrictions of the study population could help to reduce this problem but would lead to a different causal contrast.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The time-varying confounders in this emulation are claims codes that appear only when a condition was extreme enough to be treated, and remission is never recorded, so a covariate history is systematically one-sided. Exposure misclassification is acknowledged as not excludable. The analysis nonetheless enters these variables as if error-free, with the error addressed only qualitatively.",
+     "quote": "Only treated, typically extreme cases of certain confounders reflecting lifestyle variables like obesity, smoking or alcohol abuse or poor glycaemic control are available (coded) in the database making underreporting likely.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "UCF-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Protopathic bias, confounding by indication and unmeasured confounding are all live in the same analysis, and the response is a sensitivity analysis that excludes cancers under an assumed minimum latency, which the study itself warns can introduce further bias if the assumed latency is wrong. The joint bias analysis is deferred, so the reported result varies one assumption while others remain unaddressed.",
+     "quote": "As excluding certain cancer cases relies on strong assumptions about the minimum latency time it could introduce further biases if these are incorrect; the results must thus be interpreted with caution.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "DTA-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The study is framed as a feasibility assessment of whether these data can support this target trial, and the verdict is narrative: useful despite unresolvable protopathic bias and despite compromises forced by the estimation software. No threshold is stated that would have concluded the data were unfit, and the desired confounder, HbA1c, is simply absent with a rough proxy substituted.",
+     "quote": "While protopathic bias could not fully be ruled out, and computational challenges necessitated compromises in the analysis, the g-formula and target trial emulation proved useful",
+     "locator": "Abstract, Conclusion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0068",
+   "read": true,
+   "doi": "10.1097/ede.0000000000001431",
+   "title": "Revisiting the g-null Paradox.",
+   "relevance": "high",
+   "one_line": "Reframes the g-null paradox as an instance of guaranteed model misspecification that biases parametric g-formula estimates whether or not the null holds, and shows the bias is not negligible even with fairly flexible models.",
+   "what_was_done": "The g-null paradox is usually stated as a testing problem: under treatment-confounder feedback and the sharp causal null, the parametric g-formula is guaranteed some model misspecification, so a test rejects the null with probability approaching one in large samples. The paper argues the paradox is better understood as a particular case of a general form of model misspecification that can occur when the null does not hold, so the practical concern is bias in an effect estimate rather than type one error. Analytic examples and a simulation study are presented in which the covariates and outcome depend on an unmeasured variable, making the correct functional forms unknown to the analyst, with models fitted at four levels of flexibility and 95 percent confidence intervals from 250 bootstrap replicates. Nonnegligible bias arises in simple scenarios even under fairly flexible specifications, in contrast to earlier simulations that found negligible bias under a null effect. Informal evaluation is recommended through sensitivity analyses under different modeling assumptions, different orderings of the confounder density factorization, and comparison of the parametric g-formula against the nonparametric natural-course estimate. The conclusion is to avoid overly parsimonious models for the g-formula components.",
+   "future_research": [
+    {
+     "gap": "Machine learning does not solve misspecification of the parametric g-formula, and singly robust machine learning estimators can be worse than parametric ones, so the remedy for the paradox remains modeling judgment rather than an algorithm.",
+     "kind": "stated",
+     "quote": "the problem of model misspecification in the parametric g-formula is not reasonably solved by using ML algorithms to estimate the joint conditional density of the covariates and outcome",
+     "locator": "Section 6, Discussion"
+    },
+    {
+     "gap": "The recommended checks are informal; no procedure decides how much disagreement between the g-formula estimate and the natural course, or across factorization orderings, indicates a problem.",
+     "kind": "implied",
+     "quote": "Evaluating model misspecification in the parametric g-formula may be informally done by conducting sensitivity analyses under different modelling assumptions and under different orderings of the factorization of the joint density of the confounders",
+     "locator": "Section 6, Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The estimator families are shown to differ in what they assume rather than only in how they perform: the parametric g-formula is guaranteed some misspecification under exactly the conditions that motivate using it, while inverse probability weighted and iterated conditional expectation estimators rest on different modeling assumptions. Choosing among them is therefore consequential, and nothing requires a study to show which choice it made or what the alternative would have given.",
+     "quote": "data analysts may consider applying approaches that are based on different algebraic representations of the the g-formula, such as inverse probability (IP) weighted estimators and the iterative conditional expectation (ICE) parametric g-formula, which rely on different modeling assumptions",
+     "locator": "Section 6, Discussion"
+    },
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Flexible learning is shown not to repair the misspecification that the g-null paradox guarantees, and simulation evidence is cited that machine learning based singly robust estimators can perform worse than parametric ones. Prediction-optimal nuisance fitting does not deliver causal performance here, which is the registry claim.",
+     "quote": "while “state-of-the-art” methods can benefit from use of ML algorithms [23, 27], the ML-based singly-robust estimators do not enjoy this benefit and may perform worse than those based on parametric models [28]",
+     "locator": "Section 6, Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "partially-addresses",
+     "confidence": "low",
+     "evidence": "Three concrete checks are named for one assumption that the registry treats as undiagnosable in practice, model correctness: refit under different specifications, refit under different orderings of the confounder density factorization, and compare the estimate against a nonparametric natural-course estimate. They are offered as informal diagnostics with no threshold and no reporting convention, so they narrow the entry rather than close it.",
+     "quote": "comparing the parametric g-formula and the non-parametric estimate of the outcome mean/risk mean under the “natural course”",
+     "locator": "Section 6, Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0071",
+   "read": true,
+   "doi": "10.1111/biom.13432",
+   "title": "Causal interaction trees: Finding subgroups with heterogeneous treatment effects in observational data.",
+   "relevance": "medium",
+   "one_line": "Extends the interaction tree algorithm to observational data by using inverse probability weighted, g-formula and doubly robust subgroup-specific effect estimators as splitting criteria, for point treatment and complete data only.",
+   "what_was_done": "Subgroup identification in randomized trials is commonly done by recursive partitioning with splitting criteria based on outcome differences between arms, which confounding invalidates in observational data. The paper proposes Causal Interaction Trees, which extend the Classification and Regression Tree algorithm with splitting criteria that maximize between-group treatment effect heterogeneity measured by subgroup-specific causal effect estimators. Three estimators are derived and their properties established: inverse probability weighting, the g-formula, and a doubly robust combination, the first two requiring correct specification of the propensity score or the outcome model respectively and the third requiring only one of them. Finite-sample performance is studied by simulation and the algorithms are applied to an observational study of right heart catheterization in critically ill patients. Single trees are retained deliberately over ensembles because a tree yields an interpretable stratification rule while bagged or forest averages do not. Censored and longitudinal data structures are outside the method.",
+   "future_research": [
+    {
+     "gap": "Using causal interaction trees as building blocks for ensemble methods, which would raise accuracy at the cost of the interpretable stratification rule, is not attempted.",
+     "kind": "stated",
+     "quote": "Future research should consider using Causal Interaction Trees as building blocks for ensemble methods.",
+     "locator": "Section 6, Discussion"
+    },
+    {
+     "gap": "Censored and longitudinal data, which is what a survival emulation produces, are not handled.",
+     "kind": "stated",
+     "quote": "Further extensions to address more complex data structures, such as censored or longitudinal data, may also prove useful in practice",
+     "locator": "Section 6, Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "LRN-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Heterogeneous effect machinery for observational data is developed here for a point treatment with complete follow-up, and the extension to censored and longitudinal structures is named as future work. An emulation of a sustained strategy produces exactly those structures, so the subgroup estimators available to it are the ones whose assumptions were established in a simpler setting. The stated requirements are correct specification of the propensity score or outcome model; no subgroup-specific overlap condition is imposed by the splitting criteria.",
+     "quote": "Further extensions to address more complex data structures, such as censored or longitudinal data, may also prove useful in practice (Wei et al., 2020).",
+     "locator": "Section 6, Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0073",
+   "read": true,
+   "doi": "10.1186/s12874-021-01211-2",
+   "title": "A scoping review of studies using observational data to optimise dynamic treatment regimens.",
+   "relevance": "high",
+   "one_line": "Scoping review of 63 studies estimating optimal dynamic treatment regimens from observational data, reporting the method mix, the concentration in a few diseases, and the three identification conditions as the reason clinically useful examples remain scarce.",
+   "what_was_done": "A PubMed scoping review conducted in October 2020 screened 209 abstracts, identified 37 full-text articles and a further 26 from reference lists, and synthesized 63 narratively. Applications concentrate in a few areas: HIV and AIDS 27 studies at 43 percent, cancer 8 at 13 percent, diabetes 6 at 10 percent. The method mix was inverse probability weighting 26 at 41 percent, the parametric g-formula 16 at 25 percent, Q-learning 10 at 16 percent, g-estimation 4 at 6 percent, targeted maximum likelihood or minimum loss-based estimation 4 at 6 percent, regret regression 3 at 5 percent, and other approaches 10 at 16 percent. Studies aimed at real clinical questions, 18 at 29 percent, used the established methods with large datasets, while the methodological majority, 45 at 71 percent, used more complex methods with a demonstrative application only and reported model selection and sensitivity analyses less often. The review attributes the shortage of clinically relevant optimized regimens to exchangeability, positivity and consistency, and gives a concrete mechanism for each: confounder data missing from records designed for care rather than research, guidelines that prevent some treatment sequences from ever appearing, and rapidly changing treatment paradigms that erode well-defined interventions. It also finds released software generally unusable by non-experts.",
+   "future_research": [
+    {
+     "gap": "Software that a clinician or non-specialist methodologist could actually run does not exist, although roughly half of methodological studies release code.",
+     "kind": "stated",
+     "quote": "It is likely that user-friendly software would make implementing the complex methods easier for clinicians and methodologists alike.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Model selection and the assumptions behind it are usually not described, which limits translation of the results.",
+     "kind": "stated",
+     "quote": "many studies did not describe the real-world applications or include details of the statistical methods and corresponding assumptions in detail, which may limit how the DTR methods and results are translated in practice",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "The review searched PubMed only, so studies indexed elsewhere or using different naming conventions were not captured.",
+     "kind": "stated",
+     "quote": "Our exclusive focus on the PubMed database excludes any studies not indexed therein.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Across 63 studies the review identifies erosion of well-defined interventions as a structural obstacle rather than an occasional nuisance: where a condition has many treatment modalities and the clinical paradigm changes during the observation window, the treatment label stops picking out a stable set of versions. No procedure for grouping versions into defensible equivalence classes is reported by any of the reviewed studies.",
+     "quote": "Over time, treatments become less well-defined, and it becomes difficult to satisfy the consistency condition.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The review names structural positivity violations arising from clinical, regulatory and reimbursement guidelines, which make some treatment sequences unobservable regardless of database size. This is exactly the case the registry entry says weight diagnostics cannot express, since a truncated weight tail describes the estimator rather than naming the patient histories for which the strategy is unsupported.",
+     "quote": "Even with large clinical databases, structural factors such as clinical, regulatory, or reimbursement guidelines may completely prevent treatment sequences of interest (not to mention relevant patient histories) from being observed.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Seven distinct estimator families appear across the 63 studies, and the review reports that the choice tracks familiarity and problem simplicity rather than any argument about assumptions, with clinical studies clustering on inverse probability weighting and the parametric g-formula because they are well established. Fewer than half described model selection at all, so no study demonstrates that its estimator choice was immaterial.",
+     "quote": "It is worth noting that fewer than 50% of studies did not describe the model selection process in any way.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The review states that the three conditions on which every reviewed estimate rests cannot be checked against the data and require substantive judgment, and it does not identify any reporting convention that separates what a study could interrogate from what it could only assert.",
+     "quote": "These conditions, required for valid causal inference, cannot be verified from the data alone and require judgement on biological plausibility.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Roughly half of the methodological studies released some code, and the review's assessment is that it is not usable by anyone outside the developing group. Availability of an artifact is therefore not the same as reproducibility of the analysis, which is what the registry entry claims.",
+     "quote": "Although almost half of the methodological studies included some form of statistical software code related to their methods, which may encourage the application of complex DTR methods, in general this software is not readily usable by non-experts.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0090",
+   "read": true,
+   "doi": "10.1007/s10985-021-09530-8",
+   "title": "A generalized theory of separable effects in competing event settings.",
+   "relevance": "high",
+   "one_line": "Generalizes separable effects to arbitrary time-varying structures, weakens the identification conditions to allow time-varying common causes of the event of interest, the competing event and loss to follow-up, and gives weighted estimators plus sensitivity analyses.",
+   "what_was_done": "When a competing event exists, a contrast of cause-specific cumulative incidences is a total effect that mixes in the treatment's effect on the competing event. The separable effects had previously been defined only where treatment decomposes into two components acting along two separate pathways. This paper generalizes the definition so that separable effects remain interpretable as effects of modified treatments in general time-varying structures, even where they cannot be read as direct and indirect effects. Weaker identification conditions are derived for studies in which the decomposed treatment does not yet exist, and these conditions admit time-varying common causes of the event of interest, the competing events and loss to follow-up. Semiparametric weighted estimators that are straightforward to implement are proposed, and sensitivity analyses for both the dismissible component conditions and the isolation conditions are given in an appendix. The contrast with the alternatives is stated directly: controlled direct effects require an intervention that eliminates death from all causes, and pure natural effects rest on cross-world assumptions that are untestable even in principle, whereas separable effects can be falsified in a future trial.",
+   "future_research": [
+    {
+     "gap": "Estimators derived from the efficient influence function, which would allow machine learning nuisance fitting at parametric rates and bias-aware model selection, are not yet available for separable effects.",
+     "kind": "stated",
+     "quote": "In future work, we aim to derive new estimators from the efficient influence function, which may achieve parametric convergence rates even when machine learning methods are used for model fitting",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Separable effects of time-varying treatment interventions, including per-protocol effects in trials with nonadherence, are not covered.",
+     "kind": "stated",
+     "quote": "including per-protocol effects in trials with nonadherence",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Data routinely collected in competing-event studies, especially randomized trials that lean on randomization and skip covariate collection, do not support identification of these effects.",
+     "kind": "stated",
+     "quote": "failing to collect data on baseline and time-varying covariates makes it nearly impossible to adjust for selection bias due to censoring and/or to target estimands other than the total effect of the randomization",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The registry entry says death and other intercurrent events are handled as data cleaning rather than as an identifying choice. This supplies the missing apparatus for one route: a formally defined estimand, identification conditions weak enough to allow time-varying common causes of the outcome, the competing event and censoring, implementable weighted estimators, and named sensitivity analyses. It also states plainly why the two standard alternatives fail, controlled direct effects requiring an intervention nobody can implement and natural effects resting on cross-world assumptions. What remains is availability: the conditions are still hard to meet with the data most studies hold.",
+     "quote": "Even under our generalized conditions, the separable effects may be difficult to identify given currently available data in many studies.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The registry entry asks for a distinction between assumptions that can be interrogated and assumptions that cannot. Separable effects are constructed so that the reasoning behind them is falsifiable in a subsequent trial, in explicit contrast to natural effects, whose identifying assumptions are untestable even in principle. That is a worked example of moving an assumption across the diagnosable boundary rather than a dashboard for reporting the whole set.",
+     "quote": "We stress that unlike previous definitions of direct and indirect effects, the separable effects can be subject to empirical scrutiny in future studies.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The opening premise is that a counterfactual contrast of cause-specific cumulative incidences is routinely reported as the effect of treatment on the event of interest while it is a total effect that includes the treatment's action on the competing event. The reported quantity therefore names neither the intervention on the competing event nor the causal contrast it belongs to, which is the reporting failure the entry describes.",
+     "quote": "However, effects of treatment on the competing event may indirectly contribute to this total effect, complicating its interpretation.",
+     "locator": "Abstract"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}

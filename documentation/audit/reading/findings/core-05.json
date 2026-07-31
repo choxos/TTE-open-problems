@@ -1,0 +1,585 @@
+{
+ "batch": "core-05",
+ "papers": [
+  {
+   "id": "L0069",
+   "read": true,
+   "doi": "10.1186/s12874-021-01449-w",
+   "title": "Instrumental variable estimation for a time-varying treatment and a time-to-event outcome via structural nested cumulative failure time models.",
+   "relevance": "medium",
+   "one_line": "G-estimation of structural nested cumulative failure time models makes Mendelian randomization possible for a sustained exposure and a failure-time outcome, at the cost of a rare-outcome restriction and sample sizes far beyond the applied example.",
+   "what_was_done": "Instrumental variable analyses, and Mendelian randomization in particular, are usually run as if the exposure were a point treatment, while the exposures of interest vary over time and the outcomes are failure times. The paper applies g-estimation of structural nested cumulative failure time models, which model the ratio of two conditional mean counterfactual outcomes at a later time under strategies differing only at one earlier time, to instrumental variable analysis with a time-varying treatment. The models are extended to carry inverse probability of censoring weights and to apply to case-control data without knowing the sampling fractions, and the g-estimates are used to compute marginal cumulative risks under nondynamic strategies. Simulations show the instrumental variable version agreeing with the confounder-adjusted version and with the g-formula when the outcome is rare. Applied to the Nurses' Health Study, the cumulative risk of endometrial cancer from age 45 to 72 was 4.0 percent under never drink and 4.3 percent under always half a drink per day. The estimates carried very wide confidence intervals, the model failed to converge in some bootstrap samples, and three simplifying assumptions were adopted specifically to avoid even greater imprecision.",
+   "future_research": [
+    {
+     "gap": "Comparing dynamic strategies would need blipping up procedures for blip functions with time-varying covariates, which have never been described.",
+     "kind": "stated",
+     "quote": "The latter would require the development of blipping up procedures to obtain the risk under each dynamic strategy (previous descriptions of SNCFTMs have only described blipping up procedures for blip functions with time-fixed covariates)",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "The method is restricted to rare outcomes because the blip function cannot bound the conditional counterfactual risks to the unit interval.",
+     "kind": "stated",
+     "quote": "the SNCFTMs should only be used with rare outcomes because the expected conditional counterfactual risks must lie within the interval [0, 1]",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Informative analyses of this kind need far larger samples or stronger instruments than a long-running cohort with genetic data provided.",
+     "kind": "stated",
+     "quote": "The large variability of our estimate shows that informative MR analyses will ultimately require sample sizes much larger than ours",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "A cohort with decades of follow-up yielded 6,492 women with genetic data and 219 events, which was not enough information for the contrast of interest: the confidence intervals were too wide to support any substantive conclusion, and three assumptions were weakened purely to keep the estimate from becoming less precise still. Database size and information about a specific sustained strategy come apart exactly as the entry describes.",
+     "quote": "Our estimates of the effect of alcohol intake on the risk of endometrial cancer from age 45 to 75 had very wide 95% confidence intervals and our model did not converge in some of the bootstrap samples. This precludes us from making any substantive conclusions.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The estimator carries a restriction that is a property of the estimator rather than of the question: it is valid only for rare outcomes, because the blip function cannot constrain the conditional counterfactual risks to lie in the unit interval, and estimates may be invalid if the rare failure assumption fails. Nothing in the reported output would reveal that the restriction had been violated.",
+     "quote": "If the rare failure assumption does not hold, estimates may be invalid",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0070",
+   "read": true,
+   "doi": "10.1002/sim.9234",
+   "title": "Introduction to computational causal inference using reproducible Stata, R, and Python code: A tutorial.",
+   "relevance": "medium",
+   "one_line": "Tutorial implementing the g-formula, inverse probability weighting, augmented estimators and targeted maximum likelihood in three languages, recommending doubly robust estimation with ensemble learning while flagging that inference for it in nonparametric settings is unsettled.",
+   "what_was_done": "The tutorial presents causal effect estimators in the order they were historically developed, each answering a limitation of the last: nonparametric and parametric g-formula, inverse probability of treatment weighting, augmented inverse probability weighting, and targeted maximum likelihood estimation with ensemble learning. Parametric estimation answered the curse of dimensionality; extrapolation in g-computation and instability from large weights in weighting motivated doubly robust methods; the augmented estimator's failure to be a substitution estimator motivated targeted maximum likelihood. Every estimator is applied to the Connors right heart catheterization data with all estimates tabulated, and commented, reproducible code is released for Stata, R and Python. The tutorial notes that the teaching dataset is unusually well balanced and that real data carry near violations of positivity that must always be checked. It recommends doubly robust estimation with ensemble learning while noting larger sample requirements, and it records that the validity of inference from targeted maximum likelihood in nonparametric settings remains under investigation.",
+   "future_research": [
+    {
+     "gap": "Whether inference from targeted maximum likelihood is valid in nonparametric settings is unresolved and is being pursued through debiased machine learning and cross-fitting.",
+     "kind": "stated",
+     "quote": "there is some question regarding the validity of the robustness of inference produced by TMLE in nonparametric settings",
+     "locator": "Conclusion"
+    },
+    {
+     "gap": "Implementations outside R are partial; the Stata program calls R rather than running natively.",
+     "kind": "stated",
+     "quote": "More work is required to continue implementing and improving the TMLE framework in other statistical software.",
+     "locator": "Conclusion"
+    },
+    {
+     "gap": "Applied researchers lack tutorials on the functional delta method and the influence curve, which is what would let them derive their own inference.",
+     "kind": "stated",
+     "quote": "Tutorials introducing the use and derivation of the functional delta method and influence curve for applied researchers are needed.",
+     "locator": "Conclusion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The tutorial recommends ensemble learning for the nuisance models and then states that whether the resulting inference is valid without parametric assumptions is an open question under active work. Prediction performance of the learner is what the ensemble optimizes; the causal performance of the estimator built on it is what remains unsettled.",
+     "quote": "This is an area of ongoing work (ie, double/debiased machine learning, cross-validated TMLE and cross-fit estimators).",
+     "locator": "Conclusion"
+    },
+    {
+     "problem_id": "OVL-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "A teaching text aimed at applied researchers states that near positivity violations are the normal condition of observational data and must always be checked, and then supplies no check. The dataset it teaches on is chosen precisely because its confounder distribution is unusually well balanced, so the reader never sees what the diagnostic would look like when it fails.",
+     "quote": "However, in most observational studies, data are not usually well-balanced and there are potentially near violations of the positivity assumption that must always be checked.",
+     "locator": "Conclusion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0072",
+   "read": true,
+   "doi": "10.1002/bimj.202000040",
+   "title": "Simulating longitudinal data from marginal structural models using the additive hazard model.",
+   "relevance": "high",
+   "one_line": "Derives the correctly specified marginal structural model implied by a conditional data-generating mechanism, so that a simulation can evaluate causal estimators without the analysis models being misspecified by construction.",
+   "what_was_done": "Evaluating an estimator by simulation requires generating data whose correct analysis model is known, which is awkward in the longitudinal setting because data are naturally generated sequentially and conditionally while marginal structural models are marginal. The paper provides general results, derived through the g-formula, that give the form of the correctly specified marginal structural model implied by an underlying conditional hazard model with time-dependent confounding. Applying them shows that a conditional Aalen additive hazard model implies an additive marginal structural model that standard software can fit, while a conditional Cox model implies a marginal model of complex nonstandard form. Collapsibility of the additive hazard parameters is what makes this work, and hazard ratios being noncollapsible is why the Cox case fails. A simulation algorithm is described, illustrated and used to validate the theory, and R code including non-administrative censoring is supplied. The paper documents a published comparison of a Cox marginal structural model against a sequential Cox approach that reached an incorrect conclusion by contrasting a marginal with a conditional estimand under a data-generating procedure that made neither model correct. Drawbacks are stated: the additive hazard is not constrained to be nonnegative, and regular visit times common to all individuals are assumed.",
+   "future_research": [
+    {
+     "gap": "The efficiency of survival probability estimates from inverse probability weighting against the g-formula, under a design where every model is correctly specified, has not been compared.",
+     "kind": "stated",
+     "quote": "In futurework, itwould be of interest to compare the efficiency of estimates of survival probabilities (for example) obtained using MSMs estimated using IPTW and using the g-formula.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "The simulation algorithm assumes regular common visit times and would need extending to irregular, person-specific observation times.",
+     "kind": "stated",
+     "quote": "It would be of interest to extend our simulation algorithm to this situation to enable comparisons involving these emerging methods.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Inverse probability weighting for continuous exposures is not recommended because mild misspecification of the weight model has large effects, and no alternative is supplied.",
+     "kind": "stated",
+     "quote": "estimating MSMs using IPTW is not generally recommended for use with continuous exposures,since it is difficult to specify a correct distribution for the continuous treatment and even mild incorrect specification of the weights model can have significant impact on estimates",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The simulation results, and by the paper's own account most methods for longitudinal causal inference, assume visit times that are regular and identical across people. Records generated by care do not look like that, and the paper names electronic health records as the case in point. The observation process is therefore assumed away at the point where methods are validated, not just at the point where they are applied.",
+     "quote": "We focused on a setting in which the visits times are regular and the same for all individuals. This is not representative of many of the observational data sets faced in practice, for example from electronic health records. Most causal inference methods for longitudinal and time-to-event data have also focused on this simplified setting.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "SFW-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The registry entry says synthetic data are judged on distributional fidelity and then used for causal work. This supplies the criterion that matters instead: congeniality between the generating mechanism and the causal model to be fitted, derived rather than assumed. A simulation built this way is a valid benchmark for a causal estimator regardless of how realistic its marginals look. The scope is a marginal structural model for a time-to-event outcome, so the criterion does not yet cover generative patient models more broadly.",
+     "quote": "In a simulation, it is important to be able to generate the data in such a way that the correct forms of any models to be fitted to those data are known.",
+     "locator": "Abstract"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "Comparing estimators requires a data-generating mechanism under which each competing model is correctly specified, and the paper supplies the derivation that makes such a comparison constructible. It also records that comparisons of causal methods are rare and that at least one published comparison was invalid, having contrasted a marginal estimand with a conditional one under a mechanism that made neither model correct. The tooling for demonstrating that an estimator choice mattered now exists; nothing requires a study to use it.",
+     "quote": "Assessment and comparison of causal inference methods is rarely happening up to now and some comparisons are flawed.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0074",
+   "read": true,
+   "doi": "10.2147/clep.s283321",
+   "title": "Replicating Randomized Trial Results with Observational Data Using the Parametric g-Formula: An Application to Intravenous Iron Treatment in Hemodialysis Patients.",
+   "relevance": "high",
+   "one_line": "Benchmark of a parametric g-formula emulation against the PIVOTAL trial that reproduced the laboratory outcomes directionally but reversed the mortality result, and could offer only a list of candidate explanations for the discordance.",
+   "what_was_done": "The PIVOTAL trial compared proactive high-dose against reactive low-dose intravenous iron in United Kingdom hemodialysis patients. This study emulated that protocol in the Dialysis Outcomes and Practice Patterns Study using the parametric g-formula, in 6,325 patients over 12 months, with all-cause mortality as the primary outcome and hemoglobin, ferritin, transferrin saturation and erythropoiesis-stimulating agent dose as secondary outcomes. The laboratory differences were directionally consistent with the trial but smaller. The mortality result was not: the one-year risk difference was 0.020 with a confidence interval of 0.008 to 0.031 and the risk ratio 1.20 with an interval of 1.07 to 1.33, against a null one-year mortality finding in PIVOTAL and a trial hazard ratio of 0.85 over 42 months. Five candidate explanations are offered without a way to choose between them: the estimator needing two prior months of data, which excluded incident patients the trial randomized immediately; misspecification in the first modeling step; genuine effect differences in a healthier trial population; failure to reproduce the trial's eligibility restrictions; and the reproducibility of open-label trials themselves. Design misalignments are enumerated: median follow-up 15 months against a trial maximum of 42, a secondary endpoint emulated to avoid outcome misclassification, an intention-to-treat analysis assuming perfect adherence, and laboratory values measured monthly in the trial but sometimes quarterly in practice.",
+   "future_research": [
+    {
+     "gap": "Restriction alone could not reproduce the trial population, and no method is offered for the subjective eligibility criteria that a database cannot express.",
+     "kind": "stated",
+     "quote": "First, we were unable to narrow our cohort to a PIVOTAL-like population through restriction alone, despite attempts to implement the trial exclusion criteria.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Extensive parametric modeling is unlikely to capture the associations and interactions among the variables, and no diagnostic is offered beyond inspecting the natural course.",
+     "kind": "stated",
+     "quote": "but the extensive modeling is, in practice, unlikely to fully account for the many unknown associations and interactions between variables",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "BEN-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The comparison is reported as somewhat consistent, a verbal label attached to a result in which the secondary laboratory outcomes agreed in direction and the primary mortality outcome went the opposite way. The estimands were not aligned in follow-up length, endpoint, adherence handling or measurement schedule, and each misalignment is recorded, but none is carried into a calibrated statement of how much agreement the design should have produced.",
+     "quote": "Our findings are somewhat consistent with the recent PIVOTAL trial, with discrepancies potentially attributable to model misspecification and differences between the two study populations.",
+     "locator": "Abstract, Conclusion"
+    },
+    {
+     "problem_id": "BEN-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "When the emulation and the trial disagreed, five explanations were available: the estimator's data requirement, model misspecification, a real difference in effect between populations, incomplete eligibility reproduction, and trial reproducibility itself. Nothing in the benchmarking design distinguishes among them, so the exercise yields no transferable statement about whether this database and this method would agree with a trial on a different question.",
+     "quote": "Another possible explanation is model misspecification in Step 1.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "ELG-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Trial eligibility included a clinician's judgment about life expectancy, which no database records. Restriction reproduced the criteria expressible as laboratory thresholds and left the judgment-based ones unapplied, so the emulated cohort differs from the trial cohort in a way that cannot be measured or adjusted, and patients failing the unrecorded criterion are indistinguishable from patients meeting it.",
+     "quote": "While we were able to restrict on unambiguous lab cut-offs (eg, ferritin <400 ng/mL), we were limited in our ability to restrict on other more subjective criteria (eg, “life expectancy <12 months per the judgement of the investigator”).",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The trial randomized incident patients at dialysis initiation. The estimator needs two prior months of covariate data to fit its models, so the emulated population became patients with at least three months on hemodialysis, by which time anemia has largely been corrected. The protocol component that could not be realized, time zero at initiation, produced a different population and a different estimand rather than a noisier version of the intended one, and the paper reads the smaller effects as a consequence.",
+     "quote": "incident hemodialysis patients could be immediately randomized to a treatment protocol in the PIVOTAL trial, while the parametric g-formula requires 2 previous months of data to inform the models and simulations; this functionally limits us to patients with 3+ months on hemodialysis therapy",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The time-varying confounders driving the dynamic strategy, ferritin and transferrin saturation, were measured on a protocol schedule in the trial and on a care-driven schedule in the database. The strategy is defined by thresholds on values that exist only when someone ordered the test, so the emulated strategy is conditioned on the observation process rather than on the biology.",
+     "quote": "Fifth, ferritin and TSAT measurements were regimented monthly in the PIVOTAL trial; the DOPPS data reflect real-world clinical practice, in which these labs are sometimes only assessed every 3 months.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0075",
+   "read": true,
+   "doi": "10.1093/aje/kwaa270",
+   "title": "Study Designs for Extending Causal Inferences From a Randomized Trial to a Target Population.",
+   "relevance": "high",
+   "one_line": "Shows that which causal quantities can be identified when extending a trial to a target population is a property of the study design's sampling scheme, not only of the usual identifiability conditions.",
+   "what_was_done": "Methods for generalizing or transporting trial results had been developed around identifiability conditions and estimators, without connecting them to design. The paper classifies the designs into nested trials, where randomized individuals sit inside a sample from the target population, and non-nested trials including composite dataset designs, where a trial is combined with a separately obtained sample of non-randomized individuals. For each design it works out identification of potential outcome means through both the g-formula and inverse probability weighting, and shows the answer depends on what is known about the probability of sampling non-randomized individuals. In non-nested designs that probability is unknown, so marginal potential outcome means in the target population are not identifiable, although means in the non-randomized subpopulation are; the conditional probability of trial participation is identifiable in nested designs and not in non-nested ones. Estimation in nested designs with subsampling is handled by weighted maximum likelihood, and in non-nested designs the model for participation among sampled individuals generally does not share the form of the population model, logistic regression excepted. The results are placed in the case-base paradigm, treating randomized individuals as cases in a case-referent study nested in the actual population. Everything is developed for point treatments with full adherence and no loss to follow-up.",
+   "future_research": [
+    {
+     "gap": "The results assume that being invited to a trial and participating in it affect the outcome only through treatment assignment, an assumption that would need multistage designs randomizing invitation and participation to relax.",
+     "kind": "stated",
+     "quote": "Unless investigators are willing to contemplate much more complex study designs involving multistage data collection about (and possibly randomization of) the invitation to participate, trial participation itself, and treatment assignment [33], our results are best viewed as applying to trials where the not-through-treatment effects of the invitation to participate in the trial and of trial participation are negligible compared to the effects of treatment.",
+     "locator": "Section 6, Discussion"
+    },
+    {
+     "gap": "Causal quantities are developed for point treatments with complete adherence and no loss to follow-up; the extension to time-varying treatments is asserted rather than worked through.",
+     "kind": "stated",
+     "quote": "In this paper, for simplicity, we focused on causal quantities that are most meaningful for point treatments with complete adherence and no loss to follow-up.",
+     "locator": "Section 6, Discussion"
+    },
+    {
+     "gap": "Specifying which population of non-randomized individuals to sample in a composite dataset design has no principled answer, and is compared to the secondary-base problem in case-referent studies.",
+     "kind": "stated",
+     "quote": "the difficulty in specifying the population of non-randomized individuals that should be sampled in composite dataset designs is similar in nature to the validity issues of case-referent studies with a secondary base",
+     "locator": "Section 6, Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "EST-02",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The registry entry says transporting an estimate compounds sampling assumptions on top of confounding assumptions with no accounting. This is the accounting, for the trial-to-target case: a table of which potential outcome means and which participation probabilities are identifiable under each sampling scheme, with the non-nested design shown to lose the marginal target-population mean outright. It covers extension from a randomized trial rather than transport of an observational contrast, and it is developed for point treatments, so the compounded case an emulation faces is adjacent rather than covered.",
+     "quote": "In non-nested trial designs, where the sampling probability for non-randomized individuals is unknown, the marginal potential outcome means in the target population are not identifiable, but the potential outcome means in the sub-population of non-randomized individuals are identifiable.",
+     "locator": "Section 6, Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The assumption the paper names as most consequential is one that no data can interrogate: that invitation to a trial and participation itself affect the outcome only through treatment. It is stated here explicitly and scoped, which is unusual; the entry's claim is that reporting does not routinely separate assumptions of this kind from the ones a study can check.",
+     "quote": "Perhaps, then, the most consequential causal assumption that we required was that the invitation to participate in the trial and trial participation itself do not have an effect on the outcome except through treatment assignment.",
+     "locator": "Section 6, Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0076",
+   "read": true,
+   "doi": "10.1186/s12874-020-01087-8",
+   "title": "Doubly robust estimator of risk in the presence of censoring dependent on time-varying covariates: application to a primary prevention trial for coronary events with pravastatin.",
+   "relevance": "medium",
+   "one_line": "Combines the inverse probability of censoring weighted Kaplan-Meier estimator with the parametric g-formula into a doubly robust risk estimator for censoring that depends on time-varying covariates, and states that no such estimator existed before.",
+   "what_was_done": "When censoring depends on time-varying covariates, the Kaplan-Meier estimator is inconsistent and the two available repairs each rest on one model being right: inverse probability of censoring weighting needs the censoring hazard model, the parametric g-formula needs the event hazard and covariate models. The paper combines them into an estimator that is consistent if either side is correctly specified, filling a gap it states explicitly, that no doubly robust estimator for the parametric g-formula involving time-varying covariates had been proposed. Simulations under correct and incorrect models for censoring, event and covariate processes confirm double robustness and show efficiency gains over the weighted Kaplan-Meier estimator, while the parametric g-formula remained the most efficient, as expected since the asymptotic variance of a classical doubly robust estimator is no smaller. The estimator is applied to the MEGA primary prevention trial, where censoring included refusal of follow-up, loss to follow-up and death from causes other than coronary heart disease, the last under 1.5 percent. SAS code and a simulated example dataset are supplied. The estimator handles right censoring only, and cannot correct selection bias if censoring and event time remain dependent given the measured time-varying covariates.",
+   "future_research": [
+    {
+     "gap": "Behavior of these estimators when positivity is violated was not studied, since the simulations varied only model specification.",
+     "kind": "stated",
+     "quote": "Because we were interested in the statistical properties of the estimators with fitted correct/incorrect models, the behavior of the estimators when other assumptions, such as positivity, were violated is unknown.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "Interval-censored and left-censored data are outside the estimator, because how to predict event probability and how to weight uncensored subjects are not obvious.",
+     "kind": "stated",
+     "quote": "We consider that our proposed estimator cannot be applied to the data with interval or left-censored data in its current form.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Extension to observational settings, where exchangeability is not delivered by randomization, is named but not done.",
+     "kind": "stated",
+     "quote": "In a future study, it will be interesting to extend our estimator into the observational study setting",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "MIS-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The registry entry says the observation and censoring process is treated as a nuisance to be imputed. Here it is modeled as a hazard that depends on time-varying covariates and is given double protection against misspecification, which is more than imputation under a fixed missingness assumption. The limit is stated plainly: if censoring and event time remain dependent after conditioning on measured covariates, which is the case the entry is about since the visit process tracks latent severity, this estimator and every existing one fail.",
+     "quote": "However, in a situation that censoring and event time are not independent even if we condition on time-varying covariates, our proposed estimator and other existing estimators cannot correct for selection bias.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "OUT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Death from causes other than coronary heart disease was entered into the censoring model alongside refusal and loss to follow-up, and the estimand is then the survival function that would hold had no censoring occurred. The paper recognizes that this requires an intervention removing competing deaths without changing coronary risk, judges it hard to conceive, and resolves the problem by noting that such censoring was rare. That is the treatment of a competing event as a data-handling step with an argument about magnitude rather than an identifying assumption.",
+     "quote": "However, death by causes other than CHD needs additional consideration, because it is difficult to cease such competing risks for CHD without lowering the risk of CHD.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0077",
+   "read": true,
+   "doi": "10.2188/jea.je20200226",
+   "title": "Understanding Marginal Structural Models for Time-Varying Exposures: Pitfalls and Tips.",
+   "relevance": "high",
+   "one_line": "Tutorial built on a hypothetical dataset with visible potential outcomes, separating the marginal structural model that encodes the causal parameters from the nuisance model for exposure probability, and showing that sequential exchangeability alone does not identify dynamic regimes.",
+   "what_was_done": "The tutorial constructs a hypothetical two-period example small enough that the potential outcomes are laid out in a table, then works the g-formula and inverse probability weighting through it step by step. Its central correction is that a marginal structural model is not the same object as inverse probability weighting: the marginal structural model encodes the causal parameters of interest and the exposure probability model is a nuisance, so variable selection and specification are separate problems for the two. Misspecification is demonstrated in both places, with correct and misspecified exposure models and with correct and misspecified structural models, and SAS and Stata code is supplied for each fit. Appendix B shows through single world intervention graphs that sequential exchangeability suffices for effects of static regimes while a further condition is needed for dynamic regimes, and gives a causal diagram compatible with the example data under which the dynamic-regime effect is not identified although the static one is. The future directions section notes that g-estimation of structural nested models handles effect modification by time-varying covariates, which marginal structural models generally cannot, and remains underused because of its theory and parameter interpretation.",
+   "future_research": [
+    {
+     "gap": "G-estimation of structural nested models is theoretically superior for dynamic regimes and remains underused, with no account of what would change that.",
+     "kind": "stated",
+     "quote": "Despite its theoretical superiority, g-estimation has been underused in epidemiologic literature probably because of the complexity of background theory and interpretability of the parameters.",
+     "locator": "Future directions"
+    },
+    {
+     "gap": "Effect modification by time-varying covariates cannot generally be represented in a marginal structural model, which limits the strategies such a model can compare.",
+     "kind": "stated",
+     "quote": "structural nested models are especially useful for dynamic regimes of time-varying exposures by modeling the effect modification by time-varying covariates, 38 , 41 , 51 which cannot generally be included in marginal structural models",
+     "locator": "Future directions"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-02",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The entry says identification of dynamic regimes is unresolved under an observation process that depends on treatment. This settles the discrete-time part of the question that is answerable: sequential exchangeability identifies static regime effects but not dynamic ones, an additional independence condition is required, and a causal diagram is exhibited that is compatible with the observed data yet fails it. The continuous-time and treatment-dependent-observation half of the entry is untouched.",
+     "quote": "Sequential exchangeability (C1) and (C2) is insufficient for identification of the effects of more general exposure interventions (also known as dynamic regimes or strategies ) that may depend on (time-varying) covariates",
+     "locator": "Appendix B"
+    },
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The documented failure mode is not choosing the wrong estimator but not distinguishing the causal model from the nuisance model, so that specification decisions for the two get conflated and neither is examined. A study reporting a weighted regression coefficient exposes neither choice, which is why the entry's second clause, that nothing requires a study to show its choice mattered, bites here.",
+     "quote": "one may mistakenly equate marginal structural models with inverse probability weighting, failing to distinguish a marginal structural model encoding the causal parameters of interest from a nuisance model for exposure probability, and thereby failing to separate the problems of variable selection and model specification for these distinct models",
+     "locator": "Abstract"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0078",
+   "read": true,
+   "doi": "10.1016/j.patter.2020.100008",
+   "title": "gfoRmula: An R Package for Estimating the Effects of Sustained Treatment Strategies via the Parametric g-formula.",
+   "relevance": "high",
+   "one_line": "Open-source R implementation of the parametric g-formula covering survival and end-of-follow-up outcomes, competing events, custom interventions and visit processes, released with the statement that its performance relative to other g-formula estimators has not been thoroughly studied.",
+   "what_was_done": "Conventional regression cannot adjust for confounding when time-varying confounders are affected by past treatment, and estimators derived from the g-formula can, but the parametric g-formula had gone largely unused for three decades for want of open-source software. The gfoRmula package, version 0.3.1 on CRAN, implements it in R. It estimates the conditional outcome means or time-varying hazards and the joint confounder distributions with parametric models and approximates the high-dimensional sum by Monte Carlo simulation. Supported are binary and continuous time-varying treatments; static, dynamic, deterministic and random interventions, including interventions depending on the natural value of treatment; survival outcomes with several options for competing events, and binary or continuous outcomes at end of follow-up; joint interventions on several treatments; user-specified covariate models, history functions and interventions; and incorporation of a priori deterministic knowledge and of visit processes. The discussion places the estimator among the alternatives, iterated conditional expectation, inverse probability weighted and doubly robust, notes that all are nonparametrically equivalent but diverge under misspecification, and states that the joint density modeling approach may accommodate complex strategies more naturally while depending on more models being right.",
+   "future_research": [
+    {
+     "gap": "How the parametric g-formula based on joint density modeling performs against the other g-formula estimators is not established, and the package is offered as a way to find out.",
+     "kind": "stated",
+     "quote": "However, the relative performance of the parametric g-formula based on joint density modeling compared with other estimators has not been thoroughly studied.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "GMT-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The estimator families are nonparametrically equivalent and can nonetheless disagree in any real analysis, because misspecification is unavoidable and each family is misspecified differently. The trade is stated: joint density modeling accommodates complex strategies but relies on more models being correct. The relative performance has not been studied, so a study choosing one has no evidence to cite and no requirement to show what another would have given.",
+     "quote": "All these approaches are nonparametrically equivalent, but they may give different estimates in realistic settings with some degree of model misspecification.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MIS-01",
+     "effect": "partially-addresses",
+     "confidence": "medium",
+     "evidence": "The registry entry says the visit process is treated as a nuisance to be imputed. Here it is a first-class modeled component of the simulation, alongside deterministic knowledge of covariate distributions, so an analyst can represent the fact that a covariate is updated only when a visit occurs. What the software cannot supply is the identifying assumption: whether the visit process depends on latent severity or on an impending outcome given the record remains unverifiable, and modeling it does not make it ignorable.",
+     "quote": "Users can incorporate deterministic knowledge and visit processes",
+     "locator": "Highlights"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0079",
+   "read": true,
+   "doi": "10.1097/ede.0000000000001172",
+   "title": "Rural-Urban Differences in Adult Life Expectancy in Indonesia: A Parametric g-formula-based Decomposition Approach.",
+   "relevance": "medium",
+   "one_line": "Applies a g-formula decomposition to a rural and urban life expectancy gap and concludes that its own interventions on body mass index and blood pressure are a thought experiment rather than well-defined interventions.",
+   "what_was_done": "Adult mortality differences between rural and urban areas in low- and middle-income countries are poorly measured because vital registration is weak. Using three waves of the Indonesian Family Life Survey and 18,867 adults aged 30 and over, the study estimated life expectancy differences with Poisson regression and life tables, then used a g-formula based decomposition to attribute them to body mass index, systolic blood pressure and smoking. Life expectancy at age 30 was 2.2 years higher for rural men, with a confidence interval of 0.4 to 3.9, and 1.2 years higher for rural women, with an interval of minus 0.4 to 2.7, an urban penalty that runs opposite to the urban advantage in infant mortality and health access. Equalizing the body mass index and systolic blood pressure distributions removed 22 percent of the male penalty and 78 percent of the female penalty, with body mass index carrying most of it, while smoking contributed nothing. The paper then examines whether its own interventions satisfy consistency and concludes they do not, on two grounds: many different routes lower blood pressure and body mass index with different mortality consequences, and equalizing a risk factor measured once cannot represent either a life-course intervention or a single-time intervention ignoring history.",
+   "future_research": [
+    {
+     "gap": "Whether the urban adult mortality penalty is peculiar to Indonesia or general across low- and middle-income countries is unresolved, and the existing evidence is mixed and based on selected causes of death.",
+     "kind": "stated",
+     "quote": "It is unclear, however, whether this surprising urban adult life expectancy penalty is unique to Indonesia or common across many LMICs.",
+     "locator": "Discussion"
+    },
+    {
+     "gap": "Migration and urban reclassification between waves could not be corrected because timing of migration for people who died is unknown.",
+     "kind": "stated",
+     "quote": "Because we do not have information on the timing of between-wave migration for individuals who died, we were not able to correct for this bias.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "STR-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The intervention analyzed is setting a risk factor distribution to another group's, and the paper states that many routes achieve that with different mortality consequences, so the estimate corresponds to none of them. This is the versions-of-treatment problem stated by the analysis itself, and no procedure is offered for grouping the routes into a class within which the effect would be common.",
+     "quote": "First, there are multiple ways to reduce blood pressure and BMI, each with potentially different impacts on mortality. Our estimate, however, does not correspond to any one specific route and therefore may not represent the true effect of lowering blood pressure and BMI using specific interventions.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "PRO-04",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The intervention is defined on a risk factor measured at one wave although the factor is the product of a life-course process. The paper concludes that the resulting estimand matches neither an intervention on the histories nor an intervention at a single time ignoring history, and downgrades the result to a thought experiment. The component that could not be specified operationally produced a distinct data-defined quantity rather than an approximation to the intended one.",
+     "quote": "our estimates may not correspond to an intervention to equalize the life course histories of the risk factors nor an intervention to equalize the risk factors at a single point in time, ignoring past histories—both of which would likely have different mortality implications",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "MER-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Both the outcome and its timing come from next-of-kin report because no death registration exists, and the exposures are single-wave biomarker measurements standing in for life-course exposure. The analysis enters both as if measured without error, with the error acknowledged in prose and absent from the estimate.",
+     "quote": "We also have to rely on next-of-kin reports of date and cause of death due to the lack of a death registration system.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0081",
+   "read": true,
+   "doi": "10.1002/sim.8471",
+   "title": "A causal framework for classical statistical estimands in failure-time settings with competing events.",
+   "relevance": "high",
+   "one_line": "Gives counterfactual definitions for the classical competing-risks estimands, showing that treating the competing event as censoring switches the estimand from a total to a controlled direct effect and that no counterfactual hazard contrast is generally a causal effect.",
+   "what_was_done": "The classical competing-risks literature defines marginal and cause-specific cumulative incidence, marginal, subdistribution and cause-specific hazards, and recommends among them, but without a formal causal framework the recommendations cannot be assessed. The paper defines each estimand counterfactually. Whether competing events are treated as censoring events determines whether a risk contrast is a total effect of treatment on the event of interest or a controlled direct effect not mediated through the competing event, and that choice is the analyst's, not the data's. Regardless of that choice, contrasts in any of the three counterfactual hazards fail to have a causal interpretation even when the assumptions identifying them hold, which contradicts standing recommendations to report cause-specific hazard ratios for etiologic questions. Identifying assumptions for every estimand are represented on causal diagrams with competing events drawn as time-varying covariates, answering an earlier claim that no established rules exist for putting competing risks on a directed acyclic graph, and the identifying functions are shown to be versions of the g-formula. Parametric g-formula and inverse probability weighted estimates are applied to a randomized trial of estrogen therapy and prostate cancer death over 60 months. The direct effect requires eliminating competing events, which is generally not a well-defined intervention, and the survivor average causal effect answers in a subpopulation nobody can identify.",
+   "future_research": [
+    {
+     "gap": "Both available ways of defining an effect that excludes the treatment's action on the competing event are unsatisfactory, one needing an impossible intervention and the other an unknowable subpopulation; new definitions are needed.",
+     "kind": "stated",
+     "quote": "New effect definitions for evaluating treatment biological harm or benefit on the event of interest that avoid these problems will be an essential component of future work.",
+     "locator": "Section 10, Discussion"
+    },
+    {
+     "gap": "The choice of whether an event is a censoring event is not specific to competing events and arises for nonadherence too, which turns a per-protocol analysis into the same decision without the same scrutiny.",
+     "kind": "stated",
+     "quote": "Had we considered counterfactual outcomes indexed by elimination of nonadherence, which can be used to define per-protocol effects",
+     "locator": "Section 10, Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OUT-01",
+     "effect": "partially-addresses",
+     "confidence": "high",
+     "evidence": "The registry entry says censoring at death is applied as data cleaning rather than as an identifying assumption. This supplies exactly the missing statement: the decision to censor at the competing event changes which causal effect is estimated, and the resulting direct effect needs an intervention that eliminates death, whose consistency and positivity are questionable or violated. It also gives the graphical rules for representing the assumptions. What is not supplied is a defensible estimand for the common case, which the paper leaves to future work.",
+     "quote": "When competing events are defined as censoring events, a contrast in counterfactual risks of the event of interest quantifies a direct effect of treatment on the event of interest that does not capture the treatment's effect on the competing event.",
+     "locator": "Section 10, Discussion"
+    },
+    {
+     "problem_id": "EST-03",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "The quantity most often reported in a survival analysis, a hazard contrast, is shown to lack a causal interpretation in general when competing events exist, and this holds even under the restrictive assumptions that identify a direct effect on the risk. Standing recommendations to report cause-specific hazard ratios for etiologic questions are contradicted directly. A reported hazard ratio therefore names no estimand at all in this setting.",
+     "quote": "we clarified that contrasts in any of these counterfactual hazards do not generally have a causal interpretation, even when assumptions that give identification of these contrasts hold in the study",
+     "locator": "Section 10, Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0082",
+   "read": true,
+   "doi": "10.1097/ee9.0000000000000063",
+   "title": "Joint and independent neurotoxic effects of early life exposures to a chemical mixture: A multi-pollutant approach combining ensemble learning and g-computation.",
+   "relevance": "medium",
+   "one_line": "Combines SuperLearner with g-computation to estimate joint and independent effects of a pollutant mixture on child neurodevelopment, using the bootstrap because no asymptotic distribution is available and paying a heavy computational cost for it.",
+   "what_was_done": "Single-pollutant analyses of chemical mixtures suffer multiple comparisons, model misspecification through nonlinearity and interaction, and confounding by correlated omitted exposures. The study estimates joint and independent effects of mercury, polychlorinated biphenyls and perfluoroalkyl substances measured in maternal blood and in children's blood at age 5, on the Boston Naming Test and the Strengths and Difficulties Questionnaire at age 7, in a Faroese birth cohort with 449 and 419 children. G-computation with a SuperLearner ensemble is used, with flexible exposure-response curves and assessment of interactions. An interquartile range increase in maternal mercury was associated with 0.15 standard deviations lower naming scores, with a confidence interval of minus 0.29 to minus 0.03, and perfluorooctanoic acid with 0.14 lower, from minus 0.26 to minus 0.05, while a joint interquartile increase across the mixture was associated with 0.48 standard deviations lower, from minus 0.69 to minus 0.25. On the behavioral scale the joint increase was associated with 0.22 standard deviations higher difficulties, from 0.04 to 0.40. No interaction and no strong nonlinearity was found except in the cumulative model. Confidence intervals came from the bootstrap because no asymptotic formula was available, on top of cross-validation.",
+   "future_research": [
+    {
+     "gap": "There is no asymptotic distribution for the parameters, so inference requires bootstrapping a cross-validated ensemble, and reducing that burden is left open.",
+     "kind": "stated",
+     "quote": "Second, we used the bootstrap to estimate valid confidence intervals in the absence of a theoretical formula for the asymptotic distributions of the parameters of interest. This gave rise to a heavy computational burden, especially that the method is based on cross-validation.",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "gap": "Performance depends on the candidate learner library, which is chosen by judgment.",
+     "kind": "stated",
+     "quote": "First, the ability of the SuperLearner approach depends on the choice of candidate learners that should be guided by theoretical and practical considerations.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "SFW-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "Inference for an ensemble-learned g-computation estimator had no closed form here, so the analysis bootstrapped a cross-validated fit and reported the cost as heavy in a cohort of a few hundred children. The same combination in an emulation, where cloning or sequence expansion multiplies the row count, is the case the entry says has no scalable, correct default.",
+     "quote": "we used the bootstrap to estimate valid confidence intervals in the absence of a theoretical formula for the asymptotic distributions of the parameters of interest",
+     "locator": "Discussion, limitations"
+    },
+    {
+     "problem_id": "GMT-01",
+     "effect": "supports-open",
+     "confidence": "medium",
+     "evidence": "The ensemble is assembled by judgment about which learners might capture the exposure-response shapes and interactions, and its cross-validation optimizes prediction of the nuisance functions. Whether that library is adequate for the causal contrast is argued from belief about coverage of functional forms rather than from any criterion tied to the estimator's bias.",
+     "quote": "We believe that we have included a diverse set of algorithms that can capture a variety of potential exposure-response relationships in addition to interactive effects, if present.",
+     "locator": "Discussion, limitations"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  },
+  {
+   "id": "L0086",
+   "read": true,
+   "doi": "10.1002/sim.8336",
+   "title": "Mediation analysis of time-to-event endpoints accounting for repeatedly measured mediators subject to time-varying confounding.",
+   "relevance": "high",
+   "one_line": "Identifies the path-specific effect of a randomized treatment on a time-to-event endpoint through a repeatedly measured mediator, and shows that death before mediator assessment makes the level at which the mediator should be fixed vague.",
+   "what_was_done": "Structural equation approaches to mediation with repeated measurements rely on linear models without interaction and on individual-level additivity assumptions that are usually left implicit and are biologically implausible, while the counterfactual mediation literature has largely stayed with a single mediator measured once, because confounders of the mediator-outcome relation that are themselves affected by treatment break identification. The paper identifies and estimates the path-specific effect of a randomized treatment on the event time transmitted through a sequence of repeatedly measured mediator values, handling events occurring before the first mediator assessment, repeated measurement, and post-treatment confounding of one mediator by others. Identification follows Shpitser's results and the recanting witness criterion, under randomization of treatment, measurement of all common causes of the event time and each mediator, and a nonparametric structural equation model with independent errors, which permits unmeasured common causes among mediators but not between mediators and time-varying confounders. The construction is nonparametric, so any model can be used at each step, and it applies beyond time-to-event outcomes. Limited simulations show adequate performance and SAS code is supplied. The method is applied to the LEADER cardiovascular outcomes trial of liraglutide.",
+   "future_research": [
+    {
+     "gap": "An effect transmitted along every pathway intercepting one or more mediators cannot be identified without assumptions the paper regards as too strong, so the mediated effect must be defined narrowly.",
+     "kind": "stated",
+     "quote": "the effect of treatment transmitted along the combination of all pathways that intercept one or multiple mediators M  i 1 ,…, M  ik (regardless of where in the causal chain it intercepts these variables) cannot be identified without making overly stringent assumptions",
+     "locator": "Introduction"
+    },
+    {
+     "gap": "Related estimands identifiable under weaker assumptions, because they avoid cross-world counterfactuals, have not been extended to settings with time-varying confounding.",
+     "kind": "stated",
+     "quote": "They are moreover identifiable under weaker assumptions than the considered path‐specific effects, as they are not defined in terms of cross‐world counterfactuals, but have not been formally extended to settings with confounding by time‐varying covariates.",
+     "locator": "Discussion"
+    }
+   ],
+   "problems": [
+    {
+     "problem_id": "OUT-01",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Death is not a nuisance to be censored here but the thing that makes the estimand ambiguous: if a patient would have survived longer under treatment, there is no fact of the matter about the level at which their mediator should be held under the control arm. The paper resolves it by a convention, fixing the mediator at the level that would have obtained had the patient been kept alive as long as under treatment, and states that interpretation stays as difficult as it is for treatment effects under dropout due to death.",
+     "quote": "The notion of a direct effect conceptualises fixing the level of the mediator in the experimental treatment arm as it would have been on the control arm, but if a patient would have lived longer on the experimental treatment arm, then it becomes vague at what level the mediator ought to be controlled.",
+     "locator": "Discussion"
+    },
+    {
+     "problem_id": "REG-02",
+     "effect": "supports-open",
+     "confidence": "high",
+     "evidence": "Survivors on the two arms become progressively more selected over follow-up, so an interventional effect defined by drawing the mediator from the control-arm survivors requires that no unmeasured common cause of the mediator and the time-varying confounders exists. The paper adopts that assumption explicitly and records that existing work using the same class of estimands leaves it unstated, which is the reporting failure the entry describes rather than a defect of any one analysis.",
+     "quote": "Such assumptions tend not to be spelled out in the existing approaches for (randomised) interventional direct and indirect effects.",
+     "locator": "Discussion"
+    }
+   ],
+   "new_problems": [],
+   "registry_errata": []
+  }
+ ]
+}
