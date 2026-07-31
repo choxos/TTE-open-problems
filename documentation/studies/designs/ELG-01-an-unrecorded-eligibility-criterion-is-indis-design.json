@@ -1,0 +1,266 @@
+{
+ "title": "Latent eligibility in target trial emulation: a validation-anchored ADEMP simulation",
+ "question": "Across 24 scenarios, how large is the bias in the 60-month marginal risk difference among truly eligible people when 20% or 50% of eligibility measurements are unrecorded, the conditional odds ratio for recording ineligible versus eligible people is 1, 2, or 4, expected validation sample size is 100 or 400, and treatment effects are homogeneous or modified by comorbidity? How much do validation-anchored multiple imputation, two-phase weighting, doubly robust correction, and partial-identification bounds improve on complete-case analysis and methods requiring eligibility-MAR?",
+ "aims": "Estimate signed and absolute bias, 95% interval coverage, and eligible-population error for each method. Quantify whether failure grows from an eligibility-recording odds ratio of 1 to 4 and from 20% to 50% unrecorded eligibility. Determine whether a probability validation sample of expected size 100 or 400 reduces absolute risk-difference bias below 0.005 and restores coverage to 0.93 through 0.97. The odds-ratio-1 scenarios are implementation controls for already developed MAR methods, not an attempt to redesign that solved part of the problem.",
+ "dgm": {
+  "covariates": "Generate n = 4000 independent people per replicate. Draw Z uniformly on [-1,1] and define age as 65 + 15Z years. Draw male sex S from Bernoulli(0.50). Draw specialist access H from Bernoulli(expit(0.10 - 0.50Z + 0.40S)). Draw comorbidity C from Bernoulli(expit(-1.00 + 0.80Z + 0.50S - 0.70H)). Draw recorded treatment intent I from Bernoulli(expit(-0.50 + 0.50Z + 0.90C - 0.60H + 0.30S)). Draw a standard logistic error epsilon independently and define the latent eligibility score L = 0.85 - 0.65Z - 1.10C + 0.25S + 0.50H + epsilon. Define the underlying eGFR-like laboratory value G = 45 + 5L and true eligibility E = 1(G >= 45). Thus P(E = 1 | Z,S,C,H,I) = expit(0.85 - 0.65Z - 1.10C + 0.25S + 0.50H); I has a true coefficient of zero in this model. Treatment is initiated once at baseline with P(A = 1 | Z,S,C,H,I) = expit(-0.30 + 0.35Z + 0.65C + 0.75I - 0.40H + 0.20S). This gives conditional exchangeability and practical positivity while retaining observational treatment allocation. Generate clinical recording R from Bernoulli(expit(alpha + 0.50Z + 0.80C + 0.70I - 0.60H + gamma(1-E))). For each unrecorded-rate level m and gamma, alpha is the unique root of E[P(R = 1 | X,E)] = 1-m. Compute and freeze the six numeric roots before production by uniroot on [-10,10] using a 10,000,000-person calibration draw with seed 81001; require calibration error below 0.0001. Clinical records reveal G and E only when R = 1. For R = 0, draw forced validation V independently with probability 0.125, 0.500, 0.050, or 0.200 for the combinations (m = 0.20,nv = 100), (m = 0.20,nv = 400), (m = 0.50,nv = 100), and (m = 0.50,nv = 400), respectively. Validation reveals G and E. Define Q = 1 when R = 1 or V = 1, and define the known phase-two observation probability rho = 1 for R = 1 and the stated validation probability for R = 0.",
+  "outcome_model": "The protocol has one baseline eligibility assessment, immediate initiation of A = 1 versus A = 0, no switching, complete follow-up, and a binary event by 60 months. Define p0 = 0.20 + 0.04Z + 0.08C - 0.03H + 0.03I + 0.02S. These coefficients place untreated risk between 0.13 and 0.37. Draw one UY uniformly on [0,1], define Y0 = 1(UY <= p0), define Y1 = 1(UY <= p0 + delta(C)), and observe Y = AY1 + (1-A)Y0. The model is additive on the 60-month risk scale. Eligibility and G have no residual prognostic effect after the fully recorded covariates; this isolates errors caused by recovering the eligible population.",
+  "treatment_effect": "Under homogeneous effects, delta(C) = -0.06 for everyone. Under heterogeneous effects, delta(C) = -0.04 when C = 0 and -0.12 when C = 1. All generated risks remain between 0 and 1. The homogeneous level is a negative control because selection cannot change a constant causal risk difference.",
+  "effect_modification": "C is the only treatment-effect modifier and is fully recorded. The heterogeneous level creates an 0.08 risk-difference contrast between comorbidity groups. This is a deliberate stress level that can make incorrect recovery of the eligible comorbidity distribution clinically material. The homogeneous level and the eligibility-MAR level prevent the DGM from guaranteeing an apparent problem.",
+  "factors": [
+   {
+    "name": "Marginal proportion with unrecorded clinical eligibility",
+    "levels": [
+     "0.20",
+     "0.50"
+    ],
+    "rationale": "Twenty percent represents moderate incomplete eligibility ascertainment; 50% represents the severe EHR setting in which complete-case restriction can discard half the source population. These levels span the missingness regimes considered in the direct missing-eligibility literature without claiming that either is universal."
+   },
+   {
+    "name": "Conditional recording odds ratio for ineligible versus eligible people",
+    "levels": [
+     "1",
+     "2",
+     "4"
+    ],
+    "rationale": "Set gamma to 0, log(2), or log(4). Odds ratio 1 is eligibility-MAR conditional on recorded history. Odds ratios 2 and 4 represent moderate and strong latent-eligibility dependence. This association is not estimable without additional information, so the levels are explicitly sensitivity values rather than claimed empirical constants."
+   },
+   {
+    "name": "Expected number of forced validation assessments among R = 0",
+    "levels": [
+     "100",
+     "400"
+    ],
+    "rationale": "These are feasible chart-review or stored-sample validation budgets. Bernoulli validation makes the realized count variable while preserving known inclusion probabilities and straightforward two-phase inference."
+   },
+   {
+    "name": "Treatment-effect structure on the risk-difference scale",
+    "levels": [
+     "homogeneous: delta = -0.06",
+     "heterogeneous: delta = -0.04 for C = 0 and -0.12 for C = 1"
+    ],
+    "rationale": "The homogeneous level is a negative control. The heterogeneous level makes erroneous recovery of the eligible comorbidity distribution consequential without introducing an unrecorded effect modifier."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The design makes consistency, no interference, conditional treatment exchangeability, positivity, a correctly specified treatment propensity model, an exact deterministic eligibility threshold, and known ignorable validation sampling true. At recording odds ratio 1, clinical recording is MAR given recorded covariates. At odds ratios 2 and 4, recording is MNAR only through true eligibility. The validation-anchored eligibility and recording models are correctly specified. The outcome effect depends only on recorded covariates. These choices isolate latent eligibility rather than rewarding methods for also solving treatment confounding, measurement error, censoring, or arbitrary nuisance-model misspecification.",
+  "cannot_detect": "The study cannot establish performance with external or nonprobability validation data, unknown validation inclusion probabilities, lack of validation transportability, measurement error around the eligibility threshold, irregular visits, time-varying eligibility, repeated sequential trials, treatment switching, censoring, competing events, an outcome-dependent recording decision beyond recorded history, unrecorded effect modifiers, unmeasured treatment confounding, severe treatment nonpositivity, or misspecification of both the eligibility and recording models. It evaluates a single baseline criterion and a 60-month binary endpoint, not a longitudinal survival estimator."
+ },
+ "estimands": [
+  {
+   "name": "60-month marginal causal risk difference among truly eligible people",
+   "definition": "For the superpopulation generated by the protocol, estimate RD60 = P(Y1 = 1 | E = 1) - P(Y0 = 1 | E = 1), comparing immediate baseline initiation with no initiation, no subsequent switching, and complete 60-month follow-up. This is marginal over the true eligible distribution, not conditional on covariates and not restricted to people whose eligibility was recorded.",
+   "true_value_computation": "For homogeneous effects, RD60 is exactly -0.060000. For heterogeneous effects, RD60 = -0.04 - 0.08P(C = 1 | E = 1). Compute P(C = 1 | E = 1), both arm-specific risks, and RD60 once using 10,000,000 independent covariate and eligibility draws with seed 20260731. Average the conditional risks p0 and p0 + delta(C), rather than simulating outcomes. Reuse these two truths across all observation and validation scenarios because those protocol components do not alter the causal estimand. The worst-case Monte Carlo SE for eligible prevalence is below 0.00016; the Monte Carlo SE for heterogeneous RD60 is below 0.000013."
+  },
+  {
+   "name": "True eligible-population proportion",
+   "definition": "PE = P(E = 1) in the same superpopulation. Each method must report its implied eligible fraction and implied eligible count out of 4000 alongside its treatment-effect estimate.",
+   "true_value_computation": "Compute PE from the same 10,000,000-person truth draw as the primary estimand by averaging E. For partial identification, also compute whether the estimated prevalence interval contains PE."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Oracle full-eligibility benchmark",
+   "point_estimator": "Fit e(X) = P(A = 1 | Z,S,C,H,I) by logistic regression with the exact linear formula. For a in {0,1}, set za = 1(A=a)/(a e(X) + (1-a)(1-e(X))) and solve sum[E za (Y-mua)] = 0. Report mu1-mu0 and mean(E).",
+   "variance_estimator": "Use the empirical stacked M-estimation sandwich containing the treatment propensity score equations and the two weighted risk equations. Compute A as the central finite-difference Jacobian with step 1e-6 times max(1,absolute parameter value), B as the mean outer product of person-level scores, and covariance A inverse B A inverse-transpose divided by n.",
+   "interval": "Two-sided 95% Wald interval for mu1-mu0 using its full sandwich covariance; do not truncate the interval to [-1,1].",
+   "is_status_quo": false,
+   "nonconvergence": "The treatment model fails to converge, has complete separation or any absolute coefficient above 20, either arm equation has effective sample size below 10, or the sandwich is singular or nonfinite.",
+   "implementation": "This method is unavailable in practice and establishes numerical correctness and the efficiency cost of missing eligibility."
+  },
+  {
+   "name": "Complete-case eligibility analysis",
+   "point_estimator": "Use the same treatment propensity model and weighted risk equations as the oracle, but replace E with R E. The implied eligible fraction is mean(R E), which explicitly records that the method analyzes recorded eligible people rather than all truly eligible people.",
+   "variance_estimator": "Use the same stacked empirical sandwich with treatment propensity and risk equations; treat R and E as observed membership indicators.",
+   "interval": "Two-sided 95% untruncated Wald interval for the risk difference.",
+   "is_status_quo": true,
+   "nonconvergence": "The propensity model fails, either recorded-eligible treatment arm has effective sample size below 10, or the covariance or estimate is nonfinite.",
+   "implementation": "This is the applied status quo. It intentionally targets the selected recorded-eligible population when treatment effects vary across that population."
+  },
+  {
+   "name": "Eligibility-MAR multiple imputation of the continuous laboratory value",
+   "point_estimator": "Among R = 1 records, fit G on Z,S,C,H,I by ordinary least squares. For each of M = 20 imputations, draw coefficients from a multivariate normal distribution using the HC2 covariance, sample centered fitted residuals with replacement, impute G for R = 0, derive E as 1(G >= 45), and estimate the two propensity-weighted risks using the completed eligibility indicator. Pool the risk difference and eligible fraction across imputations.",
+   "variance_estimator": "Within each imputation use the stacked sandwich for treatment propensity and weighted arm risks. Use Rubin total variance T = mean(U) + (1 + 1/20)B, where U is within-imputation variance and B is between-imputation variance.",
+   "interval": "Two-sided 95% t interval with degrees of freedom 19 times [1 + mean(U)/((1 + 1/20)B)] squared; use a normal interval if B is numerically zero.",
+   "is_status_quo": false,
+   "nonconvergence": "The laboratory model is rank deficient, its HC2 covariance is not positive semidefinite, any completed arm has effective sample size below 10, fewer than 20 completed estimates are finite, or the pooled variance is nonfinite.",
+   "implementation": "Use lm, a hand-coded HC2 covariance, and mvtnorm::rmvnorm. Under recording odds ratio 1, the logistic residual in G is independent of R conditional on the regressors, so residual imputation is correctly aligned with MAR. No lmtp, concrete, CICI, Stan, or SuperLearner is required."
+  },
+  {
+   "name": "Eligibility-MAR multiple imputation of the eligibility indicator",
+   "point_estimator": "Among R = 1 records, fit logistic regression E on Z,S,C,H,I. For each of M = 20 imputations, draw coefficients from the model's robust covariance, draw missing E from Bernoulli probabilities, and estimate the propensity-weighted arm risks and eligible fraction in the completed data. Pool across imputations.",
+   "variance_estimator": "Use the stacked propensity and arm-risk sandwich within imputations and Rubin total variance across imputations.",
+   "interval": "Use the same Rubin t interval and degrees-of-freedom rule as continuous-value multiple imputation.",
+   "is_status_quo": false,
+   "nonconvergence": "The eligibility model fails, separates, has an absolute coefficient above 20, yields nonfinite probabilities, any completed arm has effective sample size below 10, or fewer than 20 completed estimates are finite.",
+   "implementation": "The logistic eligibility model matches P(E = 1 | X) under MAR. Comparing this method with laboratory-value imputation directly tests whether the operation being imputed matters when both target the same eligible population."
+  },
+  {
+   "name": "Estimated eligibility-MAR inverse probability of ascertainment weighting",
+   "point_estimator": "Fit s(X) = P(R = 1 | X) using logistic regression with splines::ns(Z,4), S,C,H,I, all pairwise interactions among S,C,H,I, and interactions between ns(Z,4) and each binary covariate. Among R = 1,E = 1 records, use membership weight 1/s(X) in the common propensity-weighted arm-risk equations. Estimate eligible prevalence as mean(R E/s(X)).",
+   "variance_estimator": "Use one stacked empirical sandwich containing the treatment propensity score, ascertainment-model score, eligible-prevalence equation, and both arm-risk equations. This includes uncertainty from estimating s(X).",
+   "interval": "Two-sided 95% untruncated Wald interval from the stacked covariance.",
+   "is_status_quo": false,
+   "nonconvergence": "Either logistic model fails or separates, any predicted probability is below 1e-8, either arm has effective sample size below 10, or the stacked covariance is singular or nonfinite.",
+   "implementation": "This represents the already developed MAR weighting approach. The flexible model limits attribution of MNAR failure to an avoidable linear-model error."
+  },
+  {
+   "name": "Oracle marginal-ascertainment weighting diagnostic",
+   "point_estimator": "Compute the true marginal s(X) from the DGM as pE(X)r1(X) + [1-pE(X)]r0(X), where re(X) is the known recording probability at E=e. Use membership weight R E/s(X) in the common treatment-weighted risk equations.",
+   "variance_estimator": "Treat true s(X) as fixed and use the stacked sandwich for the estimated treatment propensity and arm-risk equations.",
+   "interval": "Two-sided 95% untruncated Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Either arm has effective sample size below 10 or an estimate or covariance is nonfinite.",
+   "implementation": "This is not an applied estimator. If it remains biased under MNAR, failure cannot be blamed on estimating the marginal recording probability poorly; weighting by P(R = 1 | X) is structurally insufficient when recording depends on latent E."
+  },
+  {
+   "name": "Validation-anchored joint-model multiple imputation of eligibility",
+   "point_estimator": "Give each Q = 1 record phase-two weight d = 1 when R = 1 and d = 1/rho when R = 0,V = 1. Fit weighted logistic models pE(X) = P(E = 1 | Z,S,C,H,I) and pR(E,X) = P(R = 1 | Z,S,C,H,I,E). For each unvalidated R = 0 record, calculate q = pE(X)[1-pR(1,X)] divided by pE(X)[1-pR(1,X)] + [1-pE(X)][1-pR(0,X)]. Draw missing E from Bernoulli(q) in M = 20 completed data sets and estimate the common propensity-weighted risks and eligible fraction.",
+   "variance_estimator": "Build a joint robust sandwich for both phase-two weighted logistic score systems. Draw their coefficients jointly from this covariance for each imputation. Use the completed-data stacked sandwich within imputations and Rubin total variance across imputations.",
+   "interval": "Two-sided 95% Rubin t interval using the same degrees-of-freedom rule as the other imputation methods.",
+   "is_status_quo": false,
+   "nonconvergence": "Either weighted model fails, separates, or has an absolute coefficient above 20; the joint covariance is not positive semidefinite; posterior eligibility probabilities are nonfinite; an arm has effective sample size below 10; or fewer than 20 imputations are valid.",
+   "implementation": "This is the direct joint model for true eligibility and its clinical observation. The validation sample anchors the E coefficient in the recording model. Outcome is omitted from the imputation model because the DGM deliberately makes E independent of potential outcomes conditional on recorded X."
+  },
+  {
+   "name": "Known-design two-phase inverse probability weighting",
+   "point_estimator": "Define membership weight w = Q E/rho, with rho = 1 for R = 1 and the known validation probability for R = 0. Use w in the common propensity-weighted arm-risk equations. Estimate eligible prevalence by mean(w).",
+   "variance_estimator": "Use a stacked empirical sandwich containing the treatment propensity score, eligible-prevalence equation, and both arm-risk equations. Treat the Bernoulli validation probabilities as known design quantities.",
+   "interval": "Two-sided 95% untruncated Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "No validated eligible person appears in a necessary arm, an arm has effective sample size below 10, or the estimate or sandwich covariance is singular or nonfinite.",
+   "implementation": "This method requires no model for latent eligibility or clinical recording beyond the known probability validation design. It provides the design-consistent benchmark for validation sample sizes 100 and 400."
+  },
+  {
+   "name": "Doubly robust augmented two-phase correction",
+   "point_estimator": "Obtain q(X,R) from the validation-anchored pE and pR models. For arm a define za = 1(A=a)/P(A=a|X), numerator contribution Na = q za Y + Q/rho (E-q) za Y, and denominator contribution Da = q za + Q/rho (E-q) za. Estimate mua = sum(Na)/sum(Da) and RD60 = mu1-mu0. Estimate eligible prevalence from mean[q + Q/rho(E-q)]. The estimator is consistent if either q is correct or rho is correct, in addition to the treatment assumptions.",
+   "variance_estimator": "Use the full stacked empirical sandwich for treatment propensity, phase-two weighted pE and pR scores, eligible prevalence, and both augmented arm-risk equations.",
+   "interval": "Two-sided 95% untruncated Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "A nuisance model fails or separates, posterior q is nonfinite, an augmented denominator is at most 1e-8, or the stacked covariance is singular or nonfinite.",
+   "implementation": "Run the primary version with the correctly specified q. As a prespecified robustness diagnostic, repeat the augmentation with q fixed to the phase-two weighted marginal eligible proportion. Known rho remains correct, so this deliberately poor q should change precision but not asymptotic bias."
+  },
+  {
+   "name": "No-assumption partial-identification outer bounds",
+   "point_estimator": "Ignore validation information. For each arm a calculate treatment-reweighted probabilities c_a = mean[za R E Y], d_a = mean[za R E], u1_a = mean[za(1-R)Y], and u0_a = mean[za(1-R)(1-Y)]. Set the risk bounds to L_a = c_a/(d_a+u0_a) and U_a = (c_a+u1_a)/(d_a+u1_a). Report the risk-difference outer bound [L_1-U_0,U_1-L_0]. Report eligible-prevalence bounds [mean(RE),mean(RE)+mean(1-R)].",
+   "variance_estimator": "Use the stacked treatment-propensity sandwich and delta-method gradients for both bound endpoints. These are conservative outer bounds because they do not impose cross-arm restrictions on hidden eligibility.",
+   "interval": "Construct a 95% confidence region by subtracting 1.96 endpoint SEs from the estimated lower RD bound and adding 1.96 endpoint SEs to the estimated upper RD bound. Clip only the confidence-set endpoints to [-1,1]. This uses Bonferroni-protected one-sided 97.5% endpoint limits.",
+   "is_status_quo": false,
+   "nonconvergence": "A required denominator is zero, the estimated lower endpoint exceeds the upper endpoint by more than 1e-10, or an endpoint covariance is singular or nonfinite.",
+   "implementation": "Assess truth inclusion and width rather than point bias or ordinary Wald coverage. The method shows what can be learned without MAR or validation transportability assumptions."
+  }
+ ],
+ "performance": {
+  "primary": "Signed bias of the estimated 60-month marginal risk difference, with absolute bias used in the decision rule. For partial identification, the corresponding primary quantity is whether the identified set contains the true risk difference and its width.",
+  "secondary": [
+   "Empirical standard error",
+   "Mean model-based standard error",
+   "Relative error in model-based standard error",
+   "Mean squared error",
+   "95% interval coverage",
+   "Bias-eliminated coverage",
+   "Rejection rate for RD60 = 0",
+   "Convergence proportion",
+   "Bias and relative bias in the implied eligible-population proportion",
+   "Mean absolute error in implied eligible count out of 4000",
+   "Effective sample size and maximum analysis weight",
+   "Partial-identification set coverage and mean width",
+   "Difference in absolute bias and MSE versus complete-case analysis",
+   "Difference in absolute bias and MSE versus the oracle benchmark"
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "The least precise design-based method uses an expected validation sample of 100. With approximately 70 eligible validation records and 35 per treatment arm, the binary-outcome variance bound gives an approximate replicate SD of sqrt(0.25/35 + 0.25/35) = 0.1195, rounded to 0.12. To target Monte Carlo SE 0.003 for bias requires (0.12/0.003)^2 = 1600 replicates. Inflate by 25% for occasional numerical failures and variance above the approximation, giving 2000. At SD 0.12, MCSE is 0.12/sqrt(2000) = 0.00268. At 95% coverage, the binomial MCSE is sqrt(0.95*0.05/2000) = 0.00487. All Monte Carlo SEs come from the existing ADEMP harness."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "Use the heterogeneous-effect, expected-validation-400 scenarios for the primary decision. The latent problem is material if all of the following hold: in the 50%-unrecorded, recording-OR-4 scenario, oracle marginal-ascertainment weighting has absolute RD bias at least 0.015 and the 95% Monte Carlo lower confidence bound for absolute bias exceeds 0.010; bias has the same direction and is larger at OR 4 than OR 2 and at 50% than 20% unrecorded eligibility; at least two of the three feasible MAR methods have 95% coverage whose upper Monte Carlo confidence limit is below 0.90 in at least two of the four MNAR combinations; and the doubly robust validation estimator at expected validation size 400 has absolute bias at most 0.005, a 95% Monte Carlo upper confidence bound below 0.010, coverage from 0.93 through 0.97, and convergence of at least 0.98. Homogeneous-effect scenarios must have absolute bias below 0.005 for the oracle, complete-case, and design-based validation estimators.",
+  "problem_is_not_real_if": "In the heterogeneous, 50%-unrecorded, recording-OR-4 scenario, the oracle marginal-ascertainment weighting diagnostic and all three feasible MAR methods each have absolute bias below 0.005, a 95% Monte Carlo upper confidence bound below 0.010, coverage from 0.93 through 0.97, and no monotone increase in bias from OR 1 to OR 4. This would show that latent recording dependence of the stipulated magnitude does not materially move the target risk difference under this DGM.",
+  "uninformative_if": "Results are uninformative if they fall between the numerical rules; if the bias MCSE exceeds 0.003; if any decision-critical method converges in fewer than 95% of replicates; if homogeneous-effect or OR-1 controls show absolute bias above 0.010 for the oracle or validation design estimators; if the validation estimator remains biased above 0.010 despite its correct design probabilities; or if conclusions depend on excluding failed replicates. Conditional-on-convergence results must be accompanied by worst-case summaries that assign failed risk differences the values -1 and 1."
+ },
+ "threats": [
+  {
+   "threat": "The DGM could be constructed to make latent eligibility appear harmful.",
+   "mitigation": "Cross the MNAR mechanism with two negative controls. OR 1 removes latent dependence; homogeneous treatment effects make selection irrelevant to the marginal risk difference. Require near-zero bias in both controls, a graded OR and missingness response, persistence under oracle marginal recording weights, and reversal under known-design validation correction."
+  },
+  {
+   "threat": "The validation-anchored models are favored because their logistic forms match the DGM.",
+   "mitigation": "Include model-free two-phase weighting and a doubly robust estimator. Repeat the doubly robust estimator with an intercept-only eligibility regression. State explicitly that joint-model MI performance does not establish robustness to misspecification."
+  },
+  {
+   "threat": "Internal probability validation is more favorable than external or convenience validation.",
+   "mitigation": "Use Bernoulli validation with known probabilities and label conclusions as applying to internal probability validation only. Do not claim transportability to external validation sources or chart reviews with unknown selection."
+  },
+  {
+   "threat": "Failure of an estimated MAR recording model could be mistaken for failure of the MAR identifying assumption.",
+   "mitigation": "Use a flexible estimated recording model and an additional diagnostic supplied with the exact marginal P(R = 1 | X). Bias in the latter is structural because even the true marginal recording probability cannot restore conditional independence from E."
+  },
+  {
+   "threat": "Treatment confounding or propensity misspecification could obscure eligibility effects.",
+   "mitigation": "Generate treatment from the exact fitted logistic formula, retain broad propensity support, use the same treatment estimator in every method, and include treatment-model uncertainty in every variance estimate. Conclusions are explicitly conditional on no unmeasured treatment confounding."
+  },
+  {
+   "threat": "The effect modifier is fully observed and the laboratory value has no residual prognostic role, which simplifies the problem.",
+   "mitigation": "Declare this as an isolation design. The study answers whether latent membership alone distorts a marginal effect through population composition; it does not claim performance when the unrecorded laboratory value is also an unmeasured confounder or effect modifier."
+  },
+  {
+   "threat": "Multiple-imputation Monte Carlo noise could affect rankings.",
+   "mitigation": "Use 20 imputations with parameter uncertainty. On a prespecified 10% subset of replicates, repeat with 50 imputations; flag the comparison if any method's scenario-level bias changes by more than 0.002 or coverage by more than 0.01."
+  },
+  {
+   "threat": "Deleting failed replicates can make unstable methods look accurate.",
+   "mitigation": "The harness records every failure. Report convergence first, conditional performance second, and worst-case failure bounds. A decision-critical method with convergence below 95% makes the result uninformative."
+  },
+  {
+   "threat": "Brute-force truth evaluation can dominate runtime and introduce unnoticed simulation error.",
+   "mitigation": "Observation and validation do not alter the estimand, so compute only two truths, one per effect structure. Integrate conditional risks over one shared 10,000,000-person draw rather than simulating outcomes separately for all 24 scenarios."
+  },
+  {
+   "threat": "The partial-identification interval may appear reassuring solely because it is extremely wide.",
+   "mitigation": "Report truth inclusion together with mean width. Treat a mean RD-set width above 0.20 as practically uninformative even if coverage is nominal."
+  }
+ ],
+ "runtime_estimate": "The production run contains 24*2000 = 48,000 replicates. Reusing nuisance fits across methods requires six fitted models per replicate: one treatment logistic model, one laboratory lm, one direct-eligibility logistic model, one flexible recording logistic model, and two validation-weighted logistic models. This is 288,000 glm or lm fits, plus 3*20*48,000 = 2,880,000 inexpensive completed-data calculations. No ltmle, longitudinal TMLE, SuperLearner, lmtp, concrete, CICI, Stan, or cmdstanr is used. On six workers, the expected run is 6 to 12 hours after a 100-replicate timing pilot. Calibration and the two shared 10,000,000-person truth evaluations should take under 30 minutes. The complete run therefore fits the overnight budget and the existing seeded, resumable harness.",
+ "bears_on": [
+  {
+   "id": "ELG-01",
+   "relation": "answers",
+   "what": "Answers the unresolved latent-eligibility question for a baseline threshold criterion with internal probability validation. It quantifies when already developed MAR methods fail, whether true marginal recording weights can repair the failure, how much validation is needed, and the bias, uncertainty, and eligible population implied by joint MI, two-phase IPW, doubly robust correction, and assumption-free bounds."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo error, and prespecified method evaluation."
+  },
+  {
+   "cite": "Tompsett D, et al. Target Trial Emulation and Bias Through Missing Eligibility Data: An Application to a Study of Palivizumab for the Prevention of Hospitalization Due to Infant Respiratory Illness. American Journal of Epidemiology. 2023",
+   "doi_or_url": "10.1093/aje/kwac202",
+   "used_for": "Complete-case selection, imputation of eligibility-defining variables, and MNAR sensitivity analysis as existing comparators."
+  },
+  {
+   "cite": "Benz L, et al. Adjusting for Selection Bias Due to Missing Eligibility Criteria in Emulated Target Trials. American Journal of Epidemiology. 2025",
+   "doi_or_url": "10.1093/aje/kwae471",
+   "used_for": "The eligibility-MAR inverse probability of ascertainment comparator and the distinction between recorded eligible people and all eligible people."
+  },
+  {
+   "cite": "Shen, et al. Missingness in Eligibility Criteria for Target Trial Emulation in EHR With Survival Outcomes. Statistics in Medicine. 2026",
+   "doi_or_url": "10.1002/sim.70500",
+   "used_for": "Existing complete-case and multiple-imputation strategies for eligibility-defining variables."
+  },
+  {
+   "cite": "Wang, et al. An Operational Target Trial Emulation Framework for Causal Inference Using Electronic Health Records. npj Digital Medicine. 2026",
+   "doi_or_url": "10.1038/s41746-026-02563-z",
+   "used_for": "Embedding the realized eligibility assessment, treatment strategies, and follow-up protocol in the estimand."
+  },
+  {
+   "cite": "Robins JM, Rotnitzky A, Zhao LP. Estimation of Regression Coefficients When Some Regressors Are Not Always Observed. Journal of the American Statistical Association. 1994",
+   "doi_or_url": "10.1080/01621459.1994.10476818",
+   "used_for": "Augmented inverse-probability correction under two-phase observation."
+  },
+  {
+   "cite": "Imbens GW, Manski CF. Confidence Intervals for Partially Identified Parameters. Econometrica. 2004",
+   "doi_or_url": "10.1111/j.1468-0262.2004.00531.x",
+   "used_for": "Confidence regions for partial-identification bounds."
+  }
+ ]
+}

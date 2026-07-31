@@ -1,0 +1,239 @@
+{
+ "title": "When federated target trial estimates answer different questions: an ADEMP study of semantic drift, explicit transport, aggregate alarms, and local validation gates",
+ "question": "Across six-site federated emulations in which two sites use one of five incompatible eligibility, exposure, or outcome mappings, how many percentage points does the estimated marginal five-year risk difference move relative to the intended trial, what is the probability of releasing an estimate more than 0.02 from the truth, and can local validation using 50, 100, or 200 records per predicted class reduce that probability to at most 0.05 while retaining at least 0.90 release probability when mappings are compatible?",
+ "aims": "Estimate the bias, unsafe-release probability, interval performance, and mapping-detection accuracy of conventional inverse-variance averaging, random-effects averaging, heterogeneity screening, explicit target-population transport, aggregate component diagnostics, and local validation gates. Determine whether conventional heterogeneity diagnostics can distinguish semantic mapping failure from genuine effect modification. Determine the minimum of 50, 100, or 200 locally reviewed records per predicted class that meets prespecified safety and availability criteria.",
+ "dgm": {
+  "covariates": "Each replicate contains six fixed site contexts with s_j equal to -1.25, -0.75, -0.25, 0.25, 0.75, and 1.25 and 3000 independent source records per site. Generate X1, an older-age indicator, from Bernoulli(expit(-0.20 + 0.45 s_j)); X2, a female-sex indicator, from Bernoulli(expit(0.10 - 0.15 s_j)); X3, a high-comorbidity indicator, from Bernoulli(expit(-0.80 + 0.70 X1 - 0.20 X2 + 0.25 s_j)); and U, an additional prognostic frailty indicator unavailable to the federation, from Bernoulli(expit(-1.00 + 0.40 X1 + 0.60 X3)). Generate a renal-function measure G = 75 - 10 X1 - 12 X3 - 10 U + 12 Z, where Z is standard normal. Intended eligibility is E = I(G >= 45). Treatment availability is Q from Bernoulli(expit(-0.35 + 0.35 s_j + 0.30 X1 - 0.20 X2 + 0.50 X3)). If Q = 0, treatment category D is 0, the comparator. If Q = 1, D is 1, 2, or 3 with probabilities 0.60, 0.20, and 0.20. The intended trial compares D = 1 with D = 0 and excludes D = 2 and D = 3. Categories 2 and 3 represent clinically distinct therapies that can share neighboring local codes with the intended treatment. Treatment depends only on X1, X2, X3, site, and not U, so conditional exchangeability holds within the eight X cells.",
+  "outcome_model": "The canonical narrow five-year event Y is Bernoulli with logit probability eta_Y = -2.10 + 0.45 X1 + 0.25 X2 + 0.75 X3 + 0.45 U + 0.10 s_j + tau_D. Set tau_0 = 0, tau_1 = -0.65 + 0.20 X3 + 0.30 U + gamma s_j, tau_2 = -0.10 + 0.10 X3 + 0.10 U, and tau_3 = 0.05. Generate an independent near-event W with logit probability -2.60 + 0.30 X1 + 0.15 X2 + 0.45 X3 + 0.35 U + 0.05 s_j - 0.05 I(D = 1) + 0.05 I(D = 3). There is complete five-year follow-up, no censoring, no competing event, and no missing data. The outcome is generated directly at five years rather than through monthly hazards.",
+  "treatment_effect": "The intended intervention effect is specified on the conditional log-odds scale by tau_1. With gamma = 0, odds ratios range from exp(-0.65) = 0.52 to exp(-0.15) = 0.86 across X3 and U. With gamma = 0.16, they range from exp(-0.85) = 0.43 to exp(0.05) = 1.05 across site context, X3, and U. Category D = 2 has a substantially weaker effect and category D = 3 has slight harm. Consequently, broadening the exposed definition from D = 1 to D in {1,2} defines a coherent but different intervention contrast.",
+  "effect_modification": "Effect modification is present through X3 and U in every scenario. The site-context factor gamma is either 0 or 0.16. Gamma = 0.16 adds genuine contextual heterogeneity that remains after standardizing measured covariates. Because U modifies treatment effect but does not affect treatment after conditioning on X, it is not an unmeasured confounder. It makes eligibility mappings that select different frailty distributions scientifically consequential.",
+  "factors": [
+   {
+    "name": "Local trial-component mapping",
+    "levels": [
+     "Compatible: all sites use G >= 45, compare D = 1 with D = 0 while excluding D = 2 and D = 3, and use Y",
+     "Visible eligibility drift: two sites use G >= 60",
+     "Aggregate-stealth eligibility drift: within each X cell, two sites retain exactly the canonical number eligible but select records in descending order of U plus an independent Uniform(0,0.01) tie breaker",
+     "Visible exposure drift: two sites classify D = 1 or D = 2 as exposed, D = 0 as comparator, and only D = 3 as excluded",
+     "Visible outcome drift: two sites use the composite Y or W",
+     "Aggregate-equivalent outcome drift: two sites uniformly permute Y labels within every X by D analysis cell, preserving every cell count, event count, effect estimate, and cell-based variance while changing individual outcome identity"
+    ],
+    "rationale": "The levels represent a threshold disagreement, an undocumented proxy that preserves ordinary cohort summaries, neighboring treatment-code contamination, a narrow-versus-composite outcome disagreement, and an adversarial nonidentifiability control. The 45 and 60 thresholds and 25% contamination among locally exposed active therapies are moderate protocol changes rather than claims about frequencies in the cited studies. Exactly two sites are affected. To avoid tying failure to one site type, the affected pair cycles equally across replicates through sites {1,6}, {2,5}, and {3,4}."
+   },
+   {
+    "name": "Genuine site-context effect heterogeneity",
+    "levels": [
+     "gamma = 0",
+     "gamma = 0.16 per unit of s_j"
+    ],
+    "rationale": "These levels span no contextual interaction and a strong but plausible range from substantial benefit to approximately no benefit. They test whether heterogeneity alarms confuse genuine effect variation with mapping failure."
+   },
+   {
+    "name": "Accuracy of local reference adjudication",
+    "levels": [
+     "Perfect reference labels",
+     "Each binary reference label is independently flipped with probability 0.05; each three-class exposure label is replaced with either other class with total probability 0.05"
+    ],
+    "rationale": "The levels separate an ideal local validation system from one with modest chart-review or phenotype-adjudication error. The 5% value is a sensitivity analysis, not an estimate attributed to prior work."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The design is fully factorial: 6 mapping conditions by 2 contextual-effect levels by 2 validation-accuracy levels equals 24 scenarios. Conditional exchangeability holds in every locally intended analysis because treatment is independent of U given the eight measured X cells. Positivity is moderate, treatment and outcome cell means are estimable without nuisance-model misspecification, the target covariate distribution is supplied exactly, sites are independent, aggregation is exact, and secure computation introduces no numerical or privacy noise. The compatible explicit-transport estimator should therefore be unbiased. The aggregate-equivalent outcome permutation is a negative-control mismatch that is semantically wrong but cannot change any estimator based on the released cell aggregates.",
+  "cannot_detect": "The study cannot evaluate irregular visits, longitudinal treatment changes, grace periods, censoring, competing risks, missing data, continuous or high-dimensional confounding, nuisance-model misspecification, differential-privacy noise, secure-aggregation failures, malicious sites, temporal coding drift, combinations of multiple simultaneous mapping errors, or generalization beyond six fixed site contexts. It cannot prove semantic equivalence from summaries. The permutation condition deliberately establishes that such proof is impossible when two definitions induce the same released aggregates. Results apply to detecting the specified incompatibilities, not to every coding-system or phenotype error."
+ },
+ "estimands": [
+  {
+   "name": "Intended common-target, equal-site five-year risk difference",
+   "definition": "The protocol is eligibility G >= 45; baseline assignment to D = 1 versus D = 0; exclusion of D = 2 and D = 3; narrow outcome Y; complete follow-up to five years. Let q_x be the canonical eligible X distribution obtained by mixing the six source-site superpopulations and conditioning on E = 1. The target is Psi = (1/6) sum over sites j and eight cells x of q_x times {Pr(Y under D = 1 | J = j, X = x, E = 1) - Pr(Y under D = 0 | J = j, X = x, E = 1)}. This is a marginal risk difference for a superpopulation with the six named site contexts weighted equally and the same measured-covariate distribution q_x in every context. The site roster is fixed rather than sampled from a population of possible sites.",
+   "true_value_computation": "Compute q_x and Psi exactly by enumerating six sites, eight X cells, and two U values. Multiply the sequential Bernoulli probabilities by the normal-tail probability Pr(G >= 45 | X,U,J), normalize to obtain q_x and Pr(U | X,E = 1,J), and sum the expit outcome probabilities under D = 1 and D = 0. Exact enumeration also gives probability-limit local estimands for the threshold, broad-exposure, and composite-outcome mappings. For aggregate-stealth eligibility, its limiting U selection probabilities are analytic: if the canonical eligible fraction k_x is no larger than Pr(U = 1 | X), select a fraction k_x divided by Pr(U = 1 | X) of U = 1 records; otherwise select all U = 1 records and the required fraction of U = 0 records. The permutation condition has exactly the compatible cell estimand by construction. No brute-force truth sample is required."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Naive fixed-effect averaging of local trial estimates",
+   "point_estimator": "Within each site's locally mapped cohort, estimate mu_ajx as the event mean for local arm a in each of the eight X cells and p_jx as the local empirical X-cell proportion. Compute psi_j = sum_x p_jx(mu_1jx - mu_0jx). Pool sites using inverse within-site variance weights: psi_FE = sum_j w_j psi_j divided by sum_j w_j, where w_j = 1/V_j.",
+   "variance_estimator": "Use the empirical influence function phi_i = A_i/e_x(Y_i - mu_1x) - (1-A_i)/(1-e_x)(Y_i - mu_0x) + mu_1x - mu_0x - psi_j, with e_x equal to the local treated proportion in cell x. Set V_j to sample variance(phi_i)/n_j. Treat estimated inverse-variance weights as fixed and set Var(psi_FE) = 1/sum_j w_j.",
+   "interval": "Untruncated Wald interval psi_FE plus or minus 1.959964 times sqrt(1/sum_j w_j).",
+   "is_status_quo": true,
+   "nonconvergence": "Non-convergence occurs if any locally represented X cell has fewer than five records in either analysis arm, any site variance is nonfinite or nonpositive, or fewer than all six site estimates are available.",
+   "implementation": "Each site releases only psi_j, V_j, analysis counts, and diagnostics. No patient rows are pooled."
+  },
+  {
+   "name": "DerSimonian-Laird random-effects averaging",
+   "point_estimator": "Start from the six local estimates and variances above. Compute Q = sum_j w_j(psi_j - psi_FE)^2, C = sum_j w_j - sum_j w_j^2/sum_j w_j, tau_squared = max(0,(Q - 5)/C), random-effects weights w_REj = 1/(V_j + tau_squared), and psi_RE = sum_j w_REj psi_j divided by sum_j w_REj.",
+   "variance_estimator": "Use Var(psi_RE) = 1/sum_j w_REj with the DerSimonian-Laird moment estimate of tau_squared.",
+   "interval": "Untruncated normal interval psi_RE plus or minus 1.959964 times sqrt(1/sum_j w_REj).",
+   "is_status_quo": true,
+   "nonconvergence": "Non-convergence follows the local estimator rules and also includes C <= 0, a nonfinite tau_squared, or a nonpositive pooled variance.",
+   "implementation": "The coordinating process receives only site estimates and variances. This method addresses statistical heterogeneity but does not define a common target population."
+  },
+  {
+   "name": "Conventional Q and I-squared gate",
+   "point_estimator": "Use the naive fixed-effect estimate only when Cochran Q has chi-square p >= 0.10 with 5 degrees of freedom and I-squared = max(0,(Q - 5)/Q) is at most 0.50. Otherwise withhold the network estimate.",
+   "variance_estimator": "When released, use the fixed-effect variance 1/sum_j w_j.",
+   "interval": "When released, use the same untruncated 95% Wald interval as fixed-effect averaging.",
+   "is_status_quo": true,
+   "nonconvergence": "Computational non-convergence follows the fixed-effect method. Rejection by Q or I-squared is recorded as diagnostic abstention, not non-convergence.",
+   "implementation": "This is the conventional estimate-level diagnostic benchmark. Its mapping sensitivity and its false-abstention rate under genuine effect heterogeneity are evaluated directly."
+  },
+  {
+   "name": "Ungated explicit-target federated standardization",
+   "point_estimator": "Treat the externally supplied eight-cell target distribution q_x as fixed. At site j compute psi_jq = sum_x q_x(mu_1jx - mu_0jx) from local arm-specific cell means. Estimate the intended network contrast as psi_q = sum_j psi_jq/6. Sites return the 8 by 2 counts and event totals, psi_jq, and its variance or equivalent influence-curve second moment.",
+   "variance_estimator": "For site j use V_jq = sum_x q_x^2(s_1jx^2/n_1jx + s_0jx^2/n_0jx), where s_ajx^2 is the unbiased binary-outcome sample variance. Use Var(psi_q) = sum_j V_jq/36. The target table is treated as fixed, so its uncertainty is not included.",
+   "interval": "Untruncated Wald interval psi_q plus or minus 1.959964 times sqrt(sum_j V_jq/36).",
+   "is_status_quo": false,
+   "nonconvergence": "Non-convergence occurs if a target-positive X cell has fewer than five local records in either arm, any required cell statistic is nonfinite, or the network variance is nonpositive.",
+   "implementation": "Use data.table grouped tabulations locally. This method solves weighting and target-population ambiguity under compatible semantics but deliberately cannot repair a wrong local eligibility, treatment, or outcome definition."
+  },
+  {
+   "name": "Aggregate component-homogeneity gate plus explicit transport",
+   "point_estimator": "Release the explicit-target estimate only if three aggregate tests pass. Sum Pearson homogeneity statistics across the eight X strata for mapped eligibility among source records, giving 40 degrees of freedom; across eight X strata for the three local exposure classes exposed, comparator, and excluded, giving 80 degrees of freedom; and across eight X by two local treatment strata for observed outcome risk, giving 80 degrees of freedom. Apply Holm adjustment to the three p-values and pass only if every adjusted p-value is at least 0.05.",
+   "variance_estimator": "When released, use sum_j V_jq/36 from explicit-target standardization.",
+   "interval": "When released, use the explicit-target untruncated 95% Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Computational non-convergence follows explicit-target standardization. A sparse contingency table that invalidates a Pearson calculation causes diagnostic abstention. A statistically significant component test is abstention rather than non-convergence.",
+   "implementation": "Sites release only source, eligibility, exposure-class, and event counts by prespecified X cells. The method tests whether richer aggregate summaries outperform effect heterogeneity alone while measuring false alarms caused by legitimate site differences."
+  },
+  {
+   "name": "Local trial-component validation gate with 50 reviewed records per predicted class",
+   "point_estimator": "Each site validates eligibility as two classes, exposure as three classes, and outcome as two classes. Sample 50 records without replacement from every locally predicted class and compare the local label with the reference label. For each class calculate its discordance proportion and one-sided 95% Wilson upper bound using z = 1.644854. A class passes only when the upper bound is at most 0.15. Release the all-six-site explicit-target estimate only if every class at every site passes.",
+   "variance_estimator": "When released, use sum_j V_jq/36. Validation uncertainty enters the release decision but is not added to the conditional effect variance.",
+   "interval": "When released, use the explicit-target untruncated 95% Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Effect-estimator non-convergence follows explicit transport. Fewer than 50 available records in a predicted class, a failed validation bound, or a missing component report causes protocol abstention and is not counted as numerical non-convergence.",
+   "implementation": "The Wilson upper bound is U = {p_hat + z^2/(2m) + z sqrt[p_hat(1-p_hat)/m + z^2/(4m^2)]}/{1 + z^2/m}. Validation samples for m = 50, 100, and 200 use one randomized ordering and are nested. Only class totals and discordance counts leave the site."
+  },
+  {
+   "name": "Local trial-component validation gate with 100 reviewed records per predicted class",
+   "point_estimator": "Apply the same seven-class-per-site validation rule with m = 100 and release the all-six-site explicit-target estimate only if every one-sided 95% Wilson upper bound is at most 0.15.",
+   "variance_estimator": "When released, use sum_j V_jq/36 without adding validation-selection variance.",
+   "interval": "When released, use the explicit-target untruncated 95% Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the same rules as the 50-record gate, with fewer than 100 available records in a predicted class treated as protocol abstention.",
+   "implementation": "This requires at most 700 reviewed class assignments per site before any reuse of records across components. Only confusion counts are shared."
+  },
+  {
+   "name": "Local trial-component validation gate with 200 reviewed records per predicted class",
+   "point_estimator": "Apply the same seven-class-per-site validation rule with m = 200 and release the all-six-site explicit-target estimate only if every one-sided 95% Wilson upper bound is at most 0.15.",
+   "variance_estimator": "When released, use sum_j V_jq/36 without adding validation-selection variance.",
+   "interval": "When released, use the explicit-target untruncated 95% Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the same rules as the smaller gates, with fewer than 200 available records in a predicted class treated as protocol abstention.",
+   "implementation": "This requires at most 1400 reviewed class assignments per site before record reuse. It is the largest prespecified validation design and the candidate expected to retain compatible networks when reference-label error is 5%."
+  },
+  {
+   "name": "Site-exclusion validation gate with 200 reviewed records per predicted class",
+   "point_estimator": "Apply the 200-record validation rule separately to each site. Exclude failing sites and average psi_jq equally across passing sites when at least four sites pass. Report the resulting estimand explicitly as the common-q average over passing site contexts, not as the original six-site target.",
+   "variance_estimator": "For K passing sites use Var = sum of V_jq over passing sites divided by K^2.",
+   "interval": "Use an untruncated 95% Wald interval for the passing-site estimand. Evaluate coverage against both the random passing-site truth and, as a warning analysis, the original six-site truth.",
+   "is_status_quo": false,
+   "nonconvergence": "Abstain if fewer than four sites pass or if any included site fails the explicit-transport numerical criteria. Validation exclusion is not numerical non-convergence.",
+   "implementation": "This method directly tests whether excluding a failed site silently changes the scientific question even when the remaining computation is valid."
+  }
+ ],
+ "performance": {
+  "primary": "Unsafe-release probability: Pr(an estimate is released and its absolute error for the intended six-site risk difference exceeds 0.02). Always-release methods have release probability one. Because always abstaining can score zero, unsafe-release probability must be interpreted jointly with compatible-network release probability.",
+  "secondary": [
+   "Bias and absolute bias for the intended risk difference",
+   "Empirical standard error",
+   "Mean model-based standard error",
+   "Relative error in model-based standard error",
+   "Mean squared error",
+   "95% coverage",
+   "Bias-eliminated coverage",
+   "Rejection rate for the null risk difference of zero",
+   "Numerical convergence",
+   "Network release and abstention probabilities",
+   "Site-level and network-level mapping-detection sensitivity and specificity",
+   "False abstention under compatible semantics with gamma = 0 and gamma = 0.16",
+   "Conditional bias and coverage among released estimates",
+   "Paired mapping-induced change from the compatible condition using common random numbers",
+   "For site exclusion, error and coverage against both the original six-site target and the declared passing-site target",
+   "Verification that aggregate-equivalent outcome relabeling changes the paired estimate by no more than Monte Carlo noise"
+  ],
+  "n_rep": 2500,
+  "n_rep_derivation": "Unsafe release is binary. Its worst-case Monte Carlo standard error is sqrt[0.5(1-0.5)/R]. Requiring this to be at most 0.01 gives R >= 0.25/0.0001 = 2500 replicates per scenario. Thus the full study uses 24 by 2500 = 60000 scenario replicates. Mapping levels within the same gamma and validation-error block use common random numbers, and validation sample sizes are nested, reducing Monte Carlo error for paired contrasts. Report every performance estimate with its harness-computed Monte Carlo standard error."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "First require the compatible explicit-target estimator to have absolute bias at most 0.005, coverage between 0.925 and 0.975, and numerical non-convergence below 0.05. Conditional on that validity check, classify the scoped problem as real if at least two of the four effect-altering mismatches, visible eligibility, aggregate-stealth eligibility, broad exposure, and composite outcome, produce absolute bias of at least 0.02 or an unsafe-release probability of at least 0.20 for ungated explicit transport, and if either the Q gate or aggregate gate has mapping sensitivity below 0.80 or compatible-network release below 0.80 under gamma = 0.16. Separately classify a local-validation design as operationally adequate only if, under both reference-label error levels, its unsafe-release probability is at most 0.05 in every effect-altering mapping scenario, its release probability is at least 0.90 in every compatible scenario, and its site-level sensitivity and specificity are each at least 0.90.",
+  "problem_is_not_real_if": "After the compatible validity check passes, classify the scoped problem as not consequential if every effect-altering mapping has absolute bias below 0.01, the upper 95% Monte Carlo confidence limit for unsafe release is below 0.05 in every such scenario, and conventional Q or aggregate diagnostics achieve both sensitivity and specificity of at least 0.90. The aggregate-equivalent outcome permutation is excluded from this harm criterion because it is deliberately effect-neutral.",
+  "uninformative_if": "Classify the study as uninformative if the compatible explicit-target estimator fails its validity check, numerical non-convergence exceeds 0.10 in any scenario, the exact probability-limit calculations show that all four intended harmful mappings move the affected-site estimand by less than 0.01, the permutation condition changes released cell estimates by more than 0.002 in paired Monte Carlo means, or results fall between the real and not-real thresholds. Do not reinterpret intermediate results after inspecting them."
+ },
+ "threats": [
+  {
+   "threat": "The DGM could be constructed to make semantic mapping failure look harmful.",
+   "mitigation": "Freeze all coefficients and thresholds before running replicates; compare every mismatch with a paired compatible condition; include genuine effect heterogeneity; include an aggregate-stealth eligibility error; and include an outcome-label permutation that is semantically wrong but exactly effect-neutral. Report mapping types separately rather than averaging them into one favorable result."
+  },
+  {
+   "threat": "A local reference label is treated as a semantic gold standard even though real records may remain ambiguous.",
+   "mitigation": "Cross perfect adjudication with independent 5% reference-label error and report the validation burden and false-abstention rate. Interpret successful validation as an upper bound achievable with a documented local adjudication process, not as proof that every network has such a standard."
+  },
+  {
+   "threat": "The validation gate can achieve low unsafe-release probability by almost always abstaining.",
+   "mitigation": "Make compatible-network release probability and site-level specificity co-primary decision constraints. A gate is not adequate unless release is at least 0.90 under compatible mappings."
+  },
+  {
+   "threat": "Testing many component-class bounds can cause network-level false rejection.",
+   "mitigation": "Use the prespecified 0.15 one-sided Wilson bound, evaluate 50, 100, and 200 records per class with nested samples, and report both class-level and whole-network specificity. Do not tune the cutoff after results."
+  },
+  {
+   "threat": "Exact discrete-cell adjustment favors the proposed transported estimator.",
+   "mitigation": "Make this a deliberate isolation design: exchangeability and measured-covariate adjustment are correct so observed bias can be attributed to target weighting or semantics. State explicitly that the study does not evaluate high-dimensional nuisance learning or model misspecification."
+  },
+  {
+   "threat": "The aggregate-equivalent permutation is adversarial rather than a literal coding mechanism.",
+   "mitigation": "Label it an identifiability-boundary negative control. Use the threshold, broad-code, and composite mappings for applied performance conclusions."
+  },
+  {
+   "threat": "Fixed site differences can make aggregate homogeneity tests reject even when semantics agree.",
+   "mitigation": "This is intentional and directly measures the diagnostic's specificity. Include both gamma levels and report compatible false-abstention rather than treating every detected difference as mapping failure."
+  },
+  {
+   "threat": "Excluding failed sites silently changes the target population.",
+   "mitigation": "Name the passing-site estimand, require at least four passing sites, and evaluate it against both its own truth and the original six-site truth. Never label its interval as an interval for the original target."
+  },
+  {
+   "threat": "Only two sites are incompatible and only one component fails at a time.",
+   "mitigation": "Rotate the affected pair across low, middle, and high site contexts. Restrict conclusions to one-component failures affecting two of six sites; multiple simultaneous failures require a later factorial study."
+  },
+  {
+   "threat": "Exact aggregation omits privacy perturbation and implementation failures.",
+   "mitigation": "Treat pooled-equivalent federated computation as already addressed. State that secure-aggregation code, privacy leakage, differential-privacy noise, and malicious-site behavior require separate studies."
+  }
+ ],
+ "runtime_estimate": "The design generates 60000 replicate datasets, each with 6 by 3000 = 18000 source records, for 1.08 billion transient baseline records and 360000 local site analyses. All methods reuse the same eight-cell tabulations. There are zero glm fits and zero ltmle or SuperLearner fits: 24 scenarios by 2500 replicates by 0 expensive fits. Truth and mapping probability limits use exact enumeration, so there is no two-million-person truth run per scenario. Using six workers and resumable batches, the expected run is approximately 3 to 8 hours and should remain below an overnight 12-hour budget. Implementation uses the existing harness plus data.table, future, and furrr. TrialEmulation, gfoRmula, ltmle, lmtp, concrete, CICI, Stan, and cmdstanr are unnecessary.",
+ "bears_on": [
+  {
+   "id": "DTA-02",
+   "relation": "answers-part",
+   "what": "The study quantifies when averaging or transporting locally valid estimates releases a materially wrong answer, whether estimate heterogeneity and aggregate component summaries can identify the failure, how much local validation is needed for a useful gate, and how exclusion changes the target. It does not solve general semantic governance or prove equivalence for arbitrary coding systems."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, performance reporting, and prespecification of Monte Carlo precision."
+  },
+  {
+   "cite": "Li et al. Federated target trial emulation using distributed observational data for treatment effect estimation. npj Digital Medicine. 2025",
+   "doi_or_url": "10.1038/s41746-025-01803-y",
+   "used_for": "Motivation for treating privacy-preserving distributed estimation as feasible while isolating semantic compatibility as the study target."
+  },
+  {
+   "cite": "Manke-Reimers M, et al. When, why and how are estimated effects transported between populations? A scoping review. European Journal of Epidemiology. 2025",
+   "doi_or_url": "10.1007/s10654-025-01217-w",
+   "used_for": "Motivation for stating the target population and transport weighting explicitly."
+  },
+  {
+   "cite": "Federated target trial emulation for time-to-event outcomes via POLARIS. 2026",
+   "doi_or_url": "10.21203/rs.3.rs-9613167/v1",
+   "used_for": "Justification for not redesigning pooled-equivalent federated likelihood machinery."
+  },
+  {
+   "cite": "Privacy-preserving distributed algorithms in action: ten principles for high-quality multi-site clinical studies. JAMIA. 2026",
+   "doi_or_url": "10.1093/jamia/ocag119",
+   "used_for": "Motivation for explicit site-level validation and governance before aggregation."
+  }
+ ]
+}

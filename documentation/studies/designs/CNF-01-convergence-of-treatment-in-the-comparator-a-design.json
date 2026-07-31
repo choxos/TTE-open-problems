@@ -1,0 +1,192 @@
+{
+ "title": "Exposure separation, effect dynamics, and horizon dependence in baseline-initiation target trials",
+ "question": "Across 36 observational target-trial scenarios, by how many risk-difference percentage points and by what fraction does natural later initiation after assignment to no initiation move the marginal initiate-now versus do-not-initiate-now effect at 6, 12, 24, 36, 60, and 120 months relative to an always-treated versus never-treated benchmark? Can a cumulative treated-month separation threshold of 0.70 identify horizons retaining at least 75% of that benchmark with sensitivity and specificity of at least 0.80?",
+ "aims": "Estimate the treatment-policy risk difference, its additive movement from the sustained-strategy risk difference, and its signed retained-effect fraction at six horizons. Determine whether equal 60-month comparator initiation risks produce materially different movements when switching is prognosis-dependent, temporally concentrated, or combined with heterogeneous and time-dependent treatment effects. Compare current-treatment separation with cumulative treated-month separation as candidate diagnostics. Evaluate a prespecified horizon rule without selecting its threshold from the simulation results.",
+ "dgm": {
+  "covariates": "Each replicate contains 4000 independent individuals followed for 120 monthly cycles. Generate X1 from N(0,1), X2 from Bernoulli(0.35), X3 from N(0,1), and L0 = 0.50*X1 + 0.40*X2 + 0.30*X3 + epsilon0, where epsilon0 is N(0,0.75^2). For t=1,...,120, generate Lt = 0.70*L(t-1) + 0.15*X1 + 0.20*X2 + 0.10*X3 + epsilon_t, with independent epsilon_t from N(0,0.70^2). Baseline initiation is observational: A0 is Bernoulli with probability expit(-0.80 + 0.55*X1 + 0.75*X2 + 0.40*X3 + 0.35*L0). This creates moderate measured baseline confounding and approximately 40% baseline initiation. All variables in the assignment model are observed. Draw an independent ZS from N(0,1). For a switching-selection parameter rho, define U = Phi(-rho*X1 + sqrt(1-rho^2)*ZS), which is marginally uniform but gives earlier initiation to higher-risk individuals when rho=0.70. For a chosen 60-month initiation probability p60 and Weibull shape k, define F(t) = 1 - exp(log(1-p60)*(t/60)^k). The later-initiation month is T = min{t: U <= F(t)}; T is greater than 120 if no threshold is crossed. Baseline initiators remain treated. Those with A0=0 have At=1 from month T onward and At=0 before T. No treatment discontinuation occurs.",
+  "outcome_model": "The outcome is an absorbing event. Let Y0=0. At month t, among individuals with Y(t-1)=0, generate an event with probability expit(-5.70 + 0.35*X1 + 0.55*X2 + 0.25*X3 + 0.30*Lt + 0.005*t + eta_t). Set Yt=1 after the first event and retain Yt=1 thereafter. Coefficients are on the log odds scale of the monthly discrete-time hazard. The untreated mechanism produces a moderate chronic-disease risk over five to ten years rather than a rare-event approximation. There is administrative follow-up only, with no loss to follow-up or competing event.",
+  "treatment_effect": "Let d_t be completed treated months through month t, with d_t=0 while untreated. Four causal profiles are used. P0 has eta_t=0. P1 has an immediate homogeneous benefit, eta_t=log(0.70)*I(d_t>0). P2 has the same immediate benefit with effect modification, eta_t=log(0.70)*m(X1)*I(d_t>0). P3 has initiation toxicity followed by benefit: eta_t=log(1.50)*m(X1) during the first three treated months and eta_t=log(0.70)*m(X1) thereafter. Thus later initiation can dilute, preserve, amplify, or temporarily reverse a baseline-assignment contrast. The treatment values are methodological stress parameters and are not presented as estimates for a particular drug.",
+  "effect_modification": "For profiles P2 and P3, define M=I(X1>0) and m(X1)=0.60+0.80*M. The monthly odds ratio corresponding to a base odds ratio of 0.70 is about 0.81 for X1<=0 and 0.61 for X1>0. The initiation-toxicity odds ratios are about 1.28 and 1.76, respectively. P1 is homogeneous, and P0 is null. Comparing P1 with P2 isolates effect modification while holding immediate effect dynamics fixed. Because X1 also predicts the outcome and, in prognosis-dependent scenarios, initiation timing, the identity of switchers can matter even when the marginal initiation curve is unchanged.",
+  "factors": [
+   {
+    "name": "Comparator cumulative initiation by 60 months",
+    "levels": [
+     "p60=0.10",
+     "p60=0.40",
+     "p60=0.70"
+    ],
+    "rationale": "These levels represent low, moderate, and high convergence and span the requested 10% to 70% range. The cited literature establishes that switching is context-dependent but does not supply a universal empirical rate, so these are explicit stress levels rather than claimed literature estimates."
+   },
+   {
+    "name": "Later-initiation mechanism",
+    "levels": [
+     "M1: memoryless and nonselective, k=1.00 and rho=0",
+     "M2: memoryless and prognosis-dependent, k=1.00 and rho=0.70",
+     "M3: accelerating and prognosis-dependent, k=2.00 and rho=0.70"
+    ],
+    "rationale": "M1 versus M2 isolates who switches while preserving the marginal trajectory. M2 versus M3 changes the trajectory shape while preserving strong prognosis-based selection. At 120 months, M1 and M2 produce initiation probabilities 0.19, 0.64, and 0.91 for the three p60 levels. M3 produces approximately 0.344, 0.870, and 0.992, providing a deliberate long-horizon stress test."
+   },
+   {
+    "name": "Causal treatment-effect profile",
+    "levels": [
+     "P0: null",
+     "P1: immediate homogeneous benefit with monthly odds ratio 0.70",
+     "P2: immediate effect-modified benefit with base monthly odds ratio 0.70",
+     "P3: three months of initiation toxicity with base odds ratio 1.50 followed by effect-modified benefit with base odds ratio 0.70"
+    ],
+    "rationale": "The null profile is a negative control. P1 tests the conventional dilution mechanism. P2 tests selective switching among people with different effects. P3 tests the auditor-supported possibility that treatment timing and effect dynamics prevent guaranteed attenuation toward zero."
+   }
+  ],
+  "n_scenarios": 36,
+  "deliberately_true": "The design is fully factorial: 3 initiation levels by 3 switching mechanisms by 4 causal profiles. Baseline exchangeability given X1, X2, X3, and L0, consistency, positivity, correct measurement, and no informative censoring are true. The propensity-score model used by the adjusted estimators exactly matches the baseline assignment mechanism. Later treatment is part of the treatment-policy estimand and is never adjusted away. The null, homogeneous, heterogeneous, and initiation-toxicity profiles prevent monotone attenuation from being imposed in every scenario.",
+  "cannot_detect": "The design says nothing about irregular visits, treatment discontinuation, repeated stopping and restarting, treatment measurement error, competing mortality, informative censoring, unmeasured confounding, postbaseline clinical triggers not represented by the latent switching model, or healthcare systems outside the specified initiation trajectories. Results concern marginal risk differences and need not hold on risk-ratio, odds-ratio, or hazard-ratio scales. The study cannot establish a universal clinical horizon because its treatment effects and prescribing mechanisms remain stylized."
+ },
+ "estimands": [
+  {
+   "name": "Marginal treatment-policy risk difference",
+   "definition": "For h in {6,12,24,36,60,120}, RD_TP(h) = Pr(Y_h under do(A0=1) and natural subsequent treatment =1) - Pr(Y_h under do(A0=0) and natural subsequent treatment =1). Later initiation after do(A0=0) follows the scenario-specific structural equation. The contrast is marginal for the DGM superpopulation. Negative values favor initiation now.",
+   "true_value_computation": "For every scenario, simulate 2,000,000 new superpopulation individuals in chunks of 50,000. Use common baseline values, longitudinal innovations, switching variables, and outcome uniforms under both baseline interventions. Retain only cumulative summaries. Estimate each arm risk and their paired difference. Estimate Monte Carlo uncertainty from the 40 chunk estimates and extend to 4,000,000 if any risk-difference truth has Monte Carlo SE greater than 0.0005."
+  },
+  {
+   "name": "Marginal sustained-strategy risk difference",
+   "definition": "RD_S(h) = Pr(Y_h under treatment during every month =1) - Pr(Y_h under no treatment during any month =1). This is a distinct sustained-strategy estimand used only as an efficacy-separation benchmark. It is not described as a corrected treatment-policy effect.",
+   "true_value_computation": "Use the same 2,000,000-person common-random-number truth run under always-treated and never-treated interventions. The always-treated world equals the A0=1 treatment-policy world because discontinuation is absent. Apply the same 0.0005 Monte Carlo SE requirement."
+  },
+  {
+   "name": "Movement and signed retained-effect fraction",
+   "definition": "Define additive movement G(h)=RD_TP(h)-RD_S(h) and r(h)=RD_TP(h)/RD_S(h). Calculate r only when abs(RD_S(h))>=0.005 and the causal profile is non-null. Values between 0 and 1 denote same-direction attenuation, values above 1 denote amplification, and values below 0 denote sign reversal. Reporting G and both raw risk differences prevents an unstable ratio from determining the conclusion.",
+   "true_value_computation": "Calculate G and r from the paired large-sample truths. Propagate the chunk-level paired estimates to obtain Monte Carlo SEs and confidence intervals for G and r."
+  },
+  {
+   "name": "Marginal treatment-trajectory diagnostics",
+   "definition": "At each horizon h, estimate comparator cumulative initiation F0(h), current-treatment separation S_current(h)=Pr(A_h=1 under A0=1)-Pr(A_h=1 under A0=0), and cumulative treated-month separation S_cum(h)=h^(-1)*sum from t=1 to h of [Pr(A_t=1 under A0=1)-Pr(A_t=1 under A0=0)]. The prespecified horizon rule labels a horizon as adequately separated when S_cum(h)>=0.70. Its reference label is same-direction retention of at least 75%, defined as r(h)>=0.75.",
+   "true_value_computation": "The marginal trajectory truths are analytic because U is uniform: F0(t)=F(t), S_current(t)=1-F(t), and S_cum(h)=h^(-1)*sum from t=1 to h of [1-F(t)]. Evaluate the conceptual sensitivity and specificity of the horizon rule across all non-null scenario-horizon cells. Evaluate operational performance separately using the replicate-level estimated trajectory."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Crude baseline-assignment contrast",
+   "point_estimator": "At each horizon, subtract the observed cumulative event proportion among A0=0 from that among A0=1. Do not condition on postbaseline treatment.",
+   "variance_estimator": "Use R1*(1-R1)/n1 + R0*(1-R0)/n0, where Ra and na are the observed risk and sample size in baseline arm a.",
+   "interval": "Use an untruncated pointwise 95% Wald interval: estimate plus or minus 1.96 times its model SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure if either baseline arm is empty or the estimate or SE is nonfinite. Otherwise retain the estimate, including misleading estimates caused by baseline confounding.",
+   "implementation": "Compute directly with data.table. This is the naive comparator and requires no fitted model."
+  },
+  {
+   "name": "Baseline IPTW treatment-policy estimator without trajectory reporting",
+   "point_estimator": "Fit glm(A0 ~ X1 + X2 + X3 + L0, family=binomial). At each horizon, estimate arm risks with normalized inverse-probability weights A0/e and (1-A0)/(1-e), then subtract the weighted A0=0 risk from the weighted A0=1 risk. Do not censor or adjust for later treatment.",
+   "variance_estimator": "Use an empirical stacked-equation sandwich for the propensity coefficients and the two normalized weighted risks. Obtain the risk-difference variance using the full covariance matrix, including propensity-score estimation.",
+   "interval": "Use an untruncated pointwise 95% Wald interval for the risk difference.",
+   "is_status_quo": true,
+   "nonconvergence": "Declare failure if the propensity glm does not converge, its model matrix is rank deficient, any propensity is not finite or lies outside [0.000001,0.999999], the estimating-equation Jacobian is singular, or the estimate or SE is nonfinite. Record maximum weight, effective sample size, and propensity range as diagnostics without otherwise truncating weights.",
+   "implementation": "Fit one base-R glm per replicate and reuse it at all six horizons. Implement the stacked sandwich with base matrix operations. This represents a correctly adjusted treatment-policy analysis that reports an effect but no postbaseline exposure-separation diagnostic."
+  },
+  {
+   "name": "AIPW treatment-policy estimator with standardized trajectory report",
+   "point_estimator": "At each horizon fit glm(Y_h ~ A0*(X1 + I(X1>0) + X2 + X3 + L0) + I(X1^2) + I(L0^2) + X2:X3, family=binomial). Combine its predictions with the fitted baseline propensity using the augmented inverse-probability score: mean[m1-m0 + A0*(Y_h-m1)/e - (1-A0)*(Y_h-m0)/(1-e)]. Postbaseline treatment is deliberately excluded because it mediates the treatment-policy effect. Estimate each comparator trajectory quantity by the normalized weighted mean among A0=0 using weights 1/(1-e); the treated-arm trajectory is one throughout by construction.",
+   "variance_estimator": "For the risk difference, use the empirical efficient-influence-function SE, sd(phi)/sqrt(n), retaining covariance between arm risks. For weighted trajectory quantities, use a stacked-equation sandwich including propensity estimation. Scale the risk-difference SE by abs(RD_S truth) only for simulation summaries of r; do not present that ratio as observable in an applied dataset.",
+   "interval": "Use pointwise untruncated 95% Wald intervals for risks and risk differences. Use pointwise 95% Wald intervals clipped to [0,1] for trajectory probabilities and separations. No simultaneous-band claim is made.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare the risk-difference component failed if the propensity model or the horizon-specific outcome model does not converge, a model matrix is rank deficient, any coefficient or prediction is nonfinite, a required propensity lies outside [0.000001,0.999999], or the influence-function SE is nonfinite. Declare the trajectory component failed only when its propensity or sandwich calculation fails. Report component-specific failures rather than discarding the entire replicate.",
+   "implementation": "Use one propensity glm and six outcome glms per replicate. Publish adjusted monthly initiation curves, current-treatment separation, cumulative treated-month separation, the prespecified horizon flag, arm-specific outcome risks, and the risk difference. The method uses the existing seeded, resumable six-worker harness. No longitudinal TMLE or SuperLearner fit is needed because the intervention occurs only at baseline and later treatment remains natural."
+  }
+ ],
+ "performance": {
+  "primary": "Cellwise coverage of the nominal 95% AIPW treatment-policy risk-difference interval at each of the six horizons. Report every cell, plus the minimum and median coverage across cells; do not average away a failing scenario.",
+  "secondary": [
+   "Bias, empirical SE, mean model SE, relative error in model SE, MSE, bias-eliminated coverage, rejection rate, and convergence for every risk-difference estimator using the existing ADEMP functions",
+   "Type I error in the nine null scenarios at every horizon",
+   "Bias and coverage for F0(h), S_current(h), and S_cum(h)",
+   "True and estimated additive movement G(h) and signed retained-effect fraction r(h)",
+   "Sensitivity, specificity, positive predictive value, negative predictive value, and balanced accuracy of S_cum(h)>=0.70 for the truth label r(h)>=0.75",
+   "The same classification measures for S_current(h)>=0.70, with a prespecified comparison of balanced accuracy",
+   "Within each fixed p60 and horizon, the range of r(h) across switching mechanisms and non-null effect profiles",
+   "Monte Carlo SE for every reported performance measure and every large-sample truth"
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "The target Monte Carlo SE for the primary 95% coverage estimate is 0.005, or half a percentage point. At anticipated coverage 0.95, R must satisfy sqrt(0.95*0.05/R)<=0.005, so R>=0.95*0.05/0.005^2=1900. Use 2000 replicates per scenario, giving MCSE sqrt(0.95*0.05/2000)=0.00487. The same calculation applies to a 0.05 null rejection rate."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "For each of the nine matched combinations of non-null effect profile and switching mechanism, compare p60=0.10 with p60=0.70. A pair qualifies as material at a horizon when 0<=r_high<r_low, r_low-r_high>=0.20, and abs(RD_TP_high-RD_S)>=0.010. Declare convergence materially capable of obscuring the treatment-policy contrast if at least five of nine pairs qualify at 60 months or at least five qualify at 120 months. Separately declare a convergence rate alone inadequate if, in at least six of the 18 fixed-p60-by-horizon blocks, the range of r across mechanisms and non-null profiles is at least 0.20. Accept the proposed S_cum>=0.70 horizon convention only if sensitivity and specificity for r>=0.75 are both at least 0.80 and its balanced accuracy exceeds that of S_current>=0.70 by at least 0.10.",
+  "problem_is_not_real_if": "Declare no practically important convergence effect in this design if no matched pair at any horizon has r_low-r_high>=0.10 and every non-null high-convergence cell has abs(RD_TP-RD_S)<0.005. This conclusion is restricted to the simulated mechanisms and does not establish that switching is harmless elsewhere.",
+  "uninformative_if": "Call the materiality result intermediate rather than choosing a favorable label when it meets neither rule. Also call estimator-based conclusions uninformative if more than 10% of AIPW fits fail in any cell, absolute AIPW bias exceeds 0.005 in any primary cell, the truth Monte Carlo SE remains above 0.0005 after extension, or fewer than 95% of planned replicates are completed. Failure of the 0.70 horizon rule is informative evidence against that universal cutoff and is not classified as an inconclusive study."
+ },
+ "threats": [
+  {
+   "threat": "A DGM containing only a persistent beneficial treatment and monotone comparator initiation would mechanically manufacture attenuation.",
+   "mitigation": "Use a fully factorial null profile, homogeneous and heterogeneous benefit profiles, initiation toxicity, nonselective and selective switching, and two timing shapes. Use signed movement metrics so amplification and reversal cannot be relabeled as attenuation. Require material findings in a majority of matched mechanisms."
+  },
+  {
+   "threat": "The sustained-strategy effect could be mistaken for a corrected version of the treatment-policy effect.",
+   "mitigation": "Name it as a distinct benchmark estimand, publish both arm risks and both risk differences, and make no claim that an applied treatment-policy estimate identifies the sustained effect without additional assumptions."
+  },
+  {
+   "threat": "A single cumulative initiation percentage can conceal when switching occurred and who switched.",
+   "mitigation": "Hold the 60-month percentage constant while varying prognosis selection and timing shape. Publish monthly adjusted trajectories and compare current separation with cumulative treated-month separation."
+  },
+  {
+   "threat": "Observed comparator trajectories are conditional on entering the comparator arm and therefore reflect baseline confounding.",
+   "mitigation": "Estimate marginal trajectories under baseline assignment using the same correctly specified inverse-probability standardization used for the treatment-policy effect."
+  },
+  {
+   "threat": "Estimator bias could be mistaken for movement caused by the estimand.",
+   "mitigation": "Base the substantive movement analysis on high-precision counterfactual truths. Include crude, IPTW, and AIPW estimators, a true-null profile, explicit convergence rules, and complete ADEMP bias and coverage results."
+  },
+  {
+   "threat": "The retained-effect ratio is unstable when the sustained effect is near zero.",
+   "mitigation": "Do not calculate it for the null profile or when abs(RD_S)<0.005. Always report additive movement and raw risks, and base clinical-scale thresholds on the additive risk difference as well as the ratio."
+  },
+  {
+   "threat": "The 0.70 horizon threshold could be selected because it performs well in these data.",
+   "mitigation": "Fix 0.70 before simulation, evaluate it in every eligible cell, and do not replace it with a post hoc threshold. A failed rule is reported as a failed universal convention."
+  },
+  {
+   "threat": "The generic outcome and switching parameters may not represent a particular health system.",
+   "mitigation": "Label the values as stress parameters, release cell-specific results instead of a pooled universal attenuation factor, and provide code allowing a catalog user to replace p60, timing shape, and effect profile with local estimates."
+  },
+  {
+   "threat": "Fixed monthly visits, permanent treatment after initiation, and absence of censoring make the simulated data cleaner than claims or EHR data.",
+   "mitigation": "State these restrictions in the protocol and conclusion. Do not generalize findings to irregular observation, discontinuation, informative follow-up, or competing risks."
+  },
+  {
+   "threat": "Risk-difference movement is scale-dependent.",
+   "mitigation": "Make the marginal risk difference the sole decision scale, publish arm-specific risks, and avoid claims about attenuation on odds-ratio or hazard-ratio scales."
+  }
+ ],
+ "runtime_estimate": "The design has 36*2000=72,000 replicates. IPTW and AIPW share one propensity fit, and AIPW adds six outcome fits, for 36*2000*7=504,000 small glm fits; crude estimates and trajectories require no additional models. No longitudinal TMLE or SuperLearner fits are included. At the established machine rate, allow approximately 4 to 7 hours for replicate generation and fitting on six workers. The 36 truth runs conservatively cost 36*4=144 minutes and can run separately in chunks. Including serialization and summaries, the complete run should require about 6 to 10 hours and fit overnight. Implementation, dry runs, result checking, figures, and the public artifact fit within one working week.",
+ "bears_on": [
+  {
+   "id": "CNF-01",
+   "relation": "answers-part",
+   "what": "The study supplies the requested horizon-specific numerical mapping, tests whether treatment trajectories diagnose loss of exposure separation, and evaluates one prespecified horizon convention. It does not establish a universal health-system threshold, study reporting uptake, or replace existing methods for sustained and dynamic treatment strategies."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019;38:2074-2102.",
+   "doi_or_url": "https://doi.org/10.1002/sim.8086",
+   "used_for": "ADEMP structure, performance-measure specification, and Monte Carlo uncertainty."
+  },
+  {
+   "cite": "Hernan MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. American Journal of Epidemiology. 2016;183(8):758-764.",
+   "doi_or_url": "https://doi.org/10.1093/aje/kwv254",
+   "used_for": "Definition and interpretation of observational assignment and adherence strategy contrasts."
+  },
+  {
+   "cite": "Cain LE, Robins JM, Lanoy E, Logan R, Costagliola D, Hernan MA. Using observational data to emulate a randomized trial of dynamic treatment-switching strategies. International Journal of Epidemiology. 2016;45(6):2038-2049.",
+   "doi_or_url": "https://doi.org/10.1093/ije/dyv295",
+   "used_for": "Recognition that explicit dynamic switching strategies answer a different question and should not be redesigned as a correction to the treatment-policy estimand."
+  },
+  {
+   "cite": "Hernan MA, Hernandez-Diaz S. Beyond the intention-to-treat in comparative effectiveness research. Clinical Trials. 2012;9(1):48-55.",
+   "doi_or_url": "https://doi.org/10.1177/1740774511420743",
+   "used_for": "Motivation for distinguishing assignment effects from sustained-treatment effects under nonadherence and switching."
+  },
+  {
+   "cite": "Statistical methods to adjust for treatment switching in real-world clinical studies: a scoping review and decision framework. Clinical Pharmacology and Therapeutics. 2025.",
+   "doi_or_url": "https://doi.org/10.1002/cpt.70013",
+   "used_for": "Scope restriction: methods for treatment switching already exist, so this study targets exposure-separation reporting and horizon interpretation rather than inventing another switching adjustment."
+  }
+ ]
+}

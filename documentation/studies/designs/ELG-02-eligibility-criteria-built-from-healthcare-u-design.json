@@ -1,0 +1,236 @@
+{
+ "title": "When prior healthcare use becomes a baseline collider: an ADEMP study of eligibility auditing and repair",
+ "question": "Across 24 scenarios with 4000 people, by how many percentage points does requiring a prior healthcare-use event bias the estimated 60-month marginal risk difference when that event is a noncollider, an observed-parent collider, or a latent-parent collider; how much of the difference after removing the criterion is genuine target-population change; and can a prespecified temporal graph screen achieve at least 90% sensitivity and at most 5% false-positive probability without examining the estimated treatment effect?",
+ "aims": "Estimate scenario-specific bias and 95% interval coverage for the healthcare-use-restricted analysis; decompose the movement after criterion removal into selected-versus-broad target shift and estimation bias; determine whether adjustment for observed collider parents repairs the selected-population effect; demonstrate the limit when those parents are latent; and estimate the sensitivity, false-positive probability, unresolved-warning probability, and silent-error probability of a local temporal graph eligibility screen.",
+ "dgm": {
+  "covariates": "Each replicate contains an independent audit sample of 4000 people and an analysis sample of 4000 people. For every person generate B ~ Bernoulli(0.5), X ~ Normal(0,1), P ~ Normal(0,1), and D ~ Normal(0,1), mutually independently. B and X are ordinary measured baseline confounders. P is a prebaseline prescribing-tendency variable that affects treatment but not outcome. D is preclinical disease severity that affects outcome but not treatment. P and D are available to the analyst in the observed-parent condition and withheld in the latent-parent condition. Generate independent uniforms V_H, V_A, and V_Y. The candidate administrative eligibility criterion is H = I[V_H < Phi(alpha + 0.30 B + 0.20 X + lambda_P P + lambda_D D)]. Alpha is found by uniroot so that 0.5 Phi(alpha/r) + 0.5 Phi((alpha + 0.30)/r) equals the designated retention probability, where r = sqrt(1 + 0.20^2 + lambda_P^2 + lambda_D^2). Clinical eligibility otherwise includes everyone. Treatment at time zero is A = I[V_A < Phi(-0.05 + 0.35 B - 0.25 X + 0.55 P)]. Expected selected sample sizes are approximately 1200 and 2800 under retention probabilities 0.30 and 0.70.",
+  "outcome_model": "The binary outcome is occurrence by 60 months. For a in {0,1}, set p_a = Phi(-1.50 + 0.45 B + 0.35 X + 0.65 D + a(-0.35 + 0.25 B)), define Y^a = I[V_Y < p_a], and observe Y = Y^A. Coefficients are on the probit scale. There is no loss to follow-up, competing event, treatment switching, interference, or measurement error.",
+  "treatment_effect": "The strategies are initiation at time zero followed by no switching versus noninitiation followed by no switching. The conditional treatment coefficient on the probit scale is -0.35 for B = 0 and -0.10 for B = 1. Treatment has no interaction with X, P, D, or H. Marginal effects are reported as 60-month risk differences rather than probit coefficients.",
+  "effect_modification": "B is the sole effect modifier through the A by B coefficient 0.25. Because H also depends on B, removing H can change the true marginal risk difference even without collider bias. This deliberately creates a measurable target-population cost while keeping its source observed and exactly specified.",
+  "factors": [
+   {
+    "name": "Eligibility topology",
+    "levels": [
+     "Noncollider: lambda_P = 0 and lambda_D = s",
+     "Concordant collider: lambda_P = s and lambda_D = s",
+     "Discordant collider: lambda_P = s and lambda_D = -s"
+    ],
+    "rationale": "The noncollider level tests the essential qualification that a healthcare-use variable is not automatically a collider. The two collider orientations open A <- P -> H <- D -> Y with opposite induced associations, preventing the design from guaranteeing one favored direction of bias."
+   },
+   {
+    "name": "Visibility of collider parents",
+    "levels": [
+     "Observed: P and D are available with correct prebaseline timestamps",
+     "Latent: P and D are generated but unavailable to the analyst and auditor"
+    ],
+    "rationale": "These levels bracket a repairable collider and a structurally unresolved collider. Crossing visibility with the noncollider topology also measures unnecessary unresolved warnings."
+   },
+   {
+    "name": "Eligibility-edge strength",
+    "levels": [
+     "Weak: s = 0.45",
+     "Strong: s = 1.10"
+    ],
+    "rationale": "At a centered linear predictor, a one-standard-deviation change moves Phi by approximately 17 percentage points at s = 0.45 and 36 percentage points at s = 1.10. These levels represent moderate and severe dependence without tuning coefficients to obtain a desired bias result."
+   },
+   {
+    "name": "Retention under the healthcare-use criterion",
+    "levels": [
+     "Restrictive: Pr(H = 1) = 0.30",
+     "Permissive: Pr(H = 1) = 0.70"
+    ],
+    "rationale": "The levels span an administrative criterion that excludes most of the source population and one that excludes a substantial minority. They are design anchors rather than claimed empirical estimates from a particular database."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The design is fully factorial: 3 topologies by 2 visibility conditions by 2 edge strengths by 2 retention probabilities. P and D are independent before eligibility selection; therefore their association after conditioning on H is attributable to the collider. B and X contain all ordinary treatment-outcome confounding and are correctly measured. H is an actual collider only in the two designated collider topologies. The noncollider scenarios, opposite collider orientations, and two strengths are mandatory negative and directional controls. No coefficient may be changed after examining simulation results.",
+  "cannot_detect": "The study cannot evaluate criteria measured after treatment, irregular visit times, time-varying treatment or confounding, competing events, dependent censoring, multiple interacting eligibility criteria, measurement error, partially informative proxies for latent parents, incorrect timestamps, arbitrary learned graph structures, or expert agreement. It also assumes that people excluded by H remain analyzable if H is removed. It therefore cannot quantify the missing-data or operational cost of broadening eligibility."
+ },
+ "estimands": [
+  {
+   "name": "Healthcare-use-restricted 60-month marginal risk difference",
+   "definition": "RD_H = E(Y^1 - Y^0 | H = 1) for the superpopulation satisfying the candidate H = 1 protocol, comparing initiation with noninitiation at time zero.",
+   "true_value_computation": "For each scenario calculate RD_H = E[(p_1 - p_0) Pr(H = 1 | B,X,P,D)] / E[Pr(H = 1 | B,X,P,D)]. Evaluate the normal expectations with product Gauss-Hermite quadrature over X, P, and D and exact summation over B. Use 40 nodes per normal dimension; repeat with 30 and 50 nodes and require both absolute differences from the 40-node result to be below 1e-7. Increase to 60 nodes otherwise."
+  },
+  {
+   "name": "Broad clinical-population 60-month marginal risk difference",
+   "definition": "RD_all = E(Y^1 - Y^0) for the superpopulation before applying H, with the same treatment strategies and horizon.",
+   "true_value_computation": "Integrate p_1 - p_0 over B, X, and D. Use the same Gauss-Hermite calculation and convergence check as RD_H. The broad truth can additionally be checked from the probit-normal identity because X and D are independent normals."
+  },
+  {
+   "name": "Target-population shift caused by eligibility",
+   "definition": "Delta_target = RD_H - RD_all. This is a difference between two valid protocol-specific estimands, not statistical bias.",
+   "true_value_computation": "Subtract the two quadrature truths. For the observed movement between the restricted and unrestricted estimators, report the decomposition E(RDhat_H - RDhat_all) = Delta_target + Bias_H - Bias_all."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Routine restricted-cohort AIPW",
+   "point_estimator": "Restrict to H = 1. Fit probit models A ~ B + X and Y ~ A + B + X + A:B. For a in {0,1}, compute psi_a = mean[m_a(W) + I(A=a){Y-m_a(W)}/g_a(W)] over H = 1 and report psi_1 - psi_0.",
+   "variance_estimator": "Use a subject-level stacked M-estimation sandwich containing the probit score equations for both nuisance models and the two AIPW mean equations. Compute the bread by centered finite differences with step 1e-6 times 1 plus the absolute parameter value, compute the empirical score outer-product meat, and extract Var(psi_1 - psi_0). This accounts for fitted nuisance parameters even when their working models are misspecified.",
+   "interval": "Untruncated two-sided Wald interval RDhat plus or minus 1.96 times the sandwich standard error.",
+   "is_status_quo": true,
+   "nonconvergence": "Failure occurs if either glm reports nonconvergence or rank deficiency, a coefficient or estimating equation is nonfinite, a treatment arm is empty, the sandwich bread has condition number above 1e12 or cannot be inverted, or the point estimate or standard error is nonfinite. Propensity scores and confidence limits are not truncated. Extreme weights and minimum propensity are retained and reported as diagnostics.",
+   "implementation": "Use stats::glm with family = binomial(link = 'probit'). This estimator targets RD_H. In noncollider scenarios its propensity model remains correct; in collider scenarios P and D become associated within H = 1 and B plus X cannot block the opened path."
+  },
+  {
+   "name": "Observed-parent restricted-cohort AIPW",
+   "point_estimator": "When P and D are observed, restrict to H = 1 and fit A ~ B + X + P + D and Y ~ A + B + X + P + D + A:B with probit links. Use the same AIPW risk-mean formula and report the selected-population risk difference.",
+   "variance_estimator": "Use the same full stacked M-estimation sandwich, including every coefficient in the two expanded nuisance models.",
+   "interval": "Untruncated two-sided Wald interval using 1.96 times the stacked-sandwich standard error.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the same numerical and rank criteria as the routine estimator. In latent-parent scenarios this method is structurally unavailable and is recorded as not identifiable from observed data rather than as a convergence failure.",
+   "implementation": "This is the same-estimand repair. Conditioning on P and D blocks A <- P -> H <- D -> Y while retaining H = 1 as the target population."
+  },
+  {
+   "name": "Oracle restricted-cohort AIPW",
+   "point_estimator": "Fit the observed-parent estimator using generated P and D even when they are hidden from the analyst.",
+   "variance_estimator": "Use the same stacked M-estimation sandwich.",
+   "interval": "Untruncated two-sided 95% Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the same fitting and sandwich criteria as the observed-parent estimator.",
+   "implementation": "This is a simulation benchmark, not an available analysis. In observed-parent scenarios it is identical to the observed-parent estimator and its fits are reused. Its comparison with routine AIPW isolates the maximum repair available if the collider parents were known."
+  },
+  {
+   "name": "Criterion-removed broad-cohort AIPW",
+   "point_estimator": "Analyze all 4000 people and fit probit models A ~ B + X and Y ~ A + B + X + A:B. Apply the same AIPW formula over the full cohort to estimate RD_all.",
+   "variance_estimator": "Use the same stacked M-estimation sandwich over all 4000 people.",
+   "interval": "Untruncated two-sided 95% Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the same fitting and sandwich criteria as routine AIPW.",
+   "implementation": "This method estimates RD_all, not RD_H. It is analyzed only against the broad truth. Any comparison with the restricted estimate is decomposed into target shift and estimator bias. Removal is never described as repairing RD_H."
+  },
+  {
+   "name": "Local temporal graph eligibility screen",
+   "point_estimator": "Using the independent audit sample and without calculating a treatment-effect estimate, classify H as collider-candidate when four prespecified 99% Wald intervals exclude zero: P in H ~ B + X + P + D, D in the same model, P in A ~ B + X + P + D, and D in Y ~ A + B + X + P + D + A:B. Coefficient signs do not affect the warning. Return no-collider-signal when the required observed variables are present and the collider rule fails. Return unresolved-healthcare-use when P or D is unavailable.",
+   "variance_estimator": "For each scenario estimate warning sensitivity, false-positive probability, and unresolved-warning probability across replicates. Use Wilson binomial standard errors and 95% Wilson intervals.",
+   "interval": "The screen returns a categorical warning, not a causal confidence interval. Its operating-characteristic intervals are 95% Wilson intervals.",
+   "is_status_quo": false,
+   "nonconvergence": "If any required audit glm fails, return unresolved-healthcare-use and separately count an audit-model failure. A failed fit can never be interpreted as no-collider-signal.",
+   "implementation": "Known temporal tiers orient P and D before H, H before A, and A before Y. The screen is a constrained local graph check rather than a claim to recover a complete DAG. With latent parents it must abstain. The fixed alpha level and edge set are frozen before simulation."
+  },
+  {
+   "name": "Predeclared advisory response",
+   "point_estimator": "For a collider-candidate warning with observed parents, report the observed-parent estimate of RD_H. For no-collider-signal, report routine AIPW for RD_H. For unresolved-healthcare-use, withhold a selected-population causal point estimate; present the criterion-removed RD_all only as a separately labeled alternative if domain review has declared H administrative rather than clinically necessary.",
+   "variance_estimator": "Use the variance belonging to the estimator actually reported. There is no variance or interval for an abstention.",
+   "interval": "Use the corresponding 95% Wald interval. Record abstention separately and never convert it into a missing convergence result.",
+   "is_status_quo": false,
+   "nonconvergence": "An estimator failure produces no interval. An audit failure produces an unresolved warning. Report causal-estimator failure, audit failure, and structural abstention separately.",
+   "implementation": "The audit result is generated from the independent audit sample and locked before the analysis sample is examined. The response never selects eligibility or an analysis according to the estimated treatment effect."
+  }
+ ],
+ "performance": {
+  "primary": "Scenario-specific coverage of the nominal 95% interval for RD_H from routine restricted-cohort AIPW. Coverage is not averaged over scenarios.",
+  "secondary": [
+   "Signed bias and absolute bias for every compatible estimator-estimand pair",
+   "Empirical standard error, mean model-based standard error, and relative error in model standard error",
+   "Mean squared error",
+   "Bias-eliminated coverage",
+   "Rejection probability for the null risk difference of zero",
+   "Convergence, numerical failure, extreme-weight, and structural-abstention rates",
+   "Delta_target and the decomposition of restricted-versus-broad estimate movement",
+   "Bias reduction from observed-parent and oracle adjustment relative to routine AIPW",
+   "Collider-warning sensitivity in observed-parent collider scenarios",
+   "False-positive probability in observed-parent noncollider scenarios",
+   "Unresolved-warning probability and silent-error probability in latent-parent scenarios",
+   "Induced correlation Cor(P,D | H = 1), selected treatment prevalence, selected outcome risk, and effective sample size as mechanism diagnostics"
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "Coverage is Bernoulli across replicates. Targeting Monte Carlo SE 0.005 when true coverage is 0.95 requires R >= 0.95(0.05)/(0.005^2) = 1900. R is rounded upward to 2000, giving MCSE 0.00487 near 95% coverage. At sensitivity 0.90 the corresponding MCSE is 0.00671; at false-positive probability 0.05 it is 0.00487. The existing harness will also report Monte Carlo standard errors for all ADEMP measures."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "Declare collider-based eligibility bias materially demonstrated when at least 4 of the 16 collider scenarios satisfy both conditions: max(0, abs(bias_hat) - 1.96 MCSE_bias) is at least 0.010 risk-difference units, and the upper 95% Wilson limit for routine-AIPW coverage is below 0.90. Qualifying scenarios must include both concordant and discordant colliders. As a specificity check, at least 6 of the 8 noncollider scenarios must have abs(bias_hat) + 1.96 MCSE_bias below 0.005. Separately declare the observed-parent screen useful only if its lower 95% Wilson sensitivity limit is at least 0.90 in every observed-parent collider scenario and its upper 95% Wilson false-positive limit is at most 0.05 in every observed-parent noncollider scenario. Declare same-estimand repair successful if observed-parent AIPW reduces absolute bias by at least 75% and has coverage between 0.93 and 0.97 in at least 6 of the 8 observed-parent collider scenarios with routine bias at least 0.010.",
+  "problem_is_not_real_if": "Declare the simulated problem negligible over the prespecified range only if abs(bias_hat) + 1.96 MCSE_bias is below 0.005 and the lower 95% Wilson coverage limit is at least 0.93 in all 16 collider scenarios. Failure of the proposed screen while bias remains material is evidence against this screen, not evidence that the eligibility problem is absent.",
+  "uninformative_if": "Call the materiality result mixed if neither numerical rule is met. Call the run technically uninformative if more than 10% of replicates fail for the routine estimator in any scenario, quadrature fails the 1e-7 convergence requirement, a coding validation fails to recover near-zero bias for broad AIPW, or fewer than 1900 valid replicates remain in any scenario. Do not pool across scenarios to rescue an inconclusive result."
+ },
+ "threats": [
+  {
+   "threat": "A DGM containing a collider can be constructed to guarantee a desired-looking result.",
+   "mitigation": "Freeze all coefficients before running results; include eight noncollider controls, both directions of collider-induced association, two strengths, and two retention rates; report every scenario separately; and require the noncollider bias check in the decision rule. Do not tune coefficients after a pilot."
+  },
+  {
+   "threat": "Healthcare use alone may be mistaken for proof of collider status.",
+   "mitigation": "The noncollider topology uses the same H label and retention levels. The screen distinguishes collider-candidate, no-collider-signal, and unresolved-healthcare-use; an unresolved warning is never reported as a certified collider."
+  },
+  {
+   "threat": "Removing H changes the target population and may appear to remove bias merely because the estimand changed.",
+   "mitigation": "Define RD_H and RD_all separately, evaluate every estimator only against its compatible truth, report Delta_target, and decompose the observed estimate movement. The observed-parent repair preserves RD_H and is the principal same-estimand comparison."
+  },
+  {
+   "threat": "A baseline criterion cannot be caused by treatment or outcome events occurring after time zero.",
+   "mitigation": "The collider is explicitly A <- P -> H <- D -> Y, where P and D are prebaseline causes of the later treatment decision and outcome. The study makes no claim about post-treatment eligibility errors."
+  },
+  {
+   "threat": "Perfectly measured versus completely latent parents are unrealistic extremes.",
+   "mitigation": "Interpret them as upper and lower identification bounds. Do not generalize the screen's sensitivity to noisy proxies or partial measurement; those require a separate study."
+  },
+  {
+   "threat": "Correctly specified probit models may favor the repaired estimators.",
+   "mitigation": "The design intentionally isolates selection from generic model misspecification. Routine AIPW has a correct propensity model in the noncollider controls, while collider conditioning violates exchangeability rather than merely changing a functional form. Report this limited scope explicitly."
+  },
+  {
+   "threat": "Using the outcome data to choose an eligibility rule could search over estimands or maximize an apparent effect.",
+   "mitigation": "Use an independent audit sample, fixed edge tests, fixed alpha 0.01, and a response rule locked before analyzing the evaluation sample. The auditor never receives the treatment-effect estimate."
+  },
+  {
+   "threat": "Criterion removal may be impossible because H proxies data availability rather than a discretionary restriction.",
+   "mitigation": "State that broad-cohort data availability is assumed. Treat criterion removal as an alternative estimand analysis, not a universally feasible correction. Latent unresolved cases permit abstention."
+  },
+  {
+   "threat": "The screen's significance tests depend on sample size.",
+   "mitigation": "Fix the audit-sample size at 4000, report scenario-specific sensitivity and false-positive probability with Wilson intervals, and do not claim transportability to smaller databases."
+  },
+  {
+   "threat": "Positivity problems could be mistaken for collider bias.",
+   "mitigation": "Use moderate treatment coefficients, do not truncate weights, report minimum propensity and effective sample size, require broad AIPW to recover its truth, and classify singular or nonfinite fits separately."
+  },
+  {
+   "threat": "Numerical truth error could be mistaken for estimator bias.",
+   "mitigation": "Use deterministic product Gauss-Hermite quadrature, exact summation over B, and mandatory 30-node, 40-node, and 50-node convergence checks at tolerance 1e-7."
+  },
+  {
+   "threat": "The generated graphs omit important features of actual EHR and claims systems.",
+   "mitigation": "Limit conclusions to one baseline binary healthcare-use criterion under fixed observation, no missingness, no censoring, and one treatment decision. Expert agreement and real-data graph validity remain outside this simulation."
+  }
+ ],
+ "runtime_estimate": "The full design has 24 scenarios by 2000 replicates, or 48000 replicates. Reusing identical fits across methods requires at most 360000 unique small probit glm fits: 96000 routine restricted fits, 96000 parent-rich or oracle fits, 96000 broad-cohort fits, and 72000 audit-sample fits in visible-parent scenarios. Stacked sandwiches add matrix calculations but no model refits. Run scenario-replicate chunks through studies/_shared/R/harness.R with 6 workers and checkpoint every 25 replicates. Expected wall time is approximately 3 to 8 hours after a 100-replicate timing check, with deterministic quadrature requiring only minutes. There are zero ltmle or SuperLearner fits. The design does not require lmtp, concrete, CICI, Stan, or cmdstanr.",
+ "bears_on": [
+  {
+   "id": "ELG-02",
+   "relation": "answers-part",
+   "what": "It quantifies when a prior healthcare-use criterion creates material collider bias, distinguishes that bias from target-population change, evaluates an advisory local temporal graph warning, and tests a same-estimand repair when collider parents are observed. It does not validate expert agreement, general causal discovery, irregular observation, or real-world latent-structure identification."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019;38:2074-2102.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP organization, scenario-specific performance reporting, and Monte Carlo precision planning."
+  },
+  {
+   "cite": "Hernán MA, Hernández-Díaz S, Robins JM. A structural approach to selection bias. Epidemiology. 2004;15(5):615-625.",
+   "doi_or_url": "10.1097/01.EDE.0000135174.63482.43",
+   "used_for": "The causal interpretation of conditioning on a collider as selection bias."
+  },
+  {
+   "cite": "Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. American Journal of Epidemiology. 2016;183(8):758-764.",
+   "doi_or_url": "10.1093/aje/kwv254",
+   "used_for": "Treating eligibility and time zero as components of the target-trial protocol."
+  },
+  {
+   "cite": "Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA. 2025.",
+   "doi_or_url": "10.1001/jama.2025.13350",
+   "used_for": "Motivating an assessment of what conditioning on reported eligibility criteria does."
+  },
+  {
+   "cite": "From negative trial to positive clinical impact: mitigating eligibility criteria-induced temporal selection. 2026.",
+   "doi_or_url": "10.1038/s44401-026-00082-3",
+   "used_for": "Evidence that eligibility-induced selection is becoming an explicit object of target-trial research."
+  },
+  {
+   "cite": "Data-driven trial design: use of target trial emulation to evaluate eligibility criteria in asthma and COPD. Frontiers in Medicine. 2026.",
+   "doi_or_url": "10.3389/fmed.2026.1863026",
+   "used_for": "Evidence that alternative eligibility definitions can change the emulated target population and resulting effect."
+  }
+ ]
+}

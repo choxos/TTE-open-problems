@@ -1,0 +1,199 @@
+{
+ "title": "Operating characteristics of counterfactual calibration, discrimination, and Brier scores under unmeasured confounding",
+ "question": "Across 24 longitudinal scenarios, by how much does omitting a binary confounder move estimated 24-month counterfactual calibration, AUC, and Brier scores under always-treat and never-treat strategies when the confounder-treatment odds ratio ranges from 0.40 to 4.00 and the confounder-outcome rate ratio ranges from 1.00 to 2.00; at which combinations does 95% interval coverage fall below 90%, and do conventional weight diagnostics identify those failures?",
+ "aims": "The primary aim is to estimate the bias and 95% interval coverage of the weak-calibration intercept for an exactly calibrated 24-month always-treat risk score when artificial-censoring weights condition on the complete observed history but omit U. Secondary aims quantify bias in the calibration slope, ten-bin calibration curve, Brier score, AUC, and always-treat versus never-treat contrasts; determine whether unmeasured confounding can make a deliberately miscalibrated score appear better calibrated; separate exchangeability failure from propensity-model misspecification and practical positivity; and measure the sensitivity of prespecified weight diagnostics for consequential metric error. The study addresses operating characteristics under assumption failure. It does not redesign prediction-to-action mapping, which existing work already addresses through explicit decision rules and utility evaluation.",
+ "dgm": {
+  "covariates": "Each replicate contains 4000 independent individuals followed for 24 fixed monthly cycles, indexed t=0,...,23. Draw X1 from N(0,1), X2 from Bernoulli(0.50), and the unmeasured binary frailty U from Bernoulli(0.30), independently. Draw L0 from Bernoulli(expit(-0.40+0.45X1+0.65X2+0.80U)). For each later month among event-free individuals, draw Lt from Bernoulli(expit(-0.70+1.35L(t-1)+0.25X1+0.35X2-0.50A(t-1))). Thus Lt is an observed time-varying confounder affected by prior treatment. At t=0, draw A0 from Bernoulli(expit(alpha+0.35X1+0.50X2+0.90L0+gammaU)). For t=1,...,23, draw At from Bernoulli(expit(alpha+3.50(2A(t-1)-1)+0.25X1+0.35X2+0.75Lt+gammaU)). Within each month the order is Lt, At, and then the event. Treatment and covariate generation stop after the event. There is no loss to follow-up, competing event, or missing measured covariate.",
+  "outcome_model": "Among individuals event-free at the start of month t, generate the event from a piecewise-exponential discrete-time model with probability 1-exp(-exp(eta_t)), where eta_t=-4.80+0.30X1+0.40X2+0.50Lt+deltaU-0.40At-0.30AtX2. At eta=-4.80, the untreated 24-month risk before covariate contributions is 1-exp(-24exp(-4.80))=0.179. Once an event occurs, Y(24)=1; otherwise Y(24)=0 after month 23.",
+  "treatment_effect": "The protocols are g1: set At=1 at every monthly decision while alive, and g0: set At=0 at every monthly decision while alive. On the piecewise-exponential rate scale, the direct treatment rate ratio is exp(-0.40)=0.670 when X2=0 and exp(-0.70)=0.497 when X2=1. Treatment also lowers the odds of Lt=1 in the next month by exp(-0.50)=0.607, producing an additional mediated effect because Lt raises the event rate. Marginal risk differences are therefore time-dependent and are not constrained to be constant.",
+  "effect_modification": "X2 modifies the direct treatment effect through the -0.30AtX2 interaction. The treatment rate ratio changes from 0.670 for X2=0 to 0.497 for X2=1. X1 and L history produce additional heterogeneity in absolute benefit without interacting with treatment.",
+  "factors": [
+   {
+    "name": "Direct U-to-treatment association",
+    "levels": [
+     "gamma=log(0.40)=-0.916291",
+     "gamma=0, odds ratio 1.00",
+     "gamma=log(2.50)=0.916291",
+     "gamma=log(4.00)=1.386294"
+    ],
+    "rationale": "The levels include reverse selection, a no-association control, a moderate association, and a strong stress test. Crossing the direction of selection with the harmful effect of U prevents the design from forcing all bias in one direction."
+   },
+   {
+    "name": "Direct U-to-outcome association",
+    "levels": [
+     "delta=0, rate ratio 1.00",
+     "delta=log(1.50)=0.405465",
+     "delta=log(2.00)=0.693147"
+    ],
+    "rationale": "These levels provide a no-prognostic-effect control and moderate and strong residual prognostic effects on the event-rate scale. Exchangeability is genuinely violated only when delta is positive and gamma is nonzero."
+   },
+   {
+    "name": "Support for sustained treatment",
+    "levels": [
+     "alpha=-0.50, adequate-support condition",
+     "alpha=-2.00, stressed-support condition"
+    ],
+    "rationale": "For X1=0, X2=0, L=0, and U=0, baseline treatment probabilities are 0.378 and 0.119. After prior treatment, the corresponding continuation probabilities are 0.953 and 0.818. All probabilities remain strictly between zero and one, so the factor creates practical rather than structural nonpositivity."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The design is fully factorial: 4 treatment associations times 3 outcome associations times 2 support conditions. The target-trial protocol is fixed before analysis: eligibility at t=0, treatment assignment every month, no grace period, 24-month follow-up, all-cause binary event by month 24, and sustained always-treat versus never-treat strategies. Consistency, no interference, correct temporal ordering, perfect measurement of X1, X2, L, A, and the event, and positivity in principle are true. The fixed oracle prediction is exactly P(Y under g by month 24 given X1,X2,L0); prediction-model estimation error is absent. A second score, expit(-0.35+0.75logit(p)), introduces known moderate miscalibration. The exact observed-history propensity benchmark eliminates nuisance-model error while still omitting individual U.",
+  "cannot_detect": "The study cannot establish exchangeability in an application or provide a universal confounding threshold. It says nothing about irregular visits, informative observation times, continuous doses, grace periods, dynamic treatment rules, competing risks, ordinary loss to follow-up, measurement error, interference, transport between databases, multiple or continuous hidden confounders, prediction-model training uncertainty, nonparametric prediction models, or clinical utility under a specified loss function. Fixed monthly observation and a binary treatment are deliberate first-study restrictions."
+ },
+ "estimands": [
+  {
+   "name": "Counterfactual weak calibration and ten-bin calibration curve",
+   "definition": "For each strategy g in {g0,g1} and fixed score r_g, weak calibration is the superpopulation pair (alpha_g,beta_g) satisfying logit P(Y under g by month 24=1 given r_g)=alpha_g+beta_g logit(r_g). The calibration curve additionally contains c_gk=P(Y under g by month 24=1 given r_g in population risk decile k), k=1,...,10, with calibration error c_gk-E(r_g given decile k). For the oracle score p_g, the true weak-calibration values are alpha_g=0 and beta_g=1. For q_g=expit(-0.35+0.75logit(p_g)), the true values are alpha_g=0.35/0.75=0.466667 and beta_g=1/0.75=1.333333. Strategy contrasts are alpha_g1-alpha_g0, beta_g1-beta_g0, and c_g1k-c_g0k. All quantities are marginal over the superpopulation represented by X1,X2,L0 rather than conditional on the realized validation sample.",
+   "true_value_computation": "For each baseline profile B=(X1,X2,L0), calculate P(U=1 given B) exactly by Bayes' rule from the stated U and L0 models. Under each strategy, propagate survivor mass over the two U states and two Lt states for 24 months using the stated L transition and event probabilities. This finite-state recursion gives p_g(B) without outcome simulation. Oracle and transformed-score weak-calibration coefficients are therefore known exactly. Freeze score-decile cut points using the first 200000 observations of a two-million-person truth sample for each delta level; calculate bin risks from the remaining 1.8 million observations."
+  },
+  {
+   "name": "Counterfactual Brier score",
+   "definition": "For each strategy and score, BS_g=E[(Y under g by month 24-r_g)^2] in the baseline superpopulation. Report BS_g1, BS_g0, and BS_g1-BS_g0. Lower values indicate better squared-error performance, but the cross-strategy difference is descriptive because each strategy induces a different counterfactual outcome distribution.",
+   "true_value_computation": "For every truth-sample baseline profile, use the exact p_g(B) recursion and evaluate p_g(B)(1-p_g(B))+(p_g(B)-r_g(B))^2. Average this quantity over 1.8 million evaluation profiles. Use common baseline draws across strategies and scores to reduce Monte Carlo error in contrasts."
+  },
+  {
+   "name": "Counterfactual cumulative-dynamic AUC",
+   "definition": "At month 24, AUC_g is the probability that r_g(B_i)>r_g(B_j), plus one half the tie probability, for independent individuals with Y_i under g=1 and Y_j under g=0. Report AUC under each strategy and AUC_g1-AUC_g0. This is a marginal superpopulation discrimination estimand.",
+   "true_value_computation": "In each truth sample, sort scores once and compute the AUC in O(n log n) using p_g(B) as the case weight and 1-p_g(B) as the control weight. Estimate truth Monte Carlo SE from 18 independent batches of 100000 evaluation profiles. Add another one-million-person batch if any truth Monte Carlo SE exceeds 0.0005."
+  },
+  {
+   "name": "Marginal 24-month strategy risk contrast",
+   "definition": "RD_24=E[Y under g1 by month 24]-E[Y under g0 by month 24], with negative values favoring sustained treatment. This contextual estimand verifies that the prediction targets correspond to the prespecified protocols; it is not the primary object of the study.",
+   "true_value_computation": "Average the exact recursively calculated p_g1(B) and p_g0(B) over the same truth population and subtract. Common random numbers are used for both strategies."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Full-history oracle artificial-censoring IPW",
+   "point_estimator": "For strategy g, define C_i^g=1 when the observed treatment equals g through the earlier of the event month and month 23. For an event-free individual, adherence is required through month 23. Use the exact product probability pi_i^g of the observed adherence path conditional on X1,X2,L history,A history,U and being event-free. Set w_i^g=C_i^g/pi_i^g and calculate products on the log scale. Estimate bin risks and Brier scores by normalized weighted means, weak calibration by weighted logistic regression of Y on 1 and logit(r), AUC by the normalized weighted case-control rank statistic, and marginal risk by the normalized weighted mean of Y. No weight truncation is used.",
+   "variance_estimator": "Use a subject-level empirical sandwich. Let psi_i contain the weighted score equations for calibration coefficients, weighted mean equations for bin risks, Brier score and risk, and the first-order Hajek projection for the weighted AUC. With J=-n^(-1)sum d psi_i/d theta and K=n^(-1)sum psi_i psi_i transpose, estimate covariance as J^(-1)KJ^(-T)/n. Estimate cross-strategy covariance by stacking g0 and g1 equations for the same individual. The treatment probabilities are known, so no nuisance-score block is added.",
+   "interval": "Use two-sided 95% Wald intervals for calibration coefficients and strategy contrasts. For bin risks, Brier scores, and AUCs, form Wald intervals on the logit scale using the delta-method SE and transform endpoints back to 0 to 1. Replace a value only for transformation by min(max(estimate,1e-8),1-1e-8); do not alter the reported point estimate.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs if either weighted case or control mass is zero, a calibration Newton solve fails to reach a maximum score component below 1e-8 within 50 iterations, the calibration Hessian condition number exceeds 1e12, or any estimate, SE, or covariance element is nonfinite. Large weights alone are reported as diagnostics and are not silently classified as failure.",
+   "implementation": "Implement the stated probabilities directly in base R and data.table. This is the positive-control estimator: conditioning on U makes sequential exchangeability true under the DGM."
+  },
+  {
+   "name": "Exact observed-history artificial-censoring IPW",
+   "point_estimator": "Use the same estimators as the full-history oracle, but replace each treatment probability by the exact P(At=g given observed X1,X2,L and A history and survival to t), integrating over rather than conditioning on U. Compute this probability with a two-state forward filter. Initialize P(U given X1,X2,L0) by Bayes' rule; before each treatment update it using observed prior treatment, survival, and the new Lt; average the two U-specific treatment probabilities; after observing At, update the posterior with its treatment likelihood. This method knows the exact observed-data propensity and therefore isolates exchangeability failure from propensity-model error.",
+   "variance_estimator": "Use the same subject-level sandwich J^(-1)KJ^(-T)/n as the oracle method, including the weighted AUC Hajek projection and joint g0-g1 covariance. The filtered observed-history probabilities are treated as known DGM quantities, so there is no fitted-propensity nuisance block.",
+   "interval": "Use two-sided 95% Wald intervals for calibration coefficients and contrasts; use delta-method logit-scale Wald intervals for bin risks, Brier scores, and AUCs.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the oracle method's zero-mass, Newton tolerance, Hessian, and finite-value rules. Also fail if a filtered posterior or prescribed-action probability is outside [0,1] by more than 1e-12; values within numerical tolerance are clipped to that range before log-weight calculation.",
+   "implementation": "This is the primary mechanistic benchmark. It is not proposed as an applied estimator because the latent-state distribution is unavailable in real validation data. Its purpose is to show what remains wrong even with a perfect model for treatment given the observed history."
+  },
+  {
+   "name": "Estimated measured-history artificial-censoring IPW",
+   "point_estimator": "Fit a baseline logistic model A0 on X1+X2+L0 and a pooled follow-up logistic model At on X1+X2+Lt+A(t-1) among event-free person-months. U is omitted. Use fitted prescribed-action probabilities to form untruncated artificial-censoring weights and calculate all metrics exactly as in the oracle method. This is the current-practice counterfactual validation comparator.",
+   "variance_estimator": "Stack the two logistic treatment-model score vectors, clustered by individual, with the metric estimating equations. Compute the full numerical Jacobian by centered finite differences with step 1e-6 times max(1,absolute parameter value), and use J^(-1)KJ^(-T)/n. For AUC, use its weighted Hajek projection in the meat and the finite-difference derivative of the weighted rank statistic with respect to treatment-model coefficients. This incorporates estimated-weight uncertainty and within-person treatment-score dependence.",
+   "interval": "Use two-sided 95% Wald intervals for calibration coefficients and contrasts; use delta-method logit-scale Wald intervals for bin risks, Brier scores, and AUCs.",
+   "is_status_quo": true,
+   "nonconvergence": "Failure occurs if either treatment glm reports converged=FALSE, has a nonfinite coefficient, or has an absolute coefficient above 20; if a metric meets the oracle method's zero-mass, Newton, Hessian, or finite-value failure rule; or if the stacked covariance cannot be inverted after symmetric eigenvalues below 1e-10 times the largest eigenvalue are declared singular. Do not discard a replicate solely because of an extreme fitted probability or weight.",
+   "implementation": "Use stats::glm with family=binomial for the two treatment models and individual-clustered score sums for variance. No SuperLearner, ltmle, lmtp, concrete, CICI, Stan, or cmdstanr is required."
+  },
+  {
+   "name": "Unweighted observed strategy adherers",
+   "point_estimator": "Restrict to individuals whose observed treatment follows the strategy through the event or month 23, assign weight one, and calculate the same calibration, Brier, AUC, and risk estimators. This is the naive comparator that treats observed adherers as if they were a representative validation sample.",
+   "variance_estimator": "Use the subject-level sandwich for the unweighted metric equations and the ordinary Hajek projection for AUC. No treatment-model score block is included.",
+   "interval": "Use two-sided 95% Wald intervals for calibration coefficients and contrasts; use logit-scale delta-method intervals for bin risks, Brier scores, and AUCs.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs when there are no adherent cases or controls, fewer than two nonempty calibration deciles, failure of the calibration Newton or Hessian criteria, or any nonfinite estimate or SE. The number of adherers and events is retained as a performance outcome.",
+   "implementation": "Implement with the same metric functions used by the weighted methods after replacing weights by one. Shared code prevents differences in metric definitions from being mistaken for effects of weighting."
+  }
+ ],
+ "performance": {
+  "primary": "Scenario-specific coverage of the nominal 95% interval for the true weak-calibration intercept alpha=0 of the oracle score under g1, estimated by exact observed-history artificial-censoring IPW. Bias in alpha is the co-primary descriptive quantity used to interpret undercoverage.",
+  "secondary": [
+   "Bias, empirical SE, mean model SE, relative error in model SE, MSE, 95% coverage, bias-eliminated coverage, rejection rate, and convergence for every scalar estimand and method, all with Monte Carlo SE from the existing ADEMP harness.",
+   "Maximum absolute bias across the ten calibration-bin risks and pointwise coverage for every bin.",
+   "Bias and coverage for the weak-calibration slope, Brier score, AUC, marginal risk, and g1 minus g0 contrasts.",
+   "For the deliberately miscalibrated score, the change in absolute distance of the estimated calibration intercept from 0 and slope from 1. False reassurance is recorded when omission of U moves the intercept at least 0.10 closer to 0 or the slope at least 0.10 closer to 1 while moving it away from its true value.",
+   "Normalized maximum weight, 99th percentile weight, effective sample size ESS=(sum w)^2/sum(w^2), and the proportion of prescribed-action probabilities below 0.05.",
+   "A prespecified diagnostic flag equal to one if ESS/4000 is below 0.25, the maximum mean-one-normalized weight exceeds 50, or more than 1% of required treatment probabilities are below 0.05. Report its flag probability in cells with and without consequential metric bias.",
+   "Differences between full-history oracle, exact observed-history, estimated observed-history, and unweighted estimates, which separate exchangeability failure, nuisance-model error, and selection among adherers."
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "Coverage is the primary performance measure. To estimate coverage near the decision boundary of 0.90 with Monte Carlo SE no larger than 0.007 requires R at least 0.90(1-0.90)/(0.007^2)=1836.7. Rounding to 2000 gives MCSE sqrt(0.90(0.10)/2000)=0.00671 at 90% coverage and sqrt(0.95(0.05)/2000)=0.00487 at nominal 95% coverage."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "Define consequential failure for a metric as absolute calibration-intercept bias at least 0.10 log-odds, maximum absolute calibration-bin risk bias at least 0.02, absolute Brier-score bias at least 0.01, or absolute AUC bias at least 0.02, together with coverage at or below 0.90 for the corresponding scalar or bin. The operating-characteristic problem is practically demonstrated if exact observed-history IPW has consequential failure in at least 3 of the 12 cells with delta greater than 0 and gamma not equal to 0, including at least one alpha=-0.50 adequate-support cell; the full-history oracle has calibration-intercept bias below 0.03 and coverage between 0.93 and 0.97 in those same cells; and at least 10 of the 12 no-joint-confounding control cells have calibration-intercept bias below 0.05 and coverage between 0.93 and 0.97. Direction reversal between gamma=log(0.40) and positive gamma is supportive but not required. A separate false-reassurance finding is declared if the prespecified miscalibrated-score criterion occurs in at least one adequate-support joint-confounding cell.",
+  "problem_is_not_real_if": "The chosen confounding grid does not demonstrate a practically important failure if all 12 joint-confounding cells have absolute calibration-intercept bias below 0.05, maximum calibration-bin bias below 0.01, absolute Brier bias below 0.005, absolute AUC bias below 0.01, and coverage between 0.93 and 0.97 under exact observed-history IPW, with no false-reassurance cell. This conclusion is restricted to the stated binary-confounder DGM and is not evidence that observational validation tests exchangeability generally.",
+  "uninformative_if": "The result is uninformative about exchangeability if failures occur only under alpha=-2.00 and the full-history oracle fails in the same cells; fewer than 95% of replicates yield the primary estimate in any adequate-support cell; more than 2 of the 12 control cells violate the control thresholds; truth Monte Carlo SE remains above 0.0005 after the additional batch; or observed results fall between the numerical real and not-real criteria. Failure of only the fitted-propensity method while the exact observed-history method passes is classified as nuisance-model failure, not evidence about unmeasured confounding."
+ },
+ "threats": [
+  {
+   "threat": "The DGM could be constructed so that unmeasured confounding must produce the desired result.",
+   "mitigation": "Treatment and outcome associations are crossed independently. The grid includes no-association controls, treatment-only and outcome-only controls, reverse selection, two positive association strengths, and two support conditions. The decision rule requires failure under adequate support, recovery after conditioning on U, and acceptable behavior in no-joint-confounding controls."
+  },
+  {
+   "threat": "Propensity-model misspecification could be mistaken for failure of exchangeability.",
+   "mitigation": "The primary comparison uses the exact observed-history treatment probability obtained by latent-state filtering. The fitted pooled-logistic method is reported separately. Their difference quantifies nuisance-model error."
+  },
+  {
+   "threat": "Practical positivity could dominate the result.",
+   "mitigation": "Support is an explicit factor. No weight is silently truncated. Weight distributions, prescribed-action probabilities, ESS, convergence, and oracle performance are reported. The main positive decision requires at least one adequate-support cell."
+  },
+  {
+   "threat": "A correctly calibrated prediction model could conceal whether confounding makes a bad model look good.",
+   "mitigation": "Every dataset is evaluated with both an exact oracle score and a deterministic score having known intercept and slope miscalibration. This separates failure to recognize miscalibration from apparent miscalibration created by confounding."
+  },
+  {
+   "threat": "Prediction-model training error or overfitting could obscure validation behavior.",
+   "mitigation": "Prediction functions are fixed by the DGM and finite-state recursion before replicates begin. No model is trained in the validation sample."
+  },
+  {
+   "threat": "An incorrect artificial-censoring implementation could create the reported bias.",
+   "mitigation": "The protocol fixes the within-month ordering and requires adherence only through the event for cases and through month 23 for event-free controls. Unit checks must compare large-sample oracle-IPW estimates with directly enumerated counterfactual truths under every delta level before the replicate run."
+  },
+  {
+   "threat": "The sandwich variance or weighted AUC influence calculation could be wrong.",
+   "mitigation": "Before the full run, compare sandwich SEs with full individual-level bootstrap SEs using 199 resamples in 25 datasets from each of four anchor cells. A relative difference above 10% triggers code review before simulation results are released. This bootstrap is an implementation check, not a substituted interval method."
+  },
+  {
+   "threat": "Monte Carlo error in the truth could be interpreted as estimator bias.",
+   "mitigation": "Calibration parameters are analytically known. Other truths use 1.8 million independent evaluation profiles after decile construction, common random numbers for contrasts, batch Monte Carlo SEs, and automatic extension when truth SE exceeds 0.0005."
+  },
+  {
+   "threat": "Dropping failed replicates could make unstable methods look accurate.",
+   "mitigation": "Convergence is a reported outcome. Performance summaries give both the unconditional failure rate and conditional estimates among successful replicates; no method is compared only after selecting a common successful subset without also reporting that subset's size."
+  },
+  {
+   "threat": "The study could be misread as validating exchangeability or clinical utility in real data.",
+   "mitigation": "Claims are restricted to operating characteristics under the stated confounding grid. The protocol excludes action thresholds, utilities, transportability, and empirical tests of exchangeability; these exclusions appear in the abstract, catalog attachment, and discussion."
+  }
+ ],
+ "runtime_estimate": "The full design contains 24 scenarios times 2000 replicates, or 48000 replicates. The fitted status-quo method requires two treatment GLMs per replicate, totaling 96000 GLM fits. The remaining propensity calculations are direct recursions; calibration uses small one- or two-parameter Newton solves. There are zero ltmle fits and zero SuperLearner fits. The two-million-person truth calculation is needed only for the three delta levels because gamma and alpha do not change counterfactual truth; both strategies are evaluated in the same pass. Expected wall time is approximately 4 to 8 hours on 6 workers, including truth generation and checkpointing, plus roughly 1 hour for the prespecified bootstrap implementation checks. This fits an overnight run. No uninstalled package, including lmtp, concrete, or CICI, is necessary.",
+ "bears_on": [
+  {
+   "id": "LRN-05",
+   "relation": "answers-part",
+   "what": "It supplies prespecified operating characteristics for counterfactual calibration, AUC, and Brier estimators when exchangeability fails, including false reassurance, negative controls, positivity separation, and diagnostic performance. It cannot make observational validation test exchangeability, does not establish a universal sensitivity parameter, and does not revisit the already developed mapping from predictions to explicit decisions and utilities."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine 2019;38(11):2074-2102",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo error planning, and reporting of bias, variance, coverage, and convergence."
+  },
+  {
+   "cite": "Keogh RH, Van Geloven N. Prediction under interventions: evaluation of counterfactual performance using longitudinal observational data. Epidemiology 2024;35(3):329-339",
+   "doi_or_url": "10.1097/EDE.0000000000001713",
+   "used_for": "Artificial censoring and inverse-probability evaluation of calibration, discrimination, and Brier scores under sustained strategies."
+  },
+  {
+   "cite": "Boyer CB, Dahabreh IJ, Steingrimsson JA. Estimating and evaluating counterfactual prediction models. Statistics in Medicine 2025;44(23-24):e70287",
+   "doi_or_url": "10.1002/sim.70287",
+   "used_for": "Counterfactual loss, ROC-area, and calibration estimands, including evaluation of a fixed misspecified prediction model."
+  },
+  {
+   "cite": "Lin L, Sperrin M, Jenkins DA, Martin GP, Peek N. A scoping review of causal methods enabling predictions under hypothetical interventions. Diagnostic and Prognostic Research 2021;5(1):3",
+   "doi_or_url": "10.1186/s41512-021-00092-9",
+   "used_for": "Scope of the methodological gap and justification for beginning with discrete sustained-strategy operating characteristics."
+  },
+  {
+   "cite": "Sachs MC, Sjolander A, Gabriel EE. Aim for clinical utility, not just predictive accuracy. Epidemiology 2020;31(3):359-364",
+   "doi_or_url": "10.1097/EDE.0000000000001173",
+   "used_for": "Delimiting the already addressed prediction-to-decision component and explaining why clinical utility requires an explicit rule and utility comparison."
+  }
+ ]
+}

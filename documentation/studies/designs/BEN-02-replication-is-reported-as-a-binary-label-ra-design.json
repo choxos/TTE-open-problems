@@ -1,0 +1,255 @@
+{
+ "title": "When replication labels confuse estimand differences with sampling error: a tolerance-calibrated benchmark simulation",
+ "question": "Across true trial-emulation risk-difference discrepancies from -0.04 to 0.04 and trial sizes from 500 to 25000, what are the false-reassurance and false-disagreement probabilities of direction agreement, confidence-interval overlap, trial-standardized agreement, and joint-null agreement; can a prespecified 0.02 absolute-risk tolerance rule keep false definitive conclusions below 5% while becoming decisive when both estimates are precise?",
+ "aims": "Estimate each comparison rule's probability of declaring agreement at every known estimand discrepancy and precision level; quantify how much that probability changes solely because sampling precision changes; evaluate bias, variance estimation, confidence-interval coverage, and convergence of the underlying paired estimators; test whether an alignment-first transported estimate removes a deliberately introduced population estimand difference; and document the instability of effect ratios when the trial effect is near zero.",
+ "dgm": {
+  "covariates": "The unit of simulation is one benchmark pair comprising two independent cohorts. The randomized-trial cohort and observational-emulation cohort both implement baseline eligibility, static initiation A=1 versus noninitiation A=0, time zero at baseline, no grace period, no switching, no censoring, and a binary outcome Y by day 365. L1 is Bernoulli(0.50), L2 is Bernoulli(0.40), and L1 and L2 are independent. Z is an observed high-risk effect modifier. The trial protocol produces Z distributed Bernoulli(0.50); the emulation eligibility protocol produces Z distributed Bernoulli(qE), with qE fixed by the target discrepancy. Trial treatment is Bernoulli(0.50), independently of all covariates. Emulation treatment follows logit P(A=1|L1,L2,Z) = -0.40 + 0.80 L1 - 0.60 L2 + 0.70 Z, giving true propensities from 0.269 to 0.750. Each cohort is sampled exactly with one multinomial draw over the 32 cells defined by L1, L2, Z, A, and Y. Cell counts are retained rather than expanded into individual rows.",
+  "outcome_model": "Two outcome families are used. In the additive-risk family, P(Y=1|A=a,L1,L2,Z) = 0.28 + 0.04 L1 - 0.03 L2 + 0.02 L1 L2 + 0.04 Z + a(tau0 + 0.16 Z), where tau0 is -0.08 for a null marginal trial effect and -0.13 for a marginal trial effect of -0.05. All probabilities lie between 0.12 and 0.44. In the logistic family, logit P(Y=1|A=a,L1,L2,Z) = -1.20 + 0.50 L1 - 0.40 L2 + 0.60 Z + a(gamma0 + 1.00 Z), where gamma0=-0.60 gives a trial marginal risk difference of approximately 0.00013 and gamma0=-0.88 gives approximately -0.05016. Exact logistic-family truths are obtained by summing the eight covariate cells. The negative-control block changes qE from 0.50 to 0.75 but removes risk-difference modification: the additive model sets the A by Z coefficient to zero, and the logistic model sets both the Z outcome coefficient and A by Z coefficient to zero. Its logistic treatment coefficient is 0 for the null-effect stratum and -0.29 for the approximately -0.05 stratum.",
+  "treatment_effect": "The primary causal scale is the 365-day marginal risk difference. In the additive family, the trial effect is exactly 0 or -0.05. The emulation effect equals the trial effect plus the prespecified signed discrepancy. In the logistic family, the corresponding trial effects are approximately 0.00013 and -0.05016; qE is calibrated using exact finite-cell expectations so that the emulation-minus-trial risk difference equals the requested discrepancy to numerical precision. Both beneficial and harmful discrepancies are included.",
+  "effect_modification": "In the additive core DGM, the conditional treatment risk difference increases by 0.16 when Z changes from 0 to 1. Thus the null marginal trial-effect stratum has conditional effects -0.08 and 0.08, while the moderate-benefit stratum has conditional effects -0.13 and 0.03. In the logistic core DGM, the treatment log odds ratio changes by 1.00 across Z. For gamma0=-0.60, the Z-specific marginal risk differences averaged over L1 and L2 are approximately -0.09488 and 0.09515. For gamma0=-0.88, they are approximately -0.12826 and 0.02793.",
+  "factors": [
+   {
+    "name": "Outcome family",
+    "levels": [
+     "Additive Bernoulli risk model with identity-scale effect modification",
+     "Logistic Bernoulli model with nonlinear marginalization"
+    ],
+    "rationale": "The additive family supplies transparent exact discrepancies; the logistic family tests whether conclusions depend on a DGM constructed on the same scale as the proposed absolute-difference method."
+   },
+   {
+    "name": "Signed true emulation-minus-trial risk difference",
+    "levels": [
+     "-0.04",
+     "-0.02",
+     "-0.01",
+     "0",
+     "0.01",
+     "0.02",
+     "0.04"
+    ],
+    "rationale": "The levels include exact agreement, acceptable differences inside the primary 0.02 tolerance, both tolerance boundaries, and clinically material discrepancies in both directions. For the additive family, qE is respectively 0.25, 0.375, 0.4375, 0.50, 0.5625, 0.625, and 0.75. For the logistic near-null stratum, rounded qE values are 0.28951, 0.39475, 0.44738, 0.50, 0.55262, 0.60525, and 0.71049. For the logistic moderate-benefit stratum, they are 0.24390, 0.37195, 0.43597, 0.50, 0.56403, 0.62805, and 0.75610. Implementation must calculate logistic qE from unrounded finite-cell expectations."
+   },
+   {
+    "name": "Precision pattern",
+    "levels": [
+     "Trial n=500; emulation n=5000",
+     "Trial n=2500; emulation n=25000",
+     "Trial n=25000; emulation n=250000"
+    ],
+    "rationale": "These levels span small trials paired with database studies through precise large trials paired with very large databases. The tenfold emulation-to-trial ratio isolates the effect of absolute precision while retaining the common asymmetry between trial and database sample sizes."
+   },
+   {
+    "name": "Trial effect magnitude",
+    "levels": [
+     "Near null: risk difference 0 in the additive family and approximately 0.00013 in the logistic family",
+     "Moderate benefit: risk difference -0.05 in the additive family and approximately -0.05016 in the logistic family"
+    ],
+    "rationale": "Direction labels and effect ratios behave differently near zero. A five-percentage-point benefit provides a decision-relevant non-null contrast."
+   },
+   {
+    "name": "Negative-control augmentation",
+    "levels": [
+     "Core effect-modified scenarios",
+     "Population-shift control with qE=0.75 but true discrepancy 0"
+    ],
+    "rationale": "The control tests whether visible population and treatment-pattern differences generate apparent failure when treatment effects do not vary across the populations. The largest core discrepancies serve as positive controls."
+   }
+  ],
+  "n_scenarios": 96,
+  "deliberately_true": "The 84 core scenarios form a complete 2 by 7 by 3 by 2 factorial. Twelve negative-control scenarios add 2 outcome families by 3 precision patterns by 2 effect magnitudes, so the complete 96-scenario design is not fully factorial. Treatment, outcome, and effect-modification models are correctly specified; Z is measured; positivity holds; consistency holds; there is no missingness, measurement error, nonadherence, censoring, or unmeasured confounding. Trial and emulation samples are independent, so their sampling covariance is exactly zero. The only source of systematic raw-estimand discrepancy is the protocol-defined population distribution of Z. Transporting the emulation to qZ=0.50 therefore truly removes that discrepancy. Comparison rules receive only estimates and standard errors, never the scenario truth.",
+  "cannot_detect": "The study cannot evaluate irregular visits, time-varying treatment or confounding, grace periods, informative censoring, outcome-definition mismatch, residual confounding, nuisance-model misspecification, unknown or unmeasured effect modifiers, overlapping trial and emulation samples, nonzero sampling covariance, between-database heterogeneity, or prospective forecasting across multiple clinical questions. It cannot determine which absolute-risk tolerance is clinically or socially correct. It also cannot establish prediction-interval calibration for a database because each replicate contains one independent trial-emulation pair rather than a historical portfolio."
+ },
+ "estimands": [
+  {
+   "name": "Trial-protocol 365-day marginal risk difference",
+   "definition": "psiT = P(Y^1=1 under the trial eligibility distribution qZ=0.50) - P(Y^0=1 under that distribution). It contrasts baseline initiation with noninitiation, is marginal over L1, L2, and Z, and targets the trial superpopulation rather than the realized sample.",
+   "true_value_computation": "For the additive family, psiT = tau0 + 0.16(0.50), giving exactly 0 or -0.05. For the logistic family, sum the model-based treated and untreated risks over the four L1-L2 cells and both Z cells using their exact probabilities. No Monte Carlo truth sample is required."
+  },
+  {
+   "name": "Emulation-protocol 365-day marginal risk difference",
+   "definition": "psiE = P(Y^1=1 under the emulation eligibility distribution qZ=qE) - P(Y^0=1 under that distribution). It uses the same treatment strategies, time zero, outcome, and horizon as the trial but targets the emulation superpopulation.",
+   "true_value_computation": "For the additive family, psiE = tau0 + 0.16 qE. For the logistic family, use exact finite-cell summation. The specified qE calibration makes psiE-psiT equal the requested signed discrepancy."
+  },
+  {
+   "name": "Raw paired estimand discrepancy",
+   "definition": "delta = psiE-psiT on the absolute 365-day risk-difference scale. Acceptable alignment is prespecified as |delta|<0.02; material mismatch is |delta|>0.02; |delta|=0.02 is a boundary used for error-rate calibration.",
+   "true_value_computation": "The truth is algebraic in the additive family and obtained by deterministic finite-cell summation in the logistic family. Numerical summation error must be below 1e-12."
+  },
+  {
+   "name": "Protocol-aligned transported discrepancy",
+   "definition": "deltaTransport = psiEtoT-psiT, where psiEtoT standardizes the emulation conditional treatment risks to the trial distribution qZ=0.50. It is a marginal trial-population contrast.",
+   "true_value_computation": "deltaTransport is exactly zero under every core and negative-control scenario because the structural outcome model is shared and all effect modifiers are observed."
+  },
+  {
+   "name": "Ratio of risk-difference effects",
+   "definition": "rho = psiE/psiT, defined only when psiT is nonzero. It is secondary and is not used to decide replication.",
+   "true_value_computation": "Use the exact psiE and psiT values. The ratio is declared undefined in the near-null additive stratum and treated as scientifically unstable in the near-null logistic stratum."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Underlying trial and emulation causal-effect estimators",
+   "point_estimator": "The trial estimate is the treated sample risk minus the untreated sample risk. The emulation estimate is parametric augmented inverse-probability weighting. Fit e(L)=P(A=1|L1,L2,Z) by binomial glm with terms L1+L2+Z. Fit m(A,L)=E(Y|A,L1,L2,Z) using weighted lm with A+L1+L2+L1:L2+Z+A:Z for the additive DGM and binomial glm with A+L1+L2+Z+A:Z for the logistic DGM. For each cell, H=m1-m0+A(Y-m1)/e-(1-A)(Y-m0)/(1-e); psiEhat is the frequency-weighted mean of H.",
+   "variance_estimator": "For the trial, use s1^2/n1+s0^2/n0, where each arm variance uses denominator na-1. For the emulation, use the frequency-weighted sample variance of H divided by nE, equivalently the empirical influence-function variance. Independence gives var(deltahat)=var(psiEhat)+var(psiThat).",
+   "interval": "Use two-sided 95% Wald intervals with critical value 1.959964 for psiT, psiE, and delta.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs if a trial arm is empty; either fitted model reports failure or rank deficiency; any required coefficient, prediction, estimate, or standard error is nonfinite; an estimated propensity is below 1e-6 or above 1-1e-6; or a variance estimate is nonpositive. Unbounded effect estimates are retained if finite.",
+   "implementation": "Generate one 32-cell probability table for each cohort and draw counts with rmultinom. Fit models to cell rows using integer frequency weights. Calculate all empirical means and influence-function variances from counts without expanding rows. Run scenarios through studies/_shared/R/harness.R with six workers."
+  },
+  {
+   "name": "Direction agreement",
+   "point_estimator": "Declare agreement when sign(psiEhat)=sign(psiThat); sign(0)=0, so one exact zero and one nonzero estimate disagree.",
+   "variance_estimator": "Use the separately estimated trial and emulation variances, although the label itself discards them.",
+   "interval": "Report both 95% Wald intervals but do not use them in the label.",
+   "is_status_quo": true,
+   "nonconvergence": "Nonconvergence is inherited from either underlying estimator.",
+   "implementation": "Apply the rule mechanically before inspecting results."
+  },
+  {
+   "name": "Ninety-five-percent confidence-interval overlap",
+   "point_estimator": "Declare agreement when the closed 95% Wald intervals for psiT and psiE intersect.",
+   "variance_estimator": "Use the separate trial and emulation model variances.",
+   "interval": "The intervals are psiThat +/- 1.959964 seT and psiEhat +/- 1.959964 seE. Endpoint contact counts as overlap.",
+   "is_status_quo": true,
+   "nonconvergence": "Nonconvergence is inherited from either underlying estimator or any nonfinite interval endpoint.",
+   "implementation": "Evaluate max(lowerT,lowerE)<=min(upperT,upperE)."
+  },
+  {
+   "name": "Trial-standardized estimate agreement",
+   "point_estimator": "Compute STrial=|psiEhat-psiThat|/seT and declare agreement when STrial<=1.959964, equivalent to requiring the emulation point estimate to lie inside the trial 95% confidence interval.",
+   "variance_estimator": "Use the trial model variance as the standardizing variance, matching the trial-centered benchmark rule.",
+   "interval": "Use the trial 95% Wald interval as the acceptance region.",
+   "is_status_quo": true,
+   "nonconvergence": "Failure occurs when either point estimate fails or seT is nonfinite or nonpositive.",
+   "implementation": "Retain STrial as a continuous diagnostic in addition to the binary declaration."
+  },
+  {
+   "name": "Joint standardized null-difference agreement",
+   "point_estimator": "Compute Zdelta=|deltahat|/sqrt(seT^2+seE^2) and declare agreement when Zdelta<=1.959964. This is failure to reject the point null delta=0.",
+   "variance_estimator": "Use seDelta^2=seT^2+seE^2 because the cohorts are independent.",
+   "interval": "The associated 95% interval is deltahat +/- 1.959964 seDelta; agreement means that this interval contains zero.",
+   "is_status_quo": true,
+   "nonconvergence": "Failure occurs when either underlying estimate fails or seDelta is nonfinite or nonpositive.",
+   "implementation": "Report Zdelta continuously as well as the binary null-test label."
+  },
+  {
+   "name": "Absolute discrepancy with a prespecified three-way tolerance rule",
+   "point_estimator": "Use deltahat=psiEhat-psiThat. The primary tolerance is Delta=0.02. Declare aligned when the entire 90% confidence interval lies inside [-0.02,0.02]; declare materially mismatched when the entire 90% interval lies above 0.02 or below -0.02; otherwise declare indeterminate.",
+   "variance_estimator": "Use seDelta^2=seT^2+seE^2. This accounts for sampling error from both estimates; covariance is zero by design.",
+   "interval": "Report the 95% Wald interval for estimation. Use the 90% Wald interval deltahat +/- 1.644854 seDelta for the three-way decision, corresponding to one-sided 5% tests at each tolerance boundary.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs when either underlying estimate fails or seDelta is nonfinite or nonpositive. Indeterminate is a valid result, not nonconvergence.",
+   "implementation": "Primary decisions use Delta=0.02. Reapply the same stored estimates without rerunning simulations for prespecified sensitivity margins of 0.01, 0.03, and 0.05."
+  },
+  {
+   "name": "Protocol-aligned transported AIPW positive control",
+   "point_estimator": "Reuse the emulation nuisance fits and compute psiEtoThat=mean(w(Z)H), where w=0.50/qE for Z=1 and w=0.50/(1-qE) for Z=0. Compare psiEtoThat with psiThat and apply the same absolute-discrepancy and three-way tolerance procedure.",
+   "variance_estimator": "Estimate var(psiEtoThat) by the frequency-weighted empirical variance of wH divided by nE. Add the independent trial variance for the transported paired difference.",
+   "interval": "Use a 95% Wald interval for the transported difference and the same 90% tolerance interval for classification.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the underlying fit criteria; also fail if qE is outside (0,1), any transport weight is nonfinite, or the transported variance is nonpositive.",
+   "implementation": "Treat qZ=0.50 and qE as protocol-known quantities. This is an explanatory positive control, not evidence that real applications always observe every modifier or know the target population distribution."
+  },
+  {
+   "name": "Ratio of risk-difference effects with Fieller confidence set",
+   "point_estimator": "Compute rhohat=psiEhat/psiThat when psiThat is nonzero. Do not convert it into a replication label.",
+   "variance_estimator": "Report the delta-method variance seE^2/psiThat^2 + psiEhat^2 seT^2/psiThat^4 for descriptive comparison. Independence is assumed.",
+   "interval": "Construct the exact 95% Fieller confidence set containing every r satisfying (psiEhat-r psiThat)^2 <= 1.959964^2(seE^2+r^2 seT^2). Solve the quadratic and retain bounded intervals, disjoint rays, the whole real line, or an empty set exactly as obtained.",
+   "is_status_quo": false,
+   "nonconvergence": "An exactly zero denominator makes the point ratio undefined and is recorded as a ratio-method failure. An unbounded or disjoint Fieller set is a valid statistical result and must not be discarded.",
+   "implementation": "Evaluate coverage only when the true trial effect is nonzero. In near-null scenarios report the median, interquartile range, undefined-point frequency, and unbounded-Fieller frequency."
+  }
+ ],
+ "performance": {
+  "primary": "The scenario-specific false-conclusion probability. For |delta|<0.02, a binary disagreement or a definitive material-mismatch conclusion is false. For |delta|>0.02, a binary agreement or definitive aligned conclusion is false. Boundary scenarios with |delta|=0.02 are excluded from this primary rate and assess test size. For the three-way rule, also report the indeterminate probability and the probability of a decisive correct conclusion so that an always-indeterminate procedure cannot appear successful.",
+  "secondary": [
+   "Agreement probability for each binary rule in every scenario.",
+   "False reassurance when |delta|=0.04 and false disagreement when |delta| is 0 or 0.01.",
+   "Absolute change in each rule's agreement probability between adjacent precision patterns and between nT=500 and nT=25000 at fixed truth, link, and effect magnitude.",
+   "Probabilities of aligned, materially mismatched, indeterminate, and decisive-correct outcomes for each tolerance margin.",
+   "Boundary declaration rates at delta=-0.02 and delta=0.02.",
+   "Bias, empirical standard error, mean model standard error, relative error in model standard error, mean squared error, 95% coverage, bias-eliminated coverage, rejection rate for delta=0, and convergence for psiT, psiE, delta, psiEtoT, and deltaTransport, all with Monte Carlo standard errors from the shared ADEMP harness.",
+   "Median and interquartile range of the effect ratio, Fieller-set coverage when defined, and frequencies of undefined point ratios and unbounded or disjoint Fieller sets.",
+   "Negative-control false-disagreement rates and transported-estimator recovery of deltaTransport=0."
+  ],
+  "n_rep": 2500,
+  "n_rep_derivation": "The primary measure is a Bernoulli event probability. Its worst-case Monte Carlo standard error occurs at p=0.50: MCSE=sqrt(0.50(1-0.50)/R). Requiring MCSE<=0.01 gives R>=0.25/0.0001=2500. At p=0.05 or 0.95, MCSE=sqrt(0.0475/2500)=0.00436. A difference between independent precision scenarios has worst-case MCSE sqrt(0.25/2500+0.25/2500)=0.01414; the prespecified 0.20 precision-effect threshold is therefore well separated from simulation error."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "At least two of the four forced binary rules have a false-conclusion probability of at least 0.30 in one or more nonboundary core scenarios, and at least one such rule changes its agreement probability by at least 0.20 between the lowest and highest precision patterns while delta, outcome family, and trial effect remain fixed. The proposed tolerance procedure counts as an adequate operational response only if false definitive alignment is at most 0.05 in every |delta|=0.04 scenario, false definitive mismatch is at most 0.05 in every |delta|<=0.01 and negative-control scenario, each wrong-side boundary declaration rate is at most 0.06, 95% discrepancy coverage is between 0.93 and 0.97, and decisive-correct probability is at least 0.80 in the highest-precision delta=0 and |delta|=0.04 scenarios for both outcome families.",
+  "problem_is_not_real_if": "Every forced binary rule has false-conclusion probability below 0.10 in every nonboundary scenario, no rule's agreement probability changes by 0.05 or more between the lowest and highest precision patterns at fixed truth, and the three-way procedure reduces false conclusions by less than 0.10 in every scenario.",
+  "uninformative_if": "The study is methodologically uninformative if any core scenario has more than 1% underlying-estimator nonconvergence, if 95% discrepancy coverage falls outside 0.93 to 0.97 after bias-eliminated coverage is examined, or if Monte Carlo 95% intervals overlap both the real and not-real thresholds. If the binary-label criterion is met but the tolerance procedure fails its error or decisiveness criteria, the result establishes the reporting problem but rejects this particular operational remedy."
+ },
+ "threats": [
+  {
+   "threat": "The DGM deliberately creates estimand mismatch through a strong observed effect modifier, so a method designed around absolute discrepancy could appear successful because the answer was encoded in its preferred scale.",
+   "mitigation": "Use discrepancies in both directions, additive and logistic outcome families, near-null and non-null trial effects, and a population-shift negative control with no true effect discrepancy. Rules are frozen before simulation and never receive scenario labels."
+  },
+  {
+   "threat": "The primary 0.02 tolerance is a judgment rather than a statistically discoverable constant.",
+   "mitigation": "Label it explicitly as a prespecified illustrative decision threshold. Repeat all tolerance classifications at 0.01, 0.03, and 0.05 using the same stored estimates. Do not claim that simulation identifies the clinically correct margin."
+  },
+  {
+   "threat": "Correct nuisance models and complete measurement make the emulation unrealistically clean.",
+   "mitigation": "This is intentional isolation of estimand mismatch from random error. Conclusions are restricted to comparison rules conditional on unbiased component estimates; they do not establish robustness to confounding or misspecification."
+  },
+  {
+   "threat": "The transported positive control is handed the true effect modifier and protocol distributions.",
+   "mitigation": "Use it only to verify that the constructed discrepancy is an estimand-alignment problem and is removable in principle. Do not interpret it as evidence that transport is identified when real modifiers are missing."
+  },
+  {
+   "threat": "Wald approximations can fail in small binary samples and could create apparent label failures unrelated to the conceptual problem.",
+   "mitigation": "Include nT=500 explicitly; audit bias, empirical versus model standard error, ordinary and bias-eliminated coverage, and convergence before interpreting labels. The problem verdict is invalid if coverage leaves the prespecified 0.93 to 0.97 range."
+  },
+  {
+   "threat": "Trial and emulation estimates can be correlated when samples overlap or share estimated calibration quantities.",
+   "mitigation": "Generate independent cohorts so zero covariance is known rather than silently assumed. State that applications with overlap require the covariance term in var(psiEhat-psiThat) and are outside this study."
+  },
+  {
+   "threat": "Effect ratios can explode or become undefined near a null reference effect, and dropping those replicates would make the ratio look stable.",
+   "mitigation": "Include a near-null trial-effect stratum, use Fieller confidence sets, retain unbounded sets, and report all undefined or unbounded frequencies."
+  },
+  {
+   "threat": "Multinomial cell aggregation might be mistaken for an asymptotic summary-data simulation.",
+   "mitigation": "Draw exact finite-sample counts from the complete individual-level joint distribution. Frequency-weighted fits and influence-function sums reproduce analysis of the corresponding expanded binary records."
+  },
+  {
+   "threat": "A single benchmark pair cannot estimate between-question or between-database calibration or validate a prospective prediction interval.",
+   "mitigation": "Restrict the claim to pair-level separation of known estimand discrepancy and sampling error. A subsequent portfolio simulation or prospective multi-database benchmark is required for prediction-interval and data-source calibration."
+  },
+  {
+   "threat": "Retrospective knowledge of a trial result can alter real emulation design, but simulated analysis code cannot reproduce that human behavior.",
+   "mitigation": "Prespecify all rules and blind them to truth. Interpret results as statistical operating characteristics, not evidence about researcher behavior or prospective-versus-retrospective design contamination."
+  }
+ ],
+ "runtime_estimate": "There are 96 scenarios by 2500 replicates, totaling 240000 benchmark pairs. Each replicate requires one small propensity-score binomial glm and one small outcome lm or binomial glm on at most 32 weighted rows. Trial estimation, comparison metrics, transport, and truth calculations are algebraic. The run therefore comprises 480000 small nuisance-model fits, with zero ltmle, SuperLearner, bootstrap, Stan, lmtp, concrete, or CICI fits. On six workers the expected runtime is approximately 3 to 8 hours, with exact truth calculation taking seconds rather than the four minutes per scenario required by brute-force truth enumeration.",
+ "bears_on": [
+  {
+   "id": "BEN-02",
+   "relation": "answers-part",
+   "what": "The study gives numerical operating characteristics for binary and graded pair-level comparisons, directly tests whether sampling precision changes a replication label while the true estimand discrepancy is fixed, and evaluates a prespecified tolerance rule with joint uncertainty. It does not choose the correct tolerance, model overlapping samples, or establish prospective multi-database prediction-interval calibration, so it cannot fully resolve the catalog entry."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019;38:2074-2102.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo error planning, and separation of method performance from simulation error."
+  },
+  {
+   "cite": "Wang SV, Schneeweiss S, RCT-DUPLICATE Initiative. Emulation of randomized clinical trials with nonrandomized database analyses: results of 32 clinical trials. JAMA. 2023;329(16):1376-1385.",
+   "doi_or_url": "10.1001/jama.2023.4221",
+   "used_for": "Benchmark-pair setting and the existing use of multiple agreement metrics rather than a single universally binary measure."
+  },
+  {
+   "cite": "Concordance between target trial emulation and randomised controlled trials: systematic review and meta-analysis. BMJ.",
+   "doi_or_url": "10.1136/bmj-2025-086810",
+   "used_for": "Continuous concordance measures, standardized agreement, and evidence that design alignment is associated with concordance."
+  },
+  {
+   "cite": "Koppe and colleagues. Assessing the replicability of RCTs in RWE emulations. BMC Medical Research Methodology. 2025.",
+   "doi_or_url": "10.1186/s12874-025-02589-z",
+   "used_for": "Recognition that graded replicability statistics already exist; this protocol targets the remaining tolerance and estimand-versus-random-error problem rather than claiming to invent graded reporting."
+  }
+ ]
+}

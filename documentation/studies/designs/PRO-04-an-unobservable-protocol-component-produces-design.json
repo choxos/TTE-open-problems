@@ -1,0 +1,213 @@
+{
+ "title": "When does an operational protocol substitution materially change the target? A factorial benchmark across eligibility, strategy, and outcome components",
+ "question": "Across 24 prespecified mechanisms involving eligibility misclassification, treatment-strategy coarsening, or incomplete endpoint capture, what is the signed difference in the marginal 24-month risk difference between the intended and operational protocols; in which scenarios does its absolute value exceed 0.02; how often does a nominal 95% interval for the operational effect cover the intended effect; and can a 20% random validation sample recover the intended effect and distinguish numerically preserving from question-changing substitutions?",
+ "aims": "For every scenario, estimate the intended effect psi_I, the operational effect psi_O, and Delta = psi_O - psi_I. Determine whether silent reporting of psi_O as psi_I causes material bias or undercoverage despite valid inference for psi_O. Test whether recovery from a valid internal validation sample produces absolute bias no greater than 0.005 and 95% coverage between 0.93 and 0.97. Evaluate a prespecified paired validation diagnostic that classifies substitutions as numerically preserving, changed, or indeterminate. Numerical agreement is not treated as proof that two estimands are conceptually identical.",
+ "dgm": {
+  "covariates": "Each replicate contains 4000 independent individuals. Generate X1 from Bernoulli(0.50), X2 from Uniform(-1,1), and X3 from Bernoulli(expit(-0.30 + 0.60 X1 + 0.50 X2)). Generate B = 0.70 X1 + 0.60 X2 + 0.80 X3 + epsilon_B, where epsilon_B is standard normal, and define ideal eligibility E = I(B >= 0.65). Generate validation membership V from Bernoulli(0.20), independently of every baseline variable, assignment, potential outcome, and operational measurement. All remaining random draws are mutually independent conditional on the stated models. The intended protocol enrolls E = 1 individuals at baseline, assigns one of three fully specified strategies, follows everyone for 24 months without censoring, and measures a binary clinical endpoint. In each scenario exactly one component is operationally compromised. The gold-standard value of that component is available only when V = 1; the other two components are observed exactly.",
+  "outcome_model": "Let p0 = 0.16 + 0.05 X1 + 0.04 X2 + 0.06 X3 + 0.05(1-E). Strategy 0 is no treatment, strategy 1 is low intensity, and strategy 2 is high intensity. With effect modification absent, set d1 = d2 = -0.06. With effect modification present, set d1 = -0.02 + 0.02(1-E) + 0.02 X1 and d2 = -0.10 + 0.08(1-E) + 0.04 X1. Define p_z = p0 + d_z, with d0 = 0. These probabilities range from 0.02 to 0.38, so no truncation is used. Generate a common U_Y from Uniform(0,1) and define Y^z = I(U_Y < p_z); the true observed endpoint is Y = Y^Z. The model is on the risk scale. Consequently, the absent-modification setting has a constant risk difference, while the present setting makes the high-intensity benefit larger among eligible individuals with X1 = 0 and small or absent outside the intended population.",
+  "treatment_effect": "For eligibility and outcome scenarios, assign Z independently with probabilities 0.50, 0.10, and 0.40 for strategies 0, 1, and 2. For strategy-coarsening scenarios, first assign A from Bernoulli(0.50). If A = 0, set Z = 0. If A = 1, assign Z = 2 with the scenario-specific probability listed under the severity and dependence factors; otherwise set Z = 1. The operational record retains only A_star = I(Z > 0), so low-intensity and high-intensity strategies are merged. The intended contrast always sets Z = 2 versus Z = 0. The operational strategy contrast sets A_star = 1, which invokes the scenario-specific mixture of strategies 1 and 2, versus A_star = 0.",
+  "effect_modification": "The absent level makes both active strategies reduce every individual's 24-month risk by exactly 0.06. This is a negative-control setting in which eligibility changes and strategy merging can alter the protocol definition without changing the numerical risk difference. The present level modifies treatment effects jointly by ideal eligibility and X1 using the coefficients in the outcome model. This creates a setting in which changing the enrolled population or the composition of a merged strategy can change the marginal contrast.",
+  "factors": [
+   {
+    "name": "Compromised protocol component",
+    "levels": [
+     "Eligibility: replace E with E_star and analyze E_star = 1",
+     "Treatment strategy: replace exact Z with A_star = I(Z > 0)",
+     "Outcome: replace Y with the recorded endpoint Y_star"
+    ],
+    "rationale": "These instantiate the three concrete substitutions in PRO-04: an unverifiable criterion changes the population, indistinguishable strategies change the intervention contrast, and incomplete capture changes the endpoint. The remaining protocol components are held fixed to isolate each substitution."
+   },
+   {
+    "name": "Operational accuracy",
+    "levels": [
+     "Mild: under nondifferential mapping, eligibility sensitivity and specificity are 0.90 and 0.95; 85% of active assignments are high intensity; outcome sensitivity is 0.90",
+     "Severe: under nondifferential mapping, eligibility sensitivity and specificity are 0.70 and 0.85; 55% of active assignments are high intensity; outcome sensitivity is 0.70"
+    ],
+    "rationale": "The levels represent a usable but imperfect record definition and a substantially coarser definition. They are transparent stress-test bands rather than estimates attributed to a particular disease. Outcome specificity is 0.995 at both levels, reflecting a setting in which missed events are more common than false events."
+   },
+   {
+    "name": "Treatment-effect modification",
+    "levels": [
+     "Absent: d1 = d2 = -0.06 for every individual",
+     "Present: d1 = -0.02 + 0.02(1-E) + 0.02 X1 and d2 = -0.10 + 0.08(1-E) + 0.04 X1"
+    ],
+    "rationale": "Substitution should not be forced to matter. The absent level provides exact numerical preservation controls for eligibility and strategy substitutions. The present level represents plausible qualitative heterogeneity across a clinical eligibility criterion and a measured patient characteristic."
+   },
+   {
+    "name": "Operational dependence",
+    "levels": [
+     "Nondifferential: eligibility error is independent of X1 given E; active-strategy composition is independent of X1; outcome sensitivity is independent of assigned strategy",
+     "Differential: for eligibility, mild sensitivity and specificity are 0.95 and 0.97 when X1 = 0 and 0.80 and 0.90 when X1 = 1, while severe values are 0.80 and 0.90 when X1 = 0 and 0.55 and 0.75 when X1 = 1; for strategy coarsening, P(Z = 2 | A = 1,X1) is 0.95 and 0.70 across X1 = 0 and 1 under mild severity and 0.70 and 0.40 under severe severity; for outcome capture, sensitivities for Z = 0, 1, and 2 are 0.95, 0.88, and 0.75 under mild severity and 0.80, 0.65, and 0.50 under severe severity"
+    ],
+    "rationale": "Dependence on an effect modifier or assigned strategy is the mechanism most likely to turn operational coarsening into a material change. For outcome scenarios, generate Y_star with the stated sensitivity when Y = 1 and false-positive probability 0.005 when Y = 0. For eligibility scenarios, generate E_star from the stated sensitivity and specificity. Components not selected for compromise equal their ideal values."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The design is fully factorial: 3 components by 2 accuracy levels by 2 effect-modification levels by 2 dependence levels. Assignment probabilities are known, positivity holds, there is no loss to follow-up, and there is no confounding of the randomized protocol contrasts. Every operational strategy is given an explicit stochastic mixture, every recorded endpoint has an explicit measurement intervention, and validation is missing completely at random. Thus each operational quantity is well-defined and the intended effect is recoverable from validation data. The absent-modification cells deliberately provide cases where a protocol substitution need not create a numerically different risk difference.",
+  "cannot_detect": "The study cannot estimate how frequently these mechanisms occur in practice. It cannot assess simultaneous compromise of multiple components, irregular visits, censoring, time-varying treatment or confounding, positivity violations, estimated propensity models, nonrandom validation, unknown measurement models, survival estimands, or scales other than the 24-month risk difference. It also cannot address an operational proxy that identifies only a statistical functional with no coherent intervention-based interpretation, because coherent operational targets are deliberately built into this DGM. It cannot show that a component mapping table changes reporting behavior or establish a universal language for partially specified interventions."
+ },
+ "estimands": [
+  {
+   "name": "Intended protocol effect, psi_I",
+   "definition": "The superpopulation marginal 24-month risk difference P(Y^2 = 1 | E = 1) - P(Y^0 = 1 | E = 1), comparing assignment to the fully specified high-intensity strategy with assignment to no treatment among individuals satisfying the ideal eligibility criterion. The endpoint is the true clinical event, follow-up is fixed at 24 months, and there is no censoring.",
+   "true_value_computation": "For each scenario, generate 2000000 baseline covariate and eligibility draws. Average p2 and p0 among E = 1 rather than drawing Bernoulli outcomes, then subtract. Use the same baseline draws for every estimand in the scenario. Estimate Monte Carlo error by 100 equal-sized batch means. Require the Monte Carlo SE to be at most 0.0005; if it is larger, add draws in blocks of 1000000 until the criterion is met."
+  },
+  {
+   "name": "Operational protocol effect, psi_O",
+   "definition": "For eligibility scenarios, psi_O is P(Y^2 = 1 | E_star = 1) - P(Y^0 = 1 | E_star = 1). For strategy scenarios, psi_O is the risk under A_star = 1, which assigns the scenario-specific X1-dependent or X1-independent mixture of Z = 1 and Z = 2, minus the risk under A_star = 0, among E = 1. For outcome scenarios, psi_O is P(Y_star^2 = 1 | E = 1) - P(Y_star^0 = 1 | E = 1). Each is a marginal superpopulation 24-month risk difference under the operational protocol.",
+   "true_value_computation": "Use the same 2000000 baseline draws as for psi_I. Integrate eligibility classification probabilities, strategy-mixture probabilities, and endpoint sensitivity and specificity analytically conditional on each draw. This avoids unnecessary Bernoulli noise. Use batch means and require Monte Carlo SE at most 0.0005."
+  },
+  {
+   "name": "Protocol substitution gap, Delta",
+   "definition": "Delta = psi_O - psi_I on the risk-difference scale. A scenario is numerically preserving when |Delta| <= 0.01, materially changed when |Delta| >= 0.02, and in a gray region otherwise. These are methodological decision margins, not disease-specific minimal clinically important differences. Equality within the margin means numerical benchmark agreement only; it does not make the two protocol definitions identical.",
+   "true_value_computation": "Subtract paired truth estimates computed with common baseline draws. Estimate the Monte Carlo SE of Delta directly from batch-specific paired differences and require it to be at most 0.0007. The 0.01 and 0.02 decision margins are therefore at least 14 times the maximum accepted truth MCSE."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Silent operational analysis",
+   "point_estimator": "This is the status quo comparator. It ignores validation data, analyzes the operational eligibility population, strategy, or endpoint, and reports the resulting risk difference as though it were psi_I. For arm t, define h_it = S_i I(T_i = t)/pi_t(X_i), d_t = mean(h_it), and mu_t = mean(h_it W_i)/d_t. Report mu_1 - mu_0, where eligibility scenarios use S = E_star, T = Z in {2,0}, W = Y, and pi_2 = 0.40 and pi_0 = 0.50; strategy scenarios use S = E, T = A_star in {1,0}, W = Y, and both probabilities equal 0.50; outcome scenarios use S = E, T = Z in {2,0}, W = Y_star, and pi_2 = 0.40 and pi_0 = 0.50.",
+   "variance_estimator": "For each arm, compute IF_it = h_it(W_i - mu_t)/d_t. For the risk difference compute IF_i = IF_i1 - IF_i0 and SE = sd(IF_i)/sqrt(4000), using the sample standard deviation. This is the empirical influence-function sandwich SE for the two Hájek means with known assignment probabilities.",
+   "interval": "Untruncated two-sided Wald interval: estimate +/- 1.96 SE. The associated test rejects a zero risk difference when zero is outside this interval.",
+   "is_status_quo": true,
+   "nonconvergence": "Declare failure if either weighted denominator is zero or if the estimate or SE is nonfinite. Retain estimates with arm-specific effective sample size below 20 but flag them as unstable; do not silently discard them.",
+   "implementation": "Use data.table or base R weighted reductions. No outcome regression, propensity model, ltmle fit, or SuperLearner fit is used."
+  },
+  {
+   "name": "Explicitly labeled operational analysis",
+   "point_estimator": "Use exactly the same observations, weights, and numerical estimator as the silent operational analysis, but declare psi_O as its target and attach the component-specific operational protocol definition to the result.",
+   "variance_estimator": "Use the same arm influence functions and sandwich SE as the silent analysis. Evaluate model SE, bias, and coverage against psi_O rather than psi_I.",
+   "interval": "Untruncated two-sided Wald interval: estimate +/- 1.96 SE.",
+   "is_status_quo": false,
+   "nonconvergence": "The same zero-denominator and nonfinite-value rule as the silent analysis.",
+   "implementation": "This method changes the estimand label and audit artifact, not the numeric calculation. Comparing its coverage for psi_O with silent coverage for psi_I separates estimand mismatch from estimator failure."
+  },
+  {
+   "name": "Internal-validation recovery of the intended effect",
+   "point_estimator": "Use only records with V = 1 and the validated ideal component. Set S = E, T = Z in {2,0}, and W = Y. Use h_it = V_i S_i I(T_i = t)/[0.20 pi_t(X_i)] and the Hájek arm means. In strategy scenarios, pi_2(X1) = 0.50 q(X1), with q given by the scenario, and pi_0 = 0.50. In eligibility and outcome scenarios, pi_2 = 0.40 and pi_0 = 0.50. The contrast targets psi_I.",
+   "variance_estimator": "Use IF_it = h_it(W_i - mu_t)/mean(h_it), IF_i = IF_i2 - IF_i0, and SE = sd(IF_i)/sqrt(4000). The validation probability and assignment probabilities are treated as known because they are generated by the protocol.",
+   "interval": "Untruncated two-sided Wald interval: estimate +/- 1.96 SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure if no validated, ideally eligible individual has positive weight in either required arm, or if an estimate or SE is nonfinite. Record effective sample size below 20 as instability without deleting the replicate.",
+   "implementation": "This is a deliberately simple missing-data correction. It demonstrates the catalog caveat that partial observation does not force estimand substitution when a valid validation design recovers the intended variable. It sacrifices precision instead of relying on an untestable bridge model."
+  },
+  {
+   "name": "Full-data ideal oracle",
+   "point_estimator": "Use all simulated gold-standard E, Z, and Y values with the same known-probability Hájek estimator as the validation method, omitting V/0.20. This method is unavailable in the operational dataset and exists only to verify the simulation and interval machinery.",
+   "variance_estimator": "Use the empirical influence-function sandwich SE for the two weighted arm means, with known assignment probabilities.",
+   "interval": "Untruncated two-sided Wald interval: estimate +/- 1.96 SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure for a zero weighted arm denominator or a nonfinite estimate or SE.",
+   "implementation": "Implement as weighted reductions over latent simulation columns. Oracle bias or coverage failure is an implementation or interval-calibration warning, not evidence about protocol substitution."
+  },
+  {
+   "name": "Paired validation estimand-gap diagnostic",
+   "point_estimator": "Within V = 1, estimate psi_O,V using operational variables and psi_I,V using ideal variables on the same individuals, then calculate Delta_hat = psi_O,V - psi_I,V. Use the same known assignment and validation weights as the preceding methods. Classify a replicate as numerically preserving when the entire 90% interval for Delta lies inside [-0.01,0.01]. Classify it as changed when the point estimate has absolute value at least 0.02 and the 95% interval lies wholly outside [-0.01,0.01]. Otherwise classify it as indeterminate.",
+   "variance_estimator": "Calculate the influence function for each constituent risk difference on the common validation sample. Use IF_Delta,i = IF_O,i - IF_I,i so that covariance from shared individuals is retained. Set SE_Delta = sd(IF_Delta)/sqrt(4000).",
+   "interval": "Use Delta_hat +/- 1.645 SE_Delta for the two one-sided equivalence assessment and Delta_hat +/- 1.96 SE_Delta for changed classification.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure if either constituent estimator fails. An indeterminate classification is a substantive result, not nonconvergence.",
+   "implementation": "Report changed-class sensitivity among scenarios with true |Delta| >= 0.02, preserving-class specificity among scenarios with true |Delta| <= 0.01, and the indeterminate probability in every scenario."
+  }
+ ],
+ "performance": {
+  "primary": "Per-scenario empirical coverage of the silent operational 95% interval for psi_I. This directly measures how often a statistically calibrated interval is attached to the wrong protocol target.",
+  "secondary": [
+   "Signed and absolute true Delta for every scenario",
+   "Bias of each estimator against its declared estimand, plus silent-estimator bias against both psi_I and psi_O",
+   "Empirical SE",
+   "Mean influence-function model SE",
+   "Relative error in model SE",
+   "MSE",
+   "Coverage against psi_I and psi_O as applicable",
+   "Bias-eliminated coverage",
+   "Two-sided rejection rate for a zero risk difference",
+   "Nonconvergence and low-effective-sample-size rates",
+   "Changed-class sensitivity, preserving-class specificity, and indeterminate rate for the paired validation diagnostic"
+  ],
+  "n_rep": 2500,
+  "n_rep_derivation": "For a coverage proportion p, Monte Carlo SE is sqrt[p(1-p)/R]. Requiring at most 0.01 under the worst case p = 0.50 gives R >= 0.25/0.01^2 = 2500. At nominal coverage p = 0.95, R = 2500 gives Monte Carlo SE sqrt(0.95 x 0.05/2500) = 0.00436. Thus deviations of approximately 0.02 from nominal coverage are well separated from Monte Carlo noise."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "Restrict the conclusion to this DGM family. First require calibration: the full-data oracle and explicitly labeled operational estimator must each have absolute bias <= 0.005 and coverage between 0.93 and 0.97 in at least 22 of 24 scenarios. Then call silent substitution empirically consequential if every component family contains at least one scenario with true |Delta| >= 0.02, silent intended-estimand coverage is <= 0.80 in at least 75% of materially changed scenarios, and silent intended-estimand coverage is >= 0.93 in at least 75% of numerically preserving scenarios. Call validation recovery successful if it has absolute bias <= 0.005 and coverage between 0.93 and 0.97 in at least 22 scenarios. Call the paired diagnostic usable only if changed-class sensitivity is >= 0.80, preserving-class specificity is >= 0.80, and its indeterminate probability is <= 0.25 after averaging equally across scenarios in each true class.",
+  "problem_is_not_real_if": "Provided the oracle and explicitly labeled operational analyses pass calibration, conclude that no practically important numerical mismatch was demonstrated if all 24 scenarios have true |Delta| <= 0.01 and silent intended-estimand coverage lies between 0.93 and 0.97 in at least 22 scenarios. This conclusion applies only to the specified accuracy, dependence, effect, and risk ranges; it does not establish conceptual identity of the protocols.",
+  "uninformative_if": "Treat the study as uninformative if truth Monte Carlo SE exceeds its threshold, either calibration estimator fails the bias or coverage guard in more than two scenarios, an algebraic negative-control cell has |Delta| > 0.01, more than half of the scenarios fall in the 0.01 < |Delta| < 0.02 gray region, or binomial Monte Carlo intervals around the scenario-count criteria cross the stated thresholds. If material gaps occur but the paired diagnostic misses its accuracy thresholds, conclude that the substitution problem is demonstrated but the proposed sample-level separator remains unanswered."
+ },
+ "threats": [
+  {
+   "threat": "A DGM built only from heterogeneous effects and differential measurement would guarantee the desired finding.",
+   "mitigation": "The factorial includes all cells, including exact negative controls. With absent effect modification, eligibility replacement and strategy merging preserve the risk difference by construction even when classification or strategy labels are coarse. Mild nondifferential outcome capture is expected to produce only a small gap. No cell will be removed after truth is computed, and results will be displayed continuously rather than only as threshold crossings."
+  },
+  {
+   "threat": "Agreement with an ideal-trial estimate can arise from compensating biases and therefore does not prove that the estimand was preserved.",
+   "mitigation": "Define psi_I and psi_O through separate interventions before generating data and compute both structural truths. Use Delta between those truths as the benchmark. Estimator agreement alone never determines a scenario's preserving or changed label."
+  },
+  {
+   "threat": "Known randomization, complete follow-up, and random validation make recovery easier than in observational emulations.",
+   "mitigation": "These assumptions isolate estimand mismatch from confounding, censoring, and validation-selection bias. State explicitly that successful recovery establishes possibility under a valid measurement or missing-data design, not general recoverability in routine EHR data."
+  },
+  {
+   "threat": "Only one component is compromised at a time, while real emulations can compromise several linked components.",
+   "mitigation": "Label conclusions as component-specific first-order effects. Release the generator so a later study can cross multiple substitutions, but do not expand this 24-cell study and confound interpretation."
+  },
+  {
+   "threat": "The operational strategy is deliberately made into a coherent stochastic intervention, which excludes mappings with no causal interpretation.",
+   "mitigation": "Write the operational mixture probabilities into the protocol and describe this as a boundary of the study. Do not call a generic observed-data functional a substituted causal estimand based on these results."
+  },
+  {
+   "threat": "The 0.01 preservation and 0.02 change margins are judgment calls.",
+   "mitigation": "Report signed Delta and component risks without categorization. Repeat only the classification summary at margin pairs 0.005 and 0.015, and 0.02 and 0.03, while retaining the prespecified primary decision rule."
+  },
+  {
+   "threat": "A 20% validation sample may yield correct but imprecise recovery and many indeterminate diagnostic results.",
+   "mitigation": "Treat indeterminate as an outcome rather than forcing a classification. Report effective sample sizes and interval widths. Separate calibration of the validation estimator from the power of the gap diagnostic."
+  },
+  {
+   "threat": "Wald interval failure could be mistaken for estimand mismatch.",
+   "mitigation": "The DGM keeps event risks away from zero and one and provides substantial expected arm counts. Require oracle and correctly labeled operational coverage calibration before interpreting silent undercoverage. Also report bias-eliminated coverage and low-effective-sample-size flags."
+  },
+  {
+   "threat": "The accuracy and differential-measurement values are not calibrated to one named clinical database.",
+   "mitigation": "Describe them as stress-test bands, publish every parameter, and avoid claims about prevalence in applied emulations. The study establishes conditional numerical behavior. External empirical calibration remains necessary before claiming how common each regime is."
+  },
+  {
+   "threat": "A fixed baseline assignment and 24-month endpoint omit time-varying protocol failures.",
+   "mitigation": "State this limitation in the protocol and catalog attachment. Do not extrapolate results to grace periods, treatment switching, irregular observation, dynamic regimes, or informative loss to follow-up."
+  }
+ ],
+ "runtime_estimate": "The design has 24 x 2500 = 60000 replicate-scenarios. Each replicate requires weighted sums for three unique estimators plus the paired diagnostic; it requires zero glm, ltmle, SuperLearner, Stan, or cmdstanr fits. Scaling from the established machine benchmark suggests approximately 1 to 2 hours for replicates on 6 workers. Truth enumeration at the conservative observed rate costs 24 x 4 minutes = 96 minutes. Allowing 30 to 60 minutes for checkpointing, summaries, figures, and validation gives an expected total of 3 to 5 hours, comfortably within an overnight run.",
+ "bears_on": [
+  {
+   "id": "PRO-04",
+   "relation": "answers-part",
+   "what": "It quantifies when three common component substitutions create materially different numerical targets, separates estimator validity from estimand labeling, tests recovery under valid random validation, and evaluates a prespecified numerical-preservation diagnostic. It does not establish a mandatory reporting rule, cover all seven protocol components, or supply language for operational quantities lacking a coherent intervention."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019;38:2074-2102.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo error planning, and separation of method performance from simulation truth."
+  },
+  {
+   "cite": "Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. American Journal of Epidemiology. 2016;183(8):758-764.",
+   "doi_or_url": "10.1093/aje/kwv254",
+   "used_for": "The linked target-trial protocol components and the requirement to map them to available data."
+  },
+  {
+   "cite": "Moreno-Betancur M, Wijesuriya R, Carlin JB. The ideal trial: defining causal estimands that balance relevance and feasibility in target trial emulations and actual randomized trials. Epidemiology. 2026;37(2):153-162.",
+   "doi_or_url": "10.1097/EDE.0000000000001933",
+   "used_for": "Explicit separation of ideal, target, and operationally feasible trial specifications."
+  },
+  {
+   "cite": "Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digital Medicine. 2026.",
+   "doi_or_url": "10.1038/s41746-026-02563-z",
+   "used_for": "Operational realization of protocol components in EHR data and selection of the component-level substitution examples."
+  },
+  {
+   "cite": "Applying the estimand and target trial frameworks to external control analyses using observational data: a case study. Frontiers in Pharmacology. 2024.",
+   "doi_or_url": "10.3389/fphar.2024.1223858",
+   "used_for": "Applied precedent for stating an operational estimand alongside a target-trial specification."
+  }
+ ]
+}

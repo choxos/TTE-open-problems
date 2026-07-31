@@ -1,0 +1,223 @@
+{
+ "title": "Outcome-masked selection of a strategy-preserving time grid for natural grace-period emulations",
+ "question": "Across 24 protocol scenarios, how much do two-year marginal risk-difference estimates move among 1-, 2-, 4-, and 8-week grids; does an outcome-blind process-intensity rule keep absolute bias below 0.01 and 95% coverage between 0.93 and 0.97; how much does the estimand change when the grace period changes from 4 to 12 weeks; and does a within-interval ordering-conflict rate above 0.01 identify grid movement above 0.02 with sensitivity and specificity of at least 0.80?",
+ "aims": "Estimate scenario-specific bias, coverage, and grid movement for a conventional single 4-week clone-censor-weight analysis, an outcome-blind selected grid, four prespecified nested grids, and an exact-order benchmark. Quantify the change in the causal risk difference between 4- and 12-week grace-period strategies while treating them as different estimands. Evaluate whether post-lock grid-invariance and ordering-conflict diagnostics identify materially unreliable coarse-grid results.",
+ "dgm": {
+  "covariates": "Each replicate contains an independent outcome-masked design sample of 1000 people and an analysis sample of 4000 people. Everyone is eligible at time 0 and is followed for 104 weeks. Draw age from N(60, 10^2) truncated to 40 through 80 and define Xage=(age-60)/10. Draw female F from Bernoulli(0.50), comorbidity C from Bernoulli(0.35), S0 from N(0.30 Xage+0.40 C-0.20 F, 1), and baseline recorded marker Z0=S0+N(0, 0.15^2). At the start of week k, untreated people initiate irreversible treatment with probability 1-exp[-exp(etaA)], where etaA is alphaA+0.75 Z+0.35 C+0.20 Xage-0.15 F+0.30 I(a visit occurred in the preceding week)+0.20 k/52. Treatment starts exactly at the weekly boundary. After the treatment decision, latent clinical state evolves as Sk=0.90 S(k-1)+0.05 Xage+0.08 C-0.04 F+N(0, 0.35^2); treatment does not affect this state. A visit is scheduled during week k with probability expit(alphaV+0.35 C+0.25 F+0.35 max(Z,0)+0.12 min(R,12)+0.10 sin(2 pi k/52)), where R is complete weeks since the last visit. Its time is k+Uniform(0.05,0.95). At a visit, Z is replaced by Sk+N(0,0.15^2); otherwise Z is carried forward and R increases by one. At most one visit occurs per week. The treatment and visit processes are generated independently of subsequent outcome innovations conditional on recorded history. The masked design sample retains treatment and visit histories but no outcome labels.",
+  "outcome_model": "The first nonfatal clinical event follows a piecewise exponential model. During week k its rate per week is exp[-6.10+0.30 Xage+0.40 C-0.20 F+0.55 Sk+0.15 k/52+psi(s,C)], where s is weeks since treatment initiation and psi is the scenario-specific log hazard ratio. An exponential waiting time is drawn within each week; an event occurs if the waiting time is below one. Exact event time is retained. Follow-up ends at the first event or week 104. There is no competing event or loss to follow-up. Treatment and visit histories do not respond to the nonfatal outcome, which permits strict outcome masking in the independent design sample.",
+  "treatment_effect": "Three profiles are used. Under the null profile, psi(s,C)=0. Under immediate benefit, psi(s,C)=log(0.60)+C log(0.80/0.60) from the instant of initiation onward. Under the biphasic profile, psi(s,C)=log(1.40)+C log(1.60/1.40) for 0 through less than 2 weeks after initiation, 0 for 2 through less than 6 weeks, and log(0.55)+C log(0.75/0.55) from week 6 onward. Treatment is irreversible and has no effect on the covariate, treatment, or visit processes.",
+  "effect_modification": "Comorbidity modifies treatment effects on the log hazard scale. For immediate benefit, the hazard ratio is 0.60 when C=0 and 0.80 when C=1. For the biphasic profile, the early hazard ratios are 1.40 and 1.60, and the delayed hazard ratios are 0.55 and 0.75, for C=0 and C=1 respectively. The null remains exactly null in both strata.",
+  "factors": [
+   {
+    "name": "Visit intensity",
+    "levels": [
+     "Frequent: alphaV=-1.75, producing roughly monthly observation",
+     "Sparse: alphaV=-3.45, producing roughly observation every 12 weeks"
+    ],
+    "rationale": "Monthly and approximately three-monthly observation reflect the frequencies compared by Sperling and colleagues. The two levels test whether a process-based selector becomes finer when recorded decision points are dense."
+   },
+   {
+    "name": "Natural treatment pressure",
+    "levels": [
+     "Lower uptake: alphaA=-4.05, targeting approximately 25% initiation by week 12",
+     "Higher uptake: alphaA=-2.85, targeting approximately 60% initiation by week 12"
+    ],
+    "rationale": "These levels represent sparse and common early initiation while retaining practical positivity for both grace strategies. Realized initiation probabilities and effective sample sizes will be reported rather than assumed from nominal calibration."
+   },
+   {
+    "name": "Outcome effect timing",
+    "levels": [
+     "Exact null",
+     "Immediate heterogeneous benefit",
+     "Two-week early harm, four-week neutral period, then heterogeneous benefit"
+    ],
+    "rationale": "The null is a falsification condition. The immediate and biphasic profiles create distinct clinically plausible relationships between treatment timing and within-interval events. Crucially, all three share identical treatment and visit laws, so the outcome-blind selector cannot be engineered to recognize the favorable grid."
+   },
+   {
+    "name": "Grace-period protocol",
+    "levels": [
+     "G=4 weeks",
+     "G=12 weeks"
+    ],
+    "rationale": "Four and 12 weeks lie within the 0- to 180-day range documented in applied emulations and represent materially different clinical initiation windows. They are analyzed as different treatment strategies and estimands."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The design is fully factorial: 2 visit intensities by 2 treatment pressures by 3 outcome profiles by 2 grace protocols gives 24 protocol scenarios. Only 12 observational datasets are generated per replicate because both grace protocols are evaluated on the same data. Eligibility, treatment assignment opportunities, and follow-up all begin at time 0. All candidate analysis grids preserve time 0, G, and week 104 as boundaries, retain the underlying weekly treatment decisions, and therefore target the same estimand within a grace protocol. Conditional exchangeability is true given recorded history. Treatment and visit laws are identical across the three outcome profiles. The null profile has no direct or mediated treatment effect.",
+  "cannot_detect": "The study cannot select a clinically meaningful grace period, prove that any process-only selector works for all outcome laws, or treat different grace periods as sensitivity analyses for one estimand. It cannot address treatment decisions or covariate changes within a week, competing risks, recurrent outcomes, fatal outcomes that alter subsequent care, multiple treatment versions, interference, unmeasured confounding, visits driven by unrecorded current health, or treatment-confounder feedback. Because the weekly propensity model has fixed dimension and is correctly specified, the study does not assess the nuisance-model burden of very fine grids, machine-learning estimators, irregular continuous-time decisions, or model misspecification beyond temporal aggregation."
+ },
+ "estimands": [
+  {
+   "name": "Two-year risk difference for grace period G",
+   "definition": "For G equal to 4 or 12 weeks, define gEarly,G as natural treatment initiation at weekly decisions before G followed by forced initiation at the week-G boundary among those still untreated. Define gDelay,G as prevention of initiation before G followed by return to the natural initiation process from G onward. The estimand is RDG=P(TY at or before 104 under gEarly,G)-P(TY at or before 104 under gDelay,G). It is a marginal superpopulation intention-to-follow-the-specified-dynamic-strategy contrast. Negative values favor earlier initiation.",
+   "true_value_computation": "For each of the 12 structural mechanisms, simulate 2000000 independent people under all four regimes gEarly,4, gDelay,4, gEarly,12, and gDelay,12 using common exogenous random numbers. The conservative independent-sample Monte Carlo standard error bound for each risk difference is sqrt(0.5/2000000)=0.00050. Use the paired empirical variance for the actual standard error. Run truth generation in independent batches and extend to 4000000 if the paired Monte Carlo standard error exceeds 0.00050."
+  },
+  {
+   "name": "Change induced by changing the grace-period strategy",
+   "definition": "DeltaG=RD12-RD4 on the absolute two-year risk scale. This is a contrast between two protocol-defined causal estimands, not movement of one fixed estimand under alternative analysis settings.",
+   "true_value_computation": "Compute DeltaG from the four coupled intervention risks. Without common random numbers, its conservative standard-error bound at 2000000 people is sqrt(1/2000000)=0.00071; the coupled simulation should be smaller. Extend to 4000000 if its paired Monte Carlo standard error exceeds 0.00050."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Single 4-week endpoint clone-censor-weight analysis",
+   "point_estimator": "Clone every analysis-sample person to gEarly,G and gDelay,G. For gDelay,G, starts before G cause artificial censoring at the right endpoint of the containing 4-week interval. For gEarly,G, natural starts before G remain adherent; a person untreated at G remains only if natural initiation occurs at G and receives inverse probability 1/pA(G). Estimate weekly pA with a complementary-log-log GLM containing the exact DGM treatment terms. For gDelay,G, multiply inverse probabilities 1/(1-pA(k)) through k<G. Estimate each arm's risk with a normalized weighted product-limit estimator and subtract risks. Intervals are split at G and week 104.",
+   "variance_estimator": "Stack the initiation-model score with the two arm-specific weighted hazard scores. Use the empirical original-person cluster sandwich so the covariance between clones and uncertainty from estimated weights are included. Apply the delta method to the two product-limit risks and their difference.",
+   "interval": "Unbounded 95% Wald interval RD plus or minus 1.96 times the stacked-sandwich standard error. Report arm-specific complementary-log-log intervals as supplementary output.",
+   "is_status_quo": true,
+   "nonconvergence": "Nonconvergence occurs if the initiation GLM reports failure, has a nonfinite coefficient, has Hessian condition number above 1e12, produces a nonfinite adherence weight, leaves an empty arm risk set before week 104, or produces a nonpositive or nonfinite sandwich variance. Extreme weights alone are not reclassified as nonconvergence.",
+   "implementation": "Use exact weekly treatment histories to estimate adherence probabilities, but use the common endpoint-censoring convention on the single prespecified 4-week analysis grid. Primary results use untruncated weights. Repeat with weights capped at 20 and with empirical 1st- and 99th-percentile truncation as labeled sensitivity analyses."
+  },
+  {
+   "name": "Prespecified fixed-grid multiverse",
+   "point_estimator": "Repeat the endpoint clone-censor-weight estimator on nested 1-, 2-, 4-, and 8-week grids. Insert G and week 104 as boundaries even when they interrupt a regular interval. Report all four risk differences, their signed differences from the 1-week estimate, and M=max(RD1,RD2,RD4,RD8)-min(RD1,RD2,RD4,RD8). No grid is selected from these outcome results.",
+   "variance_estimator": "Use one joint stacked original-person cluster sandwich containing the shared initiation-model score and all grid-specific hazard scores. This supplies covariance for paired differences among grids.",
+   "interval": "Use 95% Wald intervals for each risk difference. Use the joint covariance with Holm-adjusted 95% Wald intervals for the three comparisons with the 1-week estimate. Treat M as a descriptive nonsmooth diagnostic and obtain its Monte Carlo uncertainty across replicates.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the fixed-grid criteria separately to each grid. Retain the replicate for methods that converge, flag every failed grid, and require all four grids for calculation of M.",
+   "implementation": "The 1-week grid applies artificial censoring at the exact weekly treatment boundary. Coarser endpoint grids freeze the predeviation weight and retain events until the interval endpoint. This deliberately represents the ordering problem under study while preserving the same weekly protocol and causal estimand."
+  },
+  {
+   "name": "Outcome-blind process-adaptive selected-grid CCW",
+   "point_estimator": "Before revealing any analysis-sample outcomes, use the independent 1000-person design sample. For each candidate grid and each person-bin, count visits plus treatment starts. Let aDelta be the number of bins containing at least two such events divided by the number containing at least one. Select the coarsest grid whose one-sided 95% Wilson upper bound for aDelta is at most 0.20. Require at least 50 treatment starts and 500 visits in the design sample; if no candidate passes the aliasing rule, select 1 week, and if the support counts fail, declare the selector unsupported. Lock the selected grid, reveal analysis outcomes, and apply the same endpoint CCW estimator.",
+   "variance_estimator": "Use the stacked original-person cluster sandwich for the locked grid. The grid is chosen in an independent design sample, so the interval is conditional on the locked grid and does not require an outcome-selection correction. Empirical coverage across replicates evaluates the full two-sample procedure.",
+   "interval": "Unbounded 95% Wald interval based on the locked-grid stacked-sandwich standard error.",
+   "is_status_quo": false,
+   "nonconvergence": "The method fails if the design sample does not meet the support counts, the locked-grid initiation model or hazard estimator meets a fixed-grid failure criterion, or the sandwich variance is nonpositive or nonfinite.",
+   "implementation": "Run the selector separately for each G because G changes the mandatory partition boundary. Also evaluate aliasing thresholds of 0.10 and 0.30 as prespecified sensitivity analyses, without replacing the primary 0.20 rule."
+  },
+  {
+   "name": "Exact-order clone-censor-weight benchmark",
+   "point_estimator": "Use the same weekly propensity estimates and grace strategies, but censor a gDelay,G clone at the exact weekly boundary of a prohibited start before accepting any subsequent outcome. Apply the forced action for gEarly,G exactly at G. Estimate arm risks by a weighted product-limit calculation using exact event and censoring times.",
+   "variance_estimator": "Use the stacked original-person cluster sandwich with exact-time weighted hazard increments and the shared initiation-model score.",
+   "interval": "Unbounded 95% Wald interval for the risk difference using the delta-method sandwich standard error.",
+   "is_status_quo": false,
+   "nonconvergence": "Nonconvergence uses the same GLM, risk-set, weight, and sandwich criteria as the fixed-grid analyses.",
+   "implementation": "This is the same-estimand numerical benchmark. Agreement between it and the 1-week grid is an implementation check. Its comparison with the 4-week endpoint method separates ordering loss from the causal effect of changing G."
+  }
+ ],
+ "performance": {
+  "primary": "Empirical coverage of the nominal 95% interval for the outcome-blind selected-grid risk difference in each scenario.",
+  "secondary": [
+   "Bias and absolute bias of every risk-difference estimator",
+   "Empirical standard error",
+   "Mean model-based standard error",
+   "Relative error in model-based standard error",
+   "Mean squared error",
+   "Bias-eliminated coverage",
+   "Null rejection rate and non-null rejection rate",
+   "Convergence and selector-support rates",
+   "Selection frequencies for the four grids",
+   "Mean, median, 90th percentile, and 95th percentile of M",
+   "Signed movement of each coarse-grid estimate from the 1-week and exact-order estimates",
+   "DeltaG bias and Monte Carlo uncertainty",
+   "Maximum weight, weight coefficient of variation, and arm-specific effective sample size",
+   "Ordering-conflict rate ODelta, defined as the proportion of observed first outcomes in gDelay,G clones that occur after a prohibited treatment start but before the right endpoint of the same grid interval",
+   "Sensitivity and specificity of O4 greater than 0.01 for identifying M greater than 0.02 and absolute 4-week bias greater than 0.01"
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "For coverage near 0.95, MCSE=sqrt[0.95(1-0.95)/R]. Requiring MCSE at most 0.005 gives R at least 0.0475/0.000025=1900. Use 2000 replicates, giving MCSE 0.00487. The existing harness will calculate realized Monte Carlo standard errors for every performance measure."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "Define a scenario as materially grid-sensitive when the lower 95% Monte Carlo confidence bound for mean M exceeds 0.02, the Monte Carlo interval for 4-week bias lies wholly outside -0.01 to 0.01, or the upper Monte Carlo confidence bound for 4-week coverage is below 0.90. Conclude that grid choice is a real practical problem within this domain if at least 6 of 24 scenarios meet a criterion and the affected scenarios include both visit-intensity levels and both grace periods. Call the proposed selector a successful partial solution only if at least 22 of 24 scenarios have absolute bias no greater than 0.01, coverage between 0.93 and 0.97, and bias no more than 0.005 worse than the exact-order benchmark. Call O4 useful only if both sensitivity and specificity are at least 0.80. Separately call the grace-period contrast material when the Monte Carlo interval for DeltaG lies wholly outside -0.02 to 0.02; this does not imply that either grace period is incorrect.",
+  "problem_is_not_real_if": "Within this simulated domain, conclude that meaningful grid dependence was not demonstrated only if all 24 scenarios have an upper 95% Monte Carlo bound for mean M below 0.01, Monte Carlo intervals for both 4-week and selected-grid bias wholly inside -0.005 to 0.005, and coverage between 0.93 and 0.97. This conclusion does not establish that a clinically meaningful grace period can be selected from process data.",
+  "uninformative_if": "Classify the result as uninformative if it falls between the real and not-real regions, if more than 5% of replicates fail for either the status quo or selected method in any scenario, if median arm-specific effective sample size falls below 100, if truth Monte Carlo standard error remains above 0.00050 after extension, or if Monte Carlo intervals cross the materiality thresholds in more than half of the scenarios."
+ },
+ "threats": [
+  {
+   "threat": "A DGM constructed to place treatment and outcomes inside the same coarse intervals can manufacture the desired finding.",
+   "mitigation": "Prespecify all coefficients before running outcomes; include exact-null, immediate-benefit, and biphasic profiles under identical treatment and visit laws; report every factorial cell; and compare endpoint results with an exact-order benchmark. The null cells measure false indications of grid sensitivity, while the paired outcome profiles expose both favorable and unfavorable cases for the outcome-blind selector."
+  },
+  {
+   "threat": "Changing G changes the treatment strategy and usually changes the causal estimand.",
+   "mitigation": "Define gEarly,G and gDelay,G separately for each G, compute separate truths, and label DeltaG as a contrast between estimands. Never use agreement across G as a validity requirement or select G from estimated outcomes."
+  },
+  {
+   "threat": "Treatment and visit processes cannot reveal outcome latency or determine a uniquely adequate grid.",
+   "mitigation": "Hold those processes exactly constant across the three outcome profiles. Interpret selector performance as domain-specific operating characteristics, not proof that process information identifies the correct grid."
+  },
+  {
+   "threat": "The independent design sample gives the selector more information and cleaner masking than many applied studies possess.",
+   "mitigation": "Count its 1000 participants in the computational and data requirements, report unsupported selections, and repeat the selector using design samples of 500 and 2000 as secondary sample-size checks."
+  },
+  {
+   "threat": "Correct weekly propensity specification may make weighting look better than it is in practice.",
+   "mitigation": "State that the design isolates temporal aggregation. Report weight distributions and effective sample sizes. Do not generalize results to flexible nuisance estimation, latent confounding, or misspecified treatment models."
+  },
+  {
+   "threat": "Artificial censoring weights may become unstable when early initiation is uncommon.",
+   "mitigation": "Factor treatment pressure explicitly; report untruncated primary results, convergence, maximum weights, and effective sample sizes; and repeat with a hard cap of 20 and empirical 1st- and 99th-percentile truncation."
+  },
+  {
+   "threat": "The one-week base process and one visit per week omit finer and more irregular ordering.",
+   "mitigation": "Retain continuous visit and outcome timestamps within weeks, but limit conclusions to protocols with weekly treatment decisions. State explicitly that subweekly treatment decisions and multiple same-week visits remain untested."
+  },
+  {
+   "threat": "A nonfatal outcome that does not alter subsequent care makes strict masking easier and may understate real feedback.",
+   "mitigation": "Use the independent design sample only for selection and stop analysis risk sets at the first outcome. List fatal outcomes and post-outcome treatment or visit changes as required extensions, not as claims answered here."
+  },
+  {
+   "threat": "Software mistakes in event ordering could reproduce the bias being studied.",
+   "mitigation": "Unit-test hand-constructed trajectories with treatment immediately before and after an outcome; require numerical agreement between the 1-week and exact-order estimators; verify null truths near zero; and save replicate-level seeds and failure records through the existing resumable harness."
+  },
+  {
+   "threat": "Twenty-four cells cannot establish universal diagnostic sensitivity or specificity.",
+   "mitigation": "Use the numerical diagnostic thresholds only for this prespecified domain, report binomial uncertainty, and publish cell-level results so later studies can add mechanisms without changing the original decision rule."
+  }
+ ],
+ "runtime_estimate": "There are 24 protocol scenarios times 2000 replicates, or 48000 scenario-replicates. Pairing both G values means only 12 times 2000, or 24000, observational datasets are generated. Each dataset requires one weekly complementary-log-log GLM; all four grids, both grace protocols, product-limit estimates, and stacked scores reuse that fit. Thus the main run contains approximately 24000 GLM fits and no longitudinal TMLE or SuperLearner fits. Twelve coupled truth jobs each simulate 2000000 people under four regimes. Streaming summaries avoid storing person-period data across replicates. On 6 workers, allow approximately 3 to 4 hours for truth generation and 3 to 6 hours for the replicate run, diagnostics, and serialization. A 100-replicate timing run must precede release; projected total time above 12 hours triggers reduction of truth batches only after their paired MCSE requirement is met, not reduction of the 2000 analysis replicates.",
+ "bears_on": [
+  {
+   "id": "TZO-01",
+   "relation": "answers-part",
+   "what": "The study evaluates a concrete outcome-blind grid selector, a locked same-estimand multiverse, and an ordering-conflict diagnostic. It quantifies movement between two grace-period strategies but intentionally does not claim that treatment and observation processes can select a uniquely meaningful grace period."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo error, and performance reporting."
+  },
+  {
+   "cite": "Hernan MA, Sauer BC, Hernandez-Diaz S, Platt R, Shrier I. Specifying a target trial prevents immortal time bias and other self-inflicted injuries in observational analyses. Journal of Clinical Epidemiology. 2016.",
+   "doi_or_url": "10.1016/j.jclinepi.2016.04.014",
+   "used_for": "Alignment of eligibility, treatment assignment, and follow-up."
+  },
+  {
+   "cite": "Cain LE, Robins JM, Lanoy E, Logan R, Costagliola D, Hernan MA. Using observational data to emulate a randomized trial of dynamic treatment-switching strategies. International Journal of Epidemiology. 2016.",
+   "doi_or_url": "10.1093/ije/dyv295",
+   "used_for": "Grace-period strategies and dynamic treatment emulation."
+  },
+  {
+   "cite": "Maringe C, Benitez Majano S, Exarchakou A, et al. Reflection on modern methods: trial emulation in the presence of immortal-time bias. International Journal of Epidemiology. 2020.",
+   "doi_or_url": "10.1093/ije/dyaa057",
+   "used_for": "Clone-censor-weight implementation and artificial censoring."
+  },
+  {
+   "cite": "Ferreira Guerra et al. Impact of discretization of the timeline for longitudinal causal inference methods. Statistics in Medicine. 2020.",
+   "doi_or_url": "10.1002/sim.8710",
+   "used_for": "Prior evidence that discretization changes information and that outcome-based variance criteria have already been investigated."
+  },
+  {
+   "cite": "Sperling et al. Optimal CD4 count for initiating HIV treatment: impact of CD4 observation frequency and grace periods, and performance of dynamic marginal structural models. Epidemiology. 2014.",
+   "doi_or_url": "10.1097/EDE.0000000000000043",
+   "used_for": "Monthly and less frequent observation levels and prior evidence that grace periods and observation frequency alter results."
+  },
+  {
+   "cite": "Tankpinou Zoumenou H, et al. Time Partitioning in Target Trial Emulation. 2026.",
+   "doi_or_url": "https://arxiv.org/abs/2603.15924",
+   "used_for": "The distinction between overly coarse and overly fine partitions and the need to preserve within-interval ordering."
+  },
+  {
+   "cite": "Pharmacoepidemiology and Drug Safety systematic review identified in the catalog audit.",
+   "doi_or_url": "10.1002/pds.5071",
+   "used_for": "Applied grace periods ranging from 0 to 180 days and the scarcity of grace-period sensitivity analyses."
+  },
+  {
+   "cite": "Wanis et al. work on natural and stochastic grace-period strategies.",
+   "doi_or_url": "https://arxiv.org/abs/2212.11398",
+   "used_for": "Interpreting grace-period length as part of a treatment strategy rather than a tuning parameter for one fixed estimand."
+  }
+ ]
+}

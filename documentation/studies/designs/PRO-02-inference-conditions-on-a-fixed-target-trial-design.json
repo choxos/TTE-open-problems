@@ -1,0 +1,254 @@
+{
+ "title": "Coverage after data-adaptive selection of a target trial protocol",
+ "question": "Across 24 scenarios varying cohort size, outcome frequency, candidate-library size and treatment-effect structure, what is the marginal coverage of a nominal 95% confidence interval for the selected protocol's risk difference when selection uses pooled outcome prevalence or covariate-outcome associations, how many percentage points of coverage are lost relative to prespecified-protocol inference, and do 50:50 sample splitting or simultaneous Bonferroni intervals restore coverage to at least 93%?",
+ "aims": "The primary aim is to estimate coverage for the randomly selected superpopulation estimand under an outcome-count workability selector that never examines a treatment effect. Secondary aims are to estimate coverage under prognostic-association selection, an effect-seeking positive control and an outcome-blinded selector; quantify bias, interval width and nonconvergence; compare ordinary intervals with sample splitting and simultaneous inference; and determine whether the observed multiverse spread predicts post-selection bias or noncoverage. The study evaluates inferential corrections for a recorded algorithmic search. It does not repeat the already demonstrated use of multiverse displays as descriptive analyses.",
+ "dgm": {
+  "covariates": "Generate independent individuals. Draw U_Z uniformly between Phi(-2) and Phi(2), set Z=Phi_inverse(U_Z), and define age=55+10Z years. Draw S from Bernoulli(0.50). Draw C from Bernoulli(expit(-0.40+0.50Z+0.35S)). Draw epsilon_B from N(0,1) and set B=0.30Z+0.40(C-0.5)+0.20(S-0.5)+0.80epsilon_B. Draw baseline treatment A from Bernoulli(e), where logit(e)=-0.30+0.45Z+0.35(S-0.5)+0.60(C-0.5)+0.35B. A denotes initiation at time zero followed by perfect adherence through follow-up; A=0 denotes no initiation. Everyone is event-free at time zero. There is no loss to follow-up or competing event. Candidate protocols compare these strategies among people with age at least c and use first event by horizon h. The K=4 library is c in {50,55} crossed with h in {36,60} months. The K=16 library is c in {45,50,55,60} crossed with h in {24,36,48,60} months. The prespecified reference protocol is c=55 and h=60.",
+  "outcome_model": "Draw U_T from Uniform(0,1). Let lambda0 be 0.00070 or 0.00320 per month. Define eta(A)=0.35Z+0.25(S-0.5)+0.50(C-0.5)+0.30B+A(theta0+theta1Z), and set T=-log(U_T)/(lambda0*exp(eta(A))). Observe time=min(T,60), delta=I(T<=60), and Y_h=I(T<=h) for every candidate horizon. Thus the conditional hazard is constant in time on the proportional-hazards scale. The two lambda0 values are calibrated to approximately 5% and 20% untreated 60-month risks in the unrestricted population; exact risks are recorded from the independent truth calculation.",
+  "treatment_effect": "Three structures are used. The null structure sets theta0=0 and theta1=0. The homogeneous protective structure sets theta0=-0.287682072, corresponding to a hazard ratio of 0.75, and theta1=0. The heterogeneous structure sets theta0=-0.287682072 and theta1=0.25.",
+  "effect_modification": "Only the heterogeneous structure contains effect modification. Its conditional hazard ratio is exp(-0.287682072+0.25Z), equal to 0.455, 0.750 and 1.237 at Z=-2, 0 and 2. This creates protocol-specific causal effects because the age eligibility thresholds select different distributions of Z. The null and homogeneous structures ensure that any finding is not built entirely from effect heterogeneity.",
+  "factors": [
+   {
+    "name": "Cohort size",
+    "levels": [
+     "n=4000",
+     "n=8000"
+    ],
+    "rationale": "These represent moderate and large single-database emulations while retaining sparse outcomes in the stricter eligibility groups. The lower level matches the locally benchmarked simulation size."
+   },
+   {
+    "name": "Untreated outcome frequency",
+    "levels": [
+     "lambda0=0.00070 per month, approximately 5% by 60 months",
+     "lambda0=0.00320 per month, approximately 20% by 60 months"
+    ],
+    "rationale": "The levels distinguish a precision-constrained outcome from a common outcome. Outcome prevalence is itself one of the quantities investigators inspect while revising protocols."
+   },
+   {
+    "name": "Recorded protocol search size",
+    "levels": [
+     "K=4",
+     "K=16"
+    ],
+    "rationale": "Four candidates represent a small revision exercise. Sixteen candidates remain modest relative to the eligibility, comparator, grace-period, washout and outcome choices cataloged in applied guidance. The nested libraries isolate the effect of expanding a known search."
+   },
+   {
+    "name": "Treatment-effect structure",
+    "levels": [
+     "null",
+     "homogeneous hazard ratio 0.75",
+     "age-modified hazard ratio exp(-0.287682072+0.25Z)"
+    ],
+    "rationale": "The null detects selection artifacts without a causal effect, the homogeneous level checks a conventional proportional effect, and the modified level allows legitimate protocol-specific estimands."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The design is fully factorial: 2 cohort sizes by 2 outcome frequencies by 2 library sizes by 3 effect structures. Consistency, conditional exchangeability given Z, S, C and B, positivity, independent sampling, perfect measurement and a correctly specified propensity model are deliberately true. Every candidate is a legitimate target trial with time zero, eligibility, strategies, outcome and horizon defined before its estimate is calculated. Candidate estimates remain strongly correlated because eligibility populations and follow-up horizons are nested. This isolates post-selection inference from confounding-model failure. Selection algorithms and tie rules are frozen before simulation. The effect-seeking selector is only a positive control and is excluded from the substantive decision rule.",
+  "cannot_detect": "The study cannot assess undocumented human searches, candidates outside the recorded library, scientific validity of the selected question, time-varying treatment, grace periods, treatment switching, informative censoring, competing events, irregular observation, measurement error, nuisance-model misspecification, machine-learning estimators or longitudinal TMLE. It estimates marginal coverage for the selected superpopulation estimand, not exact conditional coverage given a particular selection event. Findings for the recorded algorithms cannot establish that every data-informed protocol revision invalidates inference."
+ },
+ "estimands": [
+  {
+   "name": "Primary randomly selected protocol risk difference",
+   "definition": "For selector s and observed selection data D_s, let K_s(D_s)=(c_s,h_s). The estimand is Psi_s=P(T^1<=h_s | age>=c_s)-P(T^0<=h_s | age>=c_s), where T^a is the event time under sustained strategy A=a. It is a marginal superpopulation risk difference. Coverage is marginal over cohort generation and protocol selection. Each replicate is scored against the truth for the protocol actually selected in that replicate, never against the reference protocol.",
+   "true_value_computation": "For each of the six unique lambda0 by treatment-effect combinations, independently generate 2,000,000 covariate vectors. For every one of the 16 possible protocols and a in {0,1}, calculate p_a,h(X)=1-exp(-lambda0*h*exp(0.35Z+0.25(S-0.5)+0.50(C-0.5)+0.30B+a(theta0+theta1Z))) and average it among age>=c. Use common covariate draws for both strategies and all protocols. Divide the draws into 200 batches and calculate the Monte Carlo SE of every risk difference. Extend in increments of 1,000,000 if any truth MCSE exceeds 0.00005. Truth is calculated only six times because n and K do not change it. The 0.00005 threshold is at most about 1% of the anticipated sampling SE and prevents truth noise from materially changing coverage."
+  },
+  {
+   "name": "Prespecified candidate risk differences",
+   "definition": "For each fixed k=(c,h), Psi_k=P(T^1<=h | age>=c)-P(T^0<=h | age>=c). Candidatewise coverage when k is treated as prespecified is a calibration control for sparse-data and Wald-approximation failures.",
+   "true_value_computation": "Use the same locked table of Monte Carlo-integrated truths. Report candidatewise results for every candidate and separately for the reference protocol c=55, h=60."
+  },
+  {
+   "name": "Protocol-induced target movement",
+   "definition": "For each replicate, report Psi_Ks-Psi_ref, where Psi_ref is the 60-month risk difference among people aged at least 55. This is target movement, not estimator bias. Estimator bias is separately defined as estimated Psi_Ks minus Psi_Ks.",
+   "true_value_computation": "Look up both values in the locked candidate-truth table. Do not score the selected interval against Psi_ref."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Prespecified-candidate IPW calibration",
+   "point_estimator": "Fit e_gamma(X)=P(A=1|X) by logistic regression with predictors Z, S-0.5, C-0.5 and B. For each candidate k and a in {0,1}, estimate mu_a,k as the Hajek mean solving sum I(age>=c)I(A=a)/p_a(X)*(Y_h-mu_a,k)=0, with p_1=e_gamma and p_0=1-e_gamma. Estimate Psi_k=mu_1,k-mu_0,k. Do not truncate weights.",
+   "variance_estimator": "Use a joint empirical M-estimation sandwich. Stack the propensity score U_gamma=x(A-e_gamma) with both weighted-mean equations for every candidate. Let Ahat be the empirical negative derivative matrix and Bhat the empirical outer product of the stacked scores. Use Ahat_inverse Bhat Ahat_inverse_transpose divided by n, then apply the contrast mu_1,k-mu_0,k. This accounts for propensity estimation and supplies all cross-candidate covariances.",
+   "interval": "Untruncated two-sided Wald interval estimate plus or minus 1.959964 times its sandwich SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs if the propensity model does not converge, is rank deficient, has nonfinite coefficients or probabilities, a treatment-specific weighted denominator is zero, the sandwich matrix cannot be inverted, or the estimate or SE is nonfinite or the SE is nonpositive. Also record effective sample size below 20 in either arm as an inferential failure.",
+   "implementation": "Fit one propensity glm per full replicate. Compute every candidate estimate and the joint sandwich algebraically. Candidatewise coverage provides the finite-sample calibration against which post-selection coverage is interpreted."
+  },
+  {
+   "name": "Naive interval after pooled-outcome workability selection",
+   "point_estimator": "Order candidates by decreasing eligibility threshold and then increasing horizon. Select the first candidate having at least 100 eligible people in each treatment group and at least 70 pooled observed events, where event counts ignore treatment labels. Seventy corresponds to ten events for each of seven prespecified prognostic and treatment terms. If none qualifies, select the candidate with the largest pooled event count; break ties using the same order. Report its fitted-propensity IPW risk difference.",
+   "variance_estimator": "Use only the selected candidate's ordinary M-estimation sandwich SE. The selection rule is omitted from the variance calculation.",
+   "interval": "Untruncated estimate plus or minus 1.959964 SE.",
+   "is_status_quo": true,
+   "nonconvergence": "Apply the IPW failure rules to the selected candidate. Record separately whether no candidate met the workability thresholds.",
+   "implementation": "This is the primary current-practice comparator. It uses outcome prevalence and sample-size feasibility but never calculates or ranks a treatment effect during protocol selection."
+  },
+  {
+   "name": "Naive interval after prognostic-association selection",
+   "point_estimator": "Before examining outcomes, define the external prognostic score R=0.35Z+0.25(S-0.5)+0.50(C-0.5)+0.30B and standardize it using the full cohort. Among candidates with at least 100 people in each treatment group and variation in Y_h, select the candidate maximizing the squared Pearson correlation between R and Y_h within its eligible population. The calculation pools treatment groups and never uses an effect contrast. Break ties by decreasing eligibility threshold and then increasing horizon. Report the selected fitted-propensity IPW risk difference.",
+   "variance_estimator": "Use the selected candidate's ordinary M-estimation sandwich SE and ignore selection.",
+   "interval": "Untruncated estimate plus or minus 1.959964 SE.",
+   "is_status_quo": true,
+   "nonconvergence": "Failure occurs under the IPW rules or if no candidate has both outcome variation and the required treatment-group sizes.",
+   "implementation": "This formalizes protocol revision after inspecting covariate-outcome associations while keeping treatment-effect estimates hidden."
+  },
+  {
+   "name": "Naive interval after effect-seeking selection",
+   "point_estimator": "Calculate every candidate's ordinary IPW estimate and SE, then select the smallest standardized statistic estimate divided by SE because benefit is defined as a negative risk difference. Break exact ties using the fixed candidate order.",
+   "variance_estimator": "Use the selected candidate's ordinary M-estimation sandwich SE and ignore selection.",
+   "interval": "Untruncated estimate plus or minus 1.959964 SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Exclude nonestimable candidates from ranking. Fail the method if all candidates are nonestimable.",
+   "implementation": "This is a positive control demonstrating the behavior of explicit effect-directed searching. It is not used to decide whether effect-blind protocol development creates a material problem."
+  },
+  {
+   "name": "Outcome-blinded metadata selection with full-sample inference",
+   "point_estimator": "Using only Z, S, C, B and A, calculate inverse-probability-weighted absolute standardized mean differences for those four covariates within each eligibility population. Select the eligibility threshold minimizing the maximum absolute standardized difference, requiring effective sample size at least 20 in both groups. Set h=60 because outcomes are unavailable to choose a horizon. Break ties by threshold closest to 55, then by the lower threshold. After unmasking outcomes, report the full-sample IPW risk difference.",
+   "variance_estimator": "Use the selected candidate's ordinary M-estimation sandwich SE. Selection is not added to the variance estimator, so whether outcome blinding alone is sufficient is evaluated rather than assumed.",
+   "interval": "Untruncated estimate plus or minus 1.959964 SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs if propensity estimation fails, no threshold meets the effective-sample-size requirement, or the selected IPW estimate or SE fails.",
+   "implementation": "This represents a design team exposed to treatment and covariate metadata but no outcome prevalence, covariate-outcome association or treatment effect."
+  },
+  {
+   "name": "Recorded-search simultaneous Bonferroni inference",
+   "point_estimator": "Use the same selected IPW estimate produced by each full-data selector.",
+   "variance_estimator": "Use the same candidate-specific M-estimation sandwich SE. No independence between candidates is assumed.",
+   "interval": "For a library of K candidates, use estimate plus or minus qnorm(1-0.05/(2K)) times SE. Use the original declared K even if a selector would not choose some candidates.",
+   "is_status_quo": false,
+   "nonconvergence": "The method fails if any candidate required by the declared simultaneous family is nonestimable or if the selected estimate fails.",
+   "implementation": "Construct simultaneous intervals for the complete recorded library before applying the selector. Familywise coverage implies marginal coverage for any selected member of that library. This does not cover unrecorded candidates."
+  },
+  {
+   "name": "Fifty-fifty design and analysis split",
+   "point_estimator": "Randomly assign individuals 1:1 to design and analysis partitions using a replicate-specific seed, independently of all data. Apply each outcome-informed selector only in the design partition. Fit a new correctly specified propensity model in the analysis partition and estimate only the selected protocol's IPW risk difference there. Never reuse design-partition outcomes or estimates.",
+   "variance_estimator": "Use the analysis-partition M-estimation sandwich, including analysis-partition propensity estimation.",
+   "interval": "Untruncated estimate plus or minus 1.959964 SE using the analysis-partition sample size.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs if selection cannot be completed in the design half or the selected protocol fails the IPW, effective-sample-size or sandwich criteria in the analysis half.",
+   "implementation": "Use the same absolute workability thresholds in the design partition because practical sample-splitting proposals do not make sparse outcomes less sparse. Report selection agreement with the corresponding full-data selector, interval-width inflation and nonconvergence."
+  },
+  {
+   "name": "Existing multiverse display",
+   "point_estimator": "Retain and display all K candidate IPW risk differences, their ordering and the reference protocol. Calculate the range, interquartile range and range divided by the median candidate SE.",
+   "variance_estimator": "Use each candidate's ordinary M-estimation sandwich SE.",
+   "interval": "Display candidatewise 95% Wald intervals only. Do not label their envelope or specification range as a selection-adjusted confidence interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Report the proportion and identity of nonestimable candidates. The display is incomplete if any candidate fails.",
+   "implementation": "This uses the already established multiverse approach as a diagnostic comparator. It does not claim to solve post-selection coverage. Evaluate whether its standardized range predicts replicate-level noncoverage using AUC and risk by prespecified range categories below 1, 1 to 2 and above 2."
+  }
+ ],
+ "performance": {
+  "primary": "Marginal coverage of the nominal 95% naive interval for Psi_s under pooled-outcome workability selection, reported by scenario with Monte Carlo SE. Also report its paired coverage loss relative to candidatewise prespecified calibration.",
+  "secondary": [
+   "Coverage under prognostic-association, effect-seeking and outcome-blinded selection",
+   "Coverage of simultaneous Bonferroni and 50:50 split intervals",
+   "Bias of estimate minus the truth for the selected protocol",
+   "Empirical SE of selected-protocol estimation errors",
+   "Mean model SE and relative error in model SE",
+   "MSE",
+   "Bias-eliminated coverage",
+   "Rejection rate for the selected protocol's true null",
+   "Median interval width and width ratio relative to naive full-data inference",
+   "Overall and selector-specific convergence",
+   "Selection frequency for every protocol",
+   "Frequency with which the selected estimand differs from the reference estimand by more than 0.01 risk-difference units",
+   "Selection agreement between full-data and split-sample selectors",
+   "Propensity-weight effective sample size and maximum weight",
+   "Multiverse range, standardized range and AUC for predicting naive-interval noncoverage"
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "For coverage near 0.95, MCSE=sqrt(0.95*0.05/R). Requiring MCSE no greater than 0.005 gives R at least 0.95*0.05/0.005^2=1900. Round upward to 2000 replicates per scenario, giving MCSE 0.00487 at 95% coverage and 0.00671 at 90% coverage. Use paired replicate-level indicators and their empirical covariance for MCSEs of coverage differences."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "First require calibration: every candidate selected in at least 5% of replicates must have prespecified candidatewise coverage between 0.93 and 0.97, truth MCSE at most 0.00005, and method nonconvergence below 5%. The problem is materially real for the studied effect-blind searches if at least four of the 48 scenario-selector cells formed by 24 scenarios and the two outcome-informed effect-blind selectors have naive selected coverage at most 0.90 and a coverage loss of at least 0.05 relative to calibrated candidatewise inference, with the 95% Monte Carlo lower limit for the loss above 0.02. These cells must include a null-effect scenario and both K=4 and K=16. In the same cells, at least one correction must attain coverage of at least 0.93 with a 95% Monte Carlo lower limit above 0.90.",
+  "problem_is_not_real_if": "After passing calibration, every one of the 48 effect-blind scenario-selector cells must have naive selected coverage at least 0.93, its 95% Monte Carlo lower limit above 0.90, and absolute coverage loss below 0.02 with the 95% Monte Carlo upper limit for loss below 0.03. This conclusion is restricted to the two declared algorithms and libraries of at most 16 protocols.",
+  "uninformative_if": "Classify the result as mixed or uninformative if neither numerical rule is met, if a candidate selected at least 5% of the time has prespecified coverage outside 0.93 to 0.97, if nonconvergence exceeds 5%, if truth MCSE remains above 0.00005 after 10,000,000 integration draws, or if both corrections fail in the same cells as naive inference. Effect-seeking undercoverage alone cannot establish that effect-blind protocol development is problematic."
+ },
+ "threats": [
+  {
+   "threat": "A simulation can manufacture post-selection failure by defining a selector that explicitly chooses the most favorable treatment estimate.",
+   "mitigation": "Treat effect-seeking selection only as a positive control. Base the decision on selectors using pooled outcome counts or covariate-outcome associations without treatment-effect contrasts. Include null, homogeneous and heterogeneous effects, require failures across multiple cells, and verify candidatewise fixed-protocol calibration."
+  },
+  {
+   "threat": "Scoring a selected estimate against the original reference estimand would falsely label legitimate target changes as estimator bias.",
+   "mitigation": "Score every interval against Psi_K for the protocol selected in that replicate. Report Psi_K-Psi_ref separately as target movement."
+  },
+  {
+   "threat": "Sparse outcomes or unstable weights can cause ordinary Wald undercoverage even without selection.",
+   "mitigation": "Report every candidate's prespecified coverage, effective sample size and maximum weight. Treat cells failing the calibration or convergence thresholds as uninformative rather than evidence of selection failure."
+  },
+  {
+   "threat": "The correctly specified treatment model and absence of censoring make the data cleaner than applied emulations.",
+   "mitigation": "State this as deliberate isolation of the selection mechanism. Do not generalize the numerical results to misspecified nuisance models, informative censoring or time-varying strategies."
+  },
+  {
+   "threat": "Outcome-blinded selection based on treatment and covariates may still target a protocol associated with an unusual empirical covariate distribution.",
+   "mitigation": "Evaluate outcome-blinded coverage rather than declaring it valid by construction. Keep the superpopulation selected estimand explicit and report selected-threshold frequencies."
+  },
+  {
+   "threat": "Bonferroni inference may appear successful only because it is excessively wide.",
+   "mitigation": "Report interval-width ratios, rejection rates and candidate correlations alongside coverage. Define restoration as coverage at least 0.93, but do not call a method preferable without its precision cost."
+  },
+  {
+   "threat": "A known algorithmic search is much simpler than iterative human protocol development.",
+   "mitigation": "Freeze and publish the candidate library, selectors, tie rules and decision log. Limit the conclusion to recorded searches. State that no correction can cover undocumented candidates without defining a larger family."
+  },
+  {
+   "threat": "Monte Carlo error in candidate truths can be mistaken for estimator bias and can distort coverage.",
+   "mitigation": "Use common-random-number integration of conditional risks, batch MCSEs, a 0.00005 stopping threshold and locked truth files created before the simulation replicates."
+  },
+  {
+   "threat": "The nested candidate library may understate multiplicity relative to weakly correlated protocol choices.",
+   "mitigation": "Report the empirical candidate-estimate correlation matrix and effective library size. Interpret K=4 and K=16 as realistic nested searches, not worst-case bounds for arbitrary protocols."
+  },
+  {
+   "threat": "A single 50:50 split can choose an unstable protocol and sacrifices half the analysis information.",
+   "mitigation": "Report selection agreement, nonconvergence and interval-width inflation. Judge sample splitting on both coverage and precision rather than coverage alone."
+  }
+ ],
+ "runtime_estimate": "Run 24 scenarios by 2000 replicates, for 48,000 replicates total, through studies/_shared/R/harness.R on 6 workers. Each replicate needs one full-data propensity glm, one design-partition glm and one analysis-partition glm; all candidate IPW estimates, selectors and sandwich matrices are algebraic. This is 144,000 small logistic fits, zero ltmle fits and zero SuperLearner fits. The six unique 2,000,000-person truth integrations should cost about 24 minutes using the supplied benchmark. A 100-replicate corner pilot should verify timing and memory. The expected main run is approximately 3 to 6 hours and should finish overnight. lmtp, concrete, CICI, Stan and cmdstanr are unnecessary.",
+ "bears_on": [
+  {
+   "id": "PRO-02",
+   "relation": "answers-part",
+   "what": "It gives numerical coverage losses for two explicit outcome-relevant but effect-blind protocol searches and tests two implementable corrections. It also separates selected-estimand coverage from fixed-target drift. It cannot answer inference after an undocumented human search or create the missing search record."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo uncertainty and simulation reporting."
+  },
+  {
+   "cite": "Hansford HJ, et al. Design and implementation of observational studies emulating a target trial. JAMA Network Open. 2026",
+   "doi_or_url": "10.1001/jamanetworkopen.2025.58262",
+   "used_for": "The range of protocol decisions that can form a candidate emulation library."
+  },
+  {
+   "cite": "Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA. 2025",
+   "doi_or_url": "10.1001/jama.2025.13350",
+   "used_for": "Distinguishing transparent reporting of the final protocol from recording rejected specifications."
+  },
+  {
+   "cite": "Uncertainty in the estimated effects of statin initiation on risk of dementia: using a multiverse analysis. European Journal of Epidemiology. 2025",
+   "doi_or_url": "10.1007/s10654-025-01231-y",
+   "used_for": "Applied precedent for displaying estimates across target-trial specifications; treated here as a descriptive comparator rather than a new inferential solution."
+  },
+  {
+   "cite": "Berk R, Brown L, Buja A, Zhang K, Zhao L. Valid post-selection inference. Annals of Statistics. 2013",
+   "doi_or_url": "10.1214/12-AOS1077",
+   "used_for": "The principle that simultaneous inference can protect a target selected from a declared family."
+  },
+  {
+   "cite": "Hernan MA, Robins JM. Using Big Data to emulate a target trial when a randomized trial is not available. American Journal of Epidemiology. 2016",
+   "doi_or_url": "10.1093/aje/kwv254",
+   "used_for": "Explicit alignment of eligibility, treatment strategies, time zero, follow-up and causal estimand."
+  },
+  {
+   "cite": "Peduzzi P, Concato J, Kemper E, Holford TR, Feinstein AR. A simulation study of the number of events per variable in logistic regression analysis. Journal of Clinical Epidemiology. 1996",
+   "doi_or_url": "10.1016/S0895-4356(96)00236-3",
+   "used_for": "Historical applied motivation for the workability selector's 70-event threshold; the threshold is treated as a behavior to study, not as a modern universal adequacy rule."
+  }
+ ]
+}

@@ -1,0 +1,226 @@
+{
+ "title": "Validation-anchored latent-state correction for longitudinal phenotype error in sustained-strategy emulation",
+ "question": "Across sex-standardized sensitivity and specificity values of 0.70, 0.85, and 0.99, differential error odds ratios of 1 and 4, and internal validation samples of 100, 250, 500, and 1000 participants, how large are the bias, nonadditive treatment-confounder error interaction, and 95% interval undercoverage for the marginal 12-month risk difference comparing sustained treatment with sustained no treatment; what is the smallest validation sample for which latent-state multiple imputation reduces absolute bias by at least 50%, leaves less than 0.01 absolute bias, restores coverage to 0.925 through 0.975, and does not increase MSE by more than 25%?",
+ "aims": "Estimate the regime-effect bias caused by treating longitudinal treatment, confounder, and outcome phenotypes as error-free binary variables. Quantify nonadditivity as B_AL minus B_A minus B_L plus B_0, where B denotes risk-difference bias under joint treatment-confounder error, treatment-only error, confounder-only error, and no error. Estimate the incremental contribution of outcome error as B_ALY minus B_AL. Determine the smallest prespecified internal validation sample that makes full uncertainty propagation preferable to thresholded analysis under explicit bias, coverage, MSE, and convergence criteria. Test whether favorable performance depends on correct specification of the latent outcome model.",
+ "dgm": {
+  "covariates": "Each replicate contains 4000 independent eligible participants followed at fixed monthly visits t=0,...,11. Define expit(x)=1/(1+exp(-x)). Generate X1 from N(0,1) and X2 from Bernoulli(0.5), independently. Generate the true binary time-varying confounder L0 from Bernoulli(expit(-0.40+0.50*X1+0.40*X2)). For t=1,...,11, generate Lt from Bernoulli(expit(-0.80+1.40*L(t-1)-0.50*A(t-1)+0.35*X1+0.30*X2+0.03*t)). Generate natural treatment A0 from Bernoulli(expit(-0.70+0.80*L0+0.25*X1+0.20*X2)). For t=1,...,11, generate At from Bernoulli(expit(-1.40+2.00*A(t-1)+0.90*Lt+0.25*X1+0.20*X2+0.02*t)). This creates measured treatment-confounder feedback: Lt predicts subsequent treatment, while prior treatment reduces subsequent Lt. There is no loss to follow-up, competing event, or eligibility error. For each designated error-prone node Z in A or L, generate Zstar=Z XOR E. Initialize E0 from Bernoulli(e_x). At later visits retain the preceding error state with probability 0.80; otherwise redraw it from Bernoulli(e_x). Treatment and confounder error chains are conditionally independent. When the differential error odds ratio is 1, e_x is 0.30, 0.15, or 0.01 for accuracy levels 0.70, 0.85, or 0.99. When the differential error odds ratio is 4, the error probabilities for X2=0 and X2=1 are respectively 0.1627 and 0.4373 at accuracy 0.70, 0.0696 and 0.2304 at accuracy 0.85, and 0.0040 and 0.0160 at accuracy 0.99. Thus the odds of classification error are four times greater for X2=1, and the 50:50 sex-standardized sensitivity and specificity equal the named accuracy. Nodes outside the designated error pattern are observed exactly. At the start of each replicate, select a simple random internal validation sample independently of all variables. Validation participants have gold-standard A, L, and Y at every relevant time as well as their proxies. Use one random ranking to make samples of 100, 250, 500, and 1000 participants nested.",
+  "outcome_model": "After treatment at t=11, generate the true 12-month binary adverse outcome Y from Bernoulli(expit(-2.00+0.40*X1+0.30*X2+0.90*L11-0.60*A11-0.40*A11*X2)). In model-misspecification stress scenarios, add -0.60*A11*I(X1>0.5) to this linear predictor. When Y is designated error-prone, generate Ystar=Y XOR EY using the same sex-specific error probabilities as the longitudinal nodes, with an independent terminal error draw. Otherwise set Ystar=Y.",
+  "treatment_effect": "The intervention sets every monthly treatment value rather than conditioning on the natural treatment process. At month 11, the controlled direct treatment odds ratio is exp(-0.60)=0.549 for X2=0 and exp(-1.00)=0.368 for X2=1. Earlier treatment also affects Y indirectly by reducing subsequent L. The primary contrast therefore includes both the direct final-month effect and the mediated effect of the complete sustained treatment history.",
+  "effect_modification": "X2 modifies the direct treatment effect by -0.40 on the log-odds scale and also determines differential phenotype accuracy. This makes differential error consequential for the marginal contrast rather than merely a precision issue. The stress DGM adds a nonlinear treatment effect of -0.60 on the log-odds scale among participants with X1 greater than 0.5; the correction model deliberately omits this threshold interaction.",
+  "factors": [
+   {
+    "name": "Error-prone nodes",
+    "levels": [
+     "Treatment A only",
+     "Confounder L only",
+     "Treatment A and confounder L",
+     "Treatment A, confounder L, and outcome Y"
+    ],
+    "rationale": "The first three levels permit the prespecified nonadditivity calculation. Comparing the last two isolates the incremental contribution of outcome error. Existing one-node corrections are treated as component prior art; the research target is their joint longitudinal behavior."
+   },
+   {
+    "name": "Sex-standardized sensitivity and specificity",
+    "levels": [
+     "0.70",
+     "0.85",
+     "0.99"
+    ],
+    "rationale": "These levels span the catalog's proposed range from a weak broad phenotype through moderate performance to near-manual abstraction. The 0.99 level is a near-null condition, while a separate 1.00 control supplies an exact null."
+   },
+   {
+    "name": "Differential error odds ratio",
+    "levels": [
+     "1",
+     "4"
+    ],
+    "rationale": "An odds ratio of 1 represents nondifferential error conditional on the modeled history. An odds ratio of 4 is the upper stress level proposed by the catalog. The primary decision cannot rely solely on the 0.70 and odds-ratio-4 combination."
+   },
+   {
+    "name": "Internal validation sample size",
+    "levels": [
+     "100",
+     "250",
+     "500",
+     "1000"
+    ],
+    "rationale": "These are 2.5%, 6.25%, 12.5%, and 25% of the cohort. They cover a small chart review, two intermediate efforts, and an unusually large validation exercise. The full node-pattern factorial uses 500; the other sizes are evaluated for joint A, L, and Y error at accuracy 0.70 and 0.85."
+   },
+   {
+    "name": "Latent outcome-model congruence",
+    "levels": [
+     "Core model represented by the correction",
+     "Stress model containing an omitted X1 threshold interaction"
+    ],
+    "rationale": "The stress level prevents the study from evaluating the correction only under the model that generated the data."
+   },
+   {
+    "name": "Exact no-error control",
+    "levels": [
+     "Accuracy 1.00 under the core outcome model",
+     "Accuracy 1.00 under the stress outcome model"
+    ],
+    "rationale": "These controls must show that the analysis itself does not manufacture a measurement-error effect."
+   }
+  ],
+  "n_scenarios": 42,
+  "deliberately_true": "The 24 primary scenarios form a full factorial of four error-node patterns, three accuracy levels, and two differential error odds ratios at validation n=500. Twelve validation-size extensions use all-node error at accuracy 0.70 or 0.85, differential odds ratios 1 or 4, and validation n=100, 250, or 1000; the corresponding n=500 cells already occur in the primary factorial. Four misspecification scenarios use all-node error, accuracy 0.70 or 0.85, differential odds ratios 1 or 4, and validation n=500. Two exact no-error controls complete the 42 scenarios. The overall design is therefore not fully factorial. Sequential exchangeability, consistency, positivity in the generating law, perfect internal gold standards, independent validation sampling, fixed visit times, correct treatment-model functional form, and the core latent-state model are deliberately true. Serial phenotype error is deliberately present with persistence 0.80, so errors do not accumulate as independent monthly coin flips.",
+  "cannot_detect": "The study cannot assess transport of sensitivity or specificity from another site, convenience-sample validation, imperfect gold standards, error in eligibility, irregular observation times, informative visit processes, loss to follow-up, competing events, asymmetric sensitivity and specificity, treatment-dependent outcome detection beyond dependence on X2, correlated errors between different phenotype nodes, continuous phenotype scores, or interventions defined by the observed proxy rather than the latent clinical state. It evaluates one binary confounder, one binary treatment, one terminal binary outcome, and sustained static strategies over 12 months. It does not establish that native probabilistic-input software is required because the correction deliberately wraps a deterministic estimator."
+ },
+ "estimands": [
+  {
+   "name": "Primary marginal 12-month risk difference",
+   "definition": "RD12=Pr(Y under A0=...=A11=1 equals 1)-Pr(Y under A0=...=A11=0 equals 1) in the superpopulation. Eligibility is assessed at baseline for all generated participants; assignment occurs before A0; treatment is sustained monthly with no grace period; follow-up ends after the month-11 treatment and confounder values; the outcome is the true adverse state at month 12. The estimand is defined using latent treatment and outcome states, not their EHR proxies.",
+   "true_value_computation": "For each of the two outcome mechanisms, core and misspecified stress, simulate 4000000 new participants under each intervention. Use paired baseline draws and paired random uniforms for L and Y across intervention arms. Compute the difference in empirical risks. Measurement accuracy and validation size do not alter the causal truth, so only two truth evaluations are needed. Even without variance reduction, the worst-case Monte Carlo SE for an overall difference of two risks at this size is sqrt(0.5/4000000)=0.000354; subgroup truth has approximately 2000000 participants per X2 stratum and worst-case SE about 0.0005. Record these truth Monte Carlo SEs and use random streams separate from the finite-sample replicates."
+  },
+  {
+   "name": "Effect-modifier-specific 12-month risk differences",
+   "definition": "The same sustained-treatment contrast calculated separately for X2=0 and X2=1 in their respective superpopulations.",
+   "true_value_computation": "Use the same 4000000-person intervention simulations and calculate arm risks within each X2 stratum. These estimands reveal whether marginal cancellation hides differential phenotype bias in the subgroup whose treatment effect and error rate differ."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Thresholded clone-censor inverse-probability estimator",
+   "point_estimator": "Treat Astar, Lstar, and Ystar as truth whenever those nodes are error-prone. Clone each participant to d=1 and d=0. Censor a clone at the first month for which Astar differs from d. Fit a baseline propensity model by binomial glm with A0star as the response and L0star, X1, and X2 as predictors. Fit a follow-up model with Atstar as the response and A(t-1)star, Ltstar, X1, X2, and numeric month t as predictors. For each clone consistent through month 11, form the unstabilized cumulative weight as the inverse product of the fitted probabilities of its observed treatment values. Do not truncate weights. Estimate each arm risk by the weighted Hajek mean of Ystar among clones consistent through month 11; estimate RD12 as risk for d=1 minus risk for d=0.",
+   "variance_estimator": "Use a participant-clustered M-estimation sandwich that stacks the two treatment-model score vectors with the two weighted risk equations I(adherent to d)*Wd*(Ystar-mu_d)=0. Include both clones in the same participant score so their covariance is retained. With A equal to the mean derivative of the stacked scores and B equal to the mean outer product of participant scores, use A inverse times B times the transpose of A inverse, divided by 4000. Compute the bread by central differences with step 0.000001*(1+absolute parameter value), and obtain the RD variance with contrast vector mu1-mu0.",
+   "interval": "Use RD estimate plus or minus 1.96 times its sandwich SE. Do not clip the interval to [-1,1].",
+   "is_status_quo": true,
+   "nonconvergence": "Declare failure if either glm reports converged=FALSE, any coefficient or fitted probability is nonfinite, either arm has no fully consistent clone, a cumulative weight is nonfinite, the stacked bread has condition number above 1e12, the estimated variance is negative or nonfinite, or the interval cannot be formed. Finite extreme weights remain in the analysis and are reported through effective sample size and weight-tail diagnostics.",
+   "implementation": "Use stats::glm.fit for the two propensity models and base matrix operations for the sandwich. Use data.table for histories and clone indicators. Cache this estimate across nested validation sizes because validation size cannot affect the thresholded method."
+  },
+  {
+   "name": "Validation-anchored latent-state multiple-imputation IPW",
+   "point_estimator": "Use validation truths to fit the latent data law: separate logistic models for L0, Lt for t=1,...,11, A0, At for t=1,...,11, and Y. The core formulas contain exactly the predictors in the DGM. Give nonintercept coefficients independent N(0,2.5 squared) priors and intercepts N(0,5 squared) priors; obtain a penalized mode and Hessian, then draw coefficients from the corresponding multivariate-normal Laplace approximation. For each error-prone node and X2 stratum, estimate the initial error probability and the transition probabilities Pr(Et=1|E(t-1)=0) and Pr(Et=1|E(t-1)=1) using independent Beta(0.5,0.5) priors. Estimate terminal outcome error probabilities with the same prior. For each of M=20 imputations, draw all model and error parameters, then sample each nonvalidated participant's latent history conditional on all observed proxies using a log-scale forward-filtering backward-sampling algorithm on the 16-state process (Lt,At,E_Lt,E_At). Incorporate Ystar through its terminal likelihood before backward sampling, then draw Y conditional on the sampled terminal state and Ystar. Retain gold-standard states for validated participants. Analyze each completed data set with the same untruncated Hajek IPW estimator using imputed true A, L, and Y. Average the 20 RD estimates. In stress scenarios, fit the same core latent outcome model and deliberately omit A11*I(X1>0.5).",
+   "variance_estimator": "Within each imputation use the complete-data participant-clustered M-estimation sandwich. Let Wbar be the mean of the 20 completed-data RD variances and B be the sample variance of the 20 RD estimates. Use T=Wbar+(1+1/20)*B. For Barnard-Rubin degrees of freedom, set r=(1+1/20)*B/Wbar, nu_old=19*(1+1/r)^2, lambda=(r+2/(nu_old+3))/(r+1), nu_com=3988, nu_obs=((nu_com+1)/(nu_com+3))*nu_com*(1-lambda), and nu=(1/nu_old+1/nu_obs)^(-1). If B=0, use T=Wbar and nu=3988.",
+   "interval": "Use the mean RD plus or minus the 0.975 quantile of a t distribution with Barnard-Rubin nu degrees of freedom times sqrt(T). Do not clip the interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure if a penalized fit does not reach a gradient maximum below 1e-7, its negative Hessian is not positive definite, a forward recursion has zero or nonfinite normalizing probability after log-sum-exp stabilization, any of the 20 completed-data IPW analyses fails, T is negative or nonfinite, or the interval cannot be formed. Do not replace failed completed-data draws, because selective redrawing would favor the method.",
+   "implementation": "Implement penalized logistic likelihoods with base R optimization, use mvtnorm::rmvnorm for Laplace draws, and implement the finite-state recursion directly with vectorized arrays. M=20 has at least 95.2% relative efficiency even if the fraction of missing information is 1. The method requires none of lmtp, concrete, CICI, Stan, cmdstanr, ltmle, or SuperLearner."
+  },
+  {
+   "name": "Oracle complete-data IPW",
+   "point_estimator": "Apply the same clone-censor Hajek estimator to true A, L, and Y for every participant, using the correctly specified baseline and follow-up treatment models. This is a design benchmark, not an available-data proposal.",
+   "variance_estimator": "Use the same participant-clustered stacked M-estimation sandwich as the thresholded estimator.",
+   "interval": "Use RD estimate plus or minus 1.96 times its sandwich SE, without clipping.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the same complete-data failure criteria as the thresholded estimator.",
+   "implementation": "Reuse the same analysis function with the true-state columns. Cache the result across measurement and validation settings that share a latent cohort."
+  }
+ ],
+ "performance": {
+  "primary": "Empirical coverage of the nominal 95% interval for the marginal RD12, reported for every method and scenario. Coverage is calculated among valid estimates, with the convergence proportion reported beside it; a sensitivity analysis counts every failed interval as noncoverage.",
+  "secondary": [
+   "Bias with Monte Carlo SE",
+   "Absolute bias",
+   "Empirical SE",
+   "Mean model SE",
+   "Relative error in model SE",
+   "MSE",
+   "Bias-eliminated coverage",
+   "Rejection rate for H0: RD12=0",
+   "Mean interval width",
+   "Convergence proportion",
+   "Arm-specific effective sample size defined as (sum W)^2/sum(W^2)",
+   "Median and 99th percentile cumulative weights",
+   "Nonadditive bias interaction B_AL-B_A-B_L+B_0 with a paired Monte Carlo SE",
+   "Incremental outcome-error bias B_ALY-B_AL with a paired Monte Carlo SE",
+   "Bias and coverage for X2-specific risk differences",
+   "Smallest validation size meeting the prespecified worth-it rule"
+  ],
+  "n_rep": 500,
+  "n_rep_derivation": "At nominal coverage 0.95, the binomial Monte Carlo SE with 500 replicates is sqrt(0.95*0.05/500)=0.00975, less than one percentage point. If true coverage is as low as 0.90, it is sqrt(0.90*0.10/500)=0.01342. The good-coverage lower boundary of 0.925 and failure boundary of 0.90 are separated by 0.025, so this precision can distinguish the prespecified decisions without spending the majority of the overnight budget on repetitions. All method comparisons and bias decompositions use common random numbers within a replicate."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "First require all validity gates: in the exact no-error core control, thresholded absolute bias is at most 0.005 and coverage is 0.925 through 0.975; in every key scenario, oracle absolute bias is at most 0.01, oracle coverage is 0.925 through 0.975, oracle convergence is at least 0.95, and median oracle effective sample size is at least 200 in each arm. Conditional on those gates, call the problem real if at least three of the four all-node mechanisms formed by accuracy 0.70 or 0.85 and differential odds ratio 1 or 4 have thresholded absolute bias of at least 0.02, have absolute bias minus 1.96 times its Monte Carlo SE greater than 0.01, and have coverage at most 0.90. Also require absolute nonadditivity |B_AL-B_A-B_L+B_0| of at least 0.005 and at least 25% of |B_AL| in at least two of those four mechanisms. Separately call a validation size worth its variance cost if, in at least three of those four mechanisms, the corrected estimator reduces absolute bias by at least 50%, leaves absolute bias below 0.01, has coverage from 0.925 through 0.975, has MSE no greater than 1.25 times thresholded MSE, and converges in at least 95% of replicates. Report the smallest qualifying size; if none qualifies, report that the required size exceeds 1000 under this design.",
+  "problem_is_not_real_if": "After all validity gates pass, call the studied version of the problem not real if every one of the four key all-node mechanisms has thresholded absolute bias below 0.01 with an upper Monte Carlo bound below 0.02, coverage from 0.925 through 0.975, and absolute nonadditivity below 0.005. This conclusion is restricted to the stated 12-month protocol and error mechanisms.",
+  "uninformative_if": "Call the study uninformative if any no-error or oracle validity gate fails, fewer than 95% of replicates yield valid estimates in a key cell, median oracle effective sample size is below 200 in either arm, or results fall between the real and not-real thresholds. If correction succeeds only under the congruent core model and fails all four misspecification stresses, conclude that correction performance is model-dependent rather than that the open problem is resolved."
+ },
+ "threats": [
+  {
+   "threat": "A DGM constructed from the correction model can guarantee favorable correction performance.",
+   "mitigation": "The primary claim about thresholding uses naive bias and does not require correction success. Four stress scenarios add an omitted nonlinear treatment-effect modifier. Exact no-error controls test for manufactured effects. One-node and joint-error scenarios permit decomposition rather than selection of the most favorable cell."
+  },
+  {
+   "threat": "Independent monthly treatment errors would almost guarantee artificial censoring under a sustained strategy and make the result tautological.",
+   "mitigation": "Treatment and confounder errors have persistence 0.80. The protocol reports observed and oracle adherence, effective sample size, and weight tails. The decision is invalid if oracle support is inadequate."
+  },
+  {
+   "threat": "Prescribing, dispensing, and ingestion are different constructs rather than automatically misclassified versions of one variable.",
+   "mitigation": "The target protocol explicitly defines treatment as the latent clinical treatment state. Astar is declared to be a proxy for that state. No conclusion is made for an estimand that intentionally defines treatment by the recorded proxy."
+  },
+  {
+   "threat": "A simple random internal validation sample with a perfect gold standard is more favorable than convenience validation from another site.",
+   "mitigation": "Validation selection and perfect truth are explicit DGM assumptions. The study makes no transport claim and classifies MER-01 as only partly answered."
+  },
+  {
+   "threat": "Symmetric sensitivity and specificity and differential error only through X2 omit many realistic error structures.",
+   "mitigation": "Report stratum-specific operating characteristics and subgroup effects. Limit conclusions to the simulated mechanisms; do not generalize to asymmetric, treatment-dependent, outcome-dependent, or cross-node-correlated errors."
+  },
+  {
+   "threat": "The latent-state correction depends on weak priors and a Laplace approximation, especially with validation n=100 and accuracy 0.99.",
+   "mitigation": "Use proper fixed priors to avoid separation, report posterior error-rate summaries, and repeat the n=100 boundary cells with coefficient prior standard deviations doubled to 5 and 10. Treat a change greater than 0.005 in RD bias or 0.02 in coverage as prior sensitivity."
+  },
+  {
+   "threat": "Weight instability could be mistaken for phenotype bias.",
+   "mitigation": "Use an oracle estimator with the identical weighting procedure, no weight truncation, prespecified effective-sample-size gates, and bias-eliminated coverage. Compare thresholded and oracle estimates within the same replicate."
+  },
+  {
+   "threat": "Fixed monthly visits, no loss to follow-up, and a terminal binary outcome make the emulation cleaner than routine EHR studies.",
+   "mitigation": "These restrictions are stated as scope boundaries. The result cannot be used as evidence about irregular visits, observation-process bias, competing risks, or informative dropout."
+  },
+  {
+   "threat": "A finite Monte Carlo truth can be mistaken for estimator bias.",
+   "mitigation": "Use 4000000 participants per arm for each of only two distinct causal truths, pair intervention simulations, report truth Monte Carlo SEs, and keep truth random streams separate from replicate streams."
+  }
+ ],
+ "runtime_estimate": "The design has 42 scenario cells and 500 replicates, for 21000 replicate-cell analyses. The correction performs 20 completed-data analyses per cell, giving 420000 imputed analyses. With two treatment glm fits per completed analysis, five small penalized latent-process fits per replicate cell, and cached naive and oracle fits across nested validation sizes, the run requires approximately 1000000 logistic fits plus finite-state recursions. There are zero ltmle fits and zero SuperLearner fits. Using six workers, vectorized 16-state recursions, and cached latent cohorts, the expected wall time is 7 to 11 hours. The two 4000000-per-arm truth evaluations should cost about 16 minutes at the supplied benchmark. A 20-replicate-per-cell timing run must be completed before the blinded full run to verify memory use and extrapolated wall time; it does not permit changing scenarios after performance results are viewed.",
+ "bears_on": [
+  {
+   "id": "MER-01",
+   "relation": "answers-part",
+   "what": "Directly quantifies regime-effect bias, interval failure, and nonadditivity when longitudinal treatment, confounder, and outcome proxies are thresholded; evaluates an internal-validation wrapper that propagates latent-state and calibration uncertainty. It does not address eligibility error, external validation transport, imperfect gold standards, irregular observation, or native probabilistic-input software."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo error reporting, and separation of estimands, methods, and performance measures."
+  },
+  {
+   "cite": "Wang et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digital Medicine. 2026.",
+   "doi_or_url": "10.1038/s41746-026-02563-z",
+   "used_for": "EHR target trial context, validation samples, and probabilistic phenotype approaches."
+  },
+  {
+   "cite": "Benz L et al. Adjusting for selection bias due to missing eligibility criteria in emulated target trials. American Journal of Epidemiology. 2025.",
+   "doi_or_url": "10.1093/aje/kwae471",
+   "used_for": "Validation-anchored correction as a template while preserving the distinction between eligibility correction and phenotype measurement error."
+  },
+  {
+   "cite": "Hubbard RA, Tong J, Duan R, Chen Y. Correction using probabilistic outcome phenotypes in electronic health records. Epidemiology. 2020.",
+   "doi_or_url": "10.1097/EDE.0000000000001193",
+   "used_for": "Existing component work on probabilistic outcome phenotypes; motivates treating outcome-only correction as prior art rather than the unresolved joint problem."
+  },
+  {
+   "cite": "Nab L et al. Quantitative bias analysis for a misclassified confounder. Epidemiology. 2020.",
+   "doi_or_url": "10.1097/EDE.0000000000001239",
+   "used_for": "Existing component work on confounder misclassification and the need for separate and joint error scenarios."
+  },
+  {
+   "cite": "Edwards JK et al. Outcome misclassification sensitivity analysis within the parametric g-formula. American Journal of Epidemiology. 2018.",
+   "doi_or_url": "10.1093/aje/kwy028",
+   "used_for": "Existing quantitative correction for an outcome component; supports focusing novelty on longitudinal joint propagation."
+  },
+  {
+   "cite": "Cole SR, Hernan MA. Constructing inverse probability weights for marginal structural models. American Journal of Epidemiology. 2008.",
+   "doi_or_url": "10.1093/aje/kwn164",
+   "used_for": "Construction and diagnosis of cumulative inverse-probability weights."
+  },
+  {
+   "cite": "Barnard J, Rubin DB. Small-sample degrees of freedom with multiple imputation. Biometrika. 1999.",
+   "doi_or_url": "10.1093/biomet/86.4.948",
+   "used_for": "Degrees of freedom and interval construction after multiple imputation."
+  }
+ ]
+}

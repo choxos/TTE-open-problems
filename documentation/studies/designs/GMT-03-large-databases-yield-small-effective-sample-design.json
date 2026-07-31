@@ -1,0 +1,218 @@
+{
+ "title": "When nominally large target trial emulations lose valid inference: a factorial study of time-varying effective sample size, rare events, and estimated longitudinal weights",
+ "question": "Across a 24-scenario factorial design beginning with 1,000,000 source records, expected postrestriction samples of 1,000 or 4,000, primary and competing five-year risks near 1% or 10%, and three levels of treatment overlap, in which scenarios does the usual 95% Wald interval for the marginal 60-month risk difference cover less than 90%; how large is the coverage loss; and does a prespecified warning rule based on a minimum arm-specific risk-set Kish effective sample size below 100 or a cause-specific effective event count below 20 identify failing scenarios with at least 80% sensitivity and 80% specificity?",
+ "aims": "Estimate, for every scenario, coverage of the conventional estimated-weight sequential-IPW interval and its change from the matched no-confounding scenario. Report the first overlap level at which coverage falls below 90%, together with the corresponding monthly risk-set effective sample sizes, cause-specific effective event counts, retained patient count, and 1,000,000-record source count. Separate failures caused by estimated-weight variance, weight-tail skewness, event rarity, and numerical nonconvergence by comparing fixed-weight, nuisance-aware, effective-sample t, and oracle-weight inference. Evaluate overall and subgroup risk differences. The diagnostic result is numerical: sensitivity and specificity of the fixed 100-patient or 20-effective-event warning rule for classifying scenario-level coverage below 90%.",
+ "dgm": {
+  "covariates": "Use expit(x)=1/(1+exp(-x)). Each replicate represents a source database containing exactly 1,000,000 people. Draw the retained active-comparator new-user cohort size as n ~ Binomial(1000000, p_R), then generate only those n retained people. This shortcut is distributionally exact because retention is deliberately independent of all postrestriction variables. For each retained person generate subgroup G ~ Bernoulli(0.25), continuous baseline X ~ Uniform(-1,1), and L_0 ~ Bernoulli(expit(-0.2 + 0.6X + 0.8G)). For event-free people at months t=1,...,59, generate L_t ~ Bernoulli(expit(-0.7 + 1.3L_(t-1) + 0.5X + 0.6G - 0.5A_(t-1))). L_t is therefore a treatment-affected time-varying confounder. Visits occur at fixed monthly times. Follow-up stops at the first primary event, competing event, or completion of month 60. There is no loss to follow-up other than the artificial censoring imposed by strategy deviation.",
+  "outcome_model": "After assigning A_t at each month t=0,...,59, draw one multinomial outcome among primary event Y_t, competing event D_t, and no event. Let eta_Y = alpha_Y + 0.35X + 0.55G + 0.80L_t - 0.287682A_t + 0.287682A_tG and eta_D = alpha_D + 0.45X + 0.80G + 0.60L_t. Set P(Y_t=1)=exp(eta_Y)/(1+exp(eta_Y)+exp(eta_D)), P(D_t=1)=exp(eta_D)/(1+exp(eta_Y)+exp(eta_D)), and assign the remaining probability to no event. Both events are absorbing. The two alpha_Y values are -9.35 and -6.95, intended to produce approximately 1% and 10% five-year primary-event risks under the comparator. The two alpha_D values are -9.40 and -7.00, intended to produce approximately 1% and 10% five-year competing-event risks. The large-sample truth calculation, rather than these approximate labels, supplies the analysis truth.",
+  "treatment_effect": "Observed baseline treatment follows A_0 ~ Bernoulli(expit(kappa(-0.75 + 0.8X + 0.6G + 0.8L_0))). For event-free people at t>=1, A_t ~ Bernoulli(expit(4.0(2A_(t-1)-1) + kappa(-0.75 + 0.7X + 0.6G + 0.9L_t))). The coefficient 4.0 creates realistic treatment persistence while permitting deviations. The overlap multiplier kappa controls measured confounding and weight-tail severity. The target strategies set every A_t to 1 or every A_t to 0 from baseline through the first event or month 60. On the monthly multinomial-logit scale, the direct primary-event treatment coefficient is log(0.75)=-0.287682 for G=0 and zero for G=1. Treatment also affects later outcomes indirectly by reducing later L_t. There is no direct A_t term in the competing-event equation.",
+  "effect_modification": "G defines a prespecified 25% subgroup. The direct monthly primary-event treatment odds ratio is 0.75 for G=0 and 1.00 for G=1 because the A_t by G coefficient is 0.287682. The marginal subgroup effect need not be exactly null in G=1 because treatment changes later L_t and survival. Its true value is therefore enumerated rather than assumed.",
+  "factors": [
+   {
+    "name": "Eligibility and active-comparator retention",
+    "levels": [
+     "p_R=0.001; expected retained n=1000 from 1000000",
+     "p_R=0.004; expected retained n=4000 from 1000000"
+    ],
+    "rationale": "These levels represent retaining 0.1% or 0.4% of a nominally large claims or EHR database after eligibility, new-user, and active-comparator restrictions. They create materially different independent-patient counts without changing the target population."
+   },
+   {
+    "name": "Treatment-overlap multiplier",
+    "levels": [
+     "kappa=0",
+     "kappa=1.25",
+     "kappa=2.25"
+    ],
+    "rationale": "Kappa=0 is a negative-control treatment process with baseline probability 0.5 and history-independent persistence. Kappa=1.25 produces moderate history-dependent overlap. Kappa=2.25 permits baseline probabilities of approximately 0.03 to 0.96 and minimum monthly adherence probabilities near 0.68, producing severe but nonstructural near-positivity over sustained 60-month strategies."
+   },
+   {
+    "name": "Primary-event frequency",
+    "levels": [
+     "alpha_Y=-9.35; intended five-year risk near 1%",
+     "alpha_Y=-6.95; intended five-year risk near 10%"
+    ],
+    "rationale": "One percent represents a rare safety or effectiveness endpoint. Ten percent provides a common-event comparator while retaining the same confounding and effect structure."
+   },
+   {
+    "name": "Competing-event frequency",
+    "levels": [
+     "alpha_D=-9.40; intended five-year risk near 1%",
+     "alpha_D=-7.00; intended five-year risk near 10%"
+    ],
+    "rationale": "Varying the competing event independently distinguishes failure caused by few primary events from failure caused by depletion of the primary-event risk set through competing events."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The design is fully factorial: 2 retention levels by 3 overlap levels by 2 primary-event levels by 2 competing-event levels. Sequential exchangeability, consistency, and nonzero treatment probabilities are true. Both fitted treatment models have exactly the correct logistic form. Retention is independent and cannot introduce selection bias. There is no exposure or outcome measurement error and no natural loss to follow-up. Severe kappa values deliberately create heavy cumulative weights, but evidence for inferential failure will require matched comparisons with kappa=0; observing that the deliberately heavy weights have a low Kish effective sample size is not itself a positive finding.",
+  "cannot_detect": "The study cannot evaluate irregular visits, delayed data capture, dependent eligibility selection, unmeasured confounding, treatment-model misspecification, machine-learning nuisance fits, natural censoring, measurement error, site clustering, cross-site borrowing, structural positivity violations, weight truncation, modified treatment policies, Bayesian shrinkage, longitudinal TMLE, or inference for an unknown assignment mechanism. Its thresholds apply to this sequential-IPW estimator, protocol, horizon, and DGM family; they are not universal effective-sample thresholds for every estimator."
+ },
+ "estimands": [
+  {
+   "name": "Primary marginal 60-month primary-event risk difference",
+   "definition": "RD_Y(60)=P(Y under sustained A=1 occurs by month 60 before D)-P(Y under sustained A=0 occurs by month 60 before D), marginal over the postrestriction superpopulation. The protocol fixes eligibility at baseline, compares sustained use of the two active comparators beginning at baseline, treats D as a competing event rather than censoring, and follows people for 60 months. The scale is an absolute cumulative-incidence difference.",
+   "true_value_computation": "For each of the four unique alpha_Y by alpha_D combinations, simulate 2000000 postrestriction people under each sustained strategy. Use identical baseline draws and paired random-number streams across strategies, then estimate the risk difference and its Monte Carlo SE from the individual paired potential-outcome differences. Truth is shared across retention and kappa levels because neither changes the interventional distribution. Two million gives roughly 500000 G=1 people and makes truth error small relative to sampling SE. Add independent batches of 2000000 only if the stored Monte Carlo SE exceeds 0.0005 overall."
+  },
+  {
+   "name": "Prespecified subgroup primary-event risk differences",
+   "definition": "RD_Y,G=g(60)=P(Y under sustained A=1 by month 60 before D | G=g)-P(Y under sustained A=0 by month 60 before D | G=g), for g=0 and g=1. These are marginal within each superpopulation subgroup, not conditional regression coefficients.",
+   "true_value_computation": "Use the same paired 2000000-person truth simulations and calculate paired risk differences within G=0 and G=1. Add another independent 2000000-person batch if either subgroup truth Monte Carlo SE exceeds 0.001."
+  },
+  {
+   "name": "Secondary horizon-specific primary-event risk differences",
+   "definition": "The same marginal sustained-strategy primary-event risk difference at 12 and 36 months. These quantify how time-varying weight concentration and risk-set depletion accumulate before the primary 60-month horizon.",
+   "true_value_computation": "Record month-12 and month-36 cumulative incidences from the same large truth simulations."
+  },
+  {
+   "name": "Competing-event risk differences",
+   "definition": "RD_D(t)=P(D under sustained A=1 occurs by t before Y)-P(D under sustained A=0 occurs by t before Y), marginal in the postrestriction superpopulation at t=12, 36, and 60 months.",
+   "true_value_computation": "Record competing-event indicators and paired strategy differences in the same large truth simulations."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Estimated sequential-IPW with fixed-weight Wald inference",
+   "point_estimator": "Fit a baseline logistic model A_0 on 1, X, G, and L_0 and one pooled postbaseline logistic model A_t on 1, A_(t-1), X, G, and L_t using all observed event-free person-months. For strategy g, let O_ig indicate that person i follows A_s=g through the first primary event, competing event, or month 60. Let pi_ig be the product of fitted probabilities of the observed compatible treatment decisions through that terminal time and q_ig=O_ig/pi_ig. For cause indicator Z_i, estimate mu_g=sum(q_ig Z_i)/sum(q_ig) and RD=mu_1-mu_0. Compute products on the log scale. Do not truncate weights.",
+   "variance_estimator": "Treat fitted weights as fixed. Define bar_q_g=n^(-1)sum(q_ig), phi_ig=q_ig(Z_i-mu_g)/bar_q_g, and phi_i=phi_i1-phi_i0. Estimate Var(RD) by [n/(n-2)] times sum((phi_i-mean(phi))^2)/[n(n-1)]. This is an individual-cluster HC1 sandwich and retains covariance between the two strategy contributions.",
+   "interval": "RD plus or minus 1.959964 times the estimated SE. Do not clip the interval to [-1,1].",
+   "is_status_quo": true,
+   "nonconvergence": "Declare nonconvergence if either logistic fit has glm$converged false, is rank deficient, or has a nonfinite coefficient; any fitted treatment probability is outside [1e-8,1-1e-8]; any cumulative weight exceeds 1e12; either arm has a zero or nonfinite weight denominator; or the estimate or SE is nonfinite. A replicate with zero cause-specific events remains converged when the denominator exists; its zero estimate or degenerate interval must not be discarded.",
+   "implementation": "Use base R binomial glm fits and patient-level calculations in data.table. Apply the identical implementation separately to primary and competing-event indicators and to each horizon and subgroup."
+  },
+  {
+   "name": "Estimated sequential-IPW with nuisance-aware stacked sandwich inference",
+   "point_estimator": "Use the same fitted probabilities and Hajek risk-difference estimator as the status quo method.",
+   "variance_estimator": "Stack, at the independent-patient level, the four baseline propensity-score equations, the five pooled longitudinal propensity-score equations summed over that patient's months, and the two risk equations q_ig(Z_i-mu_g)=0. With d=11 parameters, calculate A=-n^(-1)sum(dU_i/dtheta), B=n^(-1)sum(U_i U_i transpose), and V=[n/(n-11)]A^(-1)BA^(-T)/n. Use analytic logistic-score derivatives and d log(q_ig)/d gamma equal to the negative sum of compatible treatment log-likelihood score derivatives. Obtain the RD variance with contrast vector mu_1-mu_0.",
+   "interval": "RD plus or minus 1.959964 times the stacked-sandwich SE, without clipping.",
+   "is_status_quo": false,
+   "nonconvergence": "Use all status quo nonconvergence conditions and additionally declare failure when the stacked bread has reciprocal condition number below 1e-12, the sandwich is not positive semidefinite within numerical tolerance 1e-10, or the RD variance is negative or nonfinite. Zero event counts are retained unless they make the matrix singular.",
+   "implementation": "Implement the 11-dimensional estimating equations directly. Validate analytic derivatives once against centered finite differences using 20 fixed pilot replicates, requiring maximum absolute derivative disagreement below 1e-6 before launching the simulation."
+  },
+  {
+   "name": "Estimated sequential-IPW with effective-cell t inference",
+   "point_estimator": "Use the same Hajek estimator and estimated weights as the nuisance-aware method.",
+   "variance_estimator": "Use the same nuisance-aware stacked-sandwich variance. For each strategy g and binary endpoint value z, calculate ESS_gz=[sum(q_ig I(Z_i=z))]^2/sum(q_ig^2 I(Z_i=z)). Set nu=floor(min over g and z of ESS_gz)-1.",
+   "interval": "When nu>=1, use RD plus or minus the 0.975 quantile of the t distribution with nu degrees of freedom times the stacked-sandwich SE. Do not clip. This is a prespecified candidate correction, not an asserted theorem.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the nuisance-aware conditions. Also declare this interval unavailable when any endpoint cell has ESS_gz<=1 or nu<1. Record that failure separately rather than removing the replicate from other methods.",
+   "implementation": "Calculate effective event and non-event counts from terminal inverse-probability weights. Repeat the calculation separately for each cause, horizon, and subgroup."
+  },
+  {
+   "name": "Oracle-probability sequential-IPW benchmark",
+   "point_estimator": "Replace fitted treatment probabilities with the exact DGM probabilities while retaining the same Hajek estimator, artificial-censoring rule, horizons, and outcomes.",
+   "variance_estimator": "Use the fixed-weight individual-cluster HC1 variance formula from the status quo method. Because the probabilities are known, no nuisance-estimation score is included.",
+   "interval": "RD plus or minus 1.959964 times the oracle-weight SE, without clipping.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure only for a zero or nonfinite arm denominator, a cumulative weight above 1e12, or a nonfinite estimate or SE. Retain zero-event replicates.",
+   "implementation": "Compute exact assignment probabilities during generation and retain them in log form. This benchmark distinguishes weight-tail and rare-event failure from instability caused by estimating the treatment models."
+  }
+ ],
+ "performance": {
+  "primary": "Conditional empirical coverage of the nominal 95% interval for the overall 60-month primary-event risk difference from estimated sequential-IPW with fixed-weight Wald inference. Coverage is calculated among converged replicates, while convergence and the unconditional probability of producing a covering interval are reported alongside it.",
+  "secondary": [
+   "Bias, empirical SE, mean model SE, relative error in model SE, MSE, conditional coverage, unconditional successful coverage, bias-eliminated coverage, rejection of H0: RD=0, and convergence, each with the existing ADEMP Monte Carlo SE.",
+   "The same measures for nuisance-aware, effective-cell t, and oracle inference at 12, 36, and 60 months.",
+   "Overall, G=0, and G=1 results for primary and competing-event risk differences.",
+   "Within each scenario, the coverage difference between kappa=0 and each larger kappa at fixed retention and event intercepts.",
+   "At every month and strategy: unweighted compatible risk-set count, cumulative event count, sum of weights, sum of squared weights, Kish ESS, ESS divided by retained n, maximum normalized weight, and the 99th-to-50th weight percentile ratio.",
+   "At each horizon and strategy: cause-specific effective event count, effective non-event count, and minimum monthly arm-specific risk-set ESS.",
+   "For each retention and event-frequency combination, the first tested kappa at which status quo coverage is below 90%; report the crossing as a bracket between adjacent kappa levels rather than inventing a continuous universal threshold.",
+   "Scenario-level sensitivity and specificity of a prespecified warning flag. Flag a scenario when its replicate-median minimum monthly arm-specific risk-set ESS is below 100 or its replicate-median minimum cause-specific effective event count across strategies is below 20. Define a failing scenario as status quo coverage below 90%."
+  ],
+  "n_rep": 4000,
+  "n_rep_derivation": "Target a Monte Carlo SE no greater than 0.005 for coverage at the decision boundary p=0.90. This requires m>=0.90(0.10)/(0.005^2)=3600 converged replicates. Allowing 5% nonconvergence requires 3600/0.95=3789.5 generated replicates, so use 4000 per scenario. With 3800 converged replicates, the coverage MCSE is 0.00487 at p=0.90 and 0.00354 at p=0.95."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "Declare the finite-information problem real within this DGM family if at least two scenarios, including at least one with expected postrestriction n=4000 and at least one containing a rare primary or rare competing event, have status quo coverage <=0.90, a 95% Wilson upper confidence limit below 0.925, convergence >=0.95, and either replicate-median minimum risk-set ESS below 25% of retained n or cause-specific effective event count below 20. Alternatively, declare an operational failure if convergence falls below 0.90 at kappa=2.25 while the matched kappa=0 scenario has convergence >=0.98 in at least two strata. Attribute failure specifically to the weight tail only if coverage drops by at least 0.05 from matched kappa=0 to kappa=1.25 or 2.25 in at least two strata whose kappa=0 coverage is >=0.93. Declare the fixed 100-or-20 reporting rule useful only if both sensitivity and specificity for scenario-level coverage failure are >=0.80.",
+  "problem_is_not_real_if": "Declare no material failure within scope if all 24 status quo scenarios have convergence >=0.95 and coverage between 0.93 and 0.97, every matched kappa=0 to kappa=2.25 coverage decrease is below 0.02, and every matched convergence decrease is below 0.02. Failure of the 100-or-20 diagnostic by itself does not establish that the inferential problem is absent.",
+  "uninformative_if": "Call attribution uninformative if fewer than 3600 replicates converge in a cell without a matched weight-related numerical-failure signal; either stored truth has Monte Carlo SE above 0.0005 overall or 0.001 within subgroup; median minimum risk-set ESS differs by less than 20% between kappa=0 and kappa=2.25 in every matched stratum; or kappa=0 coverage is already below 0.90 in all matched strata, leaving no adequate negative control for a weight-tail comparison. Coverage from 0.90 through 0.93, a material failure confined to one scenario, or sensitivity or specificity from 0.60 through 0.79 is classified as inconclusive rather than forced into either conclusion."
+ },
+ "threats": [
+  {
+   "threat": "The DGM deliberately creates severe weights, so simply demonstrating a small ESS would be circular.",
+   "mitigation": "Use kappa=0 as a negative control, require matched coverage or convergence changes, include moderate and severe dose levels, and base the conclusion on interval behavior rather than on whether the manipulated weight distribution became extreme."
+  },
+  {
+   "threat": "Rare events alone can produce poor Wald behavior and could be mistaken for a weight-tail effect.",
+   "mitigation": "Cross primary-event and competing-event rarity independently with every overlap and retention level. Report matched rare-to-common and kappa=0-to-severe contrasts."
+  },
+  {
+   "threat": "Finite-sample bias of the point estimator can masquerade as a variance-estimation failure.",
+   "mitigation": "Report ordinary and bias-eliminated coverage, estimator bias, oracle-weight performance, and model-SE versus empirical-SE comparisons."
+  },
+  {
+   "threat": "Estimated weights alter variance, so a fixed-weight sandwich cannot identify whether the problem is weight concentration or ignored nuisance estimation.",
+   "mitigation": "Compare the conventional fixed-weight sandwich with the stacked nuisance-aware sandwich and the known-probability oracle benchmark using the same point-estimation structure."
+  },
+  {
+   "threat": "A weight-only ESS is not the information size for every causal estimator.",
+   "mitigation": "Restrict all conclusions to the specified sequential-IPW estimator. Report independent-patient counts, risk-set counts, event counts, multiple weight diagnostics, and influence-based SE behavior alongside Kish ESS."
+  },
+  {
+   "threat": "A post hoc ESS cutoff could be selected because it happens to classify these 24 scenarios.",
+   "mitigation": "Make 100 risk-set equivalents or 20 effective events the sole confirmatory diagnostic rule. Treat thresholds inferred from adjacent kappa cells as descriptive brackets and report all scenario-level points."
+  },
+  {
+   "threat": "Correctly specified parametric treatment models make the simulation more favorable than applied analyses.",
+   "mitigation": "State this limitation prominently. The design isolates finite-information behavior under correct nuisance specification; failure here is strong evidence, while success cannot establish robustness to misspecification or flexible nuisance learning."
+  },
+  {
+   "threat": "Independent retention understates changes in covariate composition caused by real eligibility and active-comparator restrictions.",
+   "mitigation": "Use retention only to manipulate the independent-patient count and make no selection-bias claim. Label every estimand as belonging to the postrestriction superpopulation."
+  },
+  {
+   "threat": "Fixed monthly visits can conceal irregular-observation and visit-process bias.",
+   "mitigation": "Generate and analyze exactly monthly visits and explicitly exclude irregular observation from the scope."
+  },
+  {
+   "threat": "Dropping zero-event or failed replicates would make coverage look better.",
+   "mitigation": "Retain zero-event replicates for methods that return an interval, report method-specific nonconvergence, and report both conditional coverage and the unconditional probability of producing a covering interval."
+  },
+  {
+   "threat": "Numerical overflow could be confused with a statistical finding.",
+   "mitigation": "Accumulate probabilities and weights on the log scale, use the fixed 1e12 numerical-failure threshold, and separately report overflow, separation, singular-bread, and insufficient-effective-cell failures."
+  },
+  {
+   "threat": "Large-sample Monte Carlo error in the truth can distort coverage in the largest retained cohorts.",
+   "mitigation": "Use paired strategy simulations, store truth Monte Carlo SEs, reuse only mathematically identical truths, and extend truth batches until the prespecified precision thresholds are met."
+  },
+  {
+   "threat": "A 24-cell grid cannot establish a universal point where all asymptotic inference fails.",
+   "mitigation": "Report scenario-specific crossing brackets and a fixed diagnostic rule. Do not extrapolate beyond the simulated event frequencies, treatment process, follow-up horizon, or estimator."
+  }
+ ],
+ "runtime_estimate": "The main experiment contains 24*4000=96000 replicates. Each replicate requires two treatment-probability glm fits, for approximately 192000 glm fits total; all four inference methods reuse those fits except the oracle benchmark. With 60 monthly cycles, six workers, chunked checkpointing, and no resampling or ensemble fitting inside a replicate, the projected run is approximately 6 to 12 hours. Truth requires only four distinct outcome-intercept combinations, not 24 scenario-specific enumerations. At the supplied estimate of four minutes per 2000000-person truth enumeration, the initial truth bill is about 16 minutes. Aggregation, diagnostic summaries, and figures should take less than one additional hour.",
+ "bears_on": [
+  {
+   "id": "GMT-03",
+   "relation": "answers-part",
+   "what": "Directly answers the empirical portion concerning when conventional longitudinal-IPW intervals lose coverage as nominal count, retained count, weight tail, event count, competing risk, and subgroup size diverge. It also tests one prespecified time-varying ESS and effective-event reporting rule. It does not supply universal small-sample theory or establish a reporting convention for other estimators."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019;38:2074-2102.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo error planning, and prespecification of performance measures."
+  },
+  {
+   "cite": "Robins JM, Hernan MA, Brumback B. Marginal structural models and causal inference in epidemiology. Epidemiology. 2000;11(5):550-560.",
+   "doi_or_url": "10.1097/00001648-200009000-00011",
+   "used_for": "Sequential inverse-probability weighting and marginal sustained-strategy estimation."
+  },
+  {
+   "cite": "Austin PC, Stuart EA. Moving towards best practice when using inverse probability of treatment weighting using the propensity score to estimate causal treatment effects in observational studies. Statistics in Medicine. 2015;34(28):3661-3679.",
+   "doi_or_url": "10.1002/sim.6607",
+   "used_for": "Weight-distribution diagnostics and the practical importance of overlap and extreme weights."
+  },
+  {
+   "cite": "Impact of near-positivity violations on IPTW-estimated marginal structural survival models with time-dependent covariates. Biometrical Journal. 2025.",
+   "doi_or_url": "10.1002/bimj.70093",
+   "used_for": "Motivation for factorial manipulation of longitudinal near-positivity and survival inference."
+  },
+  {
+   "cite": "Zhang, Bujkiewicz and Jackson. Effective sample size estimators for weighted analyses. BMC Medical Research Methodology. 2024.",
+   "doi_or_url": "10.1186/s12874-024-02412-1",
+   "used_for": "Motivation for treating ESS as estimator-dependent and comparing it with event and risk-set information rather than presenting one universal count."
+  }
+ ]
+}

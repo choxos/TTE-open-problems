@@ -1,0 +1,245 @@
+{
+ "batch": "01",
+ "model": "gpt-5.6-sol",
+ "verdicts": [
+  {
+   "id": "BEN-01",
+   "tte": "core",
+   "methods": [
+    "trial-benchmarking",
+    "transportability",
+    "hierarchical-calibration"
+   ],
+   "study_type": "analytic",
+   "answerable": "partly",
+   "answerable_part": "Derive conditions under which benchmark performance transfers to a specified new question or database, and prove nonidentification when benchmark selection and relevant effect modifiers are unobserved.",
+   "feasibility": 3,
+   "design_sketch": "Define the estimand as expected emulation error for a new question conditional on database and protocol features. Derive its identification conditions under benchmark-selection exchangeability and positivity, then construct observationally equivalent benchmark processes with different new-question error to demonstrate failure when those conditions do not hold.",
+   "depends_on": [],
+   "priority_note": "Run an initially restricted analytic study early because the problem is foundational, but a general transfer theory and prospective benchmarking program are not week-scale deliverables.",
+   "confidence": "high"
+  },
+  {
+   "id": "BEN-02",
+   "tte": "core",
+   "methods": [
+    "trial-benchmarking",
+    "estimand-alignment"
+   ],
+   "study_type": "simulation+case",
+   "answerable": "yes",
+   "answerable_part": null,
+   "feasibility": 3,
+   "design_sketch": "Estimate whether candidate agreement measures recover known concordance while independently varying estimand mismatch, trial standard error, emulation standard error and true effect heterogeneity. Apply the measures to existing paired trial-emulation results and compare binary labels with effect differences, effect ratios, standardized discrepancies and prediction-interval coverage.",
+   "depends_on": [],
+   "priority_note": "This is a clean and consequential early study because binary agreement rules can be shown to fail under controlled conditions and replaced with interpretable graded summaries.",
+   "confidence": "high"
+  },
+  {
+   "id": "CNF-01",
+   "tte": "core",
+   "methods": [
+    "intention-to-treat-analogue",
+    "sustained-strategies",
+    "clone-censor-weight"
+   ],
+   "study_type": "simulation",
+   "answerable": "yes",
+   "answerable_part": null,
+   "feasibility": 5,
+   "design_sketch": "Target the risk difference for assignment to initiate at baseline versus not initiate at baseline at horizons from 1 to 10 years. Vary delayed initiation in the comparator arm and treatment-effect persistence, then measure attenuation relative to the true assignment-effect curve and assess whether observed treatment-trajectory summaries predict that attenuation.",
+   "depends_on": [],
+   "priority_note": "Run early because it is inexpensive, directly interpretable and capable of producing a practical diagnostic relating treatment convergence to horizon-specific attenuation.",
+   "confidence": "high"
+  },
+  {
+   "id": "DTA-01",
+   "tte": "applies",
+   "methods": [
+    "protocol-fitness-assessment",
+    "trial-benchmarking"
+   ],
+   "study_type": "corpus",
+   "answerable": "partly",
+   "answerable_part": "Test whether prespecified component-level fitness measures predict benchmark discrepancy; one corpus study cannot establish universally valid stopping thresholds or validate fitness where no external reference exists.",
+   "feasibility": 1,
+   "design_sketch": "Define benchmark discrepancy as the absolute standardized difference between trial and emulation effects. Across paired benchmarks, relate discrepancy to prespecified scores for eligibility observability, temporal precision, treatment support, outcome validity and capture continuity, evaluating calibration and discrimination for large discrepancies.",
+   "depends_on": [
+    "BEN-02"
+   ],
+   "priority_note": "Despite its very high rating, this is not an early standalone study because threshold selection is partly normative and the required benchmark-level data assembly is substantial.",
+   "confidence": "high"
+  },
+  {
+   "id": "DTA-02",
+   "tte": "applies",
+   "methods": [
+    "federated-estimation",
+    "transportability",
+    "component-validation"
+   ],
+   "study_type": "simulation+case",
+   "answerable": "partly",
+   "answerable_part": "Evaluate whether shareable site-level diagnostics detect specified differences in protocol implementation and whether excluding or transporting incompatible sites reduces bias; no single study can certify semantic equivalence across all data systems.",
+   "feasibility": 2,
+   "design_sketch": "Target a transported strategy-specific risk difference in a common population while varying site-specific eligibility mappings, exposure misclassification, time resolution and outcome definitions. Compare naive pooling, random-effects pooling and transport-weighted pooling on bias and coverage, then demonstrate the diagnostics in one multisite emulation.",
+   "depends_on": [],
+   "priority_note": "Important, but it should follow simpler single-site diagnostics because a credible case study requires coordinated site access and semantic review.",
+   "confidence": "high"
+  },
+  {
+   "id": "DTA-03",
+   "tte": "no",
+   "methods": [
+    "common-data-models",
+    "record-linkage",
+    "phenotyping"
+   ],
+   "study_type": "case-study",
+   "answerable": "partly",
+   "answerable_part": "A multi-extract reanalysis can quantify estimate changes caused by code mappings, linkage choices and source removal, but it cannot establish general semantic equivalence.",
+   "feasibility": 2,
+   "design_sketch": "Reestimate one published treatment effect across historical code maps, probabilistic linkage thresholds and leave-one-source-out datasets. Compare changes in eligibility counts, phenotype agreement and the treatment-effect estimate against a manually validated reference subset.",
+   "depends_on": [],
+   "priority_note": "Exclude from the target trial emulation research queue because semantic drift and linkage error are general data-infrastructure problems that arise unchanged in ordinary cohort studies.",
+   "confidence": "high"
+  },
+  {
+   "id": "ELG-01",
+   "tte": "applies",
+   "methods": [
+    "eligibility-modeling",
+    "multiple-imputation",
+    "inverse-probability-weighting",
+    "partial-identification"
+   ],
+   "study_type": "simulation+case",
+   "answerable": "partly",
+   "answerable_part": "Compare methods under explicit eligibility-observation mechanisms and estimate sensitivity in a dataset with validation information; the study cannot determine which missingness assumptions are credible without such validation.",
+   "feasibility": 2,
+   "design_sketch": "Target the strategy-specific risk difference among the truly trial-eligible population. Vary dependence of eligibility measurement on latent severity, anticipated treatment and future outcome, then compare imputation, eligibility weighting, doubly robust correction and bounds on bias, coverage and distortion of the eligible population; repeat in a validation-linked cohort.",
+   "depends_on": [],
+   "priority_note": "Run after securing a suitable validation dataset; simulation alone would only rank methods under assumptions chosen by the investigator.",
+   "confidence": "high"
+  },
+  {
+   "id": "ELG-02",
+   "tte": "applies",
+   "methods": [
+    "eligibility-specification",
+    "causal-graph-auditing"
+   ],
+   "study_type": "simulation",
+   "answerable": "partly",
+   "answerable_part": "Measure whether a prespecified eligibility auditor detects collider-producing criteria and whether acting on its warnings reduces bias across generated causal structures; it cannot certify collider status in an unknown real causal graph.",
+   "feasibility": 3,
+   "design_sketch": "Target the treatment risk difference in the clinically intended eligible population while varying whether prior visits, laboratory recording and enrollment history are causes, colliders or descendants of early disease and treatment anticipation. Score warning sensitivity, false-positive rate and downstream effect-estimate bias before and after flagged criteria are removed or redefined.",
+   "depends_on": [],
+   "priority_note": "This lower-rated problem offers a clean diagnostic experiment, but it should be framed as evaluating warnings rather than claiming automated causal discovery can validate eligibility.",
+   "confidence": "high"
+  },
+  {
+   "id": "ELG-03",
+   "tte": "applies",
+   "methods": [
+    "comparator-sampling",
+    "time-zero-alignment",
+    "matching"
+   ],
+   "study_type": "analytic",
+   "answerable": "partly",
+   "answerable_part": "Derive a bound for defined sampling schemes under a specified index-time, depletion and survival model; no distribution-free bound can summarize every registry setting.",
+   "feasibility": 3,
+   "design_sketch": "Define bias in the comparator cumulative incidence or hazard relative to sampling with replacement. Derive its dependence on the comparator-to-index pool ratio, matching ratio, index-date distribution and comparator baseline hazard, then verify bound coverage over simulated depletion and survival processes.",
+   "depends_on": [],
+   "priority_note": "Run early despite its medium-high rating because a restricted analytic result with a confirming simulation would be decisive and immediately usable before comparator sampling.",
+   "confidence": "high"
+  },
+  {
+   "id": "EST-01",
+   "tte": "core",
+   "methods": [
+    "partial-interference",
+    "cluster-clone-censor-weight",
+    "network-g-computation"
+   ],
+   "study_type": "analytic",
+   "answerable": "partly",
+   "answerable_part": "Establish identification and compatible cloning for one prespecified cluster-level exposure mapping; the broader choice of exposure mapping, network measurement and positivity cannot be settled by one study.",
+   "feasibility": 1,
+   "design_sketch": "Define direct and spillover risk contrasts under a cluster strategy assigning specified treatment proportions during a grace period. Derive identification and cluster-level artificial-censoring weights under partial interference, then use simulation to check bias and coverage as cluster exposure support deteriorates.",
+   "depends_on": [],
+   "priority_note": "Scientifically important but not an early rapid study because the estimand and exposure mapping must be narrowed before either identification or software work is meaningful.",
+   "confidence": "high"
+  },
+  {
+   "id": "EST-02",
+   "tte": "no",
+   "methods": [
+    "transportability",
+    "sampling-weighting",
+    "sensitivity-analysis"
+   ],
+   "study_type": "analytic",
+   "answerable": "partly",
+   "answerable_part": "Derive bounds or sensitivity regions for a specified combination of treatment confounding and unmeasured effect modification; one study cannot apportion discrepancies between two unrestricted, untestable exchangeability failures.",
+   "feasibility": 1,
+   "design_sketch": "Target a transported population risk difference and parameterize departures from treatment exchangeability and sampling exchangeability separately. Derive the identified set as both parameters vary, and assess whether correlated violations widen it beyond analyses that vary either assumption alone.",
+   "depends_on": [],
+   "priority_note": "Exclude from this catalog's active queue because compounding confounding and transport assumptions is a general observational inference problem, not a consequence of target trial emulation.",
+   "confidence": "high"
+  },
+  {
+   "id": "EST-03",
+   "tte": "core",
+   "methods": [
+    "clone-censor-weight",
+    "grace-period",
+    "per-protocol-estimation"
+   ],
+   "study_type": "corpus",
+   "answerable": "partly",
+   "answerable_part": "Measure how often published clone-censor-weight emulations omit or mislabel the intervention, induced population, horizon and intercurrent-event strategy; a corpus cannot by itself establish the optimal reporting standard.",
+   "feasibility": 4,
+   "design_sketch": "Define the outcome as complete and correct specification of the strategy-specific estimand in published grace-period emulations. Sample eligible reports and measure the prevalence of estimand-label discordance, comparing hazard-ratio headlines with whether absolute risks, horizons, cloning rules and censoring-induced populations are reported.",
+   "depends_on": [],
+   "priority_note": "The catalog rating is high, but this would be a relatively weak early methodological study because it documents reporting prevalence rather than resolving an estimator problem.",
+   "confidence": "high"
+  },
+  {
+   "id": "GMT-01",
+   "tte": "core",
+   "methods": [
+    "marginal-structural-model",
+    "parametric-g-formula",
+    "longitudinal-tmle",
+    "sequential-cross-fitting"
+   ],
+   "study_type": "simulation",
+   "answerable": "partly",
+   "answerable_part": "Determine which observable model-selection criteria best predict causal performance across prespecified longitudinal data-generating mechanisms; no finite simulation can establish a universally optimal causal cross-validation loss.",
+   "feasibility": 3,
+   "design_sketch": "Target a sustained-strategy risk difference while varying treatment positivity, treatment-confounder feedback, nuisance-model misspecification and informative observation. Select nuisance learners using predictive loss, longitudinal balance, weight dispersion and estimated remainder criteria, then compare causal bias, interval coverage and estimator failure rates.",
+   "depends_on": [],
+   "priority_note": "Run early with a narrowed estimator set because this is a direct, decision-relevant simulation, although a four-estimator comparison with extensive machine-learning libraries would exceed one week.",
+   "confidence": "high"
+  },
+  {
+   "id": "GMT-02",
+   "tte": "core",
+   "methods": [
+    "continuous-time-g-methods",
+    "dynamic-regimes",
+    "marked-point-processes"
+   ],
+   "study_type": "analytic",
+   "answerable": "partly",
+   "answerable_part": "Prove identification for a specified continuous-time treatment, visit and outcome process and dynamic regime; the unrestricted problem with arbitrary treatment-dependent observation and within-interval effects is too broad for one result.",
+   "feasibility": 1,
+   "design_sketch": "Define a counterfactual event risk under a continuous-time dynamic treatment rule indexed by the observed filtration. Derive identification under explicit intensity-based exchangeability and observation assumptions, then demonstrate nonidentification when treatment-dependent visiting hides covariate updates and use nested grids only as numerical illustration.",
+   "depends_on": [],
+   "priority_note": "This is foundational but should not run early as a rapid study; it needs a tightly delimited theorem and likely sustained work by specialists in counting-process causal inference.",
+   "confidence": "high"
+  }
+ ]
+}

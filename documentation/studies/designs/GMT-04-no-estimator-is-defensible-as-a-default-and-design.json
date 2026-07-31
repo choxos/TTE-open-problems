@@ -1,0 +1,190 @@
+{
+ "title": "A common-estimand benchmark of IPTW, the parametric g-formula, and longitudinal TMLE under treatment-confounder feedback, model misspecification, overlap loss, and hidden confounding",
+ "question": "Across 24 longitudinal target trial scenarios, in what proportion of repeated samples does choosing IPTW, the parametric g-formula, or longitudinal TMLE change the estimated 36-month marginal risk difference by more than 0.03, change its sign, cross a benefit threshold of -0.03, or determine whether an estimate is returned at all? Which family has the lowest MSE in each scenario, and how often do prespecified diagnostics detect absolute error greater than 0.03?",
+ "aims": "Estimate scenario-specific probabilities of consequential estimator-choice disagreement; compare bias, MSE, interval coverage, and convergence for three estimator families targeting exactly the same sustained strategies; determine whether the best-performing family changes between treatment-model and outcome-model stress; compare fixed-weight and nuisance-adjusted IPTW variance estimators; and quantify apparently reassuring agreement when all methods share an identification failure caused by an unmeasured confounder.",
+ "dgm": {
+  "covariates": "Generate 4000 independent eligible individuals, all event-free at month 0. Decisions occur at k=0,...,5, corresponding to months 0, 6, 12, 18, 24, and 30; follow-up ends at month 36. Let expit(x)=1/{1+exp(-x)}. Generate independent W1~Bernoulli(0.50), W2~Bernoulli(0.35), and U~Bernoulli(0.30). Generate L0~Bernoulli(expit(-0.70+1.00W1+0.70W2+0.50W1W2+0.80U)). Set L[-1]=A[-1]=A[-2]=0. At each event-free visit, generate A_k~Bernoulli(expit(-0.20+s{1.20L_k+0.50W1-0.50W2+0.70U+1.10A_[k-1]-0.70}+delta_g{1.00L_[k-1](W2-0.35)-0.80A_[k-2](W1-0.50)})). Generate monotone loss during interval k with probability expit(-4.00+0.70L_k+0.35W2+0.30A_k+0.25U+0.12k+delta_g{0.80L_[k-1](A_[k-1]-0.50)-0.50A_[k-2](W1-0.50)}). Full trajectories are generated first; loss then masks the current outcome and every subsequent node. Among event-free individuals and for k<5, generate L_[k+1]~Bernoulli(expit(-0.80+1.35L_k+0.45W1+0.35W2+0.55U-0.75A_k+0.15k+delta_Q{0.65L_[k-1](W2-0.35)-0.45L_[k-1](L_k-0.50)})). Conditional draws are independent given the stated history.",
+  "outcome_model": "Let E_[k+1] indicate a first event during interval k. Among individuals event-free at its start, P(E_[k+1]=1)=expit(-4.60+0.20k+1.00L_k+0.55W1+0.35W2+0.75U-0.45A_k-0.30A_kW1+delta_Q{0.70L_[k-1](W2-0.35)-0.50L_[k-1](L_k-0.50)}). An event is absorbing. The terminal outcome is Y=1 if any E_[k+1]=1 by month 36. The centered omitted terms alter conditional structure without uniformly increasing treatment prevalence or event risk.",
+  "treatment_effect": "Treatment has an interval-specific direct log odds coefficient of -0.45 for W1=0 and also lowers the odds of the next adverse covariate state through a coefficient of -0.75. These correspond to conditional odds ratios of 0.64 and 0.47, respectively. The total sustained-strategy effect is therefore history-dependent and is computed marginally rather than interpreted from either coefficient.",
+  "effect_modification": "The A_k by W1 coefficient is -0.30. The direct conditional treatment odds ratio is exp(-0.45)=0.64 when W1=0 and exp(-0.75)=0.47 when W1=1. U affects treatment, L, censoring, and outcome but does not modify the treatment coefficient.",
+  "factors": [
+   {
+    "name": "Practical overlap scale s",
+    "levels": [
+     "0.60: mild; under delta_g=0 the possible one-visit treatment probabilities are approximately 0.29 to 0.82",
+     "1.00: moderate; under delta_g=0 the possible one-visit treatment probabilities are approximately 0.20 to 0.93",
+     "1.70: severe cumulative practical positivity stress; under delta_g=0 the possible one-visit probabilities are approximately 0.10 to 0.99"
+    ],
+    "rationale": "The levels preserve structural positivity while creating increasingly rare six-visit always-treated and never-treated histories. This targets the cumulative overlap problem emphasized for longitudinal weights rather than inserting impossible treatment assignments."
+   },
+   {
+    "name": "Nuisance-model structure",
+    "levels": [
+     "G0Q0: delta_g=0 and delta_Q=0; the prespecified treatment, censoring, transition, event, and sequential outcome models contain the true conditional functions",
+     "G1Q0: delta_g=1 and delta_Q=0; treatment and censoring models omit two-lag centered interactions, while outcome-side models remain correct",
+     "G0Q1: delta_g=0 and delta_Q=1; transition, event, and sequential outcome models omit lagged centered interactions, while treatment and censoring models remain correct",
+     "G1Q1: delta_g=1 and delta_Q=1; both nuisance sides omit the stated terms"
+    ],
+    "rationale": "The four quadrants create a benign reference, one scenario favorable to outcome modeling, one favorable to weighting, and one in which double robustness supplies no guarantee. The centered coefficients have moderate conditional effects and avoid making every misspecified scenario a simple prevalence shift."
+   },
+   {
+    "name": "Identification status of U",
+    "levels": [
+     "Observed U: U is supplied to every estimator and included in every nuisance model",
+     "Hidden U: the same generated U is removed before analysis"
+    ],
+    "rationale": "U has prevalence 0.30, a treatment coefficient of 0.70 before overlap scaling, and an event coefficient of 0.75. Hiding it creates a known non-identifiable contrast and tests whether agreement or narrow intervals are mistakenly treated as evidence of validity. Paired observed-U and hidden-U analyses use the same generated data."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The design is fully factorial: 3 overlap levels by 4 nuisance structures by 2 identification states. In observed-U scenarios, consistency, sequential exchangeability, positivity, correct temporal ordering, and conditional independent censoring hold. Treatment-confounder feedback is real because A_k changes L_[k+1], which changes later treatment and event risk. In hidden-U scenarios, sequential exchangeability is deliberately false. All probabilities remain strictly between zero and one.",
+  "cannot_detect": "The study says nothing about irregular visits, continuous treatment, grace periods, treatment versions, interference, measurement error, competing events, intermittent covariate missingness, more than six decisions, matching, structural nested models, highly adaptive machine learning, or violations other than the specified hidden U. The hidden-U scenarios can measure silent failure against known truth, but no observed-data diagnostic can generally establish that U exists."
+ },
+ "estimands": [
+  {
+   "name": "36-month marginal sustained-strategy risk difference",
+   "definition": "RD36=Pr(Y under A_0=...=A_5=1 and no loss by month 36)-Pr(Y under A_0=...=A_5=0 and no loss by month 36). All simulated individuals are eligible at month 0, there is no grace period, treatment is assigned at six fixed visits, follow-up begins immediately, and the first event by month 36 is the outcome. The estimand is a superpopulation marginal risk difference; negative values favor sustained treatment.",
+   "true_value_computation": "Compute each regime risk exactly by forward state recursion over the eight W1,W2,U strata, L0, the required lagged L states, and event-free status. At each visit set A_k to the regime value, set loss to zero, add event mass using the stated hazard, and propagate surviving mass through the L transition. Double-precision state probabilities must sum to one within 1e-12. The truth differs with delta_Q but not with s, delta_g, or whether U is hidden. There is no Monte Carlo error in the primary truth. As an implementation check, compare the recursion with a seeded 5,000,000-person intervention simulation for one delta_Q=0 and one delta_Q=1 case; require agreement within three simulation MCSEs, expected to be below 0.0003 for each risk difference."
+  }
+ ],
+ "methods": [
+  {
+   "name": "IPTW clone-censor pooled-logistic MSM with fixed-weight sandwich",
+   "point_estimator": "Clone each individual to the always-treated and never-treated protocols and artificially censor a clone at its first treatment deviation. Fit pooled logistic models A_k~factor(k)+W1+W2+U+L_k+A_[k-1] and retention~factor(k)+W1+W2+U+L_k+A_k, omitting U in hidden-U scenarios. Replace fitted probabilities below 0.01 or above 0.99 by those bounds. Form cumulative inverse probabilities of observed adherence and retention. Fit a weighted pooled logistic event model saturated in regime by interval; convert its six hazards to each 36-month risk and subtract. Scaling weights to mean one within regime and interval is permitted because it leaves the saturated hazard estimates unchanged.",
+   "variance_estimator": "Use the individual-cluster empirical sandwich from the weighted event model while treating fitted and clipped weights as fixed: V=A_inverse times the sum of subject-level score outer products times A_inverse-transpose. Use the joint delta-method covariance of the two product-limit risks to obtain the RD variance.",
+   "interval": "Untruncated two-sided Wald interval RD36 plus or minus 1.96 times its model SE. Also report the two risk estimates and their joint covariance.",
+   "is_status_quo": true,
+   "nonconvergence": "Failure of any nuisance or event glm to report convergence; rank deficiency affecting a required coefficient; absolute fitted coefficient above 20; any nonfinite probability, weight, estimate, gradient, or SE; sandwich condition number above 1e12; no weighted event or survivor information in a regime-interval cell; or RD outside [-1,1]. Probability clipping alone is a diagnostic flag, not nonconvergence.",
+   "implementation": "Use data.table for person-period and clone records and stats::glm with binomial links. Compute the cluster sandwich and delta gradient directly with matrix operations. This is the weighting-family point estimate and the current-practice variance comparator."
+  },
+  {
+   "name": "IPTW clone-censor pooled-logistic MSM with nuisance-adjusted sandwich",
+   "point_estimator": "Use exactly the same weights, weighted saturated hazard model, regime risks, and RD as the fixed-weight IPTW method.",
+   "variance_estimator": "Stack the treatment-model scores, retention-model scores, weight-normalization equations, and weighted event-model scores at the individual level. Estimate A as the derivative of the stacked mean score and B as the empirical covariance of individual stacked scores; use A_inverse B A_inverse-transpose divided by n. Apply the joint delta method to the two risks and their difference.",
+   "interval": "Untruncated two-sided Wald interval RD36 plus or minus 1.96 times the nuisance-adjusted SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the IPTW point-estimator rules, plus singular stacked derivative matrix, stacked-matrix condition number above 1e12, or a negative RD variance below numerical tolerance of -1e-10.",
+   "implementation": "Implement the stacked equations directly. This method shares a point estimate with the status quo IPTW method, so it is excluded as a duplicate from point-estimate disagreement calculations and included in model-SE and coverage comparisons."
+  },
+  {
+   "name": "Parametric longitudinal g-formula",
+   "point_estimator": "Fit pooled logistic transition models L_[k+1]~factor(k)+W1+W2+U+L_k+A_k and event models E_[k+1]~factor(k)+W1+W2+U+L_k+A_k+A_k:W1 among the relevant observed risk sets, omitting U in hidden-U scenarios. Standardize over the empirical baseline distribution and calculate both sustained-regime risks by exact state recursion, not by simulated covariate trajectories. Subtract the risks.",
+   "variance_estimator": "Use a subject-cluster stacked M-estimation sandwich for all transition and event regression coefficients. Add the empirical-baseline contribution m_a(W1,W2,U,L0)-psi_a to each regime influence function. Obtain derivatives of the exact recursion with central differences using step 1e-5 times max(1, absolute coefficient). Form the RD influence function by subtraction.",
+   "interval": "Untruncated two-sided Wald interval RD36 plus or minus 1.96 times the influence-function SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Any component glm failure, required rank deficiency, absolute coefficient above 20, nonfinite transition or event probability, recursion mass error above 1e-10, nonfinite gradient or SE, sandwich condition number above 1e12, or a risk outside [0,1].",
+   "implementation": "Use stats::glm and deterministic dynamic recursion over binary states. The primary run uses no bootstrap, so interval computation adds no model refits. A single replicate requires one pooled transition model and one pooled event model."
+  },
+  {
+   "name": "Longitudinal TMLE",
+   "point_estimator": "Run ltmle::ltmle separately for the two static treatment vectors using survivalOutcome=TRUE. Use the same treatment and censoring formulas and the same 0.01 to 0.99 g bounds as IPTW. At each time use a prespecified Q formula saturated in the current binary state W1 by W2 by U by L_k by A_k, with separate time-specific regressions; omit U in hidden-U scenarios and omit the delta_Q lagged terms in every scenario. Convert the two targeted survival estimates to event risks and subtract. Use formula-driven glm fits only; no SuperLearner ensemble is used.",
+   "variance_estimator": "Extract the subject-level influence curve for each targeted regime mean. After converting survival to risk, estimate Var(RD36) as the empirical variance of IC_always-IC_never divided by n, retaining their covariance because both calls use the same individuals.",
+   "interval": "Untruncated two-sided Wald interval RD36 plus or minus 1.96 times the influence-curve SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Any ltmle error; any internal glm with converged=FALSE or required rank deficiency; absolute nuisance or fluctuation coefficient above 20; nonfinite Q, g, influence-curve, risk, RD, or SE; targeted risk outside [0,1]; or zero influence-curve variance. More than 1 percent of g predictions clipped, an absolute fluctuation coefficient above 1, or a maximum clever covariate above 50 is retained as a diagnostic warning rather than automatically discarded.",
+   "implementation": "Use ltmle 1.3.0 with explicit Qform and gform and two calls per replicate. Preserve both influence-curve vectors before constructing the contrast. The same probability bounds, histories, censoring definition, population, horizon, and risk scale used by IPTW must be used here."
+  }
+ ],
+ "performance": {
+  "primary": "Scenario-specific choice-consequence probability Pr(Z=1), where Z=1 if at least one of the three unique family point estimators fails while another succeeds, or if all three succeed and max(IPTW RD, g-formula RD, LTMLE RD)-min(IPTW RD, g-formula RD, LTMLE RD)>0.03. Report the two components separately and report all-family failure separately.",
+  "secondary": [
+   "For every method: bias, empirical SE, mean model SE, relative error in model SE, MSE, 95 percent coverage, bias-eliminated coverage, two-sided rejection rate for RD36=0, convergence, and each corresponding Monte Carlo SE from the shared ADEMP harness.",
+   "Mean, median, 90th percentile, and 95th percentile of the within-replicate three-family absolute range among complete replicate triplets.",
+   "Probability that family estimates disagree in sign and probability that they fall on opposite sides of the prespecified RD=-0.03 benefit threshold.",
+   "Scenario-specific identity of the lowest-MSE family and MSE ratios relative to it. The two IPTW variance versions count once for point-estimate rankings.",
+   "Probability that all three families agree within 0.01 while each has absolute bias above 0.02 in hidden-U scenarios.",
+   "Diagnostic performance for gross failure, defined as nonconvergence, absolute estimation error above 0.03, or a confidence interval excluding the truth on the wrong side. The prespecified warning is positive if any fitted g probability is clipped in more than 1 percent of rows, minimum regime-specific ESS/n is below 0.20, the 99th percentile cumulative weight exceeds 20, the maximum weight exceeds 50, a required current-state cell has fewer than 20 observations, the LTMLE fluctuation coefficient exceeds 1 in absolute value, or a five-fold cross-validated expanded lag model improves log loss by at least 0.005. Report sensitivity, specificity, false-positive rate, and positive predictive value.",
+   "Report unconditional failure rates first. Conditional-on-convergence performance may be reported only as a secondary decomposition and must retain the original denominator."
+  ],
+  "n_rep": 800,
+  "n_rep_derivation": "The primary measure is Bernoulli. Requiring worst-case Monte Carlo SE no greater than 0.018 gives R at least 0.25/(0.018 squared)=771.6, so use 800 replicates per scenario. The worst-case MCSE is 0.5/sqrt(800)=0.0177; at a choice-consequence probability of 0.20 it is sqrt(0.20 times 0.80/800)=0.0141. The worst-case 95 percent Monte Carlo half-width is approximately 0.0346."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "Use the eight primary identifiable scenarios with observed U and s equal to 0.60 or 1.00; reserve severe-overlap and hidden-U scenarios for boundary and failure-awareness conclusions. Declare estimator choice materially consequential if all three conditions hold: the lower 95 percent Monte Carlo bound for Pr(Z=1) exceeds 0.20 in at least two of the eight scenarios; in at least two such scenarios one family has absolute bias above 0.02 or coverage below 0.90 while another has absolute bias below 0.01 and coverage from 0.93 through 0.97; and the lowest-MSE family changes between a G1Q0 and a G0Q1 scenario with an MSE ratio of at least 1.25 and a gap exceeding two MCSEs. Separately declare three-family agreement insufficient as a validity check if at least six of twelve hidden-U scenarios have three-family mean spread below 0.01, absolute bias above 0.02 for every family, coverage below 0.80 for every family, and convergence above 0.95. Call the diagnostic rule useful only if its lower 95 percent Monte Carlo bound for sensitivity exceeds 0.80 and its upper bound for false-positive rate is below 0.20 in observed-U scenarios.",
+  "problem_is_not_real_if": "Within this benchmark, declare no material estimator-choice problem if, in every one of the eight primary identifiable scenarios, the upper 95 percent Monte Carlo bound for Pr(Z=1) is below 0.10, every family has absolute bias below 0.01, current-practice coverage is between 0.93 and 0.97, convergence is at least 0.99, all pairwise differences between scenario mean estimates are below 0.01, and no family has an MSE more than 1.10 times another by more than two MCSEs. This conclusion is restricted to the benchmark and cannot establish a universal default.",
+  "uninformative_if": "Classify the result as uninformative if neither declaration is met; if consequential disagreement occurs only at s=1.70; if all three families fail in more than 20 percent of replicates in two or more primary scenarios; if fewer than 90 percent of planned replicates complete; if the exact-truth recursion fails its independent check; or if an implementation audit finds that any method used a different treatment protocol, population, censoring intervention, horizon, or effect scale."
+ },
+ "threats": [
+  {
+   "threat": "The DGM could be constructed to force the desired estimator disagreement.",
+   "mitigation": "Include all four G and Q quadrants, including six benign G0Q0 scenarios; use centered omitted terms with opposing signs; fix all coefficients before generating results; separate severe-overlap scenarios from the primary declaration; and require disagreement to correspond to truth-based bias or coverage failure and a reversal of the lowest-MSE family. Disagreement alone cannot satisfy the decision rule."
+  },
+  {
+   "threat": "A mandatory three-family comparison could be mistaken for an identification check.",
+   "mitigation": "Analyze paired observed-U and hidden-U versions of the same data. Hidden-U scenarios are used to quantify shared silent failure and cannot be used to rank methods as if one could recover a non-identifiable effect."
+  },
+  {
+   "threat": "Methods could silently target different protocols or populations.",
+   "mitigation": "Use one eligibility rule, two static six-visit strategies, no grace period, intervention on censoring, one superpopulation, one 36-month horizon, and one marginal risk-difference scale. Automated checks must compare all regime arrays, risk sets, censoring times, and baseline standardization weights before a replicate is accepted."
+  },
+  {
+   "threat": "Oracle formulas could unfairly favor a method.",
+   "mitigation": "The same declared current-state information is available to every estimator. Correct-model scenarios establish an attainable reference; selective stress omits the same lagged features from the relevant family. No formula may be changed after inspecting performance."
+  },
+  {
+   "threat": "Probability clipping could hide practical positivity failure or change comparisons.",
+   "mitigation": "Use the same fixed 0.01 to 0.99 bounds for IPTW and TMLE, report the fraction clipped, cumulative weight distribution, ESS, and clever covariates, and retain severe-overlap results as boundary evidence. Do not tune bounds by scenario."
+  },
+  {
+   "threat": "Different interval behavior could be misattributed to different point estimators.",
+   "mitigation": "Give the identical IPTW point estimate both a common fixed-weight sandwich and a stacked nuisance-adjusted sandwich. Compare their coverage separately and count the point estimate only once in family disagreement."
+  },
+  {
+   "threat": "Conditioning on successful fits could make unstable estimators look accurate.",
+   "mitigation": "Retain every planned replicate in the convergence denominator, make differential nonconvergence part of the primary choice-consequence measure, and label conditional performance explicitly."
+  },
+  {
+   "threat": "A coding error in the truth or event ordering could determine every conclusion.",
+   "mitigation": "Use exact probability recursion, state-mass conservation checks, a separately written intervention simulator, common-random-number comparisons for observed-U versus hidden-U analyses, and test absorbing events and censoring masks before the main run."
+  },
+  {
+   "threat": "Simple parametric nuisance models may not represent modern data-adaptive practice.",
+   "mitigation": "State this as a parametric benchmark of estimator families and assumption stress. No claim about SuperLearner ensembles, irregular EHR processes, or universal estimator rankings is permitted."
+  }
+ ],
+ "runtime_estimate": "The full design contains 24 scenarios times 800 replicates, giving 19,200 analyzed datasets. Longitudinal TMLE requires two regime fits per replicate, so the run contains 24 times 800 times 2=38,400 ltmle fits. At 5 seconds per fit this is 53.3 core-hours or 8.9 ideal wall-hours on 6 workers. The pooled glm fits, state recursion, diagnostics, serialization, and imperfect parallel scaling should bring the full run to approximately 10 to 14 hours. Truth evaluation is exact and takes seconds rather than four minutes per scenario. The existing seeded, resumable harness should dispatch scenario-replicate units to six workers and checkpoint after every replicate. Run a 100-replicate timing pilot without changing coefficients or methods. If it projects beyond 18 wall-hours, use the prespecified smaller design that removes only s=1.70: 16 scenarios times 800 replicates times 2=25,600 ltmle fits, equal to 35.6 core-hours or 5.9 ideal wall-hours. This preserves both identification levels and all four nuisance quadrants. No SuperLearner ensemble is used.",
+ "bears_on": [
+  {
+   "id": "GMT-04",
+   "relation": "answers-part",
+   "what": "It supplies a public common-estimand benchmark with weighting, outcome-modeling, and doubly robust estimators; quantifies whether estimator choice changes the answer; compares interval constructions; and tests whether agreement can coexist with shared identification failure. One finite benchmark cannot establish a universal reporting mandate, synthesize all existing simulations, or identify a universal default across other interventions and data structures."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP organization, Monte Carlo error reporting, and performance-measure definitions."
+  },
+  {
+   "cite": "Robins JM, Hernán MA, Brumback B. Marginal structural models and causal inference in epidemiology",
+   "doi_or_url": "10.1097/00001648-200009000-00011",
+   "used_for": "IPTW marginal structural models and longitudinal treatment-confounder feedback."
+  },
+  {
+   "cite": "Cole SR, Hernán MA. Constructing inverse probability weights for marginal structural models",
+   "doi_or_url": "10.1093/aje/kwn164",
+   "used_for": "Construction and diagnosis of longitudinal inverse probability weights and practical positivity."
+  },
+  {
+   "cite": "McGrath S, Young JG, Hernán MA. gfoRmula: An R package for estimating the effects of sustained treatment strategies via the parametric g-formula",
+   "doi_or_url": "10.1016/j.patter.2020.100008",
+   "used_for": "Parametric g-formula estimation of sustained treatment strategies."
+  },
+  {
+   "cite": "Bang H, Robins JM. Doubly robust estimation in missing data and causal inference models",
+   "doi_or_url": "10.1111/j.1541-0420.2005.00377.x",
+   "used_for": "The nuisance-model quadrants and interpretation of doubly robust performance."
+  },
+  {
+   "cite": "ltmle: Longitudinal Targeted Maximum Likelihood Estimation. CRAN",
+   "doi_or_url": "https://cran.r-project.org/package=ltmle",
+   "used_for": "Longitudinal TMLE implementation and influence-curve inference."
+  },
+  {
+   "cite": "Su L, et al. TrialEmulation: an R package to emulate target trials for causal analysis of observational time-to-event data",
+   "doi_or_url": "https://arxiv.org/abs/2402.12083",
+   "used_for": "The current-practice sequence-of-trials and per-protocol estimation context."
+  }
+ ]
+}

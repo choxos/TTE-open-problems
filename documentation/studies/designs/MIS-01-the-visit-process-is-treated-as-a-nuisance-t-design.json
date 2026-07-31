@@ -1,0 +1,272 @@
+{
+ "title": "When informative biomarker observation changes a sustained-treatment target trial estimate",
+ "question": "At 24 months, by how many risk-difference percentage points do complete-record and last-observation-carried-forward analyses miss the effect of sustained treatment when the conditional odds ratio linking current unrecorded severity to observation increases from 1 to 2 or 4, under monthly reference observation probabilities of 0.30 or 0.08 and treatment-to-observation odds ratios of 1 or 2? Which visit-aware estimators retain 95% coverage, and can observable visit-model and weight diagnostics detect replicate-level absolute errors exceeding 0.02?",
+ "aims": "The primary aim is to estimate unconditional 95% confidence-interval coverage for the 24-month marginal risk difference produced by each method in each scenario. Secondary aims are to estimate absolute bias and its paired change from the noninformative-observation scenario, determine whether any visit-aware method keeps absolute bias at or below 0.01 with coverage between 0.925 and 0.975, quantify the bias-variance cost of raw, capped, and calibrated inverse-intensity weights, and measure whether observable diagnostics classify absolute risk-difference errors above 0.02 with area under the ROC curve of at least 0.80.",
+ "dgm": {
+  "covariates": "Generate 4000 independent individuals and 24 monthly cycles. Let B indicate age 65 years or older, with B distributed Bernoulli(0.45). Let F indicate female sex, with F distributed Bernoulli(0.52). Generate baseline comorbidity C from Bernoulli(expit(-2.00 + 0.80B + 0.30F)). Generate the true binary prognostic severity state L0 from Bernoulli(expit(-1.20 + 0.55B + 0.80C - 0.15F)). Everyone is event-free and untreated immediately before baseline, A[-1]=0. Baseline observation is required by eligibility, so R0=1 and L0 is recorded. For months t=1,...,23 among event-free individuals, generate Lt before observation, treatment, and outcome. In the primary first-order mechanism, Lt is Bernoulli with logit probability -1.65 + 2.10L[t-1] + 0.45B + 0.70C - 0.55A[t-1] + 0.10(t/24). In the second-order challenge mechanism, use -1.80 + 1.25L[t-1] + 0.75L[t-2] + 0.45B + 0.70C - 0.55A[t-1] + 0.10(t/24) + 0.35L[t-1]C, with L[-1]=L0. Generate the structured observation indicator Rt from Bernoulli with logit probability alpha + gamma_L Lt + gamma_A A[t-1] + 0.405R[t-1] + 0.30C. Record Lt exactly when Rt=1 and record it as missing otherwise. Generate treatment from Bernoulli with logit probability -1.15 + 1.60A[t-1] + 0.95Lt + 0.35C + 0.20B + 0.25Rt. The true state can influence treatment without a structured measurement because it represents symptoms and clinical information available in unstructured care but absent from the analytic extract. All Bernoulli draws are conditionally independent given the stated history.",
+  "outcome_model": "For each event-free individual, generate the monthly event indicator Y[t+1] from Bernoulli with logit probability -5.10 + 1.20Lt + 0.40C + 0.25B - 0.50At + 0.30AtLt. Follow-up stops after the first event. Events are completely ascertained through linkage. There is no competing event, administrative loss, or measurement error in an observed severity state.",
+  "treatment_effect": "Natural treatment is time varying and follows the stated treatment model. Under the target interventions, replace the natural treatment draw with At=1 at every month for sustained treatment or At=0 at every month for sustained no treatment. Treatment has a direct conditional log-odds effect of -0.50 when Lt=0 and also lowers the next severity-state log odds by 0.55. The target effect therefore includes the pathway through subsequent severity. The observation process is not intervened upon.",
+  "effect_modification": "The only outcome-scale treatment interaction is At by Lt with coefficient 0.30 on the monthly log-odds scale. The conditional treatment odds ratio for the event is exp(-0.50)=0.607 when Lt=0 and exp(-0.20)=0.819 when Lt=1. There are no treatment interactions with B, F, or C.",
+  "factors": [
+   {
+    "name": "Current latent-severity dependence of observation",
+    "levels": [
+     "gamma_L=0, conditional observation odds ratio 1",
+     "gamma_L=0.693147, conditional observation odds ratio 2",
+     "gamma_L=1.386294, conditional observation odds ratio 4"
+    ],
+    "rationale": "The first level is a negative control in which observation is conditionally independent of current unrecorded severity given recorded history. The other levels represent moderate and strong selective measurement without claiming that marginal visit-rate heterogeneity itself proves unstable weighting."
+   },
+   {
+    "name": "Reference monthly observation probability",
+    "levels": [
+     "alpha=-0.847298, reference probability 0.30",
+     "alpha=-2.442347, reference probability 0.08"
+    ],
+    "rationale": "These probabilities correspond to median geometric waiting times of approximately 2 and 9 months for the reference patient. They represent relatively dense monitoring and sparse EHR biomarker capture."
+   },
+   {
+    "name": "Prior-treatment dependence of observation",
+    "levels": [
+     "gamma_A=0, conditional observation odds ratio 1",
+     "gamma_A=0.693147, conditional observation odds ratio 2"
+    ],
+    "rationale": "This distinguishes selective observation caused only by health history from monitoring that is also changed by prior treatment."
+   },
+   {
+    "name": "Latent-state dynamics",
+    "levels": [
+     "First-order model used in all 12 core factorial scenarios",
+     "Second-order challenge model used in 4 edge scenarios"
+    ],
+    "rationale": "The 12 core scenarios fully cross the first three factors. Four additional scenarios use the second-order mechanism at gamma_L values 0 and 1.386294, both observation-rate levels, and gamma_A=0.693147. The overall design is therefore not fully factorial. The four challenge cells test whether a joint method wins only because its first-order latent model reproduces the primary generator."
+   }
+  ],
+  "n_scenarios": 16,
+  "deliberately_true": "The core mechanism makes the joint first-order latent-state likelihood correctly specified. Missingness is MAR with respect to the stated recorded history when gamma_L=0 and MNAR when gamma_L is positive. Severity is a time-varying confounder and effect modifier. Treatment affects later severity and future observation. Observation itself has no direct effect on severity or outcome. Sequential treatment probabilities remain strictly between zero and one. The 12 core scenarios are a 3 by 2 by 2 factorial; the 4 second-order scenarios are prespecified robustness checks.",
+  "cannot_detect": "The study cannot evaluate continuous-time point processes, truly irregular event times within a month, continuous or multivariate biomarkers, measurement error at observed visits, informative outcome ascertainment, competing risks, loss to follow-up, treatment that can only be changed during an encounter, or a direct health effect of healthcare use. It cannot establish nonparametric identification under latent-state-dependent observation. It also cannot establish that a joint parametric model will remain reliable under forms of misspecification other than the specified second-order challenge."
+ },
+ "estimands": [
+  {
+   "name": "Primary 24-month marginal risk difference",
+   "definition": "The superpopulation cumulative incidence by the end of month 24 under At=1 for every t=0,...,23 minus the cumulative incidence under At=0 for every t=0,...,23. Eligibility requires an observed baseline state, but subsequent observation is not part of either treatment intervention.",
+   "true_value_computation": "Enumerate the exact joint probabilities of B, F, C, and L0. Under each treatment strategy, propagate survivor probability through the binary latent-state transition and event hazard for 24 months. The second-order scenarios propagate the pair (L[t-1],Lt). Double-precision recursion provides effectively exact truth without a large Monte Carlo truth sample. Validate the implementation independently in four corner scenarios with 2000000 simulated individuals per strategy. Require each simulated risk to be within 3 Monte Carlo standard errors and 0.001 of the recursive value."
+  },
+  {
+   "name": "Secondary 24-month marginal risk ratio",
+   "definition": "The same superpopulation sustained-strategy contrast expressed as cumulative incidence under sustained treatment divided by cumulative incidence under sustained no treatment.",
+   "true_value_computation": "Use the two risks from the exact recursion. Analyze the logarithm of the estimated risk ratio for inference."
+  },
+  {
+   "name": "Secondary 12-month marginal risk difference",
+   "definition": "The sustained-treatment minus sustained-no-treatment cumulative-incidence contrast through month 12 in the same superpopulation.",
+   "true_value_computation": "Stop the same exact recursion after month 12."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Oracle full-state parametric g-formula",
+   "point_estimator": "Use Lt at every month. Fit pooled logistic models for the severity transition and event hazard, then calculate intervention risks by exact binary-state recursion standardized over the empirical baseline distribution. In second-order scenarios, include L[t-2] and L[t-1] by C in the transition model.",
+   "variance_estimator": "Stack the subject-level scores for all fitted regressions, empirical baseline cell probabilities, and the two intervention-risk equations. Use the person-clustered M-estimation sandwich and the numerical gradient of the exact recursion. This benchmark includes nuisance-model estimation and empirical-standardization uncertainty.",
+   "interval": "Use estimate plus or minus 1.96 standard errors for the risk difference without clipping to [-1,1]. Use a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": false,
+   "nonconvergence": "A replicate fails if any regression does not converge, has a rank-deficient design, produces a nonfinite coefficient or covariance, has an information-matrix condition number above 1e12, or produces a nonfinite intervention risk or standard error.",
+   "implementation": "Use base R binomial glm fits and deterministic recursion. This method is unavailable in real EHR data and serves only to separate missing-observation bias from finite-sample or g-formula failure."
+  },
+  {
+   "name": "Complete-record parametric g-formula",
+   "point_estimator": "Fit the severity transition only on adjacent person-month pairs with R[t-1]=Rt=1. Fit the event model only on person-months with Rt=1. Use the same first-order working formulas as the primary generator and calculate risks by exact recursion. Do not model or weight the observation process.",
+   "variance_estimator": "Use a person-clustered stacked estimating-equation sandwich for the selected-row regression scores, empirical baseline distribution, and recursive risk functional.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": true,
+   "nonconvergence": "A replicate fails for regression nonconvergence, separation, rank deficiency, an information-matrix condition number above 1e12, absence of an event or state transition in a required treatment-state cell, or a nonfinite risk or standard error.",
+   "implementation": "This is the complete-record comparator. Missing person-months are excluded from nuisance-model fitting, but individuals are not required to have a complete 24-month history."
+  },
+  {
+   "name": "Last-observation-carried-forward parametric g-formula",
+   "point_estimator": "Replace every missing Lt with the most recently recorded state, which is always available because R0=1. Treat the carried value as the current state. Fit first-order severity-transition and event models to every observed person-month, ignore the observation process, and calculate intervention risks by exact recursion through the fitted surrogate-state model.",
+   "variance_estimator": "Use a person-clustered stacked estimating-equation sandwich covering the transition model, event model, empirical baseline distribution, and recursive risk functional.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": true,
+   "nonconvergence": "Use the oracle regression criteria. Also fail a replicate if carried values create a constant response or an unidentified treatment by state interaction.",
+   "implementation": "Implement directly with data.table. Do not add a missingness indicator or time-since-last-observation term, because those additions would define a different method."
+  },
+  {
+   "name": "MAR joint-model multiple imputation g-formula",
+   "point_estimator": "Fit a two-state observed-data likelihood with gamma_L fixed at zero. Include the baseline-state, first-order state-transition, observation, treatment, and event models. Draw 20 parameter vectors from the large-sample normal approximation and draw missing state paths by forward-filtering backward-sampling. Fit the complete-data first-order transition and event models in each completed dataset, calculate exact intervention risks, and average the 20 estimates.",
+   "variance_estimator": "Within each imputation use the complete-data stacked sandwich. Combine the within-imputation variance Ubar and between-imputation variance B as T=Ubar+(1+1/20)B.",
+   "interval": "Use a Rubin t interval with degrees of freedom 19 times [1+Ubar divided by ((1+1/20)B)] squared. Use a normal interval if B is numerically zero.",
+   "is_status_quo": false,
+   "nonconvergence": "A replicate fails if the constrained likelihood does not converge, its Hessian is not positive definite, forward-filtering probabilities become nonfinite, any completed-data analysis fails, or fewer than all 20 prespecified imputations are available.",
+   "implementation": "Implement the two-state forward and backward recursions in base R. Use mvtnorm for parameter draws. Treatment and outcome are included as auxiliary variables in the imputation likelihood. The method deliberately assumes MAR and is expected to fail when current latent severity drives observation."
+  },
+  {
+   "name": "Recorded-history inverse-intensity-weighted g-formula",
+   "point_estimator": "Fit a pooled logistic observation model to every at-risk row using B, F, C, A[t-1], R[t-1], last recorded L, months since the last observation capped at 12, t/24, and (t/24)^2. The model cannot include current unrecorded Lt. For an observed outcome-model row use weight 1 divided by the predicted observation probability. For an adjacent observed transition pair use the inverse predicted joint observation probability, with R0 treated as probability one. Normalize weights to mean one within month. Fit weighted severity-transition and event regressions and calculate risks by exact recursion.",
+   "variance_estimator": "Stack the visit-model score, weighted transition and event scores, empirical baseline equations, and risk equations. Use a person-clustered sandwich so estimated visit weights contribute to uncertainty.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": false,
+   "nonconvergence": "A replicate fails if the visit, transition, or event model fails; a predicted observation probability is numerically zero; weights or sandwich terms are nonfinite; the information matrix has condition number above 1e12; or the recursive estimate is nonfinite.",
+   "implementation": "This is the discrete-time analogue of inverse-intensity-of-visit weighting. Retain raw weights for the primary comparison and report their maximum, 99th percentile, coefficient of variation, and effective sample-size fraction."
+  },
+  {
+   "name": "Capped recorded-history inverse-intensity-weighted g-formula",
+   "point_estimator": "Use the same models and estimated observation probabilities as the raw inverse-intensity method. Normalize each analytic weight to mean one within month, cap the final outcome or transition weight at 10, renormalize, fit the weighted regressions, and calculate risks by exact recursion.",
+   "variance_estimator": "Use the same stacked sandwich with the piecewise derivative of the fixed cap. The probability of a weight falling exactly at the cap is zero under the continuous fitted probabilities.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the raw inverse-intensity criteria. Capping does not convert a numerically failed raw fit into a converged replicate.",
+   "implementation": "The fixed cap avoids data-dependent quantile uncertainty and supplies a prespecified bias-variance comparison."
+  },
+  {
+   "name": "Calibrated inverse-intensity-weighted g-formula",
+   "point_estimator": "Begin with the raw inverse-intensity weights. Apply exponential-tilting calibration so the weighted observed rows reproduce full risk-set totals of 1, B, F, C, A[t-1], R[t-1], last recorded L, capped observation gap, t/24, (t/24)^2, and A[t-1] by last recorded L. Calibrate transition-pair weights to the corresponding adjacent-history totals. Fit weighted transition and event models and calculate risks by exact recursion.",
+   "variance_estimator": "Include the calibration moment equations and multipliers in the person-clustered stacked sandwich together with the visit, transition, event, baseline, and risk equations.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": false,
+   "nonconvergence": "A replicate fails if the base visit model fails, the entropy-calibration solver does not reach a maximum absolute balance residual below 1e-8, calibrated weights are nonfinite, or subsequent model or variance calculations fail.",
+   "implementation": "Solve the calibration equations with base R optim using analytic moment residuals. This comparator evaluates the finite-sample stabilization already proposed in the irregular-visit literature; it is not presented as a new estimator."
+  },
+  {
+   "name": "Recorded-history visit-process parametric g-formula",
+   "point_estimator": "Represent the analysis state by the last recorded L and the capped number of missed months. Fit an observation model from recorded history, a new-measurement model among Rt=1 rows, and an event model using treatment, last recorded L, current observation, gap, baseline covariates, and treatment by last recorded L. Under each treatment strategy, recursively simulate or exactly sum over observation, new recorded state, carried state, gap, survival, and event. The unobserved true state is not propagated between visits.",
+   "variance_estimator": "Use a person-clustered stacked sandwich for all visit-process, measurement, event, empirical-baseline, and recursive-risk equations.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": false,
+   "nonconvergence": "A replicate fails if any component regression or the stacked sandwich fails, a required visit-gap state has no support, or exact recursion produces a nonfinite probability.",
+   "implementation": "Implement the finite-state recursion directly and cross-check one fixed dataset to numerical tolerance 1e-8 against the random visit-process functionality in gfoRmula 1.1.1. Do not run a nested package bootstrap within every simulation replicate."
+  },
+  {
+   "name": "Joint latent-state likelihood g-formula",
+   "point_estimator": "Maximize the observed-data likelihood obtained by summing over missing Lt with a two-state forward algorithm. Jointly fit the baseline-state, first-order state-transition, current-state-dependent observation, treatment, and event models. Anchor state labels using visits at which L is observed. Standardize the fitted transition and event models over the empirical baseline distribution and calculate sustained-treatment risks by exact recursion.",
+   "variance_estimator": "Use the robust quasi-maximum-likelihood sandwich from individual likelihood scores and the observed Hessian. Add empirical baseline-distribution score equations. Apply the numerical delta method to the exact risk recursion.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": false,
+   "nonconvergence": "Fit with L-BFGS-B from starting gamma_L values 0, 0.693147, and 1.386294, retaining the highest likelihood. A replicate fails if no start converges, the maximum absolute score exceeds 1e-4, the Hessian is singular or has condition number above 1e12, gamma_L lies within 0.01 of its bounds [-3,3], or any risk or standard error is nonfinite.",
+   "implementation": "Use a vectorized log-sum-exp forward algorithm in base R. This is a structural joint-model comparator, not a claim that latent-dependent observation is nonparametrically identified. No ltmle or SuperLearner targeting step is included because targeting cannot itself identify an unobserved current-state dependence."
+  }
+ ],
+ "performance": {
+  "primary": "Unconditional empirical coverage of the nominal 95% confidence interval for the 24-month risk difference in each method and scenario. A nonconverged replicate counts as failure to cover. Also report coverage among converged replicates so numerical failure and interval calibration can be distinguished.",
+  "secondary": [
+   "Bias and absolute bias of the 24-month risk difference",
+   "Empirical standard error",
+   "Mean model-based standard error",
+   "Relative error in model-based standard error",
+   "Mean squared error",
+   "Bias-eliminated coverage",
+   "Rejection rate for a zero risk difference",
+   "Convergence and numerical-failure rate",
+   "Bias, coverage, and MSE for the 12-month risk difference and 24-month risk ratio",
+   "Paired change in absolute bias between gamma_L=0 and gamma_L=1.386294 under matched random-number streams",
+   "Maximum, 99th percentile, coefficient of variation, and effective sample-size fraction for visit weights",
+   "Observable visit-model Brier score, calibration intercept, and calibration slope",
+   "Simulation-only calibration conditional on the true latent state",
+   "Bias and interval coverage for the joint model's gamma_L estimate",
+   "Leave-one-scenario-out AUC and sensitivity at 0.80 specificity for detecting replicate-level absolute risk-difference error above 0.02 using log weight coefficient of variation, effective sample-size fraction, observable calibration slope, Brier score, and maximum observation gap",
+   "Elapsed time and peak memory by method"
+  ],
+  "n_rep": 1000,
+  "n_rep_derivation": "The target Monte Carlo standard error for nominal coverage is at most 0.007. At coverage 0.95, R must satisfy sqrt(0.95 times 0.05 divided by R) at most 0.007, giving R at least 970. Round to 1000 replicates, for MCSE sqrt(0.0475/1000)=0.00689, or 0.69 percentage points. Report harness-derived Monte Carlo standard errors for every performance estimate. Use common random numbers for matched gamma_L comparisons and calculate their Monte Carlo errors from replicate-level paired differences."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "First require the oracle gate: absolute oracle bias at most 0.005, coverage from 0.925 through 0.975, and convergence of at least 0.99 in at least 15 of 16 scenarios. Conditional on that gate, declare a practically material visit-process problem if LOCF has absolute bias at least 0.02 or coverage at most 0.90 in at least 6 of the 10 latent-informative scenarios, including at least 3 of the 8 core informative scenarios, and if moving from gamma_L=0 to gamma_L=1.386294 increases LOCF absolute bias by at least 0.01 in at least 4 of the 6 matched pairs. A visit-aware method is declared practically adequate only if it has absolute bias at most 0.01, coverage from 0.925 through 0.975, and convergence of at least 0.95 in at least 8 of 10 informative scenarios, including both second-order informative challenges. Observable diagnostics count as useful only if leave-one-scenario-out AUC is at least 0.80 and sensitivity is at least 0.70 at specificity 0.80.",
+  "problem_is_not_real_if": "Require the oracle gate and then require both LOCF and complete-record analyses to have absolute bias below 0.01 and coverage from 0.925 through 0.975 in at least 9 of 10 informative scenarios. Also require the matched increase in absolute bias from gamma_L=0 to gamma_L=1.386294 to remain below 0.005 in at least 5 of 6 pairs. This conclusion applies only to the simulated two-year envelope and does not imply general identification under MNAR.",
+  "uninformative_if": "Classify the study as uninformative if the oracle gate fails, neither materiality rule is met, every visit-aware method has nonconvergence above 0.10 in more than four scenarios, conclusions reverse solely in the second-order challenge cells, or fewer than 900 valid generated replicates remain in any scenario because of harness or data-generation failures. A joint-model victory confined to the correctly specified first-order cells is evidence of parametric compatibility, not a general solution."
+ },
+ "threats": [
+  {
+   "threat": "A generator constructed from the joint model can guarantee that the joint model wins.",
+   "mitigation": "Include six gamma_L=0 negative-control scenarios, compare matched changes as gamma_L increases, add four second-order state-process challenges omitted from the joint working model, and require the oracle gate. The materiality decision depends on status-quo deterioration relative to the oracle, not merely on joint-model superiority."
+  },
+  {
+   "threat": "The observed data may not identify current-latent-state dependence without parametric restrictions.",
+   "mitigation": "Label the joint estimator explicitly as selection-model dependent. Report bias and coverage for gamma_L itself, Hessian condition numbers, likelihood profiles, and boundary failures. Do not interpret good performance as nonparametric identification."
+  },
+  {
+   "threat": "Observable visit calibration can look satisfactory while the intensity model is conditionally wrong.",
+   "mitigation": "Report both observable calibration and simulation-only calibration conditional on true Lt. Evaluate whether observable diagnostics predict estimation error rather than treating calibration as proof of validity."
+  },
+  {
+   "threat": "Weight capping or calibration can hide positivity problems while changing the target approximation.",
+   "mitigation": "Retain raw, fixed-cap, and calibrated variants as separate prespecified methods. Report their uncapped weight distributions and effective sample sizes. Do not select a variant after viewing bias."
+  },
+  {
+   "threat": "The discrete monthly observation indicator is not a continuous-time visit process.",
+   "mitigation": "State that conclusions apply to gridded EHR emulations. Do not claim validation of marked point-process estimators or irregular within-month timing."
+  },
+  {
+   "threat": "A binary state observed without measurement error understates real biomarker complexity.",
+   "mitigation": "Use the binary state to permit exact truth and an auditable latent likelihood. Restrict conclusions accordingly and treat continuous, noisy, and multivariate states as future studies."
+  },
+  {
+   "threat": "Observation has no direct effect on health in the generator.",
+   "mitigation": "Interpret R as structured measurement rather than all healthcare contact. The study cannot determine the effect of intervening on visit schedules or ancillary care."
+  },
+  {
+   "threat": "The target interventions set treatment monthly even when no structured measurement occurs.",
+   "mitigation": "Define the protocol as sustained pharmacy availability with monthly treatment assignment and no intervention on observation. Do not generalize to policies in which treatment can only start during a visit."
+  },
+  {
+   "threat": "Complete outcome ascertainment removes a second informative-observation problem.",
+   "mitigation": "Use linked outcome ascertainment deliberately to isolate covariate observation. State that visit-dependent diagnosis and loss to follow-up remain untested."
+  },
+  {
+   "threat": "Multiple-imputation Monte Carlo error can be mistaken for estimator variance.",
+   "mitigation": "Use 20 proper imputations with parameter and state-path draws, Rubin variance, fixed replicate-specific streams, and report the fraction of total variance due to between-imputation variation."
+  },
+  {
+   "threat": "Second-order challenge results may mix observation bias with ordinary model misspecification.",
+   "mitigation": "Report the 12 core factorial scenarios separately from the 4 challenge scenarios. Require material failure in core informative scenarios before declaring the visit problem real."
+  },
+  {
+   "threat": "An error in the exact recursive truth would contaminate every performance measure.",
+   "mitigation": "Validate four corner truths against independent simulations of 2000000 individuals per strategy and require agreement within both 3 Monte Carlo standard errors and 0.001."
+  }
+ ],
+ "runtime_estimate": "The study contains 16000 replicate datasets, each with at most 96000 person-months. With shared visit-model fits, each replicate requires approximately 56 pooled logistic fits, two two-state likelihood optimizations, and exact finite-state recursions. This is about 896000 pooled glm fits and 32000 latent-likelihood fits. On 6 workers, the planned run is approximately 7 to 11 hours after a 20-replicate-per-scenario timing pilot. Exact truth takes seconds; four two-million-person truth checks add approximately 16 minutes using the supplied benchmark. There are zero ltmle or SuperLearner fits. The resumable harness should write one scenario-method batch at a time so a numerical failure does not require restarting the run.",
+ "bears_on": [
+  {
+   "id": "MIS-01",
+   "relation": "answers-part",
+   "what": "Directly answers the comparative and practical part of the entry for gridded sustained-treatment emulations. It quantifies when complete-record, LOCF, MAR imputation, inverse-intensity weighting, calibrated weighting, an operational visit-process g-formula, and a joint latent-state model succeed or fail. It does not solve nonparametric identification, continuous-time observation, or healthcare-use interventions."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine 2019",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo error planning, and prespecified performance reporting."
+  },
+  {
+   "cite": "Goldstein BA, Bhavsar NA, Phelan M, Pencina MJ. How and when informative visit processes can bias inference when using electronic health records data for clinical research. J Am Med Inform Assoc 2019",
+   "doi_or_url": "10.1093/jamia/ocz148",
+   "used_for": "Causal mechanism linking health state, observation, and biased record-based inference."
+  },
+  {
+   "cite": "Wang et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digital Medicine 2026",
+   "doi_or_url": "10.1038/s41746-026-02563-z",
+   "used_for": "Treating observation as a protocol-realization process rather than a preprocessing detail."
+  },
+  {
+   "cite": "Multiply robust estimation of marginal structural models in observational studies subject to covariate-driven observation times. Biometrics 2024",
+   "doi_or_url": "10.1093/biomtc/ujae065",
+   "used_for": "Establishing that observation-aware causal estimators already exist and that the study is a comparative evaluation rather than invention of the first method."
+  },
+  {
+   "cite": "Kalia et al. Estimation of marginal structural models under irregular visits and unmeasured confounder: calibrated inverse probability weights. BMC Medical Research Methodology 2023",
+   "doi_or_url": "10.1186/s12874-022-01831-2",
+   "used_for": "Calibrated-weight comparator and the prespecified balance diagnostics."
+  },
+  {
+   "cite": "Continuous-Time Causal Inference With Marked Point Process Weights. Statistics in Medicine 2025",
+   "doi_or_url": "10.1002/sim.70102",
+   "used_for": "Treatment-dependent observation, sequential observation positivity, and weight-dispersion reporting."
+  },
+  {
+   "cite": "gfoRmula: An R Package for Estimating the Effects of Sustained Treatment Strategies via the Parametric g-Formula. Patterns 2020",
+   "doi_or_url": "10.1016/j.patter.2020.100008",
+   "used_for": "Existing random visit-process implementation and the operational visit-process g-formula comparator."
+  }
+ ]
+}

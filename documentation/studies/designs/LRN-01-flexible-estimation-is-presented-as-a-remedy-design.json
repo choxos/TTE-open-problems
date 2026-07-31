@@ -1,0 +1,215 @@
+{
+ "title": "Failure awareness of flexible longitudinal estimators under practical and structural positivity violations",
+ "question": "Across 24 longitudinal target trial scenarios, what proportion of flexible estimates produce an apparently successful 95% interval that covers no more than one of three observationally indistinguishable causal risk differences, by how much do those true risk differences differ, and with what sensitivity and specificity does a prediction-level support diagnostic warn before the estimate is interpreted?",
+ "aims": "The primary aim is to estimate the paired false-certainty rate of a flexible longitudinal augmented inverse probability weighted estimator under structural nonpositivity. Secondary aims are to estimate the range of true 12-month risk differences compatible with the same observed-data law; compare bias, interval performance, and convergence with current-practice longitudinal IPW and a main-effects augmented estimator; and determine whether a support map using the estimator's complete conditioning feature set attains at least 0.90 sensitivity for material support violations and at least 0.90 specificity under strong overlap.",
+ "dgm": {
+  "covariates": "Generate six treatment decisions at months 0, 2, 4, 6, 8, and 10, followed by a binary outcome at month 12. For each person generate B1 from N(0,1), representing age with mean 60 and standard deviation 10 years; B2 from Bernoulli(0.50); B3 from Bernoulli(expit(-0.60 + 0.50*B1 + 0.40*B2)); L0 = 0.45*B1 + 0.55*B3 - 0.25*B2 + e0, where e0 is N(0,0.8^2); and M0 from Bernoulli(expit(-1.10 + 0.45*B3 + 0.50*L0)). Set A[-1]=0 and previous mean treatment to zero. At decision t, define etaA = -0.15 + 0.80*tanh(Lt) + 0.45*Mt + 0.35*B3 + 0.25*tanh(B1) + 1.10*(A[t-1]-0.5) - 0.30*(mean(A0,...,A[t-1])-0.5) + 0.10*t/5. For t=0, use the stated zero previous mean. Under nonlinear complexity add 0.35*sin(Lt) + 0.25*B1*tanh(Lt) - 0.20*I(Lt>0.75). Draw At from Bernoulli(pt), with pt defined by the support factor. For t<5, generate L[t+1] = 0.55*Lt + 0.20*B1 + 0.30*B3 + 0.25*Mt - 0.40*At + 0.15*(t+1)/5 + C*(0.20*sin(Lt) + 0.15*B3*I(Lt>0.5)) + e[t+1], where each innovation is N(0,0.75^2). Generate M[t+1] from Bernoulli(expit(-1.20 + 0.60*Mt + 0.40*Lt + 0.30*B3 - 0.35*At + 0.10*(t+1)/5 + C*(0.25*I(Lt>0.5) - 0.20*Lt^2/(1+Lt^2)))). Here C is zero for the main-effects law and one for the nonlinear law. All innovations and treatment uniforms are mutually independent conditional on recorded history.",
+  "outcome_model": "Let meanL, meanM, and meanA be the averages over the six visits. Generate Y from Bernoulli(expit(etaY)), where etaY is on the conditional log odds scale and equals -2.25 + 0.30*B1 + 0.20*B2 + 0.55*B3 + 0.60*L5 + 0.35*M5 + 0.20*meanL + 0.25*meanM - 0.75*meanA + 0.45*meanA*B3 + 0.25*meanA*I(B1>0) + C*(0.55*(L5^2/(1+L5^2)-0.5) + 0.35*sin(pi*meanL/2) + 0.35*M5*I(L5>0.5) - 0.30*meanA*tanh(L5)) + delta*Z. In structural scenarios define Rt=Lt+0.40*Mt+0.30*B3 and Z=I(any At=1 when Rt<-1.25)-I(any At=0 when Rt>1.25). Observed structural data always have Z=0. Consequently delta=-log(2), 0, and log(2) produce exactly the same observed-data distribution but different outcomes under forbidden counterfactual treatment histories.",
+  "treatment_effect": "The conditional direct contribution of sustained treatment versus no treatment is -0.75 on the log odds scale before effect modification. Treatment also lowers subsequent L by 0.40 and the log odds of subsequent M by 0.35, creating mediated effects and treatment-confounder feedback. The target is the resulting total marginal effect rather than the coefficient -0.75.",
+  "effect_modification": "B3 increases the sustained-treatment log odds contrast by 0.45 and B1>0 increases it by 0.25. Under nonlinear complexity there is an additional -0.30*tanh(L5) modifier. These modifiers are fixed across scenarios so that changes attributed to support are not changes in the treatment effect model.",
+  "factors": [
+   {
+    "name": "Sample size",
+    "levels": [
+     "n=1000",
+     "n=4000"
+    ],
+    "rationale": "The two levels distinguish ordinary finite-sample sparsity from the empirically benchmarked 4000-person workload. Sample size does not change the superpopulation truth."
+   },
+   {
+    "name": "Observed-law complexity",
+    "levels": [
+     "C=0: main-effects treatment, covariate, and outcome laws",
+     "C=1: bounded nonlinearities and interactions in all three laws"
+    ],
+    "rationale": "The first level permits conventional modeling to work when support exists. The second gives flexible modeling a legitimate approximation-error advantage, preventing the study from treating flexibility as intrinsically harmful."
+   },
+   {
+    "name": "Support and structural completion",
+    "levels": [
+     "Strong overlap: pt=expit(0.5*etaA), delta=0",
+     "Moderate overlap: pt=expit(etaA), delta=0",
+     "Severe practical nonoverlap: pt=expit(2.5*etaA), delta=0",
+     "Structural protective completion: pt=0 when Rt<-1.25, pt=1 when Rt>1.25, otherwise pt=expit(etaA); delta=-log(2)",
+     "Structural benign completion: the same structural treatment law; delta=0",
+     "Structural harmful completion: the same structural treatment law; delta=log(2)"
+    ],
+    "rationale": "The soft regimes span comfortable overlap, probabilities near common 0.025 diagnostic boundaries, and practically empty conditional treatment regions. The deterministic tails represent eligibility or contraindication rules. The three symmetric structural completions are not claimed to be applied effect sizes. They expose nonidentification without selecting only a completion under which extrapolation fails. Poor overlap defeating advanced adjustment is the applied phenomenon documented by the cited nonmutually exclusive assignment study."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The design is fully factorial: 2 sample sizes by 2 complexity levels by 6 support or completion levels. Consistency, sequential exchangeability given the recorded history, no interference, correct temporal ordering, complete measurement, fixed visits, and absence of censoring or competing events are true by construction. The first three support regimes satisfy theoretical positivity. The structural regimes violate positivity for the sustained strategies. Within each sample-size and complexity cell, the three structural completions use the same seed and therefore the exact same observed dataset and fitted estimates. Only their counterfactual truths differ.",
+  "cannot_detect": "The study cannot assess unmeasured confounding, violations of consistency, interference, measurement error, censoring, competing risks, irregular observation, continuous or multiple treatments, grace periods, or transportability. No observed-data diagnostic can distinguish the three structural outcome completions or certify sequential exchangeability. Results apply directly to the specified series learner and support map, not to every neural network, BART implementation, or flexible estimator."
+ },
+ "estimands": [
+  {
+   "name": "12-month sustained-strategy risk difference",
+   "definition": "The superpopulation marginal risk difference E[Y under A0=...=A5=1] minus E[Y under A0=...=A5=0] among everyone eligible at month 0. The protocol has no grace period, censoring, treatment discontinuation, or competing event. This is a per-protocol contrast between sustained strategies, not a conditional regression coefficient or realized-sample estimand.",
+   "true_value_computation": "For each unique complexity and support mechanism, simulate 2000000 superpopulation trajectories under each strategy using common baseline variables and common innovations. Average expit(etaY) rather than drawing Y. Estimate Monte Carlo error from 100 batches of 20000 trajectories and extend in blocks of 1000000 if the batch standard error of the risk difference exceeds 0.0005. This error is at most 1 percent of the prespecified 0.05 material-difference threshold. Sample-size levels share one truth. Structural delta levels reuse identical intervention paths, so eight unique trajectory simulations produce all required truths."
+  },
+  {
+   "name": "Observed-law nonidentification span",
+   "definition": "Within each structural sample-size and complexity cell, the maximum minus minimum true 12-month risk difference across delta=-log(2), 0, and log(2). All three values correspond to the same observed-data law.",
+   "true_value_computation": "Compute all three outcome probabilities on the same 2000000 counterfactual trajectories. Common random numbers make the span's Monte Carlo error smaller than calculating three independent truths."
+  },
+  {
+   "name": "Strategy-specific unsupported mass",
+   "definition": "For each strategy and visit, the probability under that strategy's history distribution that the required action has true conditional probability zero. Also compute the corresponding mass below 0.025 for practical nonoverlap. Take the maximum across visits as the scenario summary.",
+   "true_value_computation": "Calculate the indicators directly during the large-sample intervention simulation. A structural violation is materially present when zero-probability mass is at least 0.05. A practical support problem is severe when mass below 0.025 is at least 0.05."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Truncated longitudinal IPW",
+   "point_estimator": "Fit one logistic treatment model at each visit using 1, t/5, B1, B2, B3, tanh(B1), Lt, tanh(Lt), Mt, A[t-1], previous mean A, previous mean L, and previous mean M. For each sustained strategy, retain people following that strategy through month 10, calculate the product inverse probability weight, cap final weights at the strategy-specific 99th percentile, and estimate risk by the Hajek weighted mean. Subtract never-treated risk from always-treated risk.",
+   "variance_estimator": "Use a person-level stacked M-estimation sandwich containing all six logistic score equations and both capped Hajek mean equations. Recompute the cap under coefficient perturbations. Form A by centered numerical differentiation with step 1e-6*max(1,absolute parameter value), B from outer products of person-level stacked scores, and covariance A inverse B A inverse transpose divided by n.",
+   "interval": "Untruncated Wald interval for the risk difference: estimate plus or minus 1.96 times its sandwich standard error.",
+   "is_status_quo": true,
+   "nonconvergence": "Any treatment GLM with converged=FALSE or nonfinite coefficients; no complete followers of either strategy; a zero weighted denominator; a nonfinite estimate or standard error; or a sandwich Jacobian with condition number above 1e12. Extreme weights and low effective sample size are warnings, not nonconvergence.",
+   "implementation": "Use stats::glm and matrix operations. Record maximum uncapped weight, cap value, number of complete followers, and effective sample size (sum(w)^2/sum(w^2)) for each strategy."
+  },
+  {
+   "name": "Main-effects longitudinal AIPW",
+   "point_estimator": "Use the six full-sample treatment models from longitudinal IPW. For each strategy a, set Q6=Y. For t from 5 down to 0, fit a quasibinomial logit regression of Q[t+1] on the stated main history features, At, At*B3, At*I(B1>0), and At*tanh(Lt), then predict Q[t] after setting At=a. Truncate fitted action probabilities to [0.01,0.99] only inside the estimating equation. For each a calculate phi_i(a)=Q_i0(a)+sum over t of I(A_i0=...=A_it=a)/G_it(a) times (Q_i,t+1(a)-Q_it(a)), where G_it is the cumulative fitted probability of the regime. Estimate each risk by mean(phi_i(a)) and subtract risks.",
+   "variance_estimator": "Use the empirical variance of (phi_i(1)-estimated risk1)-(phi_i(0)-estimated risk0), divided by n. This is the longitudinal efficient-influence-function variance estimate for the risk difference.",
+   "interval": "Untruncated Wald interval using 1.96 times the influence-function standard error.",
+   "is_status_quo": false,
+   "nonconvergence": "Any treatment or Q regression with converged=FALSE, aliased required coefficients, nonfinite predictions, a nonfinite estimating-function contribution, or a nonfinite point estimate or standard error. Estimates outside the logical risk range are retained and flagged rather than silently clipped.",
+   "implementation": "Use stats::glm with binomial for treatment and terminal outcome regressions and quasibinomial for fractional backward-regression outcomes. Save the proportion of action probabilities truncated at each visit and strategy."
+  },
+  {
+   "name": "Cross-fitted flexible series AIPW with conventional diagnostics",
+   "point_estimator": "Use two prespecified folds balanced on B3 and final Y. At visit t, the rich history map contains every recorded B, L0 through Lt, M0 through Mt, and A0 through A[t-1]; current values and previous means; natural cubic spline bases with 4 degrees of freedom for B1 and every recorded L; and products of the current L spline basis with B3, Mt, A[t-1], and previous mean A. Q regressions additionally contain At interactions with B3, I(B1>0), Mt, and the current L spline basis. Internal knots are the training-fold quartiles and boundary knots are the training-fold minima and maxima. Center and scale columns in the training fold, drop zero-variance columns, and remove exact aliases by pivoted QR. Fit fold-specific logistic treatment models and the same backward AIPW recursion as above. Combine validation-fold influence contributions and truncate action probabilities to [0.01,0.99] only inside the estimating equation.",
+   "variance_estimator": "Use the empirical variance of the cross-fitted risk-difference influence contributions divided by n.",
+   "interval": "Untruncated Wald interval using 1.96 times the cross-fitted influence-function standard error.",
+   "is_status_quo": false,
+   "nonconvergence": "Any fold-specific GLM with converged=FALSE, a rank-reduced model that cannot produce every required prediction, nonfinite coefficients or predictions, nonfinite influence contributions, or a nonfinite estimate or standard error. Complete or quasi-complete separation warnings are retained as conventional warnings even when glm reports convergence.",
+   "implementation": "Use stats::glm and splines::ns. Conventional diagnostics are green only if no numerical warning occurs, fewer than 1 percent of observed-action probabilities are below 0.01, each strategy's effective sample size is at least 25 percent of its complete followers, every uncapped final weight is at most 50, and heldout treatment and terminal-outcome log losses are no more than 0.01 worse than their main-effects counterparts. This method receives no counterfactual prediction-level support warning."
+  },
+  {
+   "name": "Cross-fitted flexible series AIPW with prediction-level support map",
+   "point_estimator": "Use exactly the same point estimate as the flexible series AIPW method. The added component changes reporting, not the estimate.",
+   "variance_estimator": "Use exactly the same cross-fitted influence-function variance estimate.",
+   "interval": "Use the same untruncated 95 percent Wald interval, displayed together with a green or red support status.",
+   "is_status_quo": false,
+   "nonconvergence": "The estimator has the same numerical nonconvergence definition as flexible series AIPW. A red support result is a substantive warning and is not mislabeled as numerical nonconvergence.",
+   "implementation": "For every fold, visit, and required action, use the exact rich history feature matrix used by the nuisance regressions. Flag a prediction if the cross-fitted probability of the required action is below 0.025 or if its action-specific ridge leverage exceeds the 99.5th percentile among heldout factual rows receiving that action. Compute leverage as z transpose times inverse(Za transpose Za + lambda*I) times z, with lambda=1e-6*trace(Za transpose Za)/p. Automatically flag an action cell with fewer than max(50,2*p) training observations. At visit t, summarize flags among histories that followed the strategy through t-1, weighted by their truncated inverse probability of prior adherence. Issue a red support status if the weighted flagged mass exceeds 0.02 at any visit under either strategy. Report the mass separately by visit, strategy, propensity component, and leverage component."
+  }
+ ],
+ "performance": {
+  "primary": "Paired false-certainty rate for flexible series AIPW in each structural sample-size by complexity cell. A replicate is a false-certainty event when the estimator converges, its 95 percent interval width is at most 0.10, all conventional diagnostics are green, its heldout losses satisfy the stated 0.01 criterion, and the one interval covers no more than one of the three true risk differences attached to that identical observed dataset.",
+  "secondary": [
+   "Bias with Monte Carlo standard error for every method, scenario, and structural completion",
+   "Empirical standard error",
+   "Mean model standard error",
+   "Relative error in model standard error",
+   "Mean squared error",
+   "95 percent coverage",
+   "Bias-eliminated coverage",
+   "Two-sided rejection rate for a zero risk difference",
+   "Convergence and warning rates",
+   "Median and 90th percentile interval width",
+   "Observed-law nonidentification span",
+   "Sensitivity for true zero-probability mass of at least 0.05",
+   "Sensitivity for true below-0.025 mass of at least 0.05",
+   "Specificity when true below-0.025 mass is at most 0.005",
+   "False red-warning rate under strong overlap",
+   "Paired reduction in false-certainty rate after adding the support map",
+   "Treatment and terminal-outcome heldout log loss",
+   "Effective sample size, maximum weight, and probability-truncation frequency"
+  ],
+  "n_rep": 1000,
+  "n_rep_derivation": "The primary measure is a proportion. Its worst-case Monte Carlo standard error occurs at probability 0.50 and equals sqrt(0.50*0.50/R). Requiring MCSE no greater than 0.016 gives R at least 0.25/0.016^2=976.5625, so use 1000 replicates. The worst-case MCSE is sqrt(0.25/1000)=0.01581. Report empirical paired MCSEs for differences between reporting policies."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "First require a structural nonidentification span of at least 0.05 and true zero-probability mass of at least 0.05. The practical failure-awareness problem is demonstrated if the conventional flexible workflow has a paired false-certainty rate of at least 0.50 in at least two of the four structural sample-size by complexity cells, including at least one n=4000 cell. The proposed diagnostic is considered successful if its structural sensitivity is at least 0.90, its strong-overlap specificity is at least 0.90, and it lowers paired false certainty by at least 0.40 without changing point estimates.",
+  "problem_is_not_real_if": "Conditional on a nonidentification span of at least 0.05, the studied practical problem is not supported if the conventional flexible workflow already warns or fails in at least 0.90 of replicates, false certainty is at most 0.10 in every structural cell, and the prediction-level map improves warning sensitivity by less than 0.10 while maintaining at least 0.90 specificity.",
+  "uninformative_if": "Treat the study as uninformative for a binary catalog verdict if the structural truth span is below 0.05, zero-probability mass is below 0.05, flexible-method convergence under strong overlap at n=4000 is below 0.90, the map's false red-warning rate under strong overlap exceeds 0.10, achieved primary MCSE exceeds 0.02, or the false-certainty rate lies between 0.10 and 0.50 without meeting either directional rule. Do not retune delta, support thresholds, or the diagnostic after seeing these results."
+ },
+ "threats": [
+  {
+   "threat": "A DGM constructed to violate positivity can make extrapolation look harmful by construction.",
+   "mitigation": "Use three exactly observationally equivalent structural completions: one in which the smooth observed-support continuation is correct and two symmetric alternatives. Include strong-overlap scenarios in which flexibility can improve approximation. Freeze delta values before fitting and declare a truth span below 0.05 uninformative rather than increasing delta."
+  },
+  {
+   "threat": "The structural completion proves logical nonidentification but cannot estimate how often such ambiguity occurs in applications.",
+   "mitigation": "Interpret the span as a demonstration of compatible truths, not a prevalence estimate. Report practical soft-overlap scenarios separately and avoid population-frequency claims."
+  },
+  {
+   "threat": "Deterministic treatment tails may be easier to detect than realistic sparse support.",
+   "mitigation": "Include strong, moderate, and severe nonzero propensity regimes. Score the diagnostic against both exact zero probability and the prespecified 0.025 practical threshold."
+  },
+  {
+   "threat": "The proposed diagnostic could appear successful because its definition resembles the DGM's support rule.",
+   "mitigation": "The diagnostic does not receive Rt, true propensity, structural labels, or DGM coefficients. It uses only the estimator's rich feature matrix, estimated treatment probabilities, and action-specific leverage. Thresholds are fixed before simulation."
+  },
+  {
+   "threat": "Flexible series regression is not representative of every flexible learner.",
+   "mitigation": "State the scope explicitly. The series library supplies nonlinear approximation and confident smooth extrapolation using installed software, but the results do not rank neural networks, BART, or all machine-learning libraries."
+  },
+  {
+   "threat": "Poor flexible-model performance could be caused by numerical instability rather than identification failure.",
+   "mitigation": "Separate nonconvergence, conventional warnings, support warnings, bias, and false certainty. Require at least 0.90 convergence in the strong-overlap n=4000 scenarios before drawing the main conclusion."
+  },
+  {
+   "threat": "Weight truncation and approximate variance calculations could confound point-estimation and interval conclusions.",
+   "mitigation": "Prespecify all truncation. Evaluate model SE relative error and bias-eliminated coverage. Use a stacked sandwich for IPW and influence-function variance for both augmented estimators."
+  },
+  {
+   "threat": "Monte Carlo error in the truth could be mistaken for estimator bias.",
+   "mitigation": "Use two million intervention trajectories, conditional outcome probabilities, common random numbers, batch standard errors, and an automatic extension rule until truth MCSE is at most 0.0005."
+  },
+  {
+   "threat": "Reusing structural datasets creates dependence across reported scenarios.",
+   "mitigation": "This dependence is intentional and necessary to demonstrate observational equivalence. Analyze completion contrasts as paired quantities and calculate paired Monte Carlo standard errors."
+  },
+  {
+   "threat": "Fixed bimonthly visits simplify the conditioning histories.",
+   "mitigation": "Record this as a design boundary. The feature dimension still grows with complete history, but the study says nothing about irregular visit processes or informative measurement times."
+  },
+  {
+   "threat": "A support warning could be misinterpreted as proof that all identification assumptions hold when it is green.",
+   "mitigation": "Label green as no detected support failure under the stated feature map. Never label it identified. The protocol explicitly excludes diagnostics for unmeasured confounding, consistency, and interference."
+  }
+ ],
+ "runtime_estimate": "The design creates 24000 scenario-replicate records. The three structural completions reuse fitted results, leaving 16000 distinct observed datasets. Each distinct dataset requires 6 shared main treatment GLMs, 12 main-effects Q regressions, and 36 rich two-fold fits consisting of 12 treatment and 24 Q regressions, for 54 fits per dataset and 864000 GLM fits total. The support-map reporting policy reuses these fits. There are zero ltmle fits, zero SuperLearner fits, and no requirement for lmtp, concrete, CICI, Stan, or cmdstanr. Eight unique two-million-person truth simulations should cost about 32 minutes at the supplied benchmark. With six outer workers, one BLAS thread per worker, and checkpointing through the existing harness, the replicate run is expected to take approximately 6 to 12 hours and remain within the overnight budget.",
+ "bears_on": [
+  {
+   "id": "LRN-01",
+   "relation": "answers-part",
+   "what": "It supplies a numerical test of false certainty, an exact observational-equivalence demonstration of nonidentification, and an operating-characteristic evaluation of one support diagnostic using the same conditioning features as a flexible nuisance model. It cannot establish a universal diagnostic for all learners or identify unmeasured confounding."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019;38:2074-2102.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo uncertainty, and prespecified performance measures."
+  },
+  {
+   "cite": "Feuerriegel S, Frauen D, Melnychuk V, et al. Causal machine learning for predicting treatment outcomes. Nature Medicine. 2024;30:958-968.",
+   "doi_or_url": "10.1038/s41591-024-02902-1",
+   "used_for": "The principle that flexible causal prediction retains conventional identification requirements."
+  },
+  {
+   "cite": "Target trial emulation under nonmutually exclusive assignment. American Journal of Epidemiology. 2026;195(4):1045.",
+   "doi_or_url": "10.1093/aje/kwaf018",
+   "used_for": "Applied motivation that poor overlap can defeat advanced adjustment."
+  },
+  {
+   "cite": "Hill JL, Su YS. Assessing lack of common support in causal inference using Bayesian nonparametrics: implications for evaluating the effect of breastfeeding on children's cognitive outcomes. Annals of Applied Statistics. 2013;7:1386-1420.",
+   "doi_or_url": "10.1214/13-AOAS630",
+   "used_for": "Precedent for model-linked common-support diagnostics."
+  },
+  {
+   "cite": "Evaluating bias in target trial emulation for heart failure across statistical and deep learning methods. Nature Communications. 2026.",
+   "doi_or_url": "10.1038/s41467-026-74999-6",
+   "used_for": "Motivation for comparing flexible and conventional estimators while adding a deliberately nonidentified arm."
+  },
+  {
+   "cite": "Estimate time-varying exposure effects via ensemble learning-based marginal structural model. Biometrical Journal. 2026.",
+   "doi_or_url": "10.1002/bimj.70133",
+   "used_for": "Motivation for studying flexible nuisance estimation in a longitudinal weighting setting."
+  }
+ ]
+}

@@ -1,0 +1,228 @@
+{
+ "title": "When Does Common Effect Pooling Conceal Calendar Time Heterogeneity in Sequential Target Trial Emulation?",
+ "question": "Across 24 prespecified scenarios, by how many percentage points does the estimated 12-month risk difference change when a common trial-start treatment effect is replaced by a flexible treatment-by-start-time effect, how often does the common-effect interval cover an explicitly defined equal-start estimand, does a person-clustered Wald diagnostic identify a true trial-specific risk-difference range of at least 0.02, and what empirical precision remains relative to a single middle-start trial?",
+ "aims": "Estimate, for every scenario, the bias and 95% coverage of the equal-start average risk difference under package-like common-effect pooling, common-effect pooling with flexible nuisance adjustment, spline effect-modified pooling, and start-saturated estimation. Quantify the mean absolute movement between common-effect and effect-modified estimates. Estimate the sensitivity and specificity of a 0.05-level person-clustered Wald test for detecting a true trial-specific risk-difference range of at least 0.02. Estimate the empirical variance ratio for the month-12 risk difference from spline pooling versus a standalone month-12 emulation. Separate calendar-time confounding, calendar-time effect modification, and changes in the later eligible population through a fully crossed design.",
+ "dgm": {
+  "covariates": "Each replicate contains 2000 independent people observed on fixed monthly cycles t = 0,...,33, with failure assessed through month 34. Age is 40 + 50B years, where B follows Beta(3,3), and R = (Age - 65)/10. Sex follows Bernoulli(0.5). Baseline comorbidity C follows Bernoulli(expit(-0.8 + 0.45R + 0.35Sex)). Baseline severity L_0 follows Normal(0.35R + 0.50C + 0.20Sex, 1). For an event-free person, L_(t+1) = 0.65L_t + 0.20R + 0.30C + 0.10Sex + 0.10q_t - 0.30Z_t + epsilon_(t+1), where epsilon follows Normal(0, 0.70^2), Z_t is current treatment, and q_t = max(-1, min(1, (t - 11)/11)). All innovations are mutually independent conditional on recorded history. Trial starts are K = {0,2,4,...,22}. A person is eligible at k if event-free and untreated immediately before treatment assignment at k. Each trial has 12 monthly outcome intervals. Thus one person can enter as many as 12 trials. There is no nonadministrative loss to follow-up.",
+  "outcome_model": "Among people event-free at the start of month t, treatment is assigned first and failure then follows Bernoulli probability expit(-4.50 + s(0.15Sex + 0.55R + 0.55C + 0.45L_t) + bq_t + Z_t[log(0.65) + log(0.85/0.65)C + h(S)]), where S is the first treatment month. Untreated people have Z_t = 0. The event is a composite failure endpoint, so competing events are absent. The coefficient scale is the conditional log odds of the discrete monthly failure hazard. The intercept gives approximately 15 to 20 percent 12-month risk around the central calendar period for common covariate profiles, with scenario-specific risks established by truth enumeration rather than assumed from the intercept.",
+  "treatment_effect": "Treatment initiation I_t is available only while untreated. Conditional on remaining untreated and event-free, I_t follows Bernoulli(expit(-3.60 + s(0.20Sex + 0.30R + 0.45C + 0.55L_t) + aq_t)). Treatment is absorbing: Z_t = 1 from the first initiation month onward. For a trial starting at k, strategy 1 forces initiation at k and continued treatment through k + 11. Strategy 0 forces no initiation from k through k + 11. The total causal effect includes both the direct hazard coefficient and the subsequent treatment-induced reduction of L. In the observational emulation, people assigned to no initiation at k are artificially censored immediately before any later initiation.",
+  "effect_modification": "On the monthly conditional hazard odds-ratio scale, the direct treatment effect is 0.65 among people without baseline comorbidity and 0.85 among people with comorbidity when h(S) = 0. Calendar-time effect modification h(S) is varied independently. Because treatment changes later L, marginal 12-month effects need not equal these direct conditional odds ratios. Risk-selective survival and treatment initiation can also change the comorbidity and severity distribution among later eligible people, creating trial-specific marginal risk differences even when h(S) = 0.",
+  "factors": [
+   {
+    "name": "Calendar pattern of the conditional treatment effect",
+    "levels": [
+     "None: h(S) = 0",
+     "Monotone: h(S) = 0.30q_S",
+     "Transient loss of benefit: h(S) = 0.30cos(pi q_S)"
+    ],
+    "rationale": "The null level measures false detection. The monotone pattern represents progressive changes in effectiveness. The cosine pattern represents a temporary era-specific loss of effectiveness, such as a transient variant, co-intervention, or guideline period. A magnitude of 0.30 changes the conditional treatment odds ratio by a multiplier between exp(-0.30) = 0.74 and exp(0.30) = 1.35. This is a calibrated stress test, not a claimed estimate from an applied study. Both nonnull shapes are required so that a method is not evaluated only under the exact shape it fits."
+   },
+   {
+    "name": "Calendar trend in treatment availability",
+    "levels": [
+     "None: a = 0",
+     "Strong adoption: a = 0.80"
+    ],
+    "rationale": "The strong level produces a first-to-last trial-start initiation odds ratio of exp(1.60) = 4.95, approximating a major formulary, guideline, or availability change. At central covariate values, monthly initiation remains in the low single digits and rises into the range where later trials retain usable treated groups. Low treatment prevalence is a motivating finite-sample setting in the published sequential-emulation inference work."
+   },
+   {
+    "name": "Calendar trend in untreated background risk",
+    "levels": [
+     "None: b = 0",
+     "Strong secular change: b = 0.35"
+    ],
+    "rationale": "The strong level produces a first-to-last trial-start hazard-odds ratio of exp(0.70) = 2.01 before covariate and treatment effects. This represents a substantial change in circulating disease, supportive care, coding, or background prevention. Calendar time is a pooled confounder only in combinations where it predicts both treatment and outcome, so the treatment and outcome trends are varied separately."
+   },
+   {
+    "name": "Risk-selective later eligibility",
+    "levels": [
+     "Nonselective negative control: s = 0",
+     "Risk-selective eligibility: s = 1"
+    ],
+    "rationale": "At s = 0, pretreatment covariates predict neither initiation nor untreated failure, so later eligibility does not preferentially deplete measured risk groups. At s = 1, a 10-year age increase has an untreated failure hazard-odds ratio of exp(0.55) = 1.73, comorbidity has odds ratio 1.73, and a one-unit severity increase has odds ratio 1.57. The exact negative control is necessary because a DGM containing selective survival in every scenario could only show that the mechanism it imposed exists."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The design is fully factorial: 3 by 2 by 2 by 2 equals 24 scenarios. Sequential eligibility, calendar-time confounding, effect modification, and risk-selective depletion are switched independently. All treatment and outcome predictors are measured, consistency holds, treatment probabilities remain away from deterministic assignment for practically occupied histories, and the fitted treatment model contains the true assignment form. These choices isolate pooling and interpretation from unmeasured confounding. The nonselective and no-heterogeneity levels ensure that a method must remain calibrated when the studied complications are absent.",
+  "cannot_detect": "The study cannot detect bias from unmeasured confounding, an incorrect eligibility date, irregular observation, informative visit timing, exposure misclassification, nonadherence after initiation, treatment discontinuation, competing risks, nonadministrative dropout, interference, or structural positivity failure. Fixed bimonthly trial starts say nothing about daily or irregular decision points. The absorbing-treatment protocol does not generalize automatically to sustained strategies with switching. Correctly specified initiation models mean the study cannot establish robustness to treatment-model misspecification."
+ },
+ "estimands": [
+  {
+   "name": "Equal-start average 12-month risk difference",
+   "definition": "For each k in {0,2,...,22}, let E_k denote eligibility under the natural data-generating process immediately before assignment at k. Define RD_k = P(Y by k + 12 under initiation at k and continued treatment through k + 11 | E_k) minus P(Y by k + 12 under no initiation through k + 11 | E_k). Negative values favor initiation. The primary estimand is theta_equal = sum_k RD_k/12. It is marginal, gives every prespecified trial start equal policy weight, and targets the superpopulation rather than the realized replicate.",
+   "true_value_computation": "For each scenario, simulate an independent truth population of 2000000 people in chunks of 100000. Follow natural histories to identify E_k. At every eligible start, simulate both strategies for 12 months using common covariate and innovation draws across the paired strategies. Compute every RD_k and their equal average. With at least 40 percent late eligibility, the worst-case binomial Monte Carlo SE for one arm risk is below 0.00056, and the paired risk-difference SE is below approximately 0.0008. This is small relative to the 0.005 and 0.010 decision thresholds."
+  },
+  {
+   "name": "Trial-specific 12-month risk-difference curve",
+   "definition": "The vector of RD_k for all 12 starts, each marginal over that start's eligible superpopulation. The prespecified heterogeneity magnitude is Delta_RD = max_k RD_k minus min_k RD_k. Delta_RD of at least 0.02 is defined as materially heterogeneous.",
+   "true_value_computation": "Use the same 2000000-person paired truth simulation. Store arm-specific risks, RD_k, eligibility probability, and Monte Carlo SE for every start rather than retaining only the pooled average."
+  },
+  {
+   "name": "Natural person-trial mixture risk difference",
+   "definition": "theta_PT = sum_k P(E_k)RD_k divided by sum_k P(E_k). This marginal superpopulation estimand gives more weight to starts contributing more eligible person-trials and approximates the implicit target of an unqualified pooled expanded-data analysis.",
+   "true_value_computation": "Estimate P(E_k) and RD_k jointly in the truth population. Report theta_PT beside theta_equal. Their difference quantifies the consequence of leaving the trial-start weighting rule implicit."
+  },
+  {
+   "name": "Middle-start effect and pooling efficiency",
+   "definition": "RD_12 is the marginal 12-month initiation-versus-no-initiation risk difference among the month-12 eligible superpopulation. The efficiency contrast is the empirical variance of the spline-pooled estimator of RD_12 divided by the empirical variance of the standalone month-12 estimator.",
+   "true_value_computation": "Use the month-12 eligible subset of the truth population and the same paired intervention simulation. A variance ratio below 1 indicates retained precision from borrowing across starts."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Package-like common-effect sequential emulation",
+   "point_estimator": "Create one person-trial for every eligible k. Set baseline assignment G to initiation at k versus no initiation at k. Artificially censor G = 0 observations immediately before later initiation. Estimate denominator initiation probabilities with pooled logistic regression I_t on 1 + q_t + Sex + R + C + L_t among untreated event-free person-months. Estimate numerator probabilities with I_t on 1 + q_t. Form stabilized baseline assignment weights and, for controls, multiply the corresponding stabilized probabilities of remaining untreated through each risk interval. Do not truncate weights. Fit the weighted pooled-logistic MSM event on G + j + j^2 + G:j + G:j^2 + q_k + q_k^2. Predict 12-month risks under both assignments at each start and average the 12 risk differences equally.",
+   "variance_estimator": "Use the one-way person-clustered sandwich covariance for the weighted MSM, summing all score rows from every trial and follow-up interval within original person. With bread B = sum w p(1-p)xx transpose and person score U_i = sum within i of wx(y-p), use V = B inverse times sum_i U_i U_i transpose times B inverse, multiplied by n_id/(n_id-1). Estimated treatment weights are treated as fixed, matching the installed package's standard robust outcome-model calculation. Obtain the risk-difference variance by the analytic delta method through the product-survival predictions and equal-start average.",
+   "interval": "Untruncated two-sided Wald interval theta_hat plus or minus 1.96 times its delta-method SE.",
+   "is_status_quo": true,
+   "nonconvergence": "Failure of either weight or outcome glm to report convergence; rank deficiency affecting a required contrast; any nonfinite coefficient, estimate, or SE; any absolute required coefficient above 20; any fitted initiation probability below 0.000001 or above 0.999999; or failure to obtain both treatment arms at a required start. No fallback estimator is substituted.",
+   "implementation": "Implement the expansion and weights with data.table and fit binomial logit models with stats::glm. This reproduces the package-like quadratic trial-period analysis while retaining complete control over equal-start standardization. Cluster only by original person, not by person-trial."
+  },
+  {
+   "name": "Rich-nuisance common-effect sequential emulation",
+   "point_estimator": "Use the same expanded data and estimated stabilized weights. Fit event on factor(j) interacted with splines::ns(q_k, df = 4), plus G interacted with factor(j), but include no G-by-q_k term. Predict each start-specific risk under G = 1 and G = 0 and average equally. This estimator has the same common-start treatment-effect restriction as the status quo but the same baseline-risk flexibility as the proposed estimator.",
+   "variance_estimator": "Use the same person-clustered sandwich, fixed-weight convention, finite-cluster correction, and analytic delta method as the package-like estimator.",
+   "interval": "Untruncated two-sided Wald interval theta_hat plus or minus 1.96 times its delta-method SE.",
+   "is_status_quo": false,
+   "nonconvergence": "The common weight-model criteria apply. The method also fails if its outcome glm does not converge, a required model-matrix column is rank deficient, a required coefficient is nonfinite or exceeds 20 in absolute value, or the standardized contrast or SE is nonfinite.",
+   "implementation": "This is the attribution comparator. A difference between the package-like and rich common-effect estimators indicates nuisance modeling. A difference between the rich common-effect and spline effect-modified estimators indicates the common-effect restriction."
+  },
+  {
+   "name": "Spline effect-modified sequential emulation",
+   "point_estimator": "Use the same weights and rich nuisance model, then add G interacted with splines::ns(q_k, df = 4). Predict RD_k for every start, theta_equal, theta_PT, and RD_12. The four interaction coefficients are tested jointly with a person-clustered Wald statistic against a chi-squared distribution with 4 degrees of freedom. The diagnostic is positive at p below 0.05.",
+   "variance_estimator": "Use the same person-clustered sandwich and analytic delta method. Use the full covariance among all spline, follow-up, and interaction coefficients for trial-specific and averaged contrasts.",
+   "interval": "Untruncated pointwise two-sided Wald intervals with 1.96 standard errors for theta_equal and every RD_k. The catalog attachment must show all trial-specific estimates and intervals even when the Wald test is not significant.",
+   "is_status_quo": false,
+   "nonconvergence": "The shared weight-model criteria apply. The method fails if the outcome glm or robust covariance fails, any required interaction is nonestimable or exceeds 20 in absolute value, the covariance block needed for the 4-degree-of-freedom test is singular, or any required standardized estimate or SE is nonfinite.",
+   "implementation": "Use four natural-spline degrees of freedom so that the fit is not tailored solely to the monotone DGM. The cosine DGM tests approximation of a nonmonotone pattern. Record the absolute movement from both common-effect estimates, the Wald p value, and the entire predicted trial-start curve."
+  },
+  {
+   "name": "Start-saturated weighted life-table benchmark",
+   "point_estimator": "Within every start, assignment arm, and follow-up month, estimate the weighted discrete hazard as sum(wY) divided by sum(w at risk). Form arm risk as 1 minus the product of one minus these 12 hazards. Compute all RD_k and average them equally. This imposes no smoothing or common treatment effect across starts.",
+   "variance_estimator": "Treat weights as fixed. For each start-arm-month cell c, use person contribution phi_ic = sum within person and cell of w(Y-p_c) divided by the total cell weight. Stack all cell contributions by original person, sum their outer products with correction n_id/(n_id-1), and apply the delta method through product survival, arm contrasts, and equal-start averaging. This retains covariance induced by the same person entering several trials.",
+   "interval": "Untruncated two-sided Wald intervals with 1.96 influence-function standard errors for theta_equal and each RD_k.",
+   "is_status_quo": false,
+   "nonconvergence": "Undefined cell weight, an empty arm or risk set, a nonfinite hazard or variance, or effective sample size below 10 in any cell required for a reported contrast. Effective sample size is square of sum(w) divided by sum(w^2).",
+   "implementation": "Compute directly with data.table rather than fitting 288 cell parameters by glm. Use this method as the low-assumption point-estimation benchmark and as the mandatory trial-specific display."
+  },
+  {
+   "name": "Standalone month-12 emulation",
+   "point_estimator": "Restrict the start-saturated weighted life-table estimator to people eligible at k = 12 and estimate RD_12 without borrowing from any other trial start.",
+   "variance_estimator": "Use the person-level influence-function covariance for the weighted month-12 life table, with the same fixed-weight convention and finite-cluster correction.",
+   "interval": "Untruncated two-sided Wald interval RD_12_hat plus or minus 1.96 times its SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Undefined weights or hazards, an empty assignment arm or follow-up risk set, a nonfinite estimate or SE, or effective sample size below 10 in any required cell.",
+   "implementation": "Compare its empirical variance and MSE with the spline-pooled prediction of RD_12. This comparison estimates the precision actually gained from repeated eligibility after person clustering and flexible calendar-time modeling."
+  }
+ ],
+ "performance": {
+  "primary": "Scenario-specific 95 percent interval coverage of theta_equal for the rich-nuisance common-effect and spline effect-modified estimators. Bias-eliminated coverage is interpreted jointly with ordinary coverage so that bias from common-effect pooling is separated from SE calibration already studied in the published variance literature.",
+  "secondary": [
+   "Bias with Monte Carlo SE",
+   "Empirical SE",
+   "Mean model SE",
+   "Relative error in model SE",
+   "Mean squared error",
+   "Bias-eliminated coverage",
+   "Rejection rate",
+   "Convergence rate",
+   "Mean and 95th percentile absolute movement from common-effect to effect-modified theta_equal",
+   "Trial-specific curve root mean squared error and maximum absolute error",
+   "Sensitivity of the 0.05 Wald diagnostic when true Delta_RD is at least 0.02",
+   "Specificity of the Wald diagnostic when true Delta_RD is below 0.005",
+   "Probability that the Wald test does not reject while the common-effect interval width is smaller than true Delta_RD",
+   "Empirical variance and MSE ratios for spline-pooled versus standalone RD_12",
+   "Difference between theta_equal and theta_PT",
+   "Maximum weight and effective sample size by trial start and assignment arm"
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "Coverage is a binomial proportion. At nominal coverage 0.95, requiring Monte Carlo SE no greater than 0.005 gives R at least 0.95 times 0.05 divided by 0.005 squared, which equals 1900. Round upward to 2000 replicates per scenario. The resulting MCSE is sqrt(0.95 times 0.05 divided by 2000) = 0.00487, or 0.49 percentage points. At coverage 0.90, the MCSE is 0.00671. All decision comparisons use the metric estimate plus or minus 1.96 Monte Carlo SE."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "First require at least 8 of the 16 scenarios with nonzero h to have true Delta_RD of at least 0.02. The pooling problem is demonstrated if, in at least half of all scenarios with Delta_RD at least 0.02, either the rich-nuisance common-effect absolute-bias interval lies wholly above 0.010 or its coverage interval lies wholly below 0.90, while the spline or start-saturated absolute-bias interval lies wholly below 0.005. In the four negative-control scenarios with h = 0 and s = 0, the rich common-effect absolute-bias interval must lie below 0.005. Independently, the diagnostic is declared adequate if its lower 95 percent Monte Carlo bound is at least 0.80 for sensitivity and at least 0.90 for specificity. Repeated-participation efficiency is declared to survive if the upper Monte Carlo bound for the spline-pooled to standalone RD_12 empirical variance ratio is below 1 in at least 75 percent of scenarios with Delta_RD below 0.005.",
+  "problem_is_not_real_if": "At least 8 scenarios must have true Delta_RD of at least 0.02, and in at least 90 percent of them the rich common-effect absolute-bias upper bound must be below 0.005, its coverage lower bound must be at least 0.93, its MSE must be no more than 10 percent above spline pooling, and the probability of a nonrejecting Wald test combined with a common-effect interval narrower than Delta_RD must be below 0.05. These criteria would show that common-effect pooling remains numerically adequate for the declared equal-start estimand within this DGM class despite visible trial-specific variation.",
+  "uninformative_if": "The result is uninformative if fewer than 8 nonnull scenarios achieve Delta_RD of 0.02, either proposed estimator has absolute bias above 0.005 in the negative controls, convergence is below 0.95 in more than four scenarios, effective sample size falls below 10 in more than 10 percent of replicates for any required cell, both common-effect and effect-modified methods fail in the same direction, or the 95 percent Monte Carlo intervals cross the numerical decision thresholds. No conclusion may be based only on a significant heterogeneity test or only on raw interval coverage."
+ },
+ "threats": [
+  {
+   "threat": "The DGM could manufacture the calendar-time effect that the study is intended to find.",
+   "mitigation": "Calendar effect modification, treatment adoption, background risk, and selective eligibility are crossed independently. Exact null levels are included. The decision rule requires calibration in negative controls, requires at least eight genuinely material alternatives, and attributes failure to common-effect pooling only when spline or saturated estimation removes it. The nonmonotone alternative prevents evaluation solely under the fitted monotone shape."
+  },
+  {
+   "threat": "A correctly specified initiation model favors inverse-probability weighting and may conceal behavior under routine model misspecification.",
+   "mitigation": "The treatment model is intentionally correct so that pooling can be isolated. Conclusions will explicitly be limited to measured confounding with adequate treatment-model specification. No claim about robustness to omitted nonlinearities, interactions, or unmeasured confounding is permitted."
+  },
+  {
+   "threat": "Failure of the package-like estimator could arise from its quadratic nuisance model rather than its common-effect restriction.",
+   "mitigation": "The rich-nuisance common-effect estimator uses exactly the nuisance basis used by the spline effect-modified estimator. The package-like versus rich-common comparison measures nuisance-model failure; the rich-common versus spline comparison measures the start-time treatment-effect constraint."
+  },
+  {
+   "threat": "The simple person-clustered sandwich treats estimated treatment weights as fixed, and published work shows that alternative inference procedures can behave differently in sparse settings.",
+   "mitigation": "The study accepts the published variance comparison as resolved and does not present itself as a new variance-method study. Conclusions about pooling require concordant point bias, empirical SE, MSE, and bias-eliminated coverage. The naive independent-row variance is not used. Extreme weights and effective sample sizes are reported so sparse scenarios cannot be mistaken for evidence about calendar pooling."
+  },
+  {
+   "threat": "Marginal risk differences can vary across trial starts even with a constant conditional treatment coefficient because baseline risk and eligible-population composition change.",
+   "mitigation": "This is measured rather than labeled automatically as bias. The protocol reports every RD_k, theta_equal, theta_PT, and their differences. The s = 0 negative control distinguishes calendar effect modification from risk-selective changes in the eligible population."
+  },
+  {
+   "threat": "A conclusion on the conditional hazard odds-ratio scale could disagree with a policy conclusion on the risk-difference scale.",
+   "mitigation": "All decision rules use marginal 12-month risks and risk differences computed by intervention. Conditional odds ratios are used only to define the DGM."
+  },
+  {
+   "threat": "Fixed monthly measurement and bimonthly trial starts simplify the observation and eligibility processes.",
+   "mitigation": "The limitation is built into the estimand and stated explicitly. No conclusion will be extended to irregular EHR visits, daily treatment decisions, or informative observation without another study."
+  },
+  {
+   "threat": "Absorbing treatment, absence of competing events, and absence of external dropout may overstate usable information.",
+   "mitigation": "These mechanisms are excluded to isolate sequential pooling. The catalog attachment will label the result as applying to absorbing initiation and a composite failure endpoint, not to discontinuation, switching, competing risks, or informative censoring."
+  },
+  {
+   "threat": "Monte Carlo error in the enumerated truth could be mistaken for estimator bias.",
+   "mitigation": "Truth uses 2000000 people with paired common random numbers, is generated independently of evaluation replicates, and carries an MCSE for every arm risk and contrast. A truth estimate with MCSE above 0.001 is extended in 100000-person chunks before analysis."
+  },
+  {
+   "threat": "A single sample size and a finite set of effect patterns cannot establish universal performance.",
+   "mitigation": "The conclusion is restricted to moderate cohorts with low monthly initiation, 12 repeated starts, and the stated effect magnitudes. The full scenario results and code remain public so later studies can add sample-size, discontinuation, and observation-process factors without changing this protocol's decision rule."
+  }
+ ],
+ "runtime_estimate": "The full experiment has 24 scenarios times 2000 replicates, totaling 48000 replicates. Each replicate fits two low-dimensional initiation-weight glms and three weighted outcome glms, totaling 240000 ordinary glm fits. The package-like, matched common-effect, and spline fits use at most 2000 times 12 times 12 = 288000 expanded risk rows before failures and censoring reduce the count. The start-saturated and standalone estimators use closed-form grouped calculations. There are no ltmle or SuperLearner fits. At five seconds for an entire replicate, 48000 replicates require about 11.1 hours on 6 workers. Allowing truth enumeration at approximately 4 minutes per scenario, serialization, and summaries gives an expected total of 13 to 16 hours. The existing seeded resumable harness permits interruption without lost completed replicates. No bootstrap, jackknife, or new variance-method comparison is included because that part of SEQ-01 has already been answered.",
+ "bears_on": [
+  {
+   "id": "SEQ-01",
+   "relation": "answers",
+   "what": "Answers the residual numerical question about common-effect pooling across changing trial starts, trial-specific reporting, diagnostics for material start-time heterogeneity, implicit trial weighting, and whether efficiency remains after person clustering. The answer is scoped to fixed bimonthly eligibility checks, measured confounding, absorbing initiation, and a 12-month composite failure endpoint. It takes the published variance-method work as settled rather than redesigning it."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019",
+   "doi_or_url": "https://doi.org/10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo uncertainty, scenario-specific performance reporting, and prespecified interpretation."
+  },
+  {
+   "cite": "Limozin L, Seaman SR, Su L. Inference procedures in sequential trial emulation with survival outcomes: comparing confidence intervals based on the sandwich variance estimator, bootstrap and jackknife. Statistical Methods in Medical Research. 2025",
+   "doi_or_url": "https://doi.org/10.1177/09622802251356594",
+   "used_for": "Treating repeated-participation variance methods as established, using person clustering, and selecting low-treatment-prevalence finite-sample conditions without repeating the resolved variance comparison."
+  },
+  {
+   "cite": "DeMonte, Shook-Sa and Hudgens. Assessing COVID-19 vaccine effectiveness in observational studies via nested trial emulation. 2024",
+   "doi_or_url": "https://arxiv.org/abs/2403.18115",
+   "used_for": "Calendar-time-varying effects, trial-effect-homogeneity testing, and reporting trial-specific estimates rather than only a common pooled effect."
+  },
+  {
+   "cite": "Keogh RH, et al. Causal inference in survival analysis using longitudinal observational data: sequential trials and marginal structural models. Statistics in Medicine. 2023",
+   "doi_or_url": "https://doi.org/10.1002/sim.9718",
+   "used_for": "Sequential-trial estimators, comparison with longitudinal alternatives, interaction testing, and the efficiency question."
+  },
+  {
+   "cite": "Caniglia EC, et al. Emulating target trials to avoid immortal time bias: an application to antibiotic initiation. Epidemiology. 2023",
+   "doi_or_url": "https://doi.org/10.1097/EDE.0000000000001601",
+   "used_for": "Applied motivation for repeated initiation opportunities and sequential eligibility."
+  },
+  {
+   "cite": "Su L, et al. TrialEmulation: an R package to emulate target trials for causal analysis of observational time-to-event data. 2024",
+   "doi_or_url": "https://arxiv.org/abs/2402.12083",
+   "used_for": "Package-like sequence expansion, artificial censoring weights, pooled marginal structural modeling, and person-level clustering."
+  }
+ ]
+}
