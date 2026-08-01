@@ -26,7 +26,7 @@ Seen in: [Claims]{.chip .chip-axis} [EHR]{.chip .chip-axis} [Registry]{.chip .ch
 ::: {.callout-important appearance="simple"}
 ## A study has been run against this problem
 
-No. Two emulations reporting the same cumulative initiation in the comparator arm can differ by 20 percentage points in how much of the sustained-strategy effect convergence has removed. At the horizon where the diagnostic is matched to four decimal places, attenuation differs by up to 0.203 between the early-initiation and late-initiation scenarios, against a protocol threshold of 0.05 declared before the run. The diagnostic the catalog entry proposes is necessary and not sufficient: what determines the attenuation is when the comparator arm initiated and who initiated, and a single cumulative number at the horizon carries neither. [Read the study below](#our-study).
+No. Within the simulated grid, comparator-arm cumulative initiation at 120 months does not uniquely determine attenuation: matched early and late initiation scenarios, whose reported diagnostic agrees to within 0.0005, differ in attenuation by 0.0528 to 0.2027. Nine of the twelve matched pairs exceed the 0.05 threshold declared before the run by at least three Monte Carlo standard errors, at 5 to 46 of them; the other three sit within 3 and are individually inconclusive, and all three are at the lowest convergence rate, where there is least attenuation to misattribute. A single cumulative-incidence value at the horizon is therefore insufficient for recovering attenuation in these scenarios. What the reported number cannot see is when the comparator arm initiated and who initiated. [Read the study below](#our-study).
 :::
 
 ## Statement
@@ -55,19 +55,19 @@ Report the cumulative incidence of initiation in both arms over follow-up alongs
 ## Our study
 
 ::: {.study-result}
-**Reporting comparator-arm initiation does not recover the attenuation it is meant to explain**
+**A single cumulative-initiation number at the horizon does not determine the attenuation it is asked to explain**
 
 **The question put to it.** CNF-01 asks authors to publish the cumulative incidence of initiation in both arms so a reader can see how far the contrasted strategies stayed distinct, and to quantify by simulation how much attenuation a given convergence rate produces. Does that diagnostic actually recover the attenuation?
 
-**What it found.** No. Two emulations reporting the same cumulative initiation in the comparator arm can differ by 20 percentage points in how much of the sustained-strategy effect convergence has removed. At the horizon where the diagnostic is matched to four decimal places, attenuation differs by up to 0.203 between the early-initiation and late-initiation scenarios, against a protocol threshold of 0.05 declared before the run. The diagnostic the catalog entry proposes is necessary and not sufficient: what determines the attenuation is when the comparator arm initiated and who initiated, and a single cumulative number at the horizon carries neither.
+**What it found.** No. Within the simulated grid, comparator-arm cumulative initiation at 120 months does not uniquely determine attenuation: matched early and late initiation scenarios, whose reported diagnostic agrees to within 0.0005, differ in attenuation by 0.0528 to 0.2027. Nine of the twelve matched pairs exceed the 0.05 threshold declared before the run by at least three Monte Carlo standard errors, at 5 to 46 of them; the other three sit within 3 and are individually inconclusive, and all three are at the lowest convergence rate, where there is least attenuation to misattribute. A single cumulative-incidence value at the horizon is therefore insufficient for recovering attenuation in these scenarios. What the reported number cannot see is when the comparator arm initiated and who initiated.
 
 **Results.**
 
-- The attenuation is large and grows with the horizon. Pooled across scenarios its median is 2.4% at one year and 24.5% at ten, and its maximum is 56.7%. A treatment that genuinely works can lose more than half its sustained-strategy effect to convergence alone.
-- It is a property of the estimand and not of estimation. Both estimators recover the attenuating quantity essentially without bias: median absolute relative bias 0.43%, coverage between 0.934 and 0.970 against a nominal 0.95, relative error in the model standard error a median 1.2%, and no replicate failed to converge in any of the 24 scenarios. Nothing here is an estimation artifact.
-- The decisive comparison fails at every convergence rate. Matched pairs share a cumulative initiation at month 120 and differ only in when the initiation happened. The attenuation difference is 0.053 to 0.060 at 20% cumulative initiation, 0.116 to 0.145 at 45%, and 0.181 to 0.203 at 70%. Every one of the twelve pairs exceeds the declared 0.05 threshold, and the gap widens as convergence rises, which is exactly where the diagnostic is most needed.
-- Who initiates matters as much as when. Concentrating initiation in high-risk patients raises attenuation from 0.476 to 0.567 at the highest convergence rate, and it inflates the reported diagnostic at the same time, from 0.700 to 0.742, so the diagnostic moves in the right direction and by the wrong amount.
-- Effect persistence is the one factor that barely matters. Transient and legacy regimes differ by less than 0.01 in attenuation throughout, so a reader worried about attenuation does not additionally need to know the effect's time course.
+- The insufficiency scales with convergence, which is the opposite of reassuring. At 20 percent cumulative initiation the matched difference is 0.053 to 0.070 and only one of four pairs is established; at 45 percent it is 0.116 to 0.145 at 18 to 27 Monte Carlo standard errors; at 70 percent it is 0.181 to 0.203 at 39 to 46. The diagnostic is least informative exactly where attenuation is largest.
+- Attenuation is large and grows with the horizon. Pooled across scenarios its median is 0.024 at one year and 0.245 at ten, with a maximum of 0.567. A treatment that genuinely works can lose more than half its sustained-strategy effect to convergence alone.
+- Who initiates matters as much as when. Concentrating initiation in high-risk patients raises attenuation from 0.476 to 0.567 at the highest convergence rate while also inflating the reported diagnostic from 0.700 to 0.742, so the diagnostic moves in the right direction by the wrong amount.
+- Effect persistence is the one factor that barely matters. Transient and legacy regimes differ by less than 0.01 in attenuation throughout.
+- The estimators show small finite-sample bias rather than none. Coverage runs 0.934 to 0.970 against a nominal 0.95 and convergence is complete, but 14 of 288 cells carry bias beyond three Monte Carlo standard errors, to a maximum of 4.2. That does not touch the decisive comparison, which uses attenuation enumerated from the mechanism at two million individuals per scenario rather than estimated attenuation.
 
 **Design.**
 
@@ -83,7 +83,7 @@ Data-generating mechanism
 Replicates
 :   1000 per scenario, 24,000 replicates, 288,000 estimate rows
 
-**What this does not answer.** The comparator arm converges upward and the treated arm never discontinues, so this measures one direction of convergence only. There is no loss to follow-up and no competing event, both deliberately excluded so the attenuation is not confounded with a second mechanism, and both are separate catalog entries. The scale is the risk difference throughout; the attenuation of a hazard ratio is a different question because non-collapsibility would mix this mechanism with another. The study says what the proposed diagnostic cannot do; it does not establish that reporting the whole initiation curve plus the initiator case-mix would be sufficient, only that the single number is not.
+**What this does not answer.** The comparison holds the diagnostic fixed only at 120 months. At earlier horizons the early and late scenarios differ in observed cumulative initiation by as much as 0.269, so those contrasts are not comparisons at equal C(h) and cannot independently establish insufficiency there. The study establishes that C(120) alone is insufficient within this grid. It does not establish that reporting C is necessary, that the full initiation curve would be sufficient, or that a universal conversion from convergence to attenuation exists. The comparator arm converges upward and the treated arm never discontinues, so this is one direction of convergence only. There is no loss to follow-up and no competing event, both excluded so the attenuation is not confounded with a second mechanism. The scale is the risk difference throughout; a hazard ratio would mix this mechanism with non-collapsibility.
 
 Code and data: [undefined](https://github.com/choxos/TTE-open-problems/tree/main/undefined)
 

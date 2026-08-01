@@ -1,0 +1,51 @@
+{
+ "verdict": "overstated",
+ "what_the_numbers_say": "All 288 performance cells used 1,000 of 1,000 attempted replicates, with convergence equal to 1. At 120 months, attenuation ranged from 0.066 to 0.567. Early and late scenarios with nearly identical C(120) differed in attenuation by 0.0528 to 0.2027. Nine of the 12 differences cleared the 0.05 threshold by at least three Monte Carlo standard errors. Coverage was 0.934 to 0.970 and model standard errors were broadly consistent with empirical standard errors, although 14 bias estimates exceeded three Monte Carlo standard errors.",
+ "branch_check": {
+  "protocol_threshold": "A matched early versus late attenuation difference of at least 0.05 selects the necessary but not sufficient branch; sufficiency requires all such differences to be below 0.05.",
+  "observed": "At month 120, maximum absolute difference in observed C was 0.000493, while absolute attenuation differences ranged from 0.052786 to 0.202721. Nine of 12 pairs were decisively above 0.05.",
+  "monte_carlo_margin": "For the largest difference, (0.202721 - 0.05) / 0.003315 = 46.1 Monte Carlo standard errors. The smallest clearly established difference gave (0.069961 - 0.05) / 0.003944 = 5.1. Three pairs at target C(120)=0.20 were only 0.7, 1.7, and 2.7 standard errors above the threshold and are individually inconclusive.",
+  "branch_supported": true
+ },
+ "findings": [
+  {
+   "severity": "serious",
+   "axis": "headline scope",
+   "what": "The matched comparison establishes that endpoint C(120) is not sufficient within this grid. It does not establish that reporting C is necessary, nor that the full initiation curve plus a persistence assumption is sufficient generally.",
+   "fix": "State the conclusion as failure of endpoint cumulative incidence to determine attenuation in the simulated scenarios. Do not claim necessity or sufficiency of an augmented reporting set."
+  },
+  {
+   "severity": "serious",
+   "axis": "bias arithmetic",
+   "what": "The statement that the largest bias was 4.66 percent of the attenuation is not supported by the files. For scenario 20 at month 12, g-formula bias was 0.001019 while the removed effect on the risk difference scale was 0.0234065 - 0.021882 = 0.0015245, so the bias was about 66.9 percent of the attenuation. The reported 4.66 percent is relative bias against RD_ITT, not against attenuation.",
+   "fix": "Recompute estimator bias on the attenuation scale, include uncertainty from the simulated truth, and qualify the estimator correctness claim. The truth-based matched-pair result can be reported separately."
+  },
+  {
+   "severity": "serious",
+   "axis": "estimator correctness gate",
+   "what": "Fourteen of 288 cells had bias beyond three Monte Carlo standard errors, with a maximum of 4.2. Coverage remains near nominal because these biases are small relative to sampling standard errors, but the results do not support an unqualified claim that both estimators were unbiased. The protocol supplied no numerical tolerance for deciding whether this invokes the premise-fails branch.",
+   "fix": "Report the detected biases and avoid using statistical detectability alone or a post hoc tolerance to declare the premise passed. Explain that the decisive comparison used simulated truth rather than estimated attenuation."
+  },
+  {
+   "severity": "minor",
+   "axis": "diagnostic definition",
+   "what": "The branch calculation uses c_obs, while the results also contain a distinct c_true. Under prognostic initiation, target C(120)=0.70 corresponds to c_obs near 0.700 but c_true near 0.742. The early and late pairs remain closely matched under c_true, with differences below 0.0008, so this does not reverse the branch.",
+   "fix": "Define C explicitly as observed-arm or intervention-standardized incidence and label tables consistently."
+  },
+  {
+   "severity": "minor",
+   "axis": "low convergence uncertainty",
+   "what": "The results do not establish material timing differences for three of four target C(120)=0.20 pairs. Their margins above 0.05 are within three Monte Carlo standard errors.",
+   "fix": "Limit the clear threshold claim to the nine established pairs and report the remaining three as inconclusive."
+  }
+ ],
+ "defensible_claim": "Within the simulated risk difference scenarios, comparator-arm cumulative initiation at 120 months did not uniquely determine attenuation: matched early and late initiation patterns differed by 0.0528 to 0.2027, with nine of 12 differences clearly exceeding the prespecified 0.05 threshold. These results establish insufficiency of endpoint C(120) in this grid, not that the diagnostic is necessary or that any replacement reporting set is generally sufficient.",
+ "scope_limits": [
+  "Only C(120) levels 0.20, 0.45, and 0.70 were studied.",
+  "Only two timing shapes, two prognosis dependence settings, and two exposure-response regimes were studied.",
+  "Early and late scenarios were matched at month 120 only; earlier-horizon contrasts do not hold C(h) fixed.",
+  "The legacy regime tested a 12-month exposure ramp without treatment cessation, so it does not establish general effects of persistence after discontinuation.",
+  "Results apply to the risk difference scale with a beneficial treatment and exclude treated-arm discontinuation, loss to follow-up, competing events, and other switching mechanisms."
+ ],
+ "publishable": false
+}

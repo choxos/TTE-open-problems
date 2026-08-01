@@ -1,0 +1,40 @@
+{
+ "verdict": "supported",
+ "what_the_numbers_say": "All 24000 scenario replicates produced estimates. Every performance cell used 1000 of 1000 attempted replicates, and convergence was 1.000. Truth-based attenuation generally increased with horizon and convergence, ranging from -0.005 to 0.157 at 12 months and from 0.066 to 0.567 at 120 months. At 120 months, early and late initiation scenarios had nearly identical observed cumulative initiation but attenuation differences of 0.0528 to 0.2027. Thus, within this grid, cumulative initiation at the horizon did not determine attenuation. Coverage, empirical and model-based standard errors, and bias were broadly consistent with usable estimation, although small systematic estimator bias remained in some cells.",
+ "branch_check": {
+  "protocol_threshold": "The diagnostic is sufficient only if every matched early versus late attenuation difference is below 0.05; a matched difference of at least 0.05 selects the not-sufficient branch.",
+  "observed": "At 120 months, where observed cumulative initiation was matched to within 0.0005, all 12 point estimates of the absolute attenuation difference were at least 0.0528. Nine of 12 exceeded 0.05 by at least 3 Monte Carlo standard errors.",
+  "monte_carlo_margin": "The largest result was (0.2027 - 0.05) / 0.003315 = 46.1 Monte Carlo standard errors above the threshold. The smallest established result was (0.0700 - 0.05) / 0.003944 = 5.1 standard errors above it. The smallest overall result was only (0.0528 - 0.05) / 0.003992 = 0.70 standard errors above the threshold and is individually inconclusive.",
+  "branch_supported": true
+ },
+ "findings": [
+  {
+   "severity": "minor",
+   "axis": "estimator correctness",
+   "what": "Estimation succeeded and coverage was near nominal, but 14 of 288 cells had absolute bias beyond 3 Monte Carlo standard errors, with a maximum relative bias of 4.658 percent. This supports approximate, not exact, unbiasedness. It does not overturn the branch because the decisive attenuation comparison used mechanism-based truth.",
+   "fix": "Describe the estimators as having small finite-sample bias with broadly valid interval performance. Report the affected cells and ensure bias uncertainty includes uncertainty from the finite truth run."
+  },
+  {
+   "severity": "minor",
+   "axis": "horizon-specific interpretation",
+   "what": "Only the 120-month comparison holds C(h) fixed. At earlier horizons, early and late scenarios differed in observed cumulative initiation by as much as 0.269, so those contrasts cannot independently establish insufficiency of C(h) at those horizons.",
+   "fix": "Base the fixed-diagnostic conclusion on the 120-month comparisons. Do not describe the earlier-horizon contrasts as comparisons at equal C(h)."
+  },
+  {
+   "severity": "minor",
+   "axis": "claim strength",
+   "what": "The results establish that a single horizon-specific cumulative-incidence value is insufficient within the simulated grid. They do not establish that the diagnostic is necessary, that the full initiation curve is sufficient, or that a universal conversion table exists.",
+   "fix": "State the conclusion as insufficiency of C(120) alone and identify timing, prognostic selection into initiation, and effect dynamics as additional determinants."
+  }
+ ],
+ "defensible_claim": "Within the simulated grid, comparator-arm cumulative initiation at 120 months did not uniquely determine attenuation: matched early and late initiation scenarios differed in attenuation by 0.0528 to 0.2027, with nine of twelve differences clearly exceeding the prespecified 0.05 threshold. A single cumulative-incidence value at the horizon is therefore insufficient for recovering attenuation in these scenarios.",
+ "scope_limits": [
+  "The fixed-C(h) result was established at 120 months, not separately at every earlier horizon.",
+  "The grid contained only cumulative-initiation targets of 0.20, 0.45, and 0.70.",
+  "Only early and late timing shapes, two prognostic-initiation settings, and two specified effect-onset regimes were examined.",
+  "The result is limited to a risk-difference estimand with the treatment effect used in this data-generating mechanism.",
+  "There was no treated-arm discontinuation, loss to follow-up, competing event, or alternative outcome scale.",
+  "The study does not establish sufficiency of the full initiation curve or generalize the numerical attenuation ranges beyond the simulated grid."
+ ],
+ "publishable": true
+}

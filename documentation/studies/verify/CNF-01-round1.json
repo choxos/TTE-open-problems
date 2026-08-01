@@ -1,0 +1,57 @@
+{
+ "verdict": "uninformative",
+ "what_the_numbers_say": "The files contain a completed 24-scenario run with 1,000 usable replicates out of 1,000 attempted in every analyzed cell and convergence of 1.000. Across this run, fractional attenuation was usually positive, with small early-horizon exceptions, and its median increased from 0.024 at 12 months to 0.245 at 120 months. At 120 months, early and late mechanisms with estimated cumulative initiation differing by at most 0.0005 differed in fractional attenuation by as much as 0.2027. Coverage ranged from 0.934 to 0.970 around the nominal 0.95, while model-based SEs differed from empirical SEs by -4.8% to 8.8%. Some small biases were nevertheless several Monte Carlo SEs from zero. These results estimate quantities, but they do not contain the revised protocol's P3 additive Q_curve, Q_60, 99% intervals, or cutoff-screen statistics.",
+ "branch_check": {
+  "protocol_threshold": "For each mechanistic claim, the 99% Monte Carlo lower confidence bound for Q_curve or Q_60 must exceed 0.005 to support insufficiency. An upper bound below 0.005 supports adequacy within the grid, and an interval intersecting 0.005 is indeterminate. The cutoff screen separately requires sensitivity and specificity of at least 0.80 within every non-null profile and a macro balanced-accuracy advantage of at least 0.10 over S_current.",
+  "observed": "Neither Q_curve nor Q_60, their 99% confidence intervals, nor the cutoff-screen measures are reported. The analysis instead compares a maximum fractional attenuation difference of 0.2027 with an off-protocol threshold of 0.05 and declares NECESSARY BUT NOT SUFFICIENT, which is not a branch in the revised decision rule.",
+  "monte_carlo_margin": "Off-protocol arithmetic gives 0.2027 - 0.05 = 0.1527. No MCSE or confidence interval for that attenuation difference is supplied, so its margin cannot be compared with its Monte Carlo error. The reported c_obs_mcse values apply to initiation probabilities, not attenuation. The protocol-scale margins cannot be calculated because Q_curve, Q_60, and their uncertainty are absent.",
+  "branch_supported": false
+ },
+ "findings": [
+  {
+   "severity": "fatal",
+   "axis": "protocol identity",
+   "what": "The run does not match the revised protocol. Provenance records 24 rather than 36 scenarios, 1,000 rather than 2,000 replicates, horizons 12, 24, 36, 60, 84, and 120 rather than 6, 12, 24, 36, 60, and 120, and two methods named gformula and IPTW rather than the prespecified method outputs. Its factors are target_c120, early or late timing, alpha_l_key, and persistence rather than p60, M1 through M3, and P0 through P3.",
+   "fix": "Run the revised 36-scenario protocol and publish results tied to its prespecified factors, horizons, estimands, and methods."
+  },
+  {
+   "severity": "fatal",
+   "axis": "decision rule",
+   "what": "The analysis uses the wrong quantity, threshold, and aggregation. It compares the maximum difference in a fractional attenuation ratio with 0.05. The protocol requires 99% confidence bounds for equally weighted means of additive G contrasts, Q_curve and Q_60, against 0.005. A maximum from one cell cannot replace either mean.",
+   "fix": "Calculate P3 cellwise G, Q_curve, and Q_60 with their direct 99% Monte Carlo intervals, then classify the two claims separately using the 0.005 boundary."
+  },
+  {
+   "severity": "serious",
+   "axis": "replicate completion",
+   "what": "The run completed 1,000 of the 2,000 protocol-planned replicates, or 50%. This is below the protocol's 95% completion requirement and therefore makes estimator-performance conclusions uninformative even though every attempted fit was usable.",
+   "fix": "Complete the prespecified 2,000 replicates per cell and report usable counts against that planned denominator."
+  },
+  {
+   "severity": "serious",
+   "axis": "Monte Carlo uncertainty",
+   "what": "The decisive attenuation difference has no reported MCSE or confidence interval. The available c_obs_mcse cannot quantify uncertainty in d_att, and the required direct uncertainty for G, Q_curve, and Q_60 is missing.",
+   "fix": "Report direct Monte Carlo uncertainty for every decision statistic and extend truth simulation when a 99% interval intersects 0.005."
+  },
+  {
+   "severity": "minor",
+   "axis": "estimator performance",
+   "what": "Coverage and SE calibration are broadly coherent, but the estimator-correctness heading is stronger than the bias evidence. For example, scenario 20 at 12 months has gformula bias -0.001019 with MCSE 0.000244, or -4.18 MCSEs, and IPTW bias -0.000957 with MCSE 0.000245, or -3.91 MCSEs. These biases are small in absolute terms but are not Monte Carlo noise.",
+   "fix": "Describe the estimators as approximately calibrated within this run and report the prespecified simultaneous coverage assessment rather than implying exact correctness."
+  },
+  {
+   "severity": "serious",
+   "axis": "scope",
+   "what": "The maximum difference establishes only that one pair in this 24-scenario grid differed. It cannot establish general necessity, general insufficiency of marginal trajectories, or a result for the revised P3 grid.",
+   "fix": "Limit any current statement to the scenarios actually run, or use the revised protocol's equally weighted statistics before making its within-grid claims."
+  }
+ ],
+ "defensible_claim": "Within the 24 simulated scenarios actually run, fractional attenuation was usually positive and its median increased from 0.024 at 12 months to 0.245 at 120 months. At 120 months, early and late initiation mechanisms with estimated cumulative initiation differing by at most 0.0005 differed in fractional attenuation by as much as 0.2027; this descriptive maximum does not adjudicate the revised protocol.",
+ "scope_limits": [
+  "The result applies only to the off-protocol 24-scenario early-versus-late grid.",
+  "The run does not evaluate the prespecified P3 mechanism comparisons or the M1, M2, and M3 contrasts.",
+  "No conclusion is available for Q_curve, Q_60, or the S_cum cutoff screen.",
+  "The result does not settle CNF-01, distinguish biological inefficacy from convergence in applied data, or establish a general horizon convention.",
+  "The findings concern the reported fractional attenuation scale and cannot substitute for the protocol's additive risk-difference movement."
+ ],
+ "publishable": false
+}
