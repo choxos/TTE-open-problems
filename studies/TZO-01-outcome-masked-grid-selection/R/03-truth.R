@@ -37,7 +37,9 @@ for (i in selected_process) {
     message(sprintf('process %d/%d: cached', i, nrow(process)))
   } else {
     started <- proc.time()[['elapsed']]
-    truth_group <- truth_for_process(process[i, , drop = FALSE])
+    truth_group <- truth_for_process(
+      process[i, , drop = FALSE],
+      batch_cache = file.path(CACHE, sprintf('batches-%03d', i)))
     saveRDS(truth_group, group_file)
     message(sprintf(
       'process %d/%d: %.1f minutes, %d truth batches, precision %s',

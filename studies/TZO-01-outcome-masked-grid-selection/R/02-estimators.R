@@ -687,13 +687,30 @@ truth_batch_for <- function(scen, models, batch_id) {
 
 `%||%` <- function(a, b) if (is.null(a)) b else a
 
-truth_for_process <- function(scen) {
+truth_for_process <- function(scen, batch_cache = NULL) {
   models <- fit_population_models(scen)
   batches <- list()
   max_batches <- TRUTH_MAX %/% TRUTH_BATCH
   precision_met <- FALSE
+  ## Checkpoint each batch. Truth here is adaptive: it draws quarter-million
+  ## batches until the Monte Carlo standard error on every decisive column is
+  ## under target, up to four million. The sparse-visit, higher-pressure cells
+  ## reach that ceiling, and one of them takes longer than this machine will
+  ## hold a process. Without a within-cell checkpoint a killed run loses the
+  ## whole cell, so the expensive cells could never finish however many times
+  ## the run was resumed. Batches are deterministic given the scenario and the
+  ## batch index, so a cached batch is the batch the run would have drawn.
+  if (!is.null(batch_cache)) dir.create(batch_cache, recursive = TRUE,
+                                        showWarnings = FALSE)
   for (batch in seq_len(max_batches)) {
-    batches[[batch]] <- truth_batch_for(scen, models, batch)
+    bf <- if (is.null(batch_cache)) NULL else
+      file.path(batch_cache, sprintf("batch-%03d.rds", batch))
+    if (!is.null(bf) && file.exists(bf)) {
+      batches[[batch]] <- readRDS(bf)
+    } else {
+      batches[[batch]] <- truth_batch_for(scen, models, batch)
+      if (!is.null(bf)) saveRDS(batches[[batch]], bf)
+    }
     if (batch < 2L) next
     matrix <- do.call(rbind, batches)
     decisive <- grepl('^(rd-full|approx-panel|approx-oracle|delta-g)', colnames(matrix))
