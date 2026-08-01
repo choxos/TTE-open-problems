@@ -94,15 +94,20 @@ prepare_analysis <- function(hist) {
                factor(expd$G, levels = 0:1))
   if (any(arm == 0)) return(list(ok = FALSE, why = "missing-required-arm"))
   nat$freq <- 1
-  nat$Xd <- I(cbind(1, nat$q, nat$Sex, nat$R, nat$C, nat$L))
-  nat$Xn <- I(cbind(1, nat$q))
-  list(ok = TRUE, hist = hist, nat = nat, expd = expd)
+  ## `nat` is a data.table, and assigning a matrix into one of its columns goes
+  ## through set(), which flattens it: a six-column design matrix became 173,916
+  ## values assigned to 28,986 rows and every replicate in the study died as
+  ## `estimation-error`. The matrices travel in the returned list instead, which
+  ## is where the only consumer reads them from.
+  list(ok = TRUE, hist = hist, nat = nat, expd = expd,
+       Xd = cbind(1, nat$q, nat$Sex, nat$R, nat$C, nat$L),
+       Xn = cbind(1, nat$q))
 }
 
 fit_weight_models <- function(prep, freq = rep(1, prep$hist$n), scores = TRUE) {
   nat <- prep$nat
-  Xd <- unclass(nat$Xd)
-  Xn <- unclass(nat$Xn)
+  Xd <- prep$Xd
+  Xn <- prep$Xn
   fw <- freq[nat$id]
   fd <- safe_logit_fit(Xd, nat$I, fw, probability_check = TRUE)
   if (!fd$ok) return(fd)

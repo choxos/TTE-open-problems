@@ -13,6 +13,14 @@
 # Usage: build/studies/run.sh <study-dir> [scenario-slice]
 
 set -uo pipefail
+
+# Kill orphaned R workers before starting. Every killed run leaves its
+# multisession workers behind, and they never exit. Sixteen scenarios into the
+# first study the load average was 125 and a scenario that takes 50 seconds was
+# taking more than ten minutes, which looked like a slow simulation and was
+# actually a treadmill of my own making.
+pkill -9 -f "R.framework/Resources/bin/exec/R --no-echo" 2>/dev/null || true
+
 D="${1:?pass a study directory}"
 SLICE="${2:-}"
 cd "$D" || exit 1

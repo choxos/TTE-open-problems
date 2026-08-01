@@ -1,5 +1,11 @@
 ## Performance measures for simulation studies, with Monte Carlo standard errors.
 ##
+## Each returns a LIST with `est`, `mcse` and `n`, not a named vector. The
+## difference is not cosmetic: `x$mcse` is a runtime error on an atomic vector
+## and works on a list, and generated analysis code reaches for `$` by default.
+## A study that dies in its analysis step after a completed run is the most
+## expensive way to discover that.
+##
 ## Every measure here is reported with its Monte Carlo standard error. A bias of
 ## 0.02 means nothing without knowing whether the MCSE is 0.001 or 0.03, and a
 ## simulation study that omits them cannot distinguish a real effect from the
@@ -16,9 +22,9 @@
 perf_bias <- function(est, truth) {
   ok <- is.finite(est)
   n <- sum(ok)
-  if (n < 2L) return(c(est = NA_real_, mcse = NA_real_, n = n))
+  if (n < 2L) return(list(est = NA_real_, mcse = NA_real_, n = n))
   e <- est[ok]
-  c(est = mean(e) - truth,
+  list(est = mean(e) - truth,
     mcse = sqrt(stats::var(e) / n),
     n = n)
 }
@@ -29,9 +35,9 @@ perf_bias <- function(est, truth) {
 perf_empse <- function(est) {
   ok <- is.finite(est)
   n <- sum(ok)
-  if (n < 2L) return(c(est = NA_real_, mcse = NA_real_, n = n))
+  if (n < 2L) return(list(est = NA_real_, mcse = NA_real_, n = n))
   s <- stats::sd(est[ok])
-  c(est = s,
+  list(est = s,
     mcse = s / sqrt(2 * (n - 1)),
     n = n)
 }
@@ -41,10 +47,10 @@ perf_empse <- function(est) {
 perf_modse <- function(se) {
   ok <- is.finite(se) & se > 0
   n <- sum(ok)
-  if (n < 2L) return(c(est = NA_real_, mcse = NA_real_, n = n))
+  if (n < 2L) return(list(est = NA_real_, mcse = NA_real_, n = n))
   v <- se[ok]^2
   m <- sqrt(mean(v))
-  c(est = m,
+  list(est = m,
     mcse = sqrt(stats::var(v) / (4 * n * m^2)),
     n = n)
 }
@@ -56,7 +62,7 @@ perf_modse <- function(se) {
 perf_relerror_modse <- function(est, se) {
   ok <- is.finite(est) & is.finite(se) & se > 0
   n <- sum(ok)
-  if (n < 2L) return(c(est = NA_real_, mcse = NA_real_, n = n))
+  if (n < 2L) return(list(est = NA_real_, mcse = NA_real_, n = n))
   e <- est[ok]; v <- se[ok]^2
   emp <- stats::sd(e)
   mod <- sqrt(mean(v))
@@ -65,16 +71,16 @@ perf_relerror_modse <- function(est, se) {
   mcse <- 100 * (mod / emp) * sqrt(
     stats::var(v) / (4 * n * mod^4) + 1 / (2 * (n - 1))
   )
-  c(est = rel, mcse = mcse, n = n)
+  list(est = rel, mcse = mcse, n = n)
 }
 
 ## Mean squared error.
 perf_mse <- function(est, truth) {
   ok <- is.finite(est)
   n <- sum(ok)
-  if (n < 2L) return(c(est = NA_real_, mcse = NA_real_, n = n))
+  if (n < 2L) return(list(est = NA_real_, mcse = NA_real_, n = n))
   d <- (est[ok] - truth)^2
-  c(est = mean(d),
+  list(est = mean(d),
     mcse = sqrt(stats::var(d) / n),
     n = n)
 }
@@ -83,10 +89,10 @@ perf_mse <- function(est, truth) {
 perf_coverage <- function(lower, upper, truth) {
   ok <- is.finite(lower) & is.finite(upper)
   n <- sum(ok)
-  if (n < 1L) return(c(est = NA_real_, mcse = NA_real_, n = n))
+  if (n < 1L) return(list(est = NA_real_, mcse = NA_real_, n = n))
   hit <- lower[ok] <= truth & truth <= upper[ok]
   p <- mean(hit)
-  c(est = p, mcse = sqrt(p * (1 - p) / n), n = n)
+  list(est = p, mcse = sqrt(p * (1 - p) / n), n = n)
 }
 
 ## Bias-eliminated coverage: coverage of the estimator's own expectation rather
@@ -97,7 +103,7 @@ perf_coverage <- function(lower, upper, truth) {
 perf_becoverage <- function(est, lower, upper) {
   ok <- is.finite(est) & is.finite(lower) & is.finite(upper)
   n <- sum(ok)
-  if (n < 2L) return(c(est = NA_real_, mcse = NA_real_, n = n))
+  if (n < 2L) return(list(est = NA_real_, mcse = NA_real_, n = n))
   perf_coverage(lower[ok], upper[ok], mean(est[ok]))
 }
 
@@ -106,10 +112,10 @@ perf_becoverage <- function(est, lower, upper) {
 perf_rejection <- function(lower, upper, null = 0) {
   ok <- is.finite(lower) & is.finite(upper)
   n <- sum(ok)
-  if (n < 1L) return(c(est = NA_real_, mcse = NA_real_, n = n))
+  if (n < 1L) return(list(est = NA_real_, mcse = NA_real_, n = n))
   rej <- !(lower[ok] <= null & null <= upper[ok])
   p <- mean(rej)
-  c(est = p, mcse = sqrt(p * (1 - p) / n), n = n)
+  list(est = p, mcse = sqrt(p * (1 - p) / n), n = n)
 }
 
 ## Convergence: the share of attempted replicates that produced a usable
@@ -117,7 +123,7 @@ perf_rejection <- function(lower, upper, null = 0) {
 perf_convergence <- function(est, n_attempted) {
   n <- sum(is.finite(est))
   p <- n / n_attempted
-  c(est = p, mcse = sqrt(p * (1 - p) / n_attempted), n = n_attempted)
+  list(est = p, mcse = sqrt(p * (1 - p) / n_attempted), n = n_attempted)
 }
 
 ## Everything above for one method in one scenario, as a tidy one-row frame.
