@@ -1,153 +1,161 @@
-## MER-01: configuration.
-##
-## The critique fixes are encoded in the frozen grid below. The study addresses
-## only simple random internal validation with a perfect longitudinal reference.
+## Study 2 (MER-01): configuration.
 
 MASTER_SEED <- 20260801L
-N_PER_REPLICATE <- 4000L
+WORKERS <- 6L
+N_PER_REP <- 4000L
 N_MONTHS <- 12L
 N_TRUTH <- 4000000L
-WORKERS <- 6L
 
-## Budget reduction, fixed before results are inspected. The original minimum
-## workload was 81 * 1000 * 50 * 12 = 48,600,000 rich monthly propensity fits,
-## before calibration, exact filtering, latent optimization, or numerical bread.
-## Even at an optimistic 0.01 seconds per fit and perfect six-worker scaling,
-## those fits alone require 22.5 hours. The overnight implementation therefore
-## uses looks of 25, 50, and 100 replicates and MI candidates of 10, 20, and 40,
-## with 80 as the fallback. All 81 scenarios, 4000 participants, four-million
-## person truths, estimands, model stresses, and numerical decision thresholds
-## remain unchanged. A boundary crossed at the scaled maximum is uninformative.
-N_REP_LOOKS <- c(25L, 50L, 100L)
-LOOK_INCREMENT <- diff(c(0L, N_REP_LOOKS))
-N_REP <- N_REP_LOOKS[1]
+## The frozen protocol requires at least 81 * 1000 * 50 = 4,050,000
+## completed-data MI analyses before extensions, calibration, exact filtering,
+## numerical sandwich work, or four-times-M checks. Even at an optimistic ten
+## seconds per completed-data analysis, that lower bound is 1,875 worker-hours.
+## The default is therefore an overnight feasibility-scale run. It retains all
+## 81 scenarios, 4000 participants, the four-million-person truth, all methods,
+## and every numerical decision threshold, but uses 12 replicates and M up to
+## 20. Its upper MI count is 81 * 12 * 20 = 19,440 completed-data analyses,
+## approximately 9 worker-hours at the same rate on six workers. Because it is
+## below the first 1000-replicate look, 05-analyze.R must classify the primary
+## result as uninformative. Set MER01_FULL=1 and optionally MER01_N_REP to run
+## the frozen replication schedule after the feasibility benchmark passes.
+FULL_PROTOCOL <- identical(Sys.getenv("MER01_FULL"), "1")
+N_REP <- as.integer(Sys.getenv(
+  "MER01_N_REP", if (FULL_PROTOCOL) "1000" else "12"))
+SCALED_RUN <- !FULL_PROTOCOL || N_REP < 1000L
 
-## Critique fix: the fixed imputation count is calibrated rather than set to 20.
-MI_CANDIDATES <- c(10L, 20L, 40L)
-MI_FALLBACK <- 80L
-MI_CAL_REFERENCE <- 160L
-MI_CAL_REPEATS <- 40L
-MI_CAL_TARGET <- 0.001
-MI_LARGE_FACTOR <- 4L
-MI_LARGE_FRACTION <- 0.10
-PRIOR_SENSITIVITY_SD <- c(5, 10)
+if (FULL_PROTOCOL) {
+  MI_CANDIDATES <- c(50L, 100L, 200L, 400L)
+  MI_FALLBACK <- 800L
+  MI_CAL_DRAWS <- 1600L
+  MI_CAL_DATASETS <- 30L
+  MC_BOOT <- 1999L
+} else {
+  MI_CANDIDATES <- c(5L, 10L, 20L)
+  MI_FALLBACK <- 20L
+  MI_CAL_DRAWS <- 40L
+  MI_CAL_DATASETS <- 8L
+  MC_BOOT <- 499L
+}
+MI_CAL_THRESHOLD <- 0.001
+MI_PRIOR_SD <- 2.5
+MI_PRIOR_SENSITIVITY <- c(5, 10)
 
-BREAD_STEP <- 1e-6
-BREAD_KAPPA_MAX <- 1e12
-TRUTH_MCSE_MAX <- 0.0005
-SIM_ALPHA <- 0.01
-SIM_LOOKS <- 3L
-MULTIPLIER_DRAWS <- 1999L
+ESTIMANDS <- c("dynamic", "dynamic_x2_0", "dynamic_x2_1", "static")
+PATTERNS <- c("none", "A", "L", "AL")
+PROFILES <- c("nondifferential", "aligned", "reversed", "unrelated", "no_effect_modification")
+SPECIFICATIONS <- c("core", "treatment", "confounder", "outcome", "error_transition")
+VALIDATION_SIZES <- c(100L, 250L, 500L, 1000L)
 
-CONTRASTS <- c('dynamic', 'dynamic_x2_0', 'dynamic_x2_1', 'static')
-METHODS <- c('first_order', 'rich_history', 'exact_filtered',
-             'corrected_mi', 'oracle_complete', 'corrected_mi_4M',
-             'corrected_prior5', 'corrected_prior10')
-PROFILES <- c('nondifferential', 'aligned', 'reversed', 'unrelated',
-              'no_effect_modification')
-SPECIFICATIONS <- c('core', 'treatment_stress', 'confounder_stress',
-                    'outcome_stress', 'error_transition_stress')
+DECISION <- list(
+  no_error_bias = 0.005,
+  key_oracle_bias = 0.010,
+  material_bias = 0.020,
+  negligible_bias = 0.010,
+  interaction_equivalence = 0.005,
+  coverage_low = 0.925,
+  coverage_high = 0.975,
+  material_coverage = 0.900,
+  convergence = 0.950,
+  minimum_ess = 200,
+  required_cells = 6L,
+  required_interactions = 4L,
+  family_alpha = 0.01,
+  looks = c(1000L, 2000L, 4000L)
+)
 
-error_rate_pair <- function(accuracy) {
-  key <- sprintf('%.2f', accuracy)
-  switch(key,
-    '0.70' = c(low = 0.1627, high = 0.4373),
-    '0.85' = c(low = 0.0696, high = 0.2304),
-    '0.99' = c(low = 0.0040, high = 0.0160),
-    '1.00' = c(low = 0, high = 0),
-    stop('unsupported accuracy: ', accuracy)
+make_scenario <- function(block, profile, accuracy, nodes, validation_n,
+                          specification = "core", outcome_error = FALSE) {
+  data.frame(
+    block = block,
+    profile = profile,
+    accuracy = as.numeric(accuracy),
+    nodes = nodes,
+    validation_n = as.integer(validation_n),
+    specification = specification,
+    outcome_error = as.logical(outcome_error),
+    stringsAsFactors = FALSE
   )
 }
 
 build_scenarios <- function() {
   rows <- list()
-  add <- function(block, profile, accuracy, error_nodes, validation_n,
-                  specification = 'core', outcome_error = FALSE,
-                  benchmark = NA_character_, decisive = FALSE) {
-    rows[[length(rows) + 1L]] <<- data.frame(
-      block = block,
-      profile = profile,
-      accuracy = as.numeric(accuracy),
-      error_nodes = error_nodes,
-      validation_n = as.integer(validation_n),
-      specification = specification,
-      outcome_error = isTRUE(outcome_error),
-      benchmark = benchmark,
-      decisive = isTRUE(decisive),
-      effect_modification = profile != 'no_effect_modification',
-      stringsAsFactors = FALSE
-    )
-  }
+  add <- function(x) rows[[length(rows) + 1L]] <<- x
 
-  ## Critique fix: dynamic A and L error cells exclude terminal outcome error.
-  ## Critique fix: aligned cells remain descriptive, while neutral, reversed,
-  ## unrelated, and absent effect-modification cells form the decisive set.
-  for (profile in PROFILES) {
-    for (accuracy in c(0.70, 0.85)) {
-      for (nodes in c('A', 'L', 'AL')) {
-        add('primary', profile, accuracy, nodes, 500L,
-            decisive = nodes == 'AL' && profile != 'aligned')
-      }
-    }
-  }
-
-  for (profile in PROFILES)
-    add('near_null', profile, 0.99, 'AL', 500L)
-
-  ## Critique fix: outcome error is a separate component and cannot determine
-  ## the primary MER-01 classification.
-  for (accuracy in c(0.70, 0.85, 0.99))
-    add('outcome_component', 'nondifferential', accuracy, 'AL', 500L,
-        outcome_error = TRUE)
-
-  add('control', 'nondifferential', 1, 'none', 500L)
-  add('control', 'no_effect_modification', 1, 'none', 500L)
-
-  ## Critique fix: each validation size is crossed with all four one-at-a-time
-  ## latent or error model stresses in both benchmark mechanisms.
-  benchmarks <- list(
-    nd70 = list(profile = 'nondifferential', accuracy = 0.70),
-    un85 = list(profile = 'unrelated', accuracy = 0.85)
+  ## Critique fix: the primary block excludes terminal outcome error and crosses
+  ## neutral, aligned, reversed, unrelated, and absent effect modification.
+  g <- expand.grid(
+    profile = PROFILES,
+    accuracy = c(0.70, 0.85),
+    nodes = c("A", "L", "AL"),
+    stringsAsFactors = FALSE
   )
-  for (b in names(benchmarks)) {
-    z <- benchmarks[[b]]
-    for (specification in SPECIFICATIONS) {
-      for (validation_n in c(100L, 250L, 500L, 1000L)) {
-        overlap <- specification == 'core' && validation_n == 500L
-        if (!overlap)
-          add('robustness', z$profile, z$accuracy, 'AL', validation_n,
-              specification = specification, benchmark = b)
+  for (i in seq_len(nrow(g))) {
+    add(make_scenario("primary", g$profile[i], g$accuracy[i], g$nodes[i], 500L))
+  }
+
+  for (p in PROFILES) {
+    add(make_scenario("near_null", p, 0.99, "AL", 500L))
+  }
+
+  ## Critique fix: symmetric Y error is a separate component and cannot enter
+  ## the eight primary decision cells.
+  for (a in c(0.70, 0.85, 0.99)) {
+    add(make_scenario("outcome_component", "nondifferential", a, "AL", 500L,
+                      outcome_error = TRUE))
+  }
+
+  add(make_scenario("no_error_core", "nondifferential", 1, "none", 500L))
+  add(make_scenario("no_error_core", "no_effect_modification", 1, "none", 500L))
+
+  ## Critique fix: validation size is crossed with each one-at-a-time model
+  ## stress in both benchmark mechanisms. The two core n=500 cells already in
+  ## the primary block are not duplicated.
+  benchmarks <- data.frame(
+    profile = c("nondifferential", "unrelated"),
+    accuracy = c(0.70, 0.85),
+    stringsAsFactors = FALSE
+  )
+  for (b in seq_len(nrow(benchmarks))) {
+    for (sp in SPECIFICATIONS) {
+      for (nv in VALIDATION_SIZES) {
+        overlap <- sp == "core" && nv == 500L
+        if (!overlap) {
+          add(make_scenario("robustness", benchmarks$profile[b],
+                            benchmarks$accuracy[b], "AL", nv, sp))
+        }
       }
     }
   }
 
-  for (specification in c('treatment_stress', 'confounder_stress',
-                           'outcome_stress'))
-    add('control', 'nondifferential', 1, 'none', 500L,
-        specification = specification)
+  for (sp in c("treatment", "confounder", "outcome")) {
+    add(make_scenario("no_error_stress", "nondifferential", 1, "none", 500L, sp))
+  }
 
   out <- do.call(rbind, rows)
   out$scenario <- seq_len(nrow(out))
-
-  ## The two core n=500 benchmark cells already occur in the primary block.
-  out$benchmark[out$block == 'primary' & out$profile == 'nondifferential' &
-                  out$accuracy == 0.70 & out$error_nodes == 'AL'] <- 'nd70'
-  out$benchmark[out$block == 'primary' & out$profile == 'unrelated' &
-                  out$accuracy == 0.85 & out$error_nodes == 'AL'] <- 'un85'
-
-  out$pair_family <- with(out, paste(profile, sprintf('%.2f', accuracy),
-                                     specification, sep = ':'))
-  out <- out[, c('scenario', 'block', 'profile', 'accuracy', 'error_nodes',
-                 'validation_n', 'specification', 'outcome_error', 'benchmark',
-                 'decisive', 'effect_modification', 'pair_family')]
-  stopifnot(nrow(out) == 81L)
+  out$effect_modification <- out$profile != "no_effect_modification"
+  out$differential_error <- !out$profile %in% c("nondifferential") && out$accuracy < 1
+  out$high_error_stratum <- ifelse(
+    out$profile %in% c("aligned", "no_effect_modification"), "X2=1",
+    ifelse(out$profile == "reversed", "X2=0",
+           ifelse(out$profile == "unrelated", "X3=1", "none")))
+  out$benchmark <- ifelse(
+    out$profile == "nondifferential" & out$accuracy == 0.70 & out$nodes == "AL",
+    "nondifferential_070",
+    ifelse(out$profile == "unrelated" & out$accuracy == 0.85 & out$nodes == "AL",
+           "unrelated_085", ""))
+  out$truth_law <- ifelse(
+    !out$effect_modification, "no_effect_modification",
+    ifelse(out$specification == "confounder", "confounder_stress",
+           ifelse(out$specification == "outcome", "outcome_stress", "core")))
+  out$decision_cell <- out$block == "primary" & out$nodes == "AL" &
+    out$accuracy %in% c(0.70, 0.85) &
+    out$profile %in% c("nondifferential", "reversed", "unrelated",
+                       "no_effect_modification")
+  out$pair_family <- paste(out$profile, out$accuracy, out$validation_n,
+                           out$specification, sep = "|")
+  out <- out[, c("scenario", setdiff(names(out), "scenario"))]
+  stopifnot(nrow(out) == 81L, sum(out$decision_cell) == 8L)
   rownames(out) <- NULL
   out
-}
-
-truth_key_for <- function(scen) {
-  if (scen$specification == 'confounder_stress') return('confounder_stress')
-  if (scen$specification == 'outcome_stress') return('outcome_stress')
-  if (!isTRUE(scen$effect_modification)) return('core_no_effect_modification')
-  'core_effect_modified'
 }

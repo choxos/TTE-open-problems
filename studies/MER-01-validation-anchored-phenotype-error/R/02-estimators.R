@@ -1,757 +1,833 @@
-## MER-01: estimators, exact filtering, and latent-state correction.
+## Study 2 (MER-01): truth, filtering, estimators, and latent-state correction.
 
-empty_estimate <- function(why) {
-  data.frame(
-    contrast = CONTRASTS, est = NA_real_, se = NA_real_, lo = NA_real_,
-    hi = NA_real_, ess_0 = NA_real_, ess_1 = NA_real_,
-    median_weight = NA_real_, p99_weight = NA_real_,
-    adherence_0 = NA_real_, adherence_1 = NA_real_,
-    censor_change_L = NA_real_, interval_df = NA_real_, fail = why,
-    stringsAsFactors = FALSE
+`%||%` <- function(x, y) if (is.null(x)) y else x
+bern <- function(x, p) ifelse(x == 1L, p, 1 - p)
+log1pexp <- function(x) pmax(x, 0) + log1p(exp(-abs(x)))
+
+## Truth is generated under interventions, never from finite-sample replicates.
+truth_for_law <- function(law, n = N_TRUTH, chunk = 100000L) {
+  scen <- list(
+    specification = if (law == "confounder_stress") "confounder" else
+      if (law == "outcome_stress") "outcome" else "core",
+    effect_modification = law != "no_effect_modification"
   )
-}
+  acc <- lapply(ESTIMANDS, function(z) list(n = 0, sy1 = 0, sy0 = 0, sd = 0, sd2 = 0))
+  names(acc) <- ESTIMANDS
+  done <- 0L
+  while (done < n) {
+    m <- min(chunk, n - done)
+    X1 <- stats::rnorm(m)
+    X2 <- stats::rbinom(m, 1L, 0.5)
+    uL <- matrix(stats::runif(m * N_MONTHS), nrow = m)
+    uY <- stats::runif(m)
+    L0 <- as.integer(uL[, 1L] < expit(-0.40 + 0.50 * X1 + 0.40 * X2))
 
-weighted_quantile <- function(x, p) {
-  x <- x[is.finite(x)]
-  if (!length(x)) return(NA_real_)
-  unname(stats::quantile(x, p, names = FALSE, type = 8))
-}
+    arm <- function(rule) {
+      L <- matrix(0L, m, N_MONTHS)
+      A <- matrix(0L, m, N_MONTHS)
+      L[, 1L] <- L0
+      A[, 1L] <- switch(rule, dynamic = L0, zero = 0L, one = 1L)
+      for (tt in 2L:N_MONTHS) {
+        L[, tt] <- as.integer(uL[, tt] < expit(latent_predictor_L(
+          tt, L[, tt - 1L], A[, tt - 1L], X1, X2, scen$specification)))
+        A[, tt] <- switch(rule, dynamic = L[, tt], zero = 0L, one = 1L)
+      }
+      py <- outcome_probability(X1, X2, L[, N_MONTHS], A[, N_MONTHS],
+                                scen$effect_modification, scen$specification)
+      as.integer(uY < py)
+    }
+    yd <- arm("dynamic")
+    y0 <- arm("zero")
+    y1 <- arm("one")
 
-ess <- function(w) {
-  w <- w[is.finite(w) & w > 0]
-  if (!length(w) || sum(w * w) == 0) return(NA_real_)
-  sum(w)^2 / sum(w * w)
-}
-
-first_deviation <- function(A, required) {
-  d <- A != required
-  any <- rowSums(d) > 0L
-  z <- rep(N_MONTHS + 1L, nrow(A))
-  z[any] <- max.col(d[any, , drop = FALSE], ties.method = 'first')
-  z
-}
-
-cluster_score <- function(block, beta, n) {
-  eta <- drop(block$X %*% beta)
-  p <- expit(eta)
-  s <- block$X * (block$y - p)
-  if (is.null(block$id)) return(s)
-  z <- rowsum(s, block$id, reorder = FALSE)
-  out <- matrix(0, n, ncol(block$X))
-  out[as.integer(rownames(z)), ] <- z
-  out
-}
-
-numeric_bread <- function(block, beta, n) {
-  q <- length(beta)
-  A <- matrix(NA_real_, q, q)
-  for (j in seq_len(q)) {
-    h <- BREAD_STEP * (1 + abs(beta[j]))
-    bp <- bm <- beta
-    bp[j] <- bp[j] + h
-    bm[j] <- bm[j] - h
-    A[, j] <- -(colMeans(cluster_score(block, bp, n)) -
-                  colMeans(cluster_score(block, bm, n))) / (2 * h)
+    update_acc <- function(a, yy1, yy0, keep) {
+      d <- yy1[keep] - yy0[keep]
+      a$n <- a$n + length(d)
+      a$sy1 <- a$sy1 + sum(yy1[keep])
+      a$sy0 <- a$sy0 + sum(yy0[keep])
+      a$sd <- a$sd + sum(d)
+      a$sd2 <- a$sd2 + sum(d^2)
+      a
+    }
+    acc$dynamic <- update_acc(acc$dynamic, yd, y0, rep(TRUE, m))
+    acc$dynamic_x2_0 <- update_acc(acc$dynamic_x2_0, yd, y0, X2 == 0L)
+    acc$dynamic_x2_1 <- update_acc(acc$dynamic_x2_1, yd, y0, X2 == 1L)
+    acc$static <- update_acc(acc$static, y1, y0, rep(TRUE, m))
+    done <- done + m
   }
-  (A + t(A)) / 2
-}
 
-fit_block <- function(X, y, n, id = NULL) {
-  fit <- try(suppressWarnings(stats::glm.fit(X, y, family = stats::binomial())),
-             silent = TRUE)
-  if (inherits(fit, 'try-error') || !isTRUE(fit$converged) ||
-      fit$rank != ncol(X) || any(!is.finite(fit$coefficients)) ||
-      any(!is.finite(fit$fitted.values)))
-    return(list(fail = 'propensity-fit-failed'))
-  block <- list(X = X, y = y, id = id, beta = fit$coefficients)
-  block$score <- cluster_score(block, block$beta, n)
-  block$bread <- numeric_bread(block, block$beta, n)
-  kap <- try(kappa(block$bread, exact = TRUE), silent = TRUE)
-  if (inherits(kap, 'try-error') || !is.finite(kap) || kap > BREAD_KAPPA_MAX)
-    return(list(fail = 'bread-ill-conditioned'))
-  block$condition <- kap
-  block$fitted <- fit$fitted.values
-  block$fail <- NULL
-  block
-}
-
-fit_first_order <- function(A, L, dat) {
-  n <- nrow(A)
-  X0 <- cbind(1, L[, 1], dat$X1, dat$X2, dat$X3)
-  b0 <- fit_block(X0, A[, 1], n)
-  if (!is.null(b0$fail)) return(list(fail = b0$fail))
-
-  id <- rep(seq_len(n), N_MONTHS - 1L)
-  month <- rep(seq_len(N_MONTHS - 1L), each = n)
-  Xf <- cbind(1, as.vector(A[, -N_MONTHS, drop = FALSE]),
-              as.vector(L[, -1L, drop = FALSE]),
-              rep(dat$X1, N_MONTHS - 1L),
-              rep(dat$X2, N_MONTHS - 1L),
-              rep(dat$X3, N_MONTHS - 1L), month)
-  yf <- as.vector(A[, -1L, drop = FALSE])
-  bf <- fit_block(Xf, yf, n, id)
-  if (!is.null(bf$fail)) return(list(fail = bf$fail))
-
-  p <- matrix(NA_real_, n, N_MONTHS)
-  p[, 1] <- b0$fitted
-  p[, -1L] <- matrix(bf$fitted, n)
-  list(p = p, blocks = list(b0, bf), fail = NULL)
-}
-
-run_length_matrix <- function(x) {
-  z <- matrix(1, nrow(x), ncol(x))
-  if (ncol(x) > 1L)
-    for (tt in 2:ncol(x))
-      z[, tt] <- ifelse(x[, tt] == x[, tt - 1L], z[, tt - 1L] + 1, 1)
-  z
-}
-
-interaction_columns <- function(V) {
-  if (ncol(V) < 2L) return(matrix(numeric(0), nrow(V), 0L))
-  cmb <- utils::combn(seq_len(ncol(V)), 2L)
-  z <- vapply(seq_len(ncol(cmb)), function(j)
-    V[, cmb[1, j]] * V[, cmb[2, j]], numeric(nrow(V)))
-  if (is.null(dim(z))) z <- matrix(z, ncol = 1L)
-  colnames(z) <- paste(colnames(V)[cmb[1, ]], colnames(V)[cmb[2, ]], sep = ':')
-  z
-}
-
-rich_matrix <- function(A, L, dat, tt, spline_basis, runA, runL) {
-  n <- nrow(A)
-  curL <- L[, tt]
-  base <- cbind('(Intercept)' = 1, spline_basis,
-                X2 = dat$X2, X3 = dat$X3, Lcur = curL,
-                X1_hi = as.integer(dat$X1 > 0.5),
-                X1_lo = as.integer(dat$X1 < -0.5))
-  if (tt > 1L) {
-    Ah <- A[, seq_len(tt - 1L), drop = FALSE]
-    Lh <- L[, seq_len(tt - 1L), drop = FALSE]
-    colnames(Ah) <- paste0('A', seq_len(tt - 1L) - 1L)
-    colnames(Lh) <- paste0('L', seq_len(tt - 1L) - 1L)
-    base <- cbind(base, Ah, Lh,
-                  runA = runA[, tt - 1L], runL = runL[, tt])
-    ## The numeric cumulative counts are exact linear combinations of the full
-    ## prior histories already present. Their duplicate columns are omitted at
-    ## construction, which leaves the specified prediction space unchanged and
-    ## avoids manufacturing the rank deficiency the protocol forbids.
-    recent <- cbind(Lcur = curL,
-                    A_lag1 = A[, tt - 1L],
-                    L_lag1 = L[, tt - 1L],
-                    X2 = dat$X2, X3 = dat$X3)
-    if (tt > 2L)
-      recent <- cbind(recent, A_lag2 = A[, tt - 2L],
-                      L_lag2 = L[, tt - 2L])
-  } else {
-    recent <- cbind(Lcur = curL, X2 = dat$X2, X3 = dat$X3)
-  }
-  cbind(base, interaction_columns(recent))
-}
-
-fit_rich_history <- function(A, L, dat) {
-  n <- nrow(A)
-  spline_basis <- splines::ns(dat$X1, df = 4)
-  colnames(spline_basis) <- paste0('X1_rcs', seq_len(ncol(spline_basis)))
-  runA <- run_length_matrix(A)
-  runL <- run_length_matrix(L)
-  p <- matrix(NA_real_, n, N_MONTHS)
-  blocks <- vector('list', N_MONTHS)
-  for (tt in seq_len(N_MONTHS)) {
-    X <- rich_matrix(A, L, dat, tt, spline_basis, runA, runL)
-    b <- fit_block(X, A[, tt], n)
-    if (!is.null(b$fail)) return(list(fail = b$fail))
-    p[, tt] <- b$fitted
-    blocks[[tt]] <- b
-  }
-  list(p = p, blocks = blocks, fail = NULL)
-}
-
-mean_with_if <- function(consistent, w, Y, subgroup, blocks) {
-  use <- consistent & subgroup
-  D <- mean(ifelse(use, w, 0))
-  if (!is.finite(D) || D <= 0) return(list(fail = TRUE))
-  mu <- sum(w[use] * Y[use]) / sum(w[use])
-  u <- ifelse(use, w * (Y - mu), 0)
-  adj <- numeric(length(Y))
-  for (b in blocks) {
-    G <- -colMeans(b$score * u)
-    v <- try(solve(b$bread, G), silent = TRUE)
-    if (inherits(v, 'try-error') || any(!is.finite(v)))
-      return(list(fail = TRUE))
-    adj <- adj + drop(b$score %*% v)
-  }
-  list(mu = mu, influence = (u + adj) / D, fail = FALSE)
-}
-
-risk_estimates <- function(A, L, Y, p, blocks = list(), L_reference = L) {
-  n <- nrow(A)
-  q <- ifelse(A == 1L, p, 1 - p)
-  if (any(!is.finite(q)) || any(q <= 0)) return(empty_estimate('invalid-probability'))
-  logw <- -rowSums(log(q))
-  if (any(!is.finite(logw))) return(empty_estimate('nonfinite-weight'))
-  w <- exp(logw)
-  if (any(!is.finite(w))) return(empty_estimate('nonfinite-weight'))
-
-  required <- list(dynamic = L, static = matrix(1L, n, N_MONTHS),
-                   zero = matrix(0L, n, N_MONTHS))
-  consistent <- lapply(required, function(r) rowSums(A != r) == 0L)
-  changed <- mean(first_deviation(A, L) != first_deviation(A, L_reference))
-
-  specs <- list(
-    dynamic = list(one = 'dynamic', zero = 'zero', subgroup = rep(TRUE, n)),
-    dynamic_x2_0 = list(one = 'dynamic', zero = 'zero', subgroup = dat_placeholder <- NULL),
-    dynamic_x2_1 = list(one = 'dynamic', zero = 'zero', subgroup = dat_placeholder),
-    static = list(one = 'static', zero = 'zero', subgroup = rep(TRUE, n))
-  )
-  specs$dynamic_x2_0$subgroup <- attr(L_reference, 'X2') == 0L
-  specs$dynamic_x2_1$subgroup <- attr(L_reference, 'X2') == 1L
-
-  rows <- lapply(names(specs), function(key) {
-    z <- specs[[key]]
-    r1 <- mean_with_if(consistent[[z$one]], w, Y, z$subgroup, blocks)
-    r0 <- mean_with_if(consistent[[z$zero]], w, Y, z$subgroup, blocks)
-    if (isTRUE(r1$fail) || isTRUE(r0$fail))
-      return(empty_estimate('empty-consistent-arm')[1, , drop = FALSE])
-    est <- r1$mu - r0$mu
-    se <- stats::sd(r1$influence - r0$influence) / sqrt(n)
-    if (!is.finite(se) || se < 0)
-      return(empty_estimate('invalid-variance')[1, , drop = FALSE])
-    w1 <- w[consistent[[z$one]] & z$subgroup]
-    w0 <- w[consistent[[z$zero]] & z$subgroup]
+  out <- do.call(rbind, lapply(names(acc), function(k) {
+    a <- acc[[k]]
+    truth <- a$sd / a$n
+    vv <- (a$sd2 - a$sd^2 / a$n) / max(1, a$n - 1L)
     data.frame(
-      contrast = key, est = est, se = se, lo = est - 1.96 * se,
-      hi = est + 1.96 * se, ess_0 = ess(w0), ess_1 = ess(w1),
-      median_weight = stats::median(c(w0, w1)),
-      p99_weight = weighted_quantile(c(w0, w1), 0.99),
-      adherence_0 = mean(consistent[[z$zero]] & z$subgroup) / mean(z$subgroup),
-      adherence_1 = mean(consistent[[z$one]] & z$subgroup) / mean(z$subgroup),
-      censor_change_L = if (key == 'dynamic') changed else NA_real_,
-      interval_df = Inf, fail = NA_character_, stringsAsFactors = FALSE)
-  })
-  out <- do.call(rbind, rows)
-  attr(out, 'system_dim') <- sum(vapply(blocks, function(b) ncol(b$X), integer(1))) + 8L
+      estimand = k,
+      risk_g1 = a$sy1 / a$n,
+      risk_g0 = a$sy0 / a$n,
+      truth = truth,
+      truth_mcse = sqrt(max(0, vv) / a$n),
+      truth_n = a$n,
+      stringsAsFactors = FALSE
+    )
+  }))
   rownames(out) <- NULL
   out
 }
 
-attach_x2 <- function(L, X2) {
-  attr(L, 'X2') <- X2
-  L
+empty_rows <- function(method, pattern, fail, mi_m = NA_integer_,
+                       prior_sd = NA_real_) {
+  data.frame(
+    method = method, analysis_pattern = pattern, estimand = ESTIMANDS,
+    est = NA_real_, se = NA_real_, lo = NA_real_, hi = NA_real_,
+    ess_g1 = NA_real_, ess_g0 = NA_real_, median_weight = NA_real_,
+    p99_weight = NA_real_, adherence_g1 = NA_real_, adherence_g0 = NA_real_,
+    oracle_adherence_g1 = NA_real_, oracle_adherence_g0 = NA_real_,
+    censor_change_l = NA_real_, n_system = NA_integer_, mi_m = mi_m,
+    prior_sd = prior_sd, fail = fail, stringsAsFactors = FALSE
+  )
 }
 
-normalize_weights <- function(w) {
-  good <- is.finite(w) & w > 0
-  lw <- matrix(-Inf, nrow(w), ncol(w))
-  lw[good] <- log(w[good])
-  mx <- rep(-Inf, nrow(w))
-  for (j in seq_len(ncol(w))) mx <- pmax(mx, lw[, j])
-  bad <- !is.finite(mx)
-  z <- exp(lw - mx)
-  den <- rowSums(z)
-  bad <- bad | !is.finite(den) | den <= 0
-  z[!bad, , drop = FALSE] <- z[!bad, , drop = FALSE] / den[!bad]
-  list(w = z, bad = bad)
-}
-
-state_table <- function(second_order = FALSE) {
-  if (second_order) {
-    expand.grid(L = 0:1, A = 0:1, eL = 0:1, eA = 0:1,
-                lagL = 0:1, lagA = 0:1)
-  } else {
-    expand.grid(L = 0:1, A = 0:1, eL = 0:1, eA = 0:1)
-  }
-}
-
-error_transition_probability <- function(new, prev, prev2, p, tt, stress) {
-  fresh <- ifelse(new == 1L, p, 1 - p)
-  if (!stress || tt == 2L)
-    return(0.80 * (new == prev) + 0.20 * fresh)
-  0.55 * (new == prev) + 0.25 * (new == prev2) + 0.20 * fresh
-}
-
-exact_proxy_probabilities <- function(dat, obs, scen) {
-  n <- length(dat$X1)
-  stress <- scen$specification == 'error_transition_stress'
-  st <- state_table(stress)
-  S <- nrow(st)
-  pe <- error_probability(scen, dat$X2, dat$X3)
-  if (!scen$error_nodes %in% c('L', 'AL')) peL <- rep(0, n) else peL <- pe
-  if (!scen$error_nodes %in% c('A', 'AL')) peA <- rep(0, n) else peA <- pe
-
-  pre <- matrix(0, n, S)
-  pL0 <- expit(lp_l0(dat$X1, dat$X2))
-  for (s in seq_len(S)) {
-    valid_lag <- !stress || (st$lagL[s] == st$eL[s] && st$lagA[s] == st$eA[s])
-    if (!valid_lag) next
-    pl <- ifelse(st$L[s] == 1L, pL0, 1 - pL0)
-    pa0 <- expit(lp_a0(st$L[s], dat$X1, dat$X2))
-    pa <- ifelse(st$A[s] == 1L, pa0, 1 - pa0)
-    pel <- ifelse(st$eL[s] == 1L, peL, 1 - peL)
-    pea <- ifelse(st$eA[s] == 1L, peA, 1 - peA)
-    compatible <- xor_int(st$L[s], st$eL[s]) == obs$L[, 1]
-    pre[, s] <- pl * pa * pel * pea * compatible
-  }
-  den <- rowSums(pre)
-  if (any(!is.finite(den) | den <= 0)) return(list(fail = 'filter-normalizer'))
-  p <- matrix(NA_real_, n, N_MONTHS)
-  proxy_a <- xor_int(st$A, st$eA)
-  p[, 1] <- rowSums(pre[, proxy_a == 1L, drop = FALSE]) / den
-  post <- pre * (matrix(proxy_a, n, S, byrow = TRUE) == obs$A[, 1])
-  nz <- normalize_weights(post)
-  if (any(nz$bad)) return(list(fail = 'filter-normalizer'))
-  post <- nz$w
-
-  if (N_MONTHS > 1L) {
-    for (tt in 2:N_MONTHS) {
-      nxt <- matrix(0, n, S)
-      for (s in seq_len(S)) {
-        compatible_l <- xor_int(st$L[s], st$eL[s]) == obs$L[, tt]
-        if (!any(compatible_l)) next
-        total <- numeric(n)
-        for (r in seq_len(S)) {
-          if (stress && (st$lagL[s] != st$eL[r] || st$lagA[s] != st$eA[r])) next
-          pL <- expit(lp_lt(st$L[r], st$A[r], dat$X1, dat$X2,
-                           tt - 1L, scen$specification))
-          fL <- ifelse(st$L[s] == 1L, pL, 1 - pL)
-          pA <- expit(lp_at(st$A[r], st$L[s], dat$X1, dat$X2,
-                           tt - 1L, scen$specification))
-          fA <- ifelse(st$A[s] == 1L, pA, 1 - pA)
-          prev2L <- if (stress) st$lagL[r] else st$eL[r]
-          prev2A <- if (stress) st$lagA[r] else st$eA[r]
-          fEL <- error_transition_probability(st$eL[s], st$eL[r], prev2L,
-                                               peL, tt, stress)
-          fEA <- error_transition_probability(st$eA[s], st$eA[r], prev2A,
-                                               peA, tt, stress)
-          total <- total + post[, r] * fL * fA * fEL * fEA
-        }
-        nxt[, s] <- total * compatible_l
-      }
-      den <- rowSums(nxt)
-      if (any(!is.finite(den) | den <= 0)) return(list(fail = 'filter-normalizer'))
-      p[, tt] <- rowSums(nxt[, proxy_a == 1L, drop = FALSE]) / den
-      nxt <- nxt * (matrix(proxy_a, n, S, byrow = TRUE) == obs$A[, tt])
-      nz <- normalize_weights(nxt)
-      if (any(nz$bad)) return(list(fail = 'filter-normalizer'))
-      post <- nz$w
+run_length_matrix <- function(Z) {
+  R <- matrix(1L, nrow(Z), ncol(Z))
+  if (ncol(Z) >= 2L) {
+    for (tt in 2L:ncol(Z)) {
+      R[, tt] <- ifelse(Z[, tt] == Z[, tt - 1L], R[, tt - 1L] + 1L, 1L)
     }
   }
-  list(p = p, blocks = list(), fail = NULL)
+  R
 }
 
-known_latent_probabilities <- function(dat, scen) {
-  n <- length(dat$X1)
-  p <- matrix(NA_real_, n, N_MONTHS)
-  p[, 1] <- expit(lp_a0(dat$L[, 1], dat$X1, dat$X2))
-  if (N_MONTHS > 1L)
-    for (tt in 2:N_MONTHS)
-      p[, tt] <- expit(lp_at(dat$A[, tt - 1L], dat$L[, tt], dat$X1,
-                             dat$X2, tt - 1L, scen$specification))
+pair_products <- function(M) {
+  if (ncol(M) < 2L) return(NULL)
+  cmb <- utils::combn(seq_len(ncol(M)), 2L)
+  out <- M[, cmb[1L, ], drop = FALSE] * M[, cmb[2L, ], drop = FALSE]
+  colnames(out) <- paste(colnames(M)[cmb[1L, ]], colnames(M)[cmb[2L, ]], sep = ":")
+  out
+}
+
+canonical_basis <- function(X, tol = 1e-10) {
+  keep_var <- apply(X, 2L, function(z) length(unique(z)) > 1L)
+  keep_var[1L] <- TRUE
+  X <- X[, keep_var, drop = FALSE]
+  q <- qr(X, tol = tol)
+  if (q$rank < ncol(X)) {
+    ## Raw cumulative counts are structurally aliased with their complete binary
+    ## histories. Removing exact aliases preserves the requested column space;
+    ## sample-induced rank deficiency after this canonicalization still fails.
+    X <- X[, sort(q$pivot[seq_len(q$rank)]), drop = FALSE]
+  }
+  X
+}
+
+rich_matrices <- function(A, L, X1, X2, X3) {
+  nsx <- splines::ns(X1, df = 4L)
+  colnames(nsx) <- paste0("x1s", seq_len(ncol(nsx)))
+  rA <- run_length_matrix(A)
+  rL <- run_length_matrix(L)
+  out <- vector("list", N_MONTHS)
+  for (tt in seq_len(N_MONTHS)) {
+    base <- cbind(`(Intercept)` = 1, nsx, X2 = X2, X3 = X3,
+                  Lcur = L[, tt], X1hi = X1 > 0.5, X1lo = X1 < -0.5)
+    if (tt > 1L) {
+      Ah <- A[, seq_len(tt - 1L), drop = FALSE]
+      Lh <- L[, seq_len(tt - 1L), drop = FALSE]
+      colnames(Ah) <- paste0("A", 0:(tt - 2L))
+      colnames(Lh) <- paste0("L", 0:(tt - 2L))
+      base <- cbind(base, Ah, Lh,
+                    cumA = rowSums(Ah), cumL = rowSums(Lh),
+                    runA = rA[, tt], runL = rL[, tt])
+    }
+    recent <- cbind(Lcur = L[, tt], X2 = X2, X3 = X3)
+    if (tt > 1L) recent <- cbind(recent, Aprev1 = A[, tt - 1L], Lprev1 = L[, tt - 1L])
+    if (tt > 2L) recent <- cbind(recent, Aprev2 = A[, tt - 2L], Lprev2 = L[, tt - 2L])
+    out[[tt]] <- canonical_basis(cbind(base, pair_products(recent)))
+  }
+  out
+}
+
+safe_glm_group <- function(Xlist, ylist) {
+  X <- do.call(rbind, Xlist)
+  y <- unlist(ylist, use.names = FALSE)
+  fit <- try(stats::glm.fit(x = X, y = y, family = stats::binomial()), silent = TRUE)
+  if (inherits(fit, "try-error") || !isTRUE(fit$converged) ||
+      fit$rank < ncol(X) || any(!is.finite(fit$coefficients))) {
+    return(list(fail = "propensity-fit-failed"))
+  }
+  p <- expit(drop(X %*% fit$coefficients))
+  if (any(!is.finite(p))) return(list(fail = "nonfinite-propensity"))
+  list(X = Xlist, y = ylist, beta = fit$coefficients, fail = NA_character_)
+}
+
+fit_propensity <- function(A, L, X1, X2, X3, kind = c("first_order", "rich")) {
+  kind <- match.arg(kind)
+  if (kind == "first_order") {
+    X0 <- cbind(1, L[, 1L], X1, X2, X3)
+    XF <- lapply(2L:N_MONTHS, function(tt)
+      cbind(1, A[, tt - 1L], L[, tt], X1, X2, X3, tt - 1L))
+    groups <- list(
+      safe_glm_group(list(X0), list(A[, 1L])),
+      safe_glm_group(XF, lapply(2L:N_MONTHS, function(tt) A[, tt]))
+    )
+    times <- list(1L, 2L:N_MONTHS)
+  } else {
+    XX <- rich_matrices(A, L, X1, X2, X3)
+    groups <- lapply(seq_len(N_MONTHS), function(tt)
+      safe_glm_group(list(XX[[tt]]), list(A[, tt])))
+    times <- lapply(seq_len(N_MONTHS), identity)
+  }
+  if (any(vapply(groups, function(g) !is.na(g$fail), logical(1)))) {
+    return(list(fail = "propensity-fit-failed"))
+  }
+  sizes <- vapply(groups, function(g) length(g$beta), integer(1))
+  starts <- cumsum(c(1L, head(sizes, -1L)))
+  list(groups = groups, times = times, sizes = sizes, starts = starts,
+       beta = unlist(lapply(groups, `[[`, "beta"), use.names = FALSE),
+       n = nrow(A), fail = NA_character_)
+}
+
+propensity_pobs <- function(object, beta, A) {
+  pobs <- matrix(NA_real_, nrow(A), ncol(A))
+  for (gg in seq_along(object$groups)) {
+    ix <- object$starts[gg] + seq_len(object$sizes[gg]) - 1L
+    for (jj in seq_along(object$groups[[gg]]$X)) {
+      tt <- object$times[[gg]][jj]
+      p <- expit(drop(object$groups[[gg]]$X[[jj]] %*% beta[ix]))
+      pobs[, tt] <- ifelse(A[, tt] == 1L, p, 1 - p)
+    }
+  }
+  pobs
+}
+
+propensity_scores <- function(object, beta) {
+  S <- matrix(0, object$n, length(beta))
+  for (gg in seq_along(object$groups)) {
+    ix <- object$starts[gg] + seq_len(object$sizes[gg]) - 1L
+    sg <- matrix(0, object$n, object$sizes[gg])
+    for (jj in seq_along(object$groups[[gg]]$X)) {
+      X <- object$groups[[gg]]$X[[jj]]
+      y <- object$groups[[gg]]$y[[jj]]
+      p <- expit(drop(X %*% beta[ix]))
+      sg <- sg + X * (y - p)
+    }
+    S[, ix] <- sg
+  }
+  S
+}
+
+propensity_bread <- function(object, beta) {
+  p <- length(beta)
+  A <- matrix(0, p, p)
+  for (gg in seq_along(object$groups)) {
+    ix <- object$starts[gg] + seq_len(object$sizes[gg]) - 1L
+    block <- matrix(0, length(ix), length(ix))
+    for (X in object$groups[[gg]]$X) {
+      pr <- expit(drop(X %*% beta[ix]))
+      block <- block - crossprod(X, X * (pr * (1 - pr))) / object$n
+    }
+    A[ix, ix] <- block
+  }
+  A
+}
+
+risk_quantities <- function(A, L, Y, X2, pobs, dat) {
+  if (any(!is.finite(pobs)) || any(pobs <= 0)) return(list(fail = "invalid-weight-probability"))
+  lw <- -rowSums(log(pobs))
+  if (any(!is.finite(lw)) || any(lw > log(.Machine$double.xmax))) {
+    return(list(fail = "nonfinite-weight"))
+  }
+  w <- exp(lw)
+  dyn1 <- rowSums(A != L) == 0L
+  dyn0 <- rowSums(A != 0L) == 0L
+  sta1 <- rowSums(A != 1L) == 0L
+  sta0 <- dyn0
+  subsets <- list(rep(TRUE, nrow(A)), X2 == 0L, X2 == 1L, rep(TRUE, nrow(A)))
+  a1 <- list(dyn1, dyn1, dyn1, sta1)
+  a0 <- list(dyn0, dyn0, dyn0, sta0)
+  q <- matrix(0, nrow(A), 2L * length(ESTIMANDS))
+  r <- numeric(ncol(q))
+  diag <- vector("list", length(ESTIMANDS))
+  oracle_dyn1 <- rowSums(dat$A != dat$L) == 0L
+  oracle_dyn0 <- rowSums(dat$A != 0L) == 0L
+  c_proxy <- first_censor_month(A, L)
+  c_latent_rule <- first_censor_month(A, dat$L)
+  for (j in seq_along(ESTIMANDS)) {
+    keep <- subsets[[j]]
+    q[, 2L * j - 1L] <- keep * a1[[j]] * w
+    q[, 2L * j] <- keep * a0[[j]] * w
+    if (sum(q[, 2L * j - 1L]) <= 0 || sum(q[, 2L * j]) <= 0) {
+      return(list(fail = "empty-consistent-arm"))
+    }
+    r[2L * j - 1L] <- sum(q[, 2L * j - 1L] * Y) / sum(q[, 2L * j - 1L])
+    r[2L * j] <- sum(q[, 2L * j] * Y) / sum(q[, 2L * j])
+    active <- q[, c(2L * j - 1L, 2L * j), drop = FALSE]
+    ww <- active[active > 0]
+    diag[[j]] <- data.frame(
+      ess_g1 = sum(active[, 1L])^2 / sum(active[, 1L]^2),
+      ess_g0 = sum(active[, 2L])^2 / sum(active[, 2L]^2),
+      median_weight = stats::median(ww),
+      p99_weight = unname(stats::quantile(ww, 0.99, names = FALSE)),
+      adherence_g1 = mean(a1[[j]][keep]), adherence_g0 = mean(a0[[j]][keep]),
+      oracle_adherence_g1 = if (j < 4L) mean(oracle_dyn1[keep]) else
+        mean((rowSums(dat$A != 1L) == 0L)[keep]),
+      oracle_adherence_g0 = mean(oracle_dyn0[keep]),
+      censor_change_l = if (j < 4L) mean(c_proxy[keep] != c_latent_rule[keep]) else NA_real_
+    )
+  }
+  list(q = q, r = r, diagnostics = do.call(rbind, diag), w = w, fail = NA_character_)
+}
+
+risk_score_matrix <- function(q, Y, r) q * (Y - matrix(r, nrow(q), length(r), byrow = TRUE))
+
+rows_from_covariance <- function(method, pattern, rq, V, n_system,
+                                 mi_m = NA_integer_, prior_sd = NA_real_) {
+  rows <- vector("list", length(ESTIMANDS))
+  for (j in seq_along(ESTIMANDS)) {
+    cc <- numeric(length(rq$r))
+    cc[2L * j - 1L] <- 1
+    cc[2L * j] <- -1
+    est <- rq$r[2L * j - 1L] - rq$r[2L * j]
+    vv <- drop(t(cc) %*% V %*% cc)
+    if (!is.finite(vv) || vv < 0) return(empty_rows(method, pattern, "invalid-variance", mi_m, prior_sd))
+    se <- sqrt(vv)
+    rows[[j]] <- cbind(
+      data.frame(method = method, analysis_pattern = pattern,
+                 estimand = ESTIMANDS[j], est = est, se = se,
+                 lo = est - 1.96 * se, hi = est + 1.96 * se,
+                 stringsAsFactors = FALSE),
+      rq$diagnostics[j, , drop = FALSE],
+      data.frame(n_system = n_system, mi_m = mi_m, prior_sd = prior_sd,
+                 fail = NA_character_, stringsAsFactors = FALSE)
+    )
+  }
+  do.call(rbind, rows)
+}
+
+fixed_probability_estimator <- function(A, L, Y, X2, pobs, dat, method, pattern) {
+  rq <- risk_quantities(A, L, Y, X2, pobs, dat)
+  if (!is.na(rq$fail)) return(empty_rows(method, pattern, rq$fail))
+  S <- risk_score_matrix(rq$q, Y, rq$r)
+  bread <- -diag(colMeans(rq$q))
+  if (any(!is.finite(bread)) || kappa(bread, exact = TRUE) > 1e12) {
+    return(empty_rows(method, pattern, "ill-conditioned-bread"))
+  }
+  inv <- solve(bread)
+  meat <- crossprod(S) / nrow(S)
+  V <- inv %*% meat %*% t(inv) / nrow(S)
+  rows_from_covariance(method, pattern, rq, V, ncol(S))
+}
+
+fitted_probability_estimator <- function(A, L, Y, X1, X2, X3, dat,
+                                         kind, method, pattern) {
+  fit <- fit_propensity(A, L, X1, X2, X3, kind)
+  if (!is.na(fit$fail)) return(empty_rows(method, pattern, fit$fail))
+  beta <- fit$beta
+  pobs <- propensity_pobs(fit, beta, A)
+  rq <- risk_quantities(A, L, Y, X2, pobs, dat)
+  if (!is.na(rq$fail)) return(empty_rows(method, pattern, rq$fail))
+  Sb <- propensity_scores(fit, beta)
+  Sr <- risk_score_matrix(rq$q, Y, rq$r)
+  S <- cbind(Sb, Sr)
+  pb <- length(beta)
+  pr <- length(rq$r)
+  bread <- matrix(0, pb + pr, pb + pr)
+  bread[seq_len(pb), seq_len(pb)] <- propensity_bread(fit, beta)
+  bread[pb + seq_len(pr), pb + seq_len(pr)] <- -diag(colMeans(rq$q))
+
+  ## The prescribed numerical step is used for every nonzero risk-equation
+  ## derivative with respect to fitted propensity parameters. Logistic score
+  ## blocks use their algebraically identical derivative to avoid hundreds of
+  ## redundant full score evaluations in each rich-history fit.
+  base_mean <- colMeans(Sr)
+  for (k in seq_len(pb)) {
+    h <- 1e-6 * (1 + abs(beta[k]))
+    bp <- beta
+    bp[k] <- bp[k] + h
+    pp <- propensity_pobs(fit, bp, A)
+    rqp <- risk_quantities(A, L, Y, X2, pp, dat)
+    if (!is.na(rqp$fail)) return(empty_rows(method, pattern, rqp$fail))
+    sp <- risk_score_matrix(rqp$q, Y, rq$r)
+    bread[pb + seq_len(pr), k] <- (colMeans(sp) - base_mean) / h
+  }
+  if (any(!is.finite(bread)) || kappa(bread, exact = TRUE) > 1e12) {
+    return(empty_rows(method, pattern, "ill-conditioned-bread"))
+  }
+  inv <- try(solve(bread), silent = TRUE)
+  if (inherits(inv, "try-error")) return(empty_rows(method, pattern, "singular-bread"))
+  meat <- crossprod(S) / nrow(S)
+  Vfull <- inv %*% meat %*% t(inv) / nrow(S)
+  V <- Vfull[pb + seq_len(pr), pb + seq_len(pr), drop = FALSE]
+  out <- rows_from_covariance(method, pattern, rq, V, ncol(S))
+  attr(out, "df_complete") <- nrow(A) - ncol(S)
+  out
+}
+
+error_transition_probability <- function(enew, eprev, elag, pfresh,
+                                         second_order, t_index) {
+  if (!second_order || t_index == 2L) {
+    0.80 * (enew == eprev) + 0.20 * bern(enew, pfresh)
+  } else {
+    0.55 * (enew == eprev) + 0.25 * (enew == elag) + 0.20 * bern(enew, pfresh)
+  }
+}
+
+## Exact filtering uses normalized forward probabilities at every month. This is
+## algebraically equivalent to log-sum-exp scaling over the finite state space.
+exact_proxy_pobs <- function(dat, scen, pattern) {
+  view <- proxy_view(dat, pattern)
+  Aobs <- view$A
+  Lobs <- view$L
+  use_A <- grepl("A", pattern, fixed = TRUE)
+  use_L <- grepl("L", pattern, fixed = TRUE)
+  pfA <- if (use_A) dat$p_error else rep(0, nrow(Aobs))
+  pfL <- if (use_L) dat$p_error else rep(0, nrow(Aobs))
+  states <- expand.grid(L = 0:1, A = 0:1, eL = 0:1, eA = 0:1,
+                        lagL = 0:1, lagA = 0:1)
+  S <- nrow(states)
+  n <- nrow(Aobs)
+  pre <- matrix(0, n, S)
+  pL0 <- expit(-0.40 + 0.50 * dat$X1 + 0.40 * dat$X2)
+  for (j in seq_len(S)) {
+    s <- states[j, ]
+    if (s$lagL != s$eL || s$lagA != s$eA) next
+    pA0 <- expit(-0.70 + 0.80 * s$L + 0.25 * dat$X1 + 0.20 * dat$X2)
+    pre[, j] <- bern(s$L, pL0) * bern(s$eL, pfL) *
+      ((s$L + s$eL) %% 2L == Lobs[, 1L]) *
+      bern(s$A, pA0) * bern(s$eA, pfA)
+  }
+  den <- rowSums(pre)
+  obs <- vapply(seq_len(S), function(j)
+    as.numeric((states$A[j] + states$eA[j]) %% 2L == Aobs[, 1L]), numeric(n))
+  num <- rowSums(pre * obs)
+  if (any(!is.finite(den)) || any(den <= 0) || any(num <= 0)) {
+    return(list(fail = "filter-normalizer", pobs = NULL))
+  }
+  pobs <- matrix(NA_real_, n, N_MONTHS)
+  pobs[, 1L] <- num / den
+  post <- pre * obs / num
+
+  for (tt in 2L:N_MONTHS) {
+    nxt <- matrix(0, n, S)
+    for (i in seq_len(S)) {
+      old <- states[i, ]
+      ai <- post[, i]
+      if (!any(ai > 0)) next
+      for (j in seq_len(S)) {
+        nw <- states[j, ]
+        if (nw$lagL != old$eL || nw$lagA != old$eA) next
+        pL <- expit(latent_predictor_L(
+          tt, old$L, old$A, dat$X1, dat$X2, scen$specification))
+        pA <- expit(latent_predictor_A(
+          tt, old$A, nw$L, dat$X1, dat$X2, scen$specification))
+        peL <- error_transition_probability(
+          nw$eL, old$eL, old$lagL, pfL,
+          scen$specification == "error_transition", tt)
+        peA <- error_transition_probability(
+          nw$eA, old$eA, old$lagA, pfA,
+          scen$specification == "error_transition", tt)
+        emitL <- (nw$L + nw$eL) %% 2L == Lobs[, tt]
+        nxt[, j] <- nxt[, j] + ai * bern(nw$L, pL) * peL * emitL *
+          bern(nw$A, pA) * peA
+      }
+    }
+    den <- rowSums(nxt)
+    obs <- vapply(seq_len(S), function(j)
+      as.numeric((states$A[j] + states$eA[j]) %% 2L == Aobs[, tt]), numeric(n))
+    num <- rowSums(nxt * obs)
+    if (any(!is.finite(den)) || any(den <= 0) || any(num <= 0)) {
+      return(list(fail = "filter-normalizer", pobs = NULL))
+    }
+    pobs[, tt] <- num / den
+    post <- nxt * obs / num
+  }
+  list(fail = NA_character_, pobs = pobs)
+}
+
+natural_true_pobs <- function(dat, scen) {
+  p <- matrix(NA_real_, nrow(dat$A), N_MONTHS)
+  pa <- expit(-0.70 + 0.80 * dat$L[, 1L] + 0.25 * dat$X1 + 0.20 * dat$X2)
+  p[, 1L] <- ifelse(dat$A[, 1L] == 1L, pa, 1 - pa)
+  for (tt in 2L:N_MONTHS) {
+    pa <- expit(latent_predictor_A(
+      tt, dat$A[, tt - 1L], dat$L[, tt], dat$X1, dat$X2, scen$specification))
+    p[, tt] <- ifelse(dat$A[, tt] == 1L, pa, 1 - pa)
+  }
   p
 }
 
-estimate_threshold <- function(dat, obs, scen, model) {
-  fit <- switch(model,
-    first_order = fit_first_order(obs$A, obs$L, dat),
-    rich_history = fit_rich_history(obs$A, obs$L, dat),
-    exact_filtered = exact_proxy_probabilities(dat, obs, scen),
-    stop('unknown threshold model: ', model)
-  )
-  if (!is.null(fit$fail)) return(empty_estimate(fit$fail))
-  Lref <- attach_x2(dat$L, dat$X2)
-  Lobs <- attach_x2(obs$L, dat$X2)
-  risk_estimates(obs$A, Lobs, obs$Y, fit$p, fit$blocks, Lref)
+est_threshold <- function(dat, scen, pattern, kind) {
+  view <- proxy_view(dat, pattern)
+  method <- if (kind == "first_order") "first_order" else "rich"
+  fitted_probability_estimator(view$A, view$L, view$Y,
+                               dat$X1, dat$X2, dat$X3, dat,
+                               kind, method, pattern)
 }
 
-estimate_oracle <- function(dat, scen) {
-  p <- known_latent_probabilities(dat, scen)
-  L <- attach_x2(dat$L, dat$X2)
-  risk_estimates(dat$A, L, dat$Y, p, list(), L)
+est_exact_filtered <- function(dat, scen, pattern) {
+  view <- proxy_view(dat, pattern)
+  fp <- exact_proxy_pobs(dat, scen, pattern)
+  if (!is.na(fp$fail)) return(empty_rows("exact_filter", pattern, fp$fail))
+  fixed_probability_estimator(view$A, view$L, view$Y, dat$X2,
+                              fp$pobs, dat, "exact_filter", pattern)
 }
 
-log1pexp <- function(x) ifelse(x > 0, x + log1p(exp(-x)), log1p(exp(x)))
+est_oracle <- function(dat, scen) {
+  fixed_probability_estimator(dat$A, dat$L, dat$Y, dat$X2,
+                              natural_true_pobs(dat, scen), dat,
+                              "oracle", "latent")
+}
 
-fit_laplace_logit <- function(X, y, nonintercept_sd = 2.5) {
-  sd <- c(5, rep(nonintercept_sd, ncol(X) - 1L))
-  precision <- 1 / sd^2
-  lp <- function(beta) {
-    eta <- drop(X %*% beta)
-    sum(y * eta - log1pexp(eta)) - 0.5 * sum(precision * beta^2)
+penalized_logit <- function(X, y, prior_sd_nonintercept = MI_PRIOR_SD,
+                            tol = 1e-7, maxit = 100L) {
+  sd <- c(5, rep(prior_sd_nonintercept, ncol(X) - 1L))
+  prec <- 1 / sd^2
+  b <- numeric(ncol(X))
+  objective <- function(bb) {
+    eta <- drop(X %*% bb)
+    sum(y * eta - log1pexp(eta)) - 0.5 * sum(prec * bb^2)
   }
-  gr <- function(beta) drop(crossprod(X, y - expit(drop(X %*% beta)))) -
-    precision * beta
-  opt <- try(stats::optim(rep(0, ncol(X)), function(b) -lp(b),
-                          function(b) -gr(b), method = 'BFGS',
-                          control = list(maxit = 1000, reltol = 1e-12)), silent = TRUE)
-  if (inherits(opt, 'try-error')) return(list(fail = 'latent-fit-failed'))
-  g <- gr(opt$par)
-  p <- expit(drop(X %*% opt$par))
-  Hneg <- crossprod(X * sqrt(p * (1 - p)), X * sqrt(p * (1 - p))) +
-    diag(precision, ncol(X))
-  ch <- try(chol(Hneg), silent = TRUE)
-  if (max(abs(g)) >= 1e-7 || inherits(ch, 'try-error'))
-    return(list(fail = 'latent-fit-failed'))
-  list(mode = opt$par, covariance = chol2inv(ch), fail = NULL)
+  converged <- FALSE
+  for (it in seq_len(maxit)) {
+    eta <- drop(X %*% b)
+    p <- expit(eta)
+    grad <- drop(crossprod(X, y - p)) - prec * b
+    H <- crossprod(X, X * (p * (1 - p))) + diag(prec)
+    step <- try(solve(H, grad), silent = TRUE)
+    if (inherits(step, "try-error")) break
+    scale <- 1
+    old <- objective(b)
+    repeat {
+      candidate <- b + scale * step
+      if (objective(candidate) >= old || scale < 2^-20) break
+      scale <- scale / 2
+    }
+    b <- candidate
+    if (max(abs(grad)) < tol) {
+      converged <- TRUE
+      break
+    }
+  }
+  eta <- drop(X %*% b)
+  p <- expit(eta)
+  grad <- drop(crossprod(X, y - p)) - prec * b
+  H <- crossprod(X, X * (p * (1 - p))) + diag(prec)
+  ch <- try(chol(H), silent = TRUE)
+  if (!converged || max(abs(grad)) >= tol || inherits(ch, "try-error")) {
+    return(list(fail = "latent-fit-failed"))
+  }
+  list(beta = b, covariance = chol2inv(ch), fail = NA_character_)
 }
 
-fit_latent_models <- function(dat, obs, scen, validation_n,
-                              nonintercept_sd = 2.5) {
-  val <- dat$validation_rank <= validation_n
-  if (sum(val) != validation_n) return(list(fail = 'validation-size'))
-  X1 <- dat$X1[val]
-  X2 <- dat$X2[val]
-  L <- dat$L[val, , drop = FALSE]
-  A <- dat$A[val, , drop = FALSE]
-  Y <- dat$Y[val]
-  n <- sum(val)
-
-  XL0 <- cbind(1, X1, X2)
-  XA0 <- cbind(1, L[, 1], X1, X2)
-  ids <- rep(seq_len(n), N_MONTHS - 1L)
-  month <- rep(seq_len(N_MONTHS - 1L), each = n)
-  XLt <- cbind(1, as.vector(L[, -N_MONTHS, drop = FALSE]),
-               as.vector(A[, -N_MONTHS, drop = FALSE]),
-               rep(X1, N_MONTHS - 1L), rep(X2, N_MONTHS - 1L), month)
-  XAt <- cbind(1, as.vector(A[, -N_MONTHS, drop = FALSE]),
-               as.vector(L[, -1L, drop = FALSE]),
-               rep(X1, N_MONTHS - 1L), rep(X2, N_MONTHS - 1L), month)
-  if (scen$effect_modification) {
-    XY <- cbind(1, X1, X2, L[, N_MONTHS], A[, N_MONTHS],
-                A[, N_MONTHS] * X2)
-  } else {
-    XY <- cbind(1, X1, X2, L[, N_MONTHS], A[, N_MONTHS])
-  }
-
+fit_latent_laws <- function(dat, scen, idx, prior_sd) {
+  T <- N_MONTHS
+  L <- dat$L[idx, , drop = FALSE]
+  A <- dat$A[idx, , drop = FALSE]
+  X1 <- dat$X1[idx]
+  X2 <- dat$X2[idx]
   fits <- list(
-    L0 = fit_laplace_logit(XL0, L[, 1], nonintercept_sd),
-    A0 = fit_laplace_logit(XA0, A[, 1], nonintercept_sd),
-    Lt = fit_laplace_logit(XLt, as.vector(L[, -1L, drop = FALSE]),
-                           nonintercept_sd),
-    At = fit_laplace_logit(XAt, as.vector(A[, -1L, drop = FALSE]),
-                           nonintercept_sd),
-    Y = fit_laplace_logit(XY, Y, nonintercept_sd)
+    L0 = penalized_logit(cbind(1, X1, X2), L[, 1L], prior_sd),
+    A0 = penalized_logit(cbind(1, L[, 1L], X1, X2), A[, 1L], prior_sd)
   )
-  bad <- vapply(fits, function(x) !is.null(x$fail), logical(1))
-  if (any(bad)) return(list(fail = fits[[which(bad)[1]]]$fail))
+  XL <- do.call(rbind, lapply(2L:T, function(tt)
+    cbind(1, L[, tt - 1L], A[, tt - 1L], X1, X2, tt - 1L)))
+  XA <- do.call(rbind, lapply(2L:T, function(tt)
+    cbind(1, A[, tt - 1L], L[, tt], X1, X2, tt - 1L)))
+  fits$Lt <- penalized_logit(XL, as.vector(t(L[, 2L:T, drop = FALSE])), prior_sd)
+  fits$At <- penalized_logit(XA, as.vector(t(A[, 2L:T, drop = FALSE])), prior_sd)
+  XY <- if (scen$effect_modification) {
+    cbind(1, X1, X2, L[, T], A[, T], A[, T] * X2)
+  } else cbind(1, X1, X2, L[, T], A[, T])
+  fits$Y <- penalized_logit(XY, dat$Y[idx], prior_sd)
+  if (any(vapply(fits, function(z) !is.na(z$fail), logical(1)))) {
+    return(list(fail = "latent-fit-failed"))
+  }
+  fits$fail <- NA_character_
+  fits
+}
 
-  stratum <- 1L + dat$X2 + 2L * dat$X3
-  beta_shapes <- function(E) {
-    init_a <- init_b <- q0_a <- q0_b <- q1_a <- q1_b <- rep(0.5, 4L)
-    for (s in 1:4) {
-      v <- val & stratum == s
-      init_a[s] <- init_a[s] + sum(E[v, 1] == 1L)
-      init_b[s] <- init_b[s] + sum(E[v, 1] == 0L)
-      if (N_MONTHS > 1L) {
-        prev <- E[v, -N_MONTHS, drop = FALSE]
-        cur <- E[v, -1L, drop = FALSE]
-        q0_a[s] <- q0_a[s] + sum(cur[prev == 0L] == 1L)
-        q0_b[s] <- q0_b[s] + sum(cur[prev == 0L] == 0L)
-        q1_a[s] <- q1_a[s] + sum(cur[prev == 1L] == 1L)
-        q1_b[s] <- q1_b[s] + sum(cur[prev == 1L] == 0L)
+measurement_counts <- function(E, strata, idx) {
+  s <- strata[idx]
+  Ei <- E[idx, , drop = FALSE]
+  init1 <- init0 <- numeric(4L)
+  tr1 <- tr0 <- matrix(0, 4L, 2L)
+  for (g in 1:4) {
+    take <- s == g
+    init1[g] <- sum(Ei[take, 1L] == 1L)
+    init0[g] <- sum(Ei[take, 1L] == 0L)
+    if (any(take)) {
+      prev <- Ei[take, 1L:(N_MONTHS - 1L), drop = FALSE]
+      now <- Ei[take, 2L:N_MONTHS, drop = FALSE]
+      for (ep in 0:1) {
+        tr1[g, ep + 1L] <- sum(prev == ep & now == 1L)
+        tr0[g, ep + 1L] <- sum(prev == ep & now == 0L)
       }
     }
-    list(init_a = init_a, init_b = init_b, q0_a = q0_a, q0_b = q0_b,
-         q1_a = q1_a, q1_b = q1_b)
   }
-  y_a <- y_b <- rep(0.5, 4L)
-  for (s in 1:4) {
-    v <- val & stratum == s
-    y_a[s] <- y_a[s] + sum(obs$EY[v] == 1L)
-    y_b[s] <- y_b[s] + sum(obs$EY[v] == 0L)
+  list(init1 = init1, init0 = init0, tr1 = tr1, tr0 = tr0)
+}
+
+fit_measurement_laws <- function(dat, pattern, idx) {
+  strata <- 1L + 2L * dat$X2 + dat$X3
+  list(
+    strata = strata,
+    use_A = grepl("A", pattern, fixed = TRUE),
+    use_L = grepl("L", pattern, fixed = TRUE),
+    A = measurement_counts(dat$EA, strata, idx),
+    L = measurement_counts(dat$EL, strata, idx),
+    Y = measurement_counts(matrix(dat$EY, ncol = 1L), strata, idx)
+  )
+}
+
+draw_measurement_law <- function(fit, outcome_error) {
+  draw_one <- function(z) list(
+    init = stats::rbeta(4L, z$init1 + 0.5, z$init0 + 0.5),
+    trans = matrix(stats::rbeta(8L, as.vector(z$tr1) + 0.5,
+                                as.vector(z$tr0) + 0.5), 4L, 2L)
+  )
+  list(A = draw_one(fit$A), L = draw_one(fit$L),
+       Y = if (outcome_error) draw_one(fit$Y)$init else rep(0, 4L),
+       use_A = fit$use_A, use_L = fit$use_L, strata = fit$strata)
+}
+
+draw_latent_coefficients <- function(fits) {
+  lapply(fits[c("L0", "A0", "Lt", "At", "Y")], function(z)
+    drop(mvtnorm::rmvnorm(1L, mean = z$beta, sigma = z$covariance)))
+}
+
+draw_categorical <- function(P) {
+  u <- stats::runif(nrow(P))
+  cs <- numeric(nrow(P))
+  out <- integer(nrow(P))
+  for (j in seq_len(ncol(P))) {
+    cs <- cs + P[, j]
+    take <- out == 0L & u <= cs
+    out[take] <- j
   }
-  list(fits = fits, error_A = beta_shapes(obs$EA),
-       error_L = beta_shapes(obs$EL), y_a = y_a, y_b = y_b,
-       val = val, stratum = stratum, fail = NULL)
+  out[out == 0L] <- ncol(P)
+  out
 }
 
-draw_laplace_models <- function(fitted) {
-  lapply(fitted$fits, function(z)
-    drop(mvtnorm::rmvnorm(1L, mean = z$mode, sigma = z$covariance)))
+normalize_rows <- function(P) {
+  z <- rowSums(P)
+  if (any(!is.finite(z)) || any(z <= 0)) return(NULL)
+  P / z
 }
 
-draw_error_model <- function(shape) {
-  list(init = stats::rbeta(4L, shape$init_a, shape$init_b),
-       q0 = stats::rbeta(4L, shape$q0_a, shape$q0_b),
-       q1 = stats::rbeta(4L, shape$q1_a, shape$q1_b))
-}
-
-sample_rows <- function(prob) {
-  z <- normalize_weights(prob)
-  if (any(z$bad)) stop('sampling-normalizer')
-  u <- stats::runif(nrow(prob))
-  ans <- rep(ncol(prob), nrow(prob))
-  cumulative <- numeric(nrow(prob))
-  open <- rep(TRUE, nrow(prob))
-  for (s in seq_len(ncol(prob))) {
-    cumulative <- cumulative + z$w[, s]
-    take <- open & u <= cumulative
-    ans[take] <- s
-    open[take] <- FALSE
-  }
-  ans
-}
-
-impute_latent_history <- function(dat, obs, scen, fitted) {
-  draw <- draw_laplace_models(fitted)
-  eA <- draw_error_model(fitted$error_A)
-  eL <- draw_error_model(fitted$error_L)
-  eY <- stats::rbeta(4L, fitted$y_a, fitted$y_b)
-  if (!scen$error_nodes %in% c('A', 'AL'))
-    eA <- list(init = rep(0, 4), q0 = rep(0, 4), q1 = rep(1, 4))
-  if (!scen$error_nodes %in% c('L', 'AL'))
-    eL <- list(init = rep(0, 4), q0 = rep(0, 4), q1 = rep(1, 4))
-  if (!isTRUE(scen$outcome_error)) eY[] <- 0
-
-  idx <- which(!fitted$val)
+ffbs_impute <- function(dat, scen, pattern, idx_validation, beta, meas) {
+  idx <- setdiff(seq_along(dat$X1), idx_validation)
   if (!length(idx)) return(list(A = dat$A, L = dat$L, Y = dat$Y))
   X1 <- dat$X1[idx]
   X2 <- dat$X2[idx]
   X3 <- dat$X3[idx]
-  stratum <- fitted$stratum[idx]
-  Astar <- obs$A[idx, , drop = FALSE]
-  Lstar <- obs$L[idx, , drop = FALSE]
-  Ystar <- obs$Y[idx]
-  n <- length(idx)
-  st <- state_table(FALSE)
-  S <- nrow(st)
-  proxyA <- xor_int(st$A, st$eA)
-  alpha <- vector('list', N_MONTHS)
+  stratum <- meas$strata[idx]
+  Aobs <- proxy_view(dat, pattern)$A[idx, , drop = FALSE]
+  Lobs <- proxy_view(dat, pattern)$L[idx, , drop = FALSE]
+  Yobs <- dat$Ystar[idx]
+  states <- expand.grid(L = 0:1, A = 0:1)
+  S <- nrow(states)
+  alpha <- vector("list", N_MONTHS)
+  q <- matrix(0, length(idx), S)
 
-  pL0 <- expit(drop(cbind(1, X1, X2) %*% draw$L0))
-  w <- matrix(0, n, S)
-  for (s in seq_len(S)) {
-    pA0 <- expit(drop(cbind(1, st$L[s], X1, X2) %*% draw$A0))
-    w[, s] <- ifelse(st$L[s] == 1L, pL0, 1 - pL0) *
-      ifelse(st$A[s] == 1L, pA0, 1 - pA0) *
-      ifelse(st$eL[s] == 1L, eL$init[stratum], 1 - eL$init[stratum]) *
-      ifelse(st$eA[s] == 1L, eA$init[stratum], 1 - eA$init[stratum]) *
-      (xor_int(st$L[s], st$eL[s]) == Lstar[, 1]) *
-      (proxyA[s] == Astar[, 1])
+  for (j in seq_len(S)) {
+    st <- states[j, ]
+    pL <- expit(beta$L0[1] + beta$L0[2] * X1 + beta$L0[3] * X2)
+    pA <- expit(beta$A0[1] + beta$A0[2] * st$L +
+                  beta$A0[3] * X1 + beta$A0[4] * X2)
+    eL <- as.integer(st$L != Lobs[, 1L])
+    eA <- as.integer(st$A != Aobs[, 1L])
+    mL <- if (meas$use_L) bern(eL, meas$L$init[stratum]) else as.numeric(eL == 0L)
+    mA <- if (meas$use_A) bern(eA, meas$A$init[stratum]) else as.numeric(eA == 0L)
+    q[, j] <- bern(st$L, pL) * bern(st$A, pA) * mL * mA
   }
-  z <- normalize_weights(w)
-  if (any(z$bad)) stop('imputation-filter-normalizer')
-  alpha[[1]] <- z$w
+  alpha[[1L]] <- normalize_rows(q)
+  if (is.null(alpha[[1L]])) stop("imputation-filter-normalizer")
 
-  if (N_MONTHS > 1L) {
-    for (tt in 2:N_MONTHS) {
-      w <- matrix(0, n, S)
-      for (s in seq_len(S)) {
-        total <- numeric(n)
-        for (r in seq_len(S)) {
-          pL <- expit(drop(cbind(1, st$L[r], st$A[r], X1, X2,
-                                 tt - 1L) %*% draw$Lt))
-          pA <- expit(drop(cbind(1, st$A[r], st$L[s], X1, X2,
-                                 tt - 1L) %*% draw$At))
-          pel <- ifelse(st$eL[r] == 0L, eL$q0[stratum], eL$q1[stratum])
-          pea <- ifelse(st$eA[r] == 0L, eA$q0[stratum], eA$q1[stratum])
-          total <- total + alpha[[tt - 1L]][, r] *
-            ifelse(st$L[s] == 1L, pL, 1 - pL) *
-            ifelse(st$A[s] == 1L, pA, 1 - pA) *
-            ifelse(st$eL[s] == 1L, pel, 1 - pel) *
-            ifelse(st$eA[s] == 1L, pea, 1 - pea)
-        }
-        w[, s] <- total *
-          (xor_int(st$L[s], st$eL[s]) == Lstar[, tt]) *
-          (proxyA[s] == Astar[, tt])
-      }
-      z <- normalize_weights(w)
-      if (any(z$bad)) stop('imputation-filter-normalizer')
-      alpha[[tt]] <- z$w
+  transition <- function(old, newL, newA, tt) {
+    pL <- expit(beta$Lt[1] + beta$Lt[2] * old$L + beta$Lt[3] * old$A +
+                  beta$Lt[4] * X1 + beta$Lt[5] * X2 + beta$Lt[6] * (tt - 1L))
+    pA <- expit(beta$At[1] + beta$At[2] * old$A + beta$At[3] * newL +
+                  beta$At[4] * X1 + beta$At[5] * X2 + beta$At[6] * (tt - 1L))
+    eLp <- as.integer(old$L != Lobs[, tt - 1L])
+    eAp <- as.integer(old$A != Aobs[, tt - 1L])
+    eL <- as.integer(newL != Lobs[, tt])
+    eA <- as.integer(newA != Aobs[, tt])
+    mL <- if (meas$use_L) bern(eL, meas$L$trans[cbind(stratum, eLp + 1L)]) else
+      as.numeric(eL == 0L)
+    mA <- if (meas$use_A) bern(eA, meas$A$trans[cbind(stratum, eAp + 1L)]) else
+      as.numeric(eA == 0L)
+    bern(newL, pL) * bern(newA, pA) * mL * mA
+  }
+
+  for (tt in 2L:N_MONTHS) {
+    q <- matrix(0, length(idx), S)
+    for (i in seq_len(S)) for (j in seq_len(S)) {
+      q[, j] <- q[, j] + alpha[[tt - 1L]][, i] *
+        transition(states[i, ], states$L[j], states$A[j], tt)
     }
+    alpha[[tt]] <- normalize_rows(q)
+    if (is.null(alpha[[tt]])) stop("imputation-filter-normalizer")
   }
 
-  ## The terminal proxy contributes to the forward filter before sampling.
-  for (s in seq_len(S)) {
-    XY <- if (scen$effect_modification)
-      cbind(1, X1, X2, st$L[s], st$A[s], st$A[s] * X2) else
-      cbind(1, X1, X2, st$L[s], st$A[s])
-    py <- expit(drop(XY %*% draw$Y))
-    ey <- eY[stratum]
-    pstar1 <- py * (1 - ey) + (1 - py) * ey
-    alpha[[N_MONTHS]][, s] <- alpha[[N_MONTHS]][, s] *
-      ifelse(Ystar == 1L, pstar1, 1 - pstar1)
+  terminal_likelihood <- matrix(0, length(idx), S)
+  for (j in seq_len(S)) {
+    st <- states[j, ]
+    eta <- beta$Y[1] + beta$Y[2] * X1 + beta$Y[3] * X2 +
+      beta$Y[4] * st$L + beta$Y[5] * st$A
+    if (scen$effect_modification) eta <- eta + beta$Y[6] * st$A * X2
+    py <- expit(eta)
+    if (scen$outcome_error) {
+      pe <- meas$Y[stratum]
+      terminal_likelihood[, j] <-
+        py * bern(as.integer(Yobs != 1L), pe) +
+        (1 - py) * bern(as.integer(Yobs != 0L), pe)
+    } else terminal_likelihood[, j] <- bern(Yobs, py)
   }
-  z <- normalize_weights(alpha[[N_MONTHS]])
-  if (any(z$bad)) stop('imputation-outcome-normalizer')
-  alpha[[N_MONTHS]] <- z$w
+  alpha[[N_MONTHS]] <- normalize_rows(alpha[[N_MONTHS]] * terminal_likelihood)
+  if (is.null(alpha[[N_MONTHS]])) stop("imputation-outcome-normalizer")
 
-  selected <- matrix(NA_integer_, n, N_MONTHS)
-  selected[, N_MONTHS] <- sample_rows(alpha[[N_MONTHS]])
-  if (N_MONTHS > 1L) {
-    for (tt in (N_MONTHS - 1L):1L) {
-      ns <- selected[, tt + 1L]
-      nextL <- st$L[ns]
-      nextA <- st$A[ns]
-      nextEL <- st$eL[ns]
-      nextEA <- st$eA[ns]
-      bw <- matrix(0, n, S)
-      for (s in seq_len(S)) {
-        pL <- expit(drop(cbind(1, st$L[s], st$A[s], X1, X2,
-                               tt) %*% draw$Lt))
-        pA <- expit(drop(cbind(1, st$A[s], nextL, X1, X2,
-                               tt) %*% draw$At))
-        pel <- ifelse(st$eL[s] == 0L, eL$q0[stratum], eL$q1[stratum])
-        pea <- ifelse(st$eA[s] == 0L, eA$q0[stratum], eA$q1[stratum])
-        bw[, s] <- alpha[[tt]][, s] *
-          ifelse(nextL == 1L, pL, 1 - pL) *
-          ifelse(nextA == 1L, pA, 1 - pA) *
-          ifelse(nextEL == 1L, pel, 1 - pel) *
-          ifelse(nextEA == 1L, pea, 1 - pea)
-      }
-      selected[, tt] <- sample_rows(bw)
+  state_path <- matrix(0L, length(idx), N_MONTHS)
+  state_path[, N_MONTHS] <- draw_categorical(alpha[[N_MONTHS]])
+  for (tt in (N_MONTHS - 1L):1L) {
+    nxt <- state_path[, tt + 1L]
+    q <- matrix(0, length(idx), S)
+    newL <- states$L[nxt]
+    newA <- states$A[nxt]
+    for (i in seq_len(S)) {
+      q[, i] <- alpha[[tt]][, i] * transition(states[i, ], newL, newA, tt + 1L)
     }
+    q <- normalize_rows(q)
+    if (is.null(q)) stop("imputation-backward-normalizer")
+    state_path[, tt] <- draw_categorical(q)
   }
 
   Limp <- dat$L
   Aimp <- dat$A
-  for (tt in seq_len(N_MONTHS)) {
-    Limp[idx, tt] <- st$L[selected[, tt]]
-    Aimp[idx, tt] <- st$A[selected[, tt]]
-  }
-
-  final_state <- selected[, N_MONTHS]
-  XY <- if (scen$effect_modification)
-    cbind(1, X1, X2, st$L[final_state], st$A[final_state],
-          st$A[final_state] * X2) else
-    cbind(1, X1, X2, st$L[final_state], st$A[final_state])
-  py <- expit(drop(XY %*% draw$Y))
-  ey <- eY[stratum]
-  like1 <- ifelse(Ystar == 1L, 1 - ey, ey)
-  like0 <- ifelse(Ystar == 1L, ey, 1 - ey)
-  postY <- py * like1 / (py * like1 + (1 - py) * like0)
+  Limp[idx, ] <- matrix(states$L[state_path], nrow = length(idx))
+  Aimp[idx, ] <- matrix(states$A[state_path], nrow = length(idx))
   Yimp <- dat$Y
-  Yimp[idx] <- stats::rbinom(n, 1, postY)
+  if (scen$outcome_error) {
+    L11 <- Limp[idx, N_MONTHS]
+    A11 <- Aimp[idx, N_MONTHS]
+    eta <- beta$Y[1] + beta$Y[2] * X1 + beta$Y[3] * X2 +
+      beta$Y[4] * L11 + beta$Y[5] * A11
+    if (scen$effect_modification) eta <- eta + beta$Y[6] * A11 * X2
+    py <- expit(eta)
+    pe <- meas$Y[stratum]
+    l1 <- py * bern(as.integer(Yobs != 1L), pe)
+    l0 <- (1 - py) * bern(as.integer(Yobs != 0L), pe)
+    post_y <- l1 / (l1 + l0)
+    if (any(!is.finite(post_y))) stop("imputation-y-normalizer")
+    Yimp[idx] <- stats::rbinom(length(idx), 1L, post_y)
+  } else Yimp[idx] <- Yobs
   list(A = Aimp, L = Limp, Y = Yimp)
 }
 
-mi_completed_draws <- function(dat, obs, scen, M, nonintercept_sd = 2.5) {
-  fitted <- fit_latent_models(dat, obs, scen, scen$validation_n,
-                              nonintercept_sd)
-  if (!is.null(fitted$fail)) return(list(fail = fitted$fail))
-  Q <- U <- matrix(NA_real_, M, length(CONTRASTS),
-                   dimnames = list(NULL, CONTRASTS))
-  diagnostics <- array(NA_real_, c(M, length(CONTRASTS), 5L),
-                       dimnames = list(NULL, CONTRASTS,
-                                       c('ess_0', 'ess_1', 'median_weight',
-                                         'p99_weight', 'censor_change_L')))
-  system_dim <- NA_integer_
-  for (m in seq_len(M)) {
-    comp <- try(impute_latent_history(dat, obs, scen, fitted), silent = TRUE)
-    if (inherits(comp, 'try-error')) return(list(fail = 'imputation-filter-failed'))
-    L <- attach_x2(comp$L, dat$X2)
-    fit <- fit_rich_history(comp$A, comp$L, dat)
-    if (!is.null(fit$fail)) return(list(fail = fit$fail))
-    r <- risk_estimates(comp$A, L, comp$Y, fit$p, fit$blocks, L)
-    if (any(!is.na(r$fail))) return(list(fail = r$fail[which(!is.na(r$fail))[1]]))
-    Q[m, r$contrast] <- r$est
-    U[m, r$contrast] <- r$se^2
-    diagnostics[m, r$contrast, ] <- as.matrix(r[, dimnames(diagnostics)[[3]]])
-    system_dim <- attr(r, 'system_dim')
+est_corrected <- function(dat, scen, pattern, M, prior_sd = MI_PRIOR_SD,
+                          method = "corrected", return_draws = FALSE) {
+  idx <- validation_index(dat, scen$validation_n)
+  laws <- fit_latent_laws(dat, scen, idx, prior_sd)
+  if (!is.na(laws$fail)) return(empty_rows(method, pattern, laws$fail, M, prior_sd))
+  mf <- fit_measurement_laws(dat, pattern, idx)
+  estimates <- matrix(NA_real_, M, length(ESTIMANDS))
+  variances <- matrix(NA_real_, M, length(ESTIMANDS))
+  diagnostics <- array(NA_real_, c(M, length(ESTIMANDS), 9L))
+  dfs <- numeric(M)
+  for (mm in seq_len(M)) {
+    beta <- draw_latent_coefficients(laws)
+    meas <- draw_measurement_law(mf, scen$outcome_error)
+    imp <- try(ffbs_impute(dat, scen, pattern, idx, beta, meas), silent = TRUE)
+    if (inherits(imp, "try-error")) {
+      return(empty_rows(method, pattern, "imputation-filter-failed", M, prior_sd))
+    }
+    fit <- fitted_probability_estimator(
+      imp$A, imp$L, imp$Y, dat$X1, dat$X2, dat$X3, dat,
+      "rich", method, pattern)
+    if (any(!is.na(fit$fail))) {
+      return(empty_rows(method, pattern, "completed-analysis-failed", M, prior_sd))
+    }
+    fit <- fit[match(ESTIMANDS, fit$estimand), ]
+    estimates[mm, ] <- fit$est
+    variances[mm, ] <- fit$se^2
+    diagnostics[mm, , ] <- as.matrix(fit[, c(
+      "ess_g1", "ess_g0", "median_weight", "p99_weight",
+      "adherence_g1", "adherence_g0", "oracle_adherence_g1",
+      "oracle_adherence_g0", "censor_change_l")])
+    dfs[mm] <- attr(fit, "df_complete") %||% (N_PER_REP - fit$n_system[1L])
   }
-  list(Q = Q, U = U, diagnostics = diagnostics,
-       system_dim = system_dim, fail = NULL)
-}
 
-pool_mi <- function(draws, indices = seq_len(nrow(draws$Q))) {
-  M <- length(indices)
-  nu_com <- max(1, N_PER_REPLICATE - draws$system_dim)
-  rows <- lapply(CONTRASTS, function(key) {
-    q <- draws$Q[indices, key]
-    u <- draws$U[indices, key]
-    qbar <- mean(q)
-    W <- mean(u)
-    B <- if (M > 1L) stats::var(q) else 0
+  rows <- vector("list", length(ESTIMANDS))
+  for (j in seq_along(ESTIMANDS)) {
+    qbar <- mean(estimates[, j])
+    W <- mean(variances[, j])
+    B <- if (M > 1L) stats::var(estimates[, j]) else 0
     Tvar <- W + (1 + 1 / M) * B
-    if (!is.finite(Tvar) || Tvar < 0)
-      return(empty_estimate('invalid-mi-variance')[1, , drop = FALSE])
-    if (B == 0 || W == 0) {
-      nu <- nu_com
+    if (!is.finite(Tvar) || Tvar < 0) {
+      return(empty_rows(method, pattern, "invalid-mi-variance", M, prior_sd))
+    }
+    dfcom <- max(1, min(dfs, na.rm = TRUE))
+    if (B <= 0 || W <= 0) {
+      df <- dfcom
     } else {
       r <- (1 + 1 / M) * B / W
       nu_old <- (M - 1) * (1 + 1 / r)^2
       lambda <- (1 + 1 / M) * B / Tvar
-      nu_obs <- ((nu_com + 1) / (nu_com + 3)) * nu_com * (1 - lambda)
-      nu <- 1 / (1 / nu_old + 1 / nu_obs)
+      nu_obs <- ((dfcom + 1) / (dfcom + 3)) * dfcom * (1 - lambda)
+      df <- 1 / (1 / nu_old + 1 / nu_obs)
     }
-    critical <- stats::qt(0.975, df = nu)
-    d <- draws$diagnostics[indices, key, , drop = FALSE]
-    data.frame(
-      contrast = key, est = qbar, se = sqrt(Tvar),
-      lo = qbar - critical * sqrt(Tvar), hi = qbar + critical * sqrt(Tvar),
-      ess_0 = mean(d[, , 'ess_0']), ess_1 = mean(d[, , 'ess_1']),
-      median_weight = mean(d[, , 'median_weight']),
-      p99_weight = mean(d[, , 'p99_weight']),
-      adherence_0 = NA_real_, adherence_1 = NA_real_,
-      censor_change_L = mean(d[, , 'censor_change_L']),
-      interval_df = nu, fail = NA_character_, stringsAsFactors = FALSE)
-  })
-  do.call(rbind, rows)
-}
-
-estimate_mi <- function(dat, obs, scen, M, nonintercept_sd = 2.5) {
-  draws <- mi_completed_draws(dat, obs, scen, M, nonintercept_sd)
-  if (!is.null(draws$fail)) return(empty_estimate(draws$fail))
-  pool_mi(draws)
-}
-
-calibrate_mi <- function(scenarios) {
-  ## Fixed calibration seeds are outside simulation replicates. The harness
-  ## remains the sole owner of every finite-sample replicate stream.
-  set.seed(MASTER_SEED + 700000L)
-  configurations <- expand.grid(
-    benchmark = c('nd70', 'un85'),
-    validation_n = c(100L, 500L),
-    specification = SPECIFICATIONS,
-    stringsAsFactors = FALSE
-  )
-  records <- list()
-  failed <- NULL
-  for (i in seq_len(nrow(configurations))) {
-    z <- configurations[i, ]
-    hit <- scenarios$benchmark == z$benchmark &
-      scenarios$validation_n == z$validation_n &
-      scenarios$specification == z$specification
-    hit[is.na(hit)] <- FALSE
-    if (!any(hit)) {
-      template <- scenarios[scenarios$benchmark == z$benchmark &
-                              !is.na(scenarios$benchmark), ][1, ]
-      template$validation_n <- z$validation_n
-      template$specification <- z$specification
-      scen <- template
-    } else scen <- scenarios[which(hit)[1], ]
-    dat <- gen_latent(scen)
-    obs <- make_observed(dat, scen)
-    dr <- mi_completed_draws(dat, obs, scen, MI_CAL_REFERENCE)
-    if (!is.null(dr$fail)) {
-      failed <- sprintf('configuration %d: %s', i, dr$fail)
-      break
-    }
-    for (M in MI_CANDIDATES) {
-      qsd <- sesd <- numeric(MI_CAL_REPEATS * length(CONTRASTS))
-      at <- 0L
-      for (b in seq_len(MI_CAL_REPEATS)) {
-        ind <- sample.int(MI_CAL_REFERENCE, M, replace = FALSE)
-        pooled <- pool_mi(dr, ind)
-        for (k in seq_along(CONTRASTS)) {
-          at <- at + 1L
-          qsd[at] <- pooled$est[k]
-          sesd[at] <- pooled$se[k]
-        }
-      }
-      records[[length(records) + 1L]] <- data.frame(
-        configuration = i, M = M,
-        point_sd = stats::sd(qsd), se_sd = stats::sd(sesd),
-        stringsAsFactors = FALSE)
-    }
+    se <- sqrt(Tvar)
+    crit <- stats::qt(0.975, df = df)
+    dg <- colMeans(diagnostics[, j, , drop = FALSE], na.rm = TRUE)
+    rows[[j]] <- data.frame(
+      method = method, analysis_pattern = pattern, estimand = ESTIMANDS[j],
+      est = qbar, se = se, lo = qbar - crit * se, hi = qbar + crit * se,
+      ess_g1 = dg[1], ess_g0 = dg[2], median_weight = dg[3], p99_weight = dg[4],
+      adherence_g1 = dg[5], adherence_g0 = dg[6],
+      oracle_adherence_g1 = dg[7], oracle_adherence_g0 = dg[8],
+      censor_change_l = dg[9], n_system = N_PER_REP - dfcom,
+      mi_m = M, prior_sd = prior_sd, fail = NA_character_, stringsAsFactors = FALSE)
   }
-  if (!is.null(failed))
-    return(list(selected_M = NA_integer_, passed = FALSE, failure = failed,
-                diagnostics = do.call(rbind, records)))
-  tab <- do.call(rbind, records)
-  summary <- do.call(rbind, lapply(split(tab, tab$M), function(d)
-    data.frame(M = d$M[1], point_q99 = unname(stats::quantile(d$point_sd, 0.99)),
-               se_q99 = unname(stats::quantile(d$se_sd, 0.99)))))
-  good <- summary$M[summary$point_q99 < MI_CAL_TARGET &
-                      summary$se_q99 < MI_CAL_TARGET]
-  selected <- if (length(good)) min(good) else MI_FALLBACK
-  list(selected_M = selected, passed = TRUE, used_fallback = !length(good),
-       diagnostics = tab, summary = summary)
+  out <- do.call(rbind, rows)
+  if (return_draws) attr(out, "mi_draws") <- list(est = estimates, se = sqrt(variances))
+  out
+}
+
+calibrate_imputations <- function(scenarios) {
+  candidates <- MI_CANDIDATES
+  bench <- scenarios[scenarios$benchmark != "", , drop = FALSE]
+  keys <- unique(bench[, c("benchmark", "specification", "validation_n")])
+  keys <- keys[rep(seq_len(nrow(keys)), length.out = MI_CAL_DATASETS), , drop = FALSE]
+  q99_est <- q99_se <- setNames(rep(NA_real_, length(candidates)), candidates)
+  records <- vector("list", nrow(keys))
+  for (i in seq_len(nrow(keys))) {
+    take <- bench$benchmark == keys$benchmark[i] &
+      bench$specification == keys$specification[i] &
+      bench$validation_n == keys$validation_n[i]
+    s <- bench[which(take)[1L], , drop = FALSE]
+    dat <- gen_replicate(s, N_PER_REP)
+    fit <- est_corrected(dat, s, "AL", MI_CAL_DRAWS,
+                         method = "calibration", return_draws = TRUE)
+    dr <- attr(fit, "mi_draws")
+    if (is.null(dr)) stop("MI calibration failed in dataset ", i)
+    records[[i]] <- list(q = dr$est[, 1L], se = dr$se[, 1L])
+  }
+  for (M in candidates) {
+    sdq <- sds <- numeric()
+    for (z in records) {
+      qbar <- sebar <- numeric(100L)
+      for (b in seq_len(100L)) {
+        ix <- sample.int(length(z$q), M, replace = FALSE)
+        qbar[b] <- mean(z$q[ix])
+        W <- mean(z$se[ix]^2)
+        B <- stats::var(z$q[ix])
+        sebar[b] <- sqrt(W + (1 + 1 / M) * B)
+      }
+      sdq <- c(sdq, stats::sd(qbar))
+      sds <- c(sds, stats::sd(sebar))
+    }
+    q99_est[as.character(M)] <- unname(stats::quantile(sdq, 0.99))
+    q99_se[as.character(M)] <- unname(stats::quantile(sds, 0.99))
+  }
+  pass <- candidates[q99_est <= MI_CAL_THRESHOLD & q99_se <= MI_CAL_THRESHOLD]
+  selected <- if (length(pass)) min(pass) else MI_FALLBACK
+  list(selected_M = selected, q99_est = q99_est, q99_se = q99_se,
+       passed = length(pass) > 0L)
 }

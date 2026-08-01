@@ -1,7 +1,17 @@
 ## Study SEQ-01: estimators, joint linearization, truth, and calibration.
 
 weighted_tabulate <- function(bin, weights, nbins) {
-  tabulate(bin, nbins = nbins, weights = weights)
+  ## base::tabulate has no `weights` argument. The generated code invented one,
+  ## which is the failure mode this program has to assume: an invented base-R
+  ## argument reads exactly like a correct call. A grouped sum is the intended
+  ## operation, and rowsum keeps empty bins at zero rather than dropping them.
+  out <- numeric(nbins)
+  if (!length(bin)) return(out)
+  s <- rowsum(as.numeric(weights), bin, reorder = FALSE)
+  idx <- as.integer(rownames(s))
+  keep <- idx >= 1L & idx <= nbins
+  out[idx[keep]] <- s[keep]
+  out
 }
 
 aggregate_id_score <- function(X, scalar, id, n) {
