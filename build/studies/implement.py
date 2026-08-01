@@ -149,12 +149,23 @@ def example_payload():
 
 
 def design_for(pid):
+    """The revised design if there is one, the original only if there is not.
+
+    Every design in this program was reviewed and none was accepted, so the
+    original is the wrong thing to implement: thirty of the thirty-two fatal
+    findings were resolved by changing it. The critique still travels with the
+    revision, because the revision records how each finding was resolved and the
+    implementation has to honor the design-decision ones in code.
+    """
+    rev = sorted(glob.glob(os.path.join(DESIGNS, f"{pid}-*-revised.json")))
     hits = sorted(glob.glob(os.path.join(DESIGNS, f"{pid}-*-design.json")))
-    if not hits:
+    if not hits and not rev:
         return None, None
-    slug = os.path.basename(hits[0]).rsplit("-design.json", 1)[0]
+    src = rev[0] if rev else hits[0]
+    slug = os.path.basename(src).rsplit("-revised.json", 1)[0] \
+        if rev else os.path.basename(src).rsplit("-design.json", 1)[0]
     crit = os.path.join(DESIGNS, f"{slug}-critique.json")
-    return (json.load(open(hits[0], encoding="utf8")),
+    return (json.load(open(src, encoding="utf8")),
             json.load(open(crit, encoding="utf8")) if os.path.exists(crit) else None)
 
 

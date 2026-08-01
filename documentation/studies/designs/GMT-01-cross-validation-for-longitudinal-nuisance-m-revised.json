@@ -1,0 +1,353 @@
+{
+ "title": "Finite-library causal-score selection for longitudinal nuisance models",
+ "question": "Within 24 prespecified longitudinal scenarios and a finite GLM library, does an observable score combining predictive loss, longitudinal balance, weight dispersion, and held-out influence-function moment drift improve estimation of a 36-month sustained-strategy marginal mean difference relative to predictive cross-validation and a bespoke balance selector?",
+ "aims": "This study settles only the following part of GMT-01: whether, within a prespecified finite longitudinal GLM library with fixed annual visits and correctly specified candidates, an observable four-component score selects nuisance configurations that improve a cross-fitted longitudinal one-step estimator relative to predictive cross-validation and a fully specified bespoke balance heuristic. The primary conclusion is based only on scenarios with gamma_Z = 0. Treatment-only-predictor scenarios are analyzed separately as mechanistic positive controls. The study does not evaluate a mathematical influence-function remainder, published calibrated weighting, highly adaptive learning, or estimator classes beyond IPW point estimation and a longitudinal one-step estimator.",
+ "dgm": {
+  "covariates": "Generate n = 4000 independent people. All random innovations are mutually independent unless linked by the equations below. Let W1 ~ N(0,1), W2 ~ Bernoulli(0.5), and W3 ~ Bernoulli(expit(-0.4 + 0.5 W1 + 0.4 W2)). There are treatment decisions at t = 0, 1, and 2 years and an outcome at 36 months. Set R0 = 1. Generate Z0 ~ N(0,1) and L0 = 0.40 W1 + 0.50 W3 + epsilon_L0, where epsilon_L0 ~ N(0,0.8^2). For t = 1,2, generate Zt = 0.60 Z(t-1) + 0.80 epsilon_Zt, epsilon_Zt ~ N(0,1), and Lt = 0.45 L(t-1) + 0.25 W1 + 0.35 W3 - 0.35 A(t-1) + 0.15 t + epsilon_Lt, epsilon_Lt ~ N(0,0.8^2). For each observed t, generate A_t from logit P(A_t = 1 | history,R_t = 1) = -0.20 + 0.15 t + s[0.40 W1 + 0.25 W2 + 0.50 W3 + 0.75 L_t - I(t>0)0.25 A(t-1) + I_G{0.45(L_t^2 - 1) + 0.35 W1 L_t}] + gamma_Z Z_t. The A(t-1) column is absent at t = 0 rather than represented by a structural zero. After treatment, generate retention among people with R_t = 1 from logit P(R(t+1) = 1 | history,A_t,R_t = 1) = 2.80 - 0.20 t - 0.25 W1 - 0.35 W3 - 0.45 L_t + 0.15 A_t + I_C{-0.40(L_t^2 - 1) + 0.30 W1 L_t}. Once R becomes zero it remains zero. Generate latent later variables and Y for truth calculations, but suppress them from observed data after dropout. Z has no path to L, retention, or Y except through its effect on treatment; under an assigned treatment strategy it is nonprognostic. Before estimator runs, a DGM-only population check will report treatment prevalence, true treatment and retention probability quantiles, cumulative retention, and regime-specific effective sample sizes. Coefficients will not be retuned after examining estimator performance.",
+  "outcome_model": "Generate Y = mu_Y + epsilon_Y, where epsilon_Y ~ N(0,1) and mu_Y = 0.25 W1 + 0.20 W2 + 0.45 W3 + 0.15 L0 + 0.25 L1 + 0.35 L2 + sum over t=0,1,2 of [(-0.12 - 0.08 W3) A_t] + I_Q{0.30(L2^2 - 1) + 0.25 W1 L2}. Lower values are better. The residual standard deviation is one. Coefficients and material-effect thresholds are therefore expressed in residual-standard-deviation units, not marginal outcome standard deviations. The main-effect outcome mechanism has linear sequential conditional means. For I_Q = 1, the candidate library includes the algebraic closure terms induced by backward integration of L2^2 and W1 L2.",
+  "treatment_effect": "The controlled direct effect at each decision is -0.12 residual-standard-deviation units when W3 = 0 and -0.20 when W3 = 1. Treatment also lowers subsequent L by 0.35 units, producing an additional mediated benefit because later L raises Y. Effects are additive across decisions on the conditional mean scale. The marginal sustained-strategy effect is induced by these paths and is not set to a chosen value.",
+  "effect_modification": "W3 modifies every direct treatment coefficient by -0.08 residual-standard-deviation units. No other variable modifies the direct treatment effect. Marginal effects average over a measured, prognostic modifier whose prevalence depends on W1 and W2.",
+  "factors": [
+   {
+    "name": "Treatment propensity separation",
+    "levels": [
+     "Good: s = 0.65",
+     "Poor: s = 1.25"
+    ],
+    "rationale": "This factor changes the magnitude of the confounding-related treatment coefficients and therefore the propensity tails. It is not interpreted as changing only a probability bound. The gamma_Z coefficient remains outside this multiplier, so treatment-only-predictor strength has the same conditional odds ratio at both levels. Achieved probability tails will be reported rather than assumed."
+   },
+   {
+    "name": "Strength of a treatment-only predictor",
+    "levels": [
+     "Absent: gamma_Z = 0, conditional odds ratio 1.00 per SD",
+     "Moderate: gamma_Z = log(2.12) = 0.751, conditional odds ratio 2.12 per SD",
+     "Strong: gamma_Z = log(4.48) = 1.500, conditional odds ratio 4.48 per SD"
+    ],
+    "rationale": "The coefficient is not multiplied by s. Nonzero levels are prespecified mechanistic positive controls for the known treatment-only-predictor phenomenon. They cannot support the primary conclusion about selector performance when this mechanism is absent."
+   },
+   {
+    "name": "Nuisance mechanism shape",
+    "levels": [
+     "All main effects: I_G = 0, I_C = 0, I_Q = 0",
+     "Nonlinear treatment: I_G = 1, I_C = 0, I_Q = 0",
+     "Nonlinear censoring: I_G = 0, I_C = 1, I_Q = 0",
+     "Nonlinear outcome: I_G = 0, I_C = 0, I_Q = 1"
+    ],
+    "rationale": "These cells stress one nuisance component at a time while retaining an alignment cell. A correctly specified candidate remains available in every cell."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The design is fully factorial: 2 propensity-separation levels times 3 treatment-only-predictor levels times 4 nuisance shapes. Consistency, sequential exchangeability, and mathematical positivity hold. Every common cause of treatment, retention, and outcome is measured. The library contains a correctly specified treatment, retention, and sequential outcome pipeline in every scenario. Correct reduced-history treatment candidates are available with Z excluded. The nonlinear-outcome pipeline contains every term induced by backward integration. Patient-level outer cross-fitting is honest. Fixed annual decisions, sustained static strategies, and one treatment-confounder feedback process are deliberately imposed. The eight gamma_Z = 0 scenarios form the decisive stratum. The sixteen nonzero-gamma_Z scenarios are positive controls and are not pooled with that stratum for the primary decision.",
+  "cannot_detect": "The study cannot evaluate unmeasured confounding, exact positivity violations, irregular or informative visit timing, record-level leakage, competing events, death, measurement error, treatment versions, grace periods, dynamic regimes, recurrent outcomes, or simultaneous misspecification of all nuisance components. It does not evaluate an actual SuperLearner ensemble, trees, boosting, neural networks, or a consistently estimable influence-function remainder. It does not reproduce or compare against the cited calibrated-weight implementation. It evaluates IPW only for point-estimator behavior because its fixed-weight interval is descriptive rather than valid post-selection inference."
+ },
+ "estimands": [
+  {
+   "name": "Primary 36-month sustained-strategy marginal mean difference",
+   "definition": "For the superpopulation eligible immediately before A0, compare E[Y under A0=A1=A2=1 and R1=R2=R3=1] minus E[Y under A0=A1=A2=0 and R1=R2=R3=1]. This is a marginal mean difference in outcome units whose residual standard deviation is one. Treatment is assigned at 0, 12, and 24 months; there is no grace period; censoring is eliminated; and follow-up ends at 36 months. The target is not conditional on the realized sample.",
+   "true_value_computation": "For each scenario, simulate 2,000,000 paired complete trajectories under the two sustained strategies. Reuse baseline variables and longitudinal innovations across strategies and evaluate mu_Y without drawing epsilon_Y. Report the Monte Carlo SE of the paired mean difference. Double the population in blocks of 2,000,000 if the truth Monte Carlo SE exceeds 0.0005 residual-standard-deviation units."
+  },
+  {
+   "name": "Regime-specific 36-month means",
+   "definition": "The two superpopulation means E[Y under sustained treatment and no censoring] and E[Y under sustained no treatment and no censoring].",
+   "true_value_computation": "Use the same paired population used for the primary contrast. These means diagnose whether selector error is concentrated in one strategy."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Predictive-CV cross-fitted IPW",
+   "point_estimator": "Use two patient-level outer folds and two patient-level inner folds within each outer training set. Fit separate logistic models at each t. Treatment candidates are G0_t = W1+W2+W3 plus A(t-1) only when t>0; G1_t = G0_t+L_t; G2_t = G1_t+L_t^2+W1:L_t; G3_t = G1_t+Z_t; and G4_t = G2_t+Z_t+Z_t^2+W1:Z_t+L_t:Z_t. Thus G1 or G2 is a correctly specified reduced-history candidate when Z is excluded, and G3 or G4 contains the truth when gamma_Z is nonzero. Retention candidates are C0_t = W1+W2+W3+A_t; C1_t = C0_t+L_t; and C2_t = C1_t+L_t^2+W1:L_t+A_t:L_t+W3:L_t. Four sequential outcome pipelines are fitted backward separately for each regime. QL0 contains W1, W2, W3, prior treatment indicators that vary at that recursion, and their interactions with W3. QL1 adds L0 through L_t. QL2 adds available Z variables, L squares, W1:L terms, prior-treatment:L terms, and L_s:L_r terms. QL3 adds the exact nonlinear closure basis: at t=2 it contains L2^2 and W1:L2; at t=1 it contains L1^2, W1^2, W1:L1, L1:W3, and W1:W3; at t=0 it contains L0^2, W1^2, W1:L0, L0:W3, and W1:W3. Main effects remain in every closure model. The current A_t is fixed by the regime-specific regression and omitted. At t=0 no treatment column enters. Select G and C by minimum inner-fold Bernoulli deviance and Q by minimum summed backward sequential squared loss. Break ties within 1e-8 by fewer columns and then candidate order. Refit on each complete outer training fold and predict its held-out fold. For regime a, define H2(a) as the indicator of following A0=A1=A2=a and remaining observed divided by the product of the corresponding cross-fitted treatment and retention probabilities. Estimate each regime mean by the Hajek ratio sum[H2(a)Y]/sum[H2(a)] and subtract.",
+   "variance_estimator": "For descriptive sensitivity only, use D_i(a) = H2_i(a)[Y_i-mu_hat(a)]/mean[H2(a)] and sd[D_i(1)-D_i(0)]/sqrt(n). This treats selected estimated weights as fixed and is not a valid post-selection variance estimator for nonorthogonal IPW.",
+   "interval": "Report the estimate plus or minus 1.959964 times the descriptive fixed-weight SE. Label it a fixed-weight sensitivity band, not a nominal 95% confidence interval. Its coverage cannot enter any decision rule.",
+   "is_status_quo": true,
+   "nonconvergence": "A candidate fit fails if its realized training matrix is rank deficient, a logistic fit does not converge, an estimable coefficient is nonfinite or exceeds 30 in absolute value, or required predictions are missing. A method replicate fails if every eligible candidate fails, the selected outer refit fails, more than 0.5% of required probabilities fall outside [1e-6,1-1e-6], either regime has no observed adherers, either terminal effective sample size is below 10, any cumulative weight exceeds 1e6, or the estimate or descriptive SE is nonfinite. Flooring at 1e-6 is used only for arithmetic and triggers the stated diagnostic.",
+   "implementation": "Use stats::glm.fit, stats::lm.fit, and cached model matrices. Before the simulation, construct every time-specific and regime-specific matrix in one dry-run data set from each scenario and require qr(X)$rank = ncol(X), no zero-variance column, and no duplicate column. A structural failure stops the run as an implementation error rather than being counted as estimator nonconvergence. Keep all records from one person in the same folds. Save selected candidates, losses, probability tails, effective sample sizes, weight quantiles, and matrix-rank diagnostics."
+  },
+  {
+   "name": "Predictive-CV IPW with current-practice truncation",
+   "point_estimator": "Use the predictive-CV cross-fitted weights. Within each regime, truncate nonzero terminal cumulative weights at their pooled 1st and 99th percentiles before Hajek normalization.",
+   "variance_estimator": "Use the same descriptive fixed-weight empirical variance after truncation.",
+   "interval": "Report a descriptive fixed-weight sensitivity band using 1.959964 times the SE. Do not interpret it as nominal post-selection inference.",
+   "is_status_quo": true,
+   "nonconvergence": "Use the predictive-CV IPW rules. Apply the weight above 1e6 rule before percentile truncation and record it as a numerical failure.",
+   "implementation": "This point-estimator comparator distinguishes model-selection improvement from improvement obtainable through routine post hoc truncation."
+  },
+  {
+   "name": "Bespoke balance-score cross-fitted IPW",
+   "point_estimator": "Evaluate every G by C pair in each inner validation fold. At each t and for each regime, define the pre-treatment target moments among people with R_t=1 using cumulative adherence and retention weights through t-1. Compare these target moments with moments among people receiving A_t=a after applying the current inverse treatment factor. For censoring, define the pre-retention target moments among people who followed the regime through A_t using cumulative treatment and prior retention weights. Compare these with moments among R(t+1)=1 after applying the current inverse retention factor. Dropped people contribute to the pre-retention target but receive no undefined dropped-person inverse weight. Evaluate W1, W2, W3, and L0 through L_t, standardizing each variable by its inner-training SD. Z is excluded from this prespecified causal-balance set because its role is known in the simulation. Let B equal 0.5 times the maximum absolute moment difference plus 0.5 times the root mean square difference across times, regimes, variables, treatment moments, and censoring moments. Select the G and C pair with the smallest mean B across inner folds. Select Q by predictive loss. Break ties by predictive deviance and then fewer columns. Refit on outer training folds and use the untruncated Hajek estimator.",
+   "variance_estimator": "Use the descriptive fixed-weight empirical variance defined for predictive-CV IPW.",
+   "interval": "Report only the descriptive fixed-weight sensitivity band. Its coverage is not evidence about nominal inference.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the common IPW fitting and numerical rules. A G by C pair fails if a required target or weighted moment is undefined.",
+   "implementation": "This is a fully specified bespoke balance heuristic. It is not the calibrated-weight method in the 2022 citation and cannot support a claim of improvement beyond that published procedure."
+  },
+  {
+   "name": "Combined causal-score cross-fitted IPW",
+   "point_estimator": "Evaluate all 5 by 3 by 4 = 60 G, C, and Q configurations in each inner validation fold. Define P as the average fractional rank of treatment deviance, retention deviance, and sequential outcome squared loss. Define B as the risk-set balance score used by the bespoke balance method. Define W as the maximum over regimes of log(p99 nonzero cumulative weight divided by its median) plus log(number adherent divided by effective sample size). Define D by fitting nuisances and a regime estimate in the inner training fold, evaluating the corresponding longitudinal one-step influence-function contribution on the held-out fold, and taking the maximum over regimes of abs(mean(D_i))/sqrt(mean(D_i^2)). D is an observable held-out estimating-equation drift statistic. It is not an estimate of the mathematical second-order remainder. Convert P, B, W, and D to fractional ranks from zero best to one worst among the 60 configurations within each fold. Select the configuration minimizing S = 0.25 rank(P) + 0.25 rank(B) + 0.25 rank(W) + 0.25 rank(D), averaged across inner folds. Refit on the outer training fold and calculate the untruncated Hajek estimator.",
+   "variance_estimator": "Use the descriptive fixed-weight empirical variance defined for predictive-CV IPW.",
+   "interval": "Report only the descriptive fixed-weight sensitivity band. Its coverage does not enter the study decision.",
+   "is_status_quo": false,
+   "nonconvergence": "A configuration receiving any failed fit or undefined component receives the worst rank. The replicate fails if every configuration fails or the selected outer fit violates the common IPW rules.",
+   "implementation": "Ranks prevent a component's numerical scale from dominating the composite. Prespecified sensitivity scores use weights (0.40,0.20,0.20,0.20) for P, B, W, and D and four leave-one-component-out scores. These analyses do not replace the equal-weight primary score."
+  },
+  {
+   "name": "Predictive-CV cross-fitted longitudinal one-step estimator",
+   "point_estimator": "Use the predictively selected G, C, and Q candidates and outer-fold predictions. For each regime a, fit backward Q2(a) = E[Y|H2,A2=a,R3=1], Q1(a) = E[Q2(a)|H1,A1=a,R2=1], and Q0(a) = E[Q1(a)|H0,A0=a,R1=1], using the full-rank time-specific matrices defined above. Define Ht(a) as cumulative adherence and retention through t divided by the corresponding cross-fitted treatment and retention probabilities. Let phi_i(a) = Q0_i(a) + H0_i(a)[Q1_i(a)-Q0_i(a)] + H1_i(a)[Q2_i(a)-Q1_i(a)] + H2_i(a)[Y_i-Q2_i(a)]. Estimate each regime mean by mean(phi_i(a)) and subtract a=0 from a=1.",
+   "variance_estimator": "Let E_i = [phi_i(1)-mean(phi(1))] - [phi_i(0)-mean(phi(0))]. The model SE is sd(E_i)/sqrt(n), using the cross-fitted empirical influence-function variance.",
+   "interval": "Use an untruncated 95% Wald interval: estimate plus or minus 1.959964 times the model SE.",
+   "is_status_quo": true,
+   "nonconvergence": "A replicate fails if every candidate for a required nuisance component fails, a selected outer fit violates the common fit rules, required predictions are missing, either regime effective sample size is below 10, any cumulative clever-covariate weight exceeds 1e6, or the estimate or SE is nonfinite. Estimates outside the observed outcome range are retained and flagged.",
+   "implementation": "Implement directly with cached model matrices and patient-level nested folds. All nuisance selection occurs inside outer training folds."
+  },
+  {
+   "name": "Bespoke balance-score cross-fitted longitudinal one-step estimator",
+   "point_estimator": "Use the G and C pair selected by the fully specified bespoke balance score, the predictively selected Q pipeline, and the same longitudinal one-step formula.",
+   "variance_estimator": "Use the cross-fitted empirical influence-function variance defined for the predictive-CV one-step estimator.",
+   "interval": "Use an untruncated 95% Wald interval with multiplier 1.959964.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the common balance-selection and one-step failure rules.",
+   "implementation": "This method provides an internal balance-based benchmark. It is not identified with the cited calibrated-weight implementation."
+  },
+  {
+   "name": "Combined causal-score cross-fitted longitudinal one-step estimator",
+   "point_estimator": "Use the G, C, and Q configuration selected by the equal-weight combined score and the same longitudinal one-step formula.",
+   "variance_estimator": "Use the cross-fitted empirical influence-function variance defined for the predictive-CV one-step estimator.",
+   "interval": "Use an untruncated 95% Wald interval with multiplier 1.959964.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the common combined-selection and one-step failure rules.",
+   "implementation": "This is the primary proposed method. Report component ranks, selected candidates, balance, weight dispersion, held-out influence-function moment drift, and runtime."
+  },
+  {
+   "name": "Simulation-only library oracle one-step estimator",
+   "point_estimator": "Calculate the one-step estimate for all 60 configurations from the cached outer-fold predictions. For replicate r, choose the single configuration with the lowest MSE in the other R-1 replicates of that scenario and apply it to r. This leave-one-replicate-out oracle uses simulation truths and is not data-deployable.",
+   "variance_estimator": "Use the empirical influence-function variance for the configuration selected without replicate r.",
+   "interval": "Use an untruncated 95% Wald interval with multiplier 1.959964.",
+   "is_status_quo": false,
+   "nonconvergence": "A replicate fails if its leave-one-replicate-out oracle configuration fails under the one-step rules.",
+   "implementation": "The oracle determines whether the finite library contains enough causal-performance variation for selector comparisons to be informative. It is never presented as an implementable method."
+  }
+ ],
+ "performance": {
+  "primary": "In each of the eight gamma_Z = 0 scenarios, compare 95% coverage of the combined-score one-step interval with predictive-CV and bespoke-balance one-step intervals. Use paired coverage indicators. Report the paired coverage difference, its Monte Carlo SE, and its 95% Monte Carlo interval. Report gamma_Z = 0 and nonzero-gamma_Z conclusions separately; no pooled 24-scenario primary estimate is permitted.",
+  "secondary": [
+   "Bias and absolute bias of the 36-month mean difference in residual-standard-deviation units",
+   "Empirical SE",
+   "Mean one-step model SE",
+   "Relative error in the one-step model SE",
+   "MSE",
+   "Bias-eliminated coverage",
+   "Rejection rate for the null marginal mean difference of zero",
+   "Convergence probability with Wilson 95% Monte Carlo intervals",
+   "Paired convergence differences",
+   "Regime-specific bias",
+   "Selected-candidate frequencies",
+   "Maximum and root mean square longitudinal moment differences",
+   "Effective sample size and the median, 95th, and 99th weight percentiles",
+   "Held-out influence-function moment drift",
+   "Paired differences in absolute error and squared error",
+   "IPW point-estimator bias and MSE",
+   "Descriptive fixed-weight IPW sensitivity-band coverage, explicitly excluded from inferential conclusions",
+   "Gamma_Z-stratified treatment-only-predictor mechanism results",
+   "Runtime per replicate and per successful estimate"
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "For paired coverage indicators, let D_r equal one when only the combined interval covers, minus one when only the comparator covers, and zero otherwise. If the discordance probability is at most 0.20, the MCSE of mean(D_r) at R = 2000 is at most sqrt(0.20/2000) = 0.0100, giving a 95% half-width of 0.0196. This precision distinguishes clear gains around the prespecified 0.03 coverage threshold while assigning boundary results to the uninformative branch. Every decision uses Monte Carlo confidence bounds rather than raw cutoffs. If observed discordance exceeds 0.20 and a decision depends on the affected contrast, extend that scenario in blocks of 500 replicates, using only the discordance estimate to trigger extension, until the half-width is at most 0.02 or R reaches 5000. If the target remains unmet, classify the result as uninformative. Use paired replicate bootstrapping with 5000 resamples for absolute-bias reductions, MSE ratios, and medians across the fixed scenario set."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "The protocol makes two separate classifications. For the primary finite-library question without a treatment-only predictor, define a favorable gamma_Z = 0 scenario as one in which the combined one-step selector reduces absolute bias relative to predictive CV by at least 0.01 residual-standard-deviation units with a positive lower 95% Monte Carlo bound, or improves coverage by at least 0.03 with a positive lower 95% Monte Carlo bound. The finite-library causal-selection effect is present if at least 4 of the 8 gamma_Z = 0 scenarios are favorable, the favorable set contains both propensity-separation levels and at least two nuisance shapes, and the median across the eight scenarios has either an absolute-bias reduction of at least 0.005 or a coverage gain of at least 0.015 with a positive lower 95% Monte Carlo bound. In addition, the Wilson lower bound for combined-selector convergence must be at least 0.93 in every gamma_Z = 0 scenario, the lower bound for its paired convergence difference versus predictive CV must exceed -0.02, and the upper bound for its relative MSE increase in the good-separation all-main-effects alignment cell must not exceed 0.10. Incremental value over the bespoke balance heuristic is claimed only if at least 3 of the 8 gamma_Z = 0 scenarios satisfy the same favorable definition against that heuristic. Separately, the treatment-only-predictor mechanism is labeled detected if at least 8 of the 16 nonzero-gamma_Z scenarios are favorable against predictive CV, with at least 3 favorable scenarios at each nonzero gamma_Z level. This secondary label cannot satisfy the primary rule.",
+  "problem_is_not_real_if": "For the primary finite-library question, material improvement is not demonstrated if, in at least 6 of the 8 gamma_Z = 0 scenarios, the upper 95% Monte Carlo bound is below 0.01 for absolute-bias reduction and below 0.03 for coverage gain, and the upper bound for the median improvement is below 0.005 for absolute bias and below 0.015 for coverage. This conclusion is restricted to the DGM and finite library. Separately, the treatment-only-predictor mechanism is labeled not detected if the corresponding upper bounds exclude both material thresholds in at least 12 of the 16 nonzero-gamma_Z scenarios. Failure to beat the bespoke balance heuristic establishes only lack of incremental value over that bespoke heuristic, not over published calibrated weighting.",
+  "uninformative_if": "Classify the primary result as uninformative if neither primary numerical rule is met; if the library oracle has absolute bias above 0.02 or coverage below 0.90 in more than 2 of the 8 gamma_Z = 0 scenarios; if any primary one-step method has a convergence Wilson lower bound below 0.80 in a gamma_Z = 0 scenario; if truth Monte Carlo SE exceeds 0.0005 after the planned extension; or if required Monte Carlo half-widths remain above their targets at 5000 replicates. Gains confined to nonzero-gamma_Z scenarios are reported only as evidence about the treatment-only-predictor mechanism and do not make the primary finding positive.",
+  "both_branches_reachable": "A result with bounded material gains in at least four gamma_Z = 0 cells reaches the positive branch. A result whose upper Monte Carlo bounds exclude the material gains in at least six gamma_Z = 0 cells reaches the negative branch. Intermediate, numerically unstable, library-limited, or imprecise results reach the uninformative branch. The nonzero-gamma_Z classification is evaluated independently."
+ },
+ "threats": [
+  {
+   "threat": "Treatment-only-predictor scenarios deliberately create a known prediction-versus-dispersion conflict.",
+   "mitigation": "Treat all nonzero-gamma_Z cells as mechanistic positive controls. Base the primary conclusion exclusively on the eight gamma_Z = 0 cells and report the two strata separately."
+  },
+  {
+   "threat": "The equal-weight composite is arbitrary and may win because of component choice.",
+   "mitigation": "Use within-fold fractional ranks, prespecify equal weights, and report a prediction-heavy score and four leave-one-component-out scores without substituting them for the primary score."
+  },
+  {
+   "threat": "Held-out influence-function moment drift is not the unidentified second-order remainder.",
+   "mitigation": "Define it as an observable estimating-equation diagnostic, assess it by ablation, and state that the study does not test or estimate the mathematical remainder named in the broader GMT-01 entry."
+  },
+  {
+   "threat": "A curated finite GLM library can make selection easier than genuine machine learning.",
+   "mitigation": "Include underfit, correctly specified reduced-history, correctly specified expanded, and prediction-rich candidates; report oracle regret; and restrict every conclusion to the finite library."
+  },
+  {
+   "threat": "The library contains a correct nuisance configuration in every scenario.",
+   "mitigation": "Use this feature to isolate selection error. State that simultaneous misspecification and libraries without a correct candidate remain outside scope."
+  },
+  {
+   "threat": "Backward integration of a nonlinear terminal outcome can create omitted sequential-regression terms.",
+   "mitigation": "Use the prespecified algebraic closure basis at each recursion and verify its population conditional mean numerically before the simulation."
+  },
+  {
+   "threat": "Selected estimated weights make fixed-weight IPW inference invalid.",
+   "mitigation": "Use IPW only for point-estimator comparisons. Label fixed-weight bands as descriptive sensitivities and exclude their coverage from every decision."
+  },
+  {
+   "threat": "The bespoke balance heuristic may be mistaken for published calibrated weighting.",
+   "mitigation": "Define its treatment and censoring risk-set targets explicitly, name it bespoke everywhere, and make no claim about outperforming the cited calibrated-weight method."
+  },
+  {
+   "threat": "Post-selection behavior can affect finite-sample one-step inference.",
+   "mitigation": "Perform selection inside patient-level outer training folds, evaluate empirical coverage directly, and make no theorem-level claim from the simulation."
+  },
+  {
+   "threat": "Near-zero probabilities may reflect the true assignment process rather than overfitting.",
+   "mitigation": "Save true and estimated probability distributions separately, stratify results by propensity separation and gamma_Z, and do not classify an extreme but correctly estimated probability as prediction error."
+  },
+  {
+   "threat": "Dropping failed replicates can make a method look accurate.",
+   "mitigation": "Retain the planned denominator for convergence, report all ADEMP measures among successful estimates with failures separately, and forbid retries using a different candidate."
+  },
+  {
+   "threat": "Structurally constant columns can make candidate matrices rank deficient.",
+   "mitigation": "Omit A(t-1) at t = 0, omit the current regime-fixed treatment from each Q regression, include only earlier treatment columns with variation, and require a full-rank dry run for every time, regime, candidate, and scenario before dispatch."
+  },
+  {
+   "threat": "The residual-SD scale can be mistaken for a marginal outcome-SD scale.",
+   "mitigation": "Use residual-standard-deviation units consistently in aims, effect descriptions, performance measures, and decision thresholds. Report regime-specific marginal outcome SDs descriptively."
+  },
+  {
+   "threat": "Monte Carlo noise can determine coverage, convergence, or median classifications near a cutoff.",
+   "mitigation": "Base every decision on Monte Carlo confidence bounds, use paired discordance for the replicate calculation, bootstrap nonlinear summaries and fixed-scenario medians, and extend scenarios only under the prespecified precision rule."
+  },
+  {
+   "threat": "The fixed annual observation process omits informative visit timing.",
+   "mitigation": "Limit conclusions to fixed decisions with measured monotone dropout. State that irregular informative observation remains untouched."
+  },
+  {
+   "threat": "Protocol and analysis strategies may be mismatched.",
+   "mitigation": "Generate truth under the exact sustained strategies, no grace period, 36-month horizon, and elimination of censoring targeted by the estimators."
+  },
+  {
+   "threat": "Truth error can be mistaken for estimator bias.",
+   "mitigation": "Use paired common-random-number truth evaluations at two million people, report truth MCSE, and extend the truth run if MCSE exceeds 0.0005."
+  }
+ ],
+ "runtime_estimate": "The planned run contains 24 scenarios times 2000 replicates = 48,000 replicates. Each training partition fits 15 treatment models, 9 retention models, and 24 regime-specific sequential outcome regressions, totaling 48 fits. Two inner fits plus one outer refit for each of two outer folds give at most 288 fits per replicate, or 13,824,000 cached small-model fits. A maximum precision extension to 5000 replicates per scenario would raise this to 34,560,000 fits. Run a structural matrix dry run in every scenario and a 100-replicate timing pilot before dispatch. On 6 workers, reserve approximately 18 to 36 hours for the planned replicate run and 1.5 to 2 hours for truth calculations; recalibrate this operational estimate from the timing pilot without changing the statistical replicate rule. The study performs no ltmle or SuperLearner fits.",
+ "bears_on": [
+  {
+   "id": "GMT-01",
+   "relation": "answers-part",
+   "what": "It settles only whether an observable four-component score improves nuisance selection within a prespecified finite longitudinal GLM library for cross-fitted one-step estimation, with IPW retained for point-estimator comparison. It does not answer whether the score estimates an influence-function remainder, works with highly adaptive or ensemble learners, improves on published calibrated weighting, generalizes across the full estimator set named in GMT-01, or handles irregular informative observation."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019;38:2074-2102.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo uncertainty, prespecified performance measures, and reporting of simulation precision."
+  },
+  {
+   "cite": "Robins JM, Hernan MA, Brumback B. Marginal structural models and causal inference in epidemiology. Epidemiology. 2000;11(5):550-560.",
+   "doi_or_url": "10.1097/00001648-200009000-00011",
+   "used_for": "Longitudinal inverse weighting under treatment-confounder feedback."
+  },
+  {
+   "cite": "Estimating inverse probability weights using super learner when weight-model specification is unknown in a marginal structural model. Statistics in Medicine. 2017.",
+   "doi_or_url": "10.1002/sim.7266",
+   "used_for": "Prior work on Super Learner estimation of longitudinal weight models. It does not validate the finite composite score studied here."
+  },
+  {
+   "cite": "Marginal structural models using calibrated weights with SuperLearner: application to type II diabetes cohort. IEEE Journal of Biomedical and Health Informatics. 2022.",
+   "doi_or_url": "10.1109/JBHI.2022.3175862",
+   "used_for": "Evidence that calibrated longitudinal weighting already exists. The cited implementation is not reproduced, and the bespoke balance heuristic is not represented as that method."
+  },
+  {
+   "cite": "Brookhart MA, Schneeweiss S, Rothman KJ, Glynn RJ, Avorn J, Sturmer T. Variable selection for propensity score models. American Journal of Epidemiology. 2006.",
+   "doi_or_url": "10.1093/aje/kwj149",
+   "used_for": "Point-treatment motivation for treating treatment-only predictors as a separate mechanism. It is not evidence for the longitudinal composite selector."
+  },
+  {
+   "cite": "Feuerriegel S, Frauen D, Melnychuk V, et al. Causal machine learning for predicting treatment outcomes. Nature Medicine. 2024;30:958-968.",
+   "doi_or_url": "10.1038/s41591-024-02902-1",
+   "used_for": "Scope limits on what predictive machine learning establishes about causal effects."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The finite GLM study, two estimator families, and held-out drift proxy cannot settle the full GMT-01 claim about machine learning, multiple estimators, and an influence-function remainder.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "The title, question, aims, conclusions, and bears_on entry now identify the study as a finite-library proof of concept that answers only a stated part of GMT-01. The untested remainder, highly adaptive learners, published calibration method, and additional estimator classes are explicitly outside scope."
+   },
+   {
+    "finding": "Sixteen scenarios build in the treatment-only-predictor conflict and could dominate a pooled conclusion.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The eight gamma_Z = 0 scenarios now form the exclusive primary decision stratum. Nonzero-gamma_Z scenarios are mechanistic positive controls with a separate classification. The library now contains correctly specified reduced-history G candidates with Z excluded."
+   },
+   {
+    "finding": "The stated odds ratios for Z ignored multiplication by s, and the overlap factor changed the apparent instrument strength.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "gamma_Z Z_t was moved outside the s multiplier. The levels are now gamma_Z = log(2.12) and log(4.48), yielding the stated conditional odds ratios under both propensity-separation levels. The s factor is described as changing confounding-related propensity separation."
+   },
+   {
+    "finding": "The nonlinear-outcome cells lacked terms induced by backward integration, so every Q candidate was misspecified.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "A time-specific algebraic closure pipeline was added. It includes W1^2, L1:W3, W1:W3, and the corresponding Q0 terms, together with all required main effects. Population conditional-mean verification is required before simulation."
+   },
+   {
+    "finding": "Residual SD equal to one does not imply marginal outcome SD equal to one.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "All coefficients, bias thresholds, and material-effect thresholds are now labeled as residual-standard-deviation units. No marginal-standard-deviation interpretation remains."
+   },
+   {
+    "finding": "The bespoke balance selector was not the cited calibrated-weight method, and its censoring balance target was underdefined.",
+    "severity": "fatal",
+    "how": "declared-limitation",
+    "what_changed": "The method is now named a bespoke balance heuristic, with explicit pre-retention risk-set targets and retained-person inverse weighting. The protocol states that it does not reproduce or test the cited calibrated-weight procedure and cannot claim improvement beyond it."
+   },
+   {
+    "finding": "Fixed-weight IPW intervals ignore first-stage estimation and selection and therefore cannot provide valid nominal coverage.",
+    "severity": "serious",
+    "how": "declared-limitation",
+    "what_changed": "IPW is retained only for point-estimator comparisons. Fixed-weight bands are labeled descriptive sensitivities, and their coverage is excluded from all decisions. The study does not establish valid post-selection IPW inference."
+   },
+   {
+    "finding": "The global positive and negative rules made the likely result uninformative because instrument and no-instrument mechanisms were pooled.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Separate primary gamma_Z = 0 and secondary nonzero-gamma_Z classifications replace the pooled rule. The primary positive and negative branches use attainable scenario counts and confidence-bound criteria."
+   },
+   {
+    "finding": "The replicate calculation ignored paired coverage discordance and the original thresholds lacked precision-based acceptance rules.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The 2000-replicate minimum is derived from paired discordance. Coverage differences, convergence, nonlinear summaries, and scenario medians use Monte Carlo confidence bounds. A prespecified precision-only extension can increase a scenario to 5000 replicates; unresolved precision yields an uninformative result."
+   },
+   {
+    "finding": "Structurally constant treatment columns made the written model matrices rank deficient and could fail every replicate.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "A(t-1) is omitted at t = 0. Current regime-fixed treatment indicators are omitted from Q regressions, and only earlier treatment columns with variation are included. Every candidate matrix must pass zero-variance, duplication, and QR-rank checks in each scenario before dispatch."
+   },
+   {
+    "finding": "The calibrated-weight and Brookhart citations were being used beyond what their designs support.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The calibrated-weight citation is used only to establish that published calibrated longitudinal weighting exists and to delimit the study. Brookhart is used only as point-treatment motivation for the treatment-only-predictor positive control. Neither citation supports generalization of the composite selector."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study answers only a finite-GLM-library part of GMT-01 and does not settle the full catalog entry.",
+   "Held-out influence-function moment drift is an observable diagnostic, not an estimate of the mathematical second-order remainder.",
+   "No actual SuperLearner ensemble, tree, boosting method, neural network, or other highly adaptive learner is evaluated.",
+   "The cited published calibrated-weight procedure is not implemented; the balance comparator is bespoke.",
+   "IPW interval coverage is descriptive because valid post-selection IPW inference is not implemented.",
+   "Nonzero-gamma_Z scenarios establish only the treatment-only-predictor mechanism and cannot support the primary conclusion.",
+   "Effect sizes and thresholds are in residual-standard-deviation units rather than marginal outcome standard deviations.",
+   "The study does not establish performance under irregular informative observation, unmeasured confounding, exact positivity failure, or simultaneous misspecification.",
+   "Generalization beyond sustained static strategies, fixed annual decisions, IPW point estimation, and the longitudinal one-step estimator is not established."
+  ]
+ }
+}

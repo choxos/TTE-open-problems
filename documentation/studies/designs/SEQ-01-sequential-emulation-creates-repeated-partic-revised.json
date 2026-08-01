@@ -1,0 +1,374 @@
+{
+ "title": "Conditional Consequences of Calendar-Time Pooling in Sequential Target Trial Emulation",
+ "question": "Within a prespecified simulation class, how do omitted, quadratic, and flexible calendar-time adjustment affect estimation across sequential trial starts; when material trial-specific risk-difference heterogeneity is present, does a common-effect restriction degrade the equal-start average or merely provide accurate averaging despite heterogeneity; can a diagnostic defined directly from the standardized risk-difference curve detect heterogeneity exceeding 0.02; and does flexible pooling improve precision over a standalone middle-start emulation after person-level dependence and weight estimation are handled?",
+ "aims": "This study is a partial answer to SEQ-01. It settles only the calendar-time pooling, trial-specific reporting, diagnostic, implicit weighting, and conditional efficiency part of the catalog entry. It does not settle whether survival-conditioned later eligibility makes validity depend on outcome-model correctness. The study separately estimates calendar-adjustment bias, equal-start average accuracy, trial-specific curve recovery, material-heterogeneity diagnostic performance, restricted-model population projections, and pooling efficiency. An accurate pooled average in the presence of material trial-specific heterogeneity is reported as accurate averaging despite heterogeneity; it is not reported as evidence that homogeneity holds or that trial-specific estimates are dispensable.",
+ "dgm": {
+  "covariates": "Each replicate contains 2000 independent people observed on monthly cycles t = 0,...,33, with failure assessed through month 34. Age is 40 + 50B years, where B follows Beta(3,3), and R = (Age - 65)/10. Sex follows Bernoulli(0.5). Baseline comorbidity C follows Bernoulli(expit(-0.8 + 0.45R + 0.35Sex)). Baseline severity L_0 follows Normal(0.35R + 0.50C + 0.20Sex, 1). For an event-free person, L_(t+1) = 0.65L_t + 0.20R + 0.30C + 0.10Sex + 0.10q_t - 0.30Z_t + epsilon_(t+1), where epsilon follows Normal(0, 0.70^2), Z_t is current treatment, and q_t = max(-1, min(1, (t - 11)/11)). Trial starts are K = {0,2,4,...,22}. A person is eligible at k if event-free and untreated immediately before assignment at k. Each trial has 12 monthly outcome intervals, so one person can enter as many as 12 trials. There is no nonadministrative loss to follow-up. Covariate effects on initiation and failure remain fixed across every factorial cell. Consequently, changing a calendar factor does not simultaneously switch measured confounding, prognostic effects, or survival selection on or off.",
+  "outcome_model": "Among people event-free at the start of month t, treatment is assigned first and failure then follows Bernoulli probability expit(-4.50 + 0.15Sex + 0.55R + 0.55C + 0.45L_t + bq_t + Z_t[log(0.70) + h(S)]), where S is the first treatment month. Untreated people have Z_t = 0. The C-by-treatment interaction from the original design is removed. This prevents scenarios labeled by h = 0 from retaining an additional imposed conditional treatment-effect modifier. Treatment still changes later L, so marginal risk differences can vary across starts even when h = 0. The endpoint is composite failure, so competing events are absent. Scenario-specific risks and marginal effects are established by independent truth simulation.",
+  "treatment_effect": "Treatment initiation I_t is available only while untreated. Conditional on remaining untreated and event-free, I_t follows Bernoulli(expit(-3.60 + 0.20Sex + 0.30R + 0.45C + 0.55L_t + aq_t)). Treatment is absorbing from the first initiation month onward. For a trial starting at k, strategy 1 forces initiation at k and continued treatment through k + 11. Strategy 0 forces no initiation from k through k + 11. The total causal effect includes the direct hazard coefficient and the subsequent treatment-induced reduction of L. In observational emulations, controls are artificially censored immediately before later initiation.",
+  "effect_modification": "The direct conditional monthly treatment hazard odds ratio is 0.70 when h(S) = 0. Calendar-time modification h(S) changes this fixed mechanism across first-treatment months. Marginal 12-month risk differences are obtained by intervention rather than inferred from conditional odds ratios. Calendar modification, treatment adoption, and untreated background risk are crossed independently. Common random-number streams are shared across corresponding factorial cells so comparisons of calendar mechanisms are internal rather than based on separately tuned effect sizes.",
+  "factors": [
+   {
+    "name": "Calendar pattern of the conditional treatment effect",
+    "levels": [
+     "None: h(S) = 0",
+     "Monotone: h(S) = 0.30q_S",
+     "Transient loss of benefit: h(S) = 0.30cos(pi q_S)"
+    ],
+    "rationale": "These fixed alternatives estimate conditional operating characteristics under absent, monotone, and nonmonotone calendar modification. The magnitude is fixed before truth generation and is never solved for from an estimator or decision threshold. The alternatives do not establish that comparable heterogeneity is prevalent or realistic in applied data."
+   },
+   {
+    "name": "Calendar trend in treatment availability",
+    "levels": [
+     "None: a = 0",
+     "Strong adoption: a = 0.80"
+    ],
+    "rationale": "The strong level produces a first-to-last start initiation odds ratio of exp(1.60) = 4.95. Crossing this factor with background risk creates an internal comparison between settings where calendar time directly predicts treatment, outcome, both, or neither."
+   },
+   {
+    "name": "Calendar trend in untreated background risk",
+    "levels": [
+     "None: b = 0",
+     "Strong secular change: b = 0.35"
+    ],
+    "rationale": "The strong level produces a first-to-last start hazard-odds ratio of exp(0.70) = 2.01 before covariate and treatment effects. Calendar-time adjustment is evaluated through matched omitted, quadratic, and flexible analyses that retain the same treatment-effect surface."
+   }
+  ],
+  "n_scenarios": 12,
+  "deliberately_true": "The design is fully factorial: 3 by 2 by 2 equals 12 scenarios. All treatment and outcome predictors are measured, consistency holds, occupied treatment probabilities remain nondeterministic, and the fitted initiation model contains the true assignment form. Covariate-dependent initiation, prognostic effects, treatment-mediated L, repeated eligibility, and natural changes in eligible populations remain fixed across scenarios. No scenario is designated an exact marginal-effect null from its factor labels. Null and material heterogeneity sets are defined only after joint truth uncertainty for the trial-specific risk-difference vector has been quantified.",
+  "cannot_detect": "The study cannot establish the empirical prevalence or realistic magnitude of calendar-time treatment heterogeneity. It does not test whether survival-conditioned later eligibility makes validity depend on outcome-model correctness. It cannot detect bias from unmeasured confounding, incorrect eligibility dates, irregular observation, informative visit timing, exposure misclassification, nonadherence, treatment discontinuation, competing risks, nonadministrative dropout, interference, or structural positivity failure. Fixed bimonthly starts do not represent daily or irregular decisions. Absorbing initiation does not automatically generalize to sustained strategies with switching. Correctly specified initiation models do not establish robustness to treatment-model misspecification."
+ },
+ "estimands": [
+  {
+   "name": "Equal-start average 12-month risk difference",
+   "definition": "For each k in {0,2,...,22}, let E_k denote eligibility under the natural data-generating process immediately before assignment at k. Define RD_k = P(Y by k + 12 under initiation at k and continued treatment through k + 11 | E_k) minus P(Y by k + 12 under no initiation through k + 11 | E_k). Negative values favor initiation. The primary causal summary is theta_equal = sum_k RD_k/12. It gives every prespecified start equal policy weight.",
+   "true_value_computation": "Generate truth in independent chunks of 100000 people. Follow natural histories to identify every E_k, then simulate both strategies using paired common covariate and innovation draws. Begin with 20 chunks and continue in 10-chunk batches, up to 100 chunks. Retain chunk-level arm risks and the complete RD vector so joint uncertainty is estimable. Truth generation stops only when the simultaneous 95 percent interval for theta_equal has half-width below 0.001 and every threshold-dependent classification is separated from 0.005 and 0.020. A scenario still crossing a threshold at the cap remains in the indifference set."
+  },
+  {
+   "name": "Trial-specific 12-month risk-difference curve",
+   "definition": "The vector r = (RD_0,RD_2,...,RD_22), with each component marginal over its own eligible superpopulation. Define Delta_RD = max_k RD_k minus min_k RD_k. Material heterogeneity means Delta_RD exceeds 0.020. Near-homogeneity means Delta_RD is below 0.005. Values between those thresholds form a prespecified indifference region.",
+   "true_value_computation": "Use the same chunked paired truth simulation. Estimate the joint covariance of r from independent chunks. Obtain simultaneous truth intervals for every RD_k, all 66 pairwise differences, and Delta_RD by 9999 seeded chunk-bootstrap resamples. A scenario enters the material set only when the simultaneous lower bound for Delta_RD is at least 0.020. It enters the near-homogeneous set only when the simultaneous upper bound is at most 0.005."
+  },
+  {
+   "name": "Eligibility-weighted person-trial causal summary",
+   "definition": "theta_PT = sum_k P(E_k)RD_k divided by sum_k P(E_k). This is a valid causal summary weighted by eligibility frequency. It is not described as the implicit target of a pooled logistic estimator.",
+   "true_value_computation": "Estimate P(E_k) and RD_k jointly in each truth chunk. Propagate their covariance through the ratio in the chunk bootstrap. Report theta_PT beside theta_equal solely to show the effect of an explicit alternative start-weighting policy."
+  },
+  {
+   "name": "Population estimating-equation projections",
+   "definition": "For every restricted pooled model, define eta_m as the solution of its population weighted score equations under the data-generating distribution, including its start-contribution normalization. Define theta_projection,m by applying that model's stated equal-start standardization to eta_m. These projections identify what each shared-coefficient model targets under misspecification; neither theta_PT nor theta_equal is assumed to be its automatic target.",
+   "true_value_computation": "Within each truth chunk, construct natural person-trial risk rows with the known treatment and censoring probabilities. Solve the package-like natural-row score equations and the equal-start normalized score equations for each restricted analysis. Pool chunk score totals before solving, then use chunk-bootstrap re-solves to quantify projection uncertainty. Report theta_projection,m, theta_projection,m minus theta_equal, and the estimator's sampling bias relative to both quantities."
+  },
+  {
+   "name": "Middle-start effect and pooling efficiency",
+   "definition": "RD_12 is the marginal 12-month initiation-versus-no-initiation risk difference among the month-12 eligible superpopulation. The efficiency contrast is the empirical variance of the flexible pooled estimator of RD_12 divided by the empirical variance of the standalone month-12 estimator.",
+   "true_value_computation": "Use the month-12 eligible subset of every truth chunk and the same paired intervention simulation. Estimate the variance ratio from paired evaluation replicates. Recompute it in every paired replicate bootstrap rather than using a delta approximation."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Natural-row package-like common-effect sequential emulation",
+   "point_estimator": "Create one person-trial for every eligible start. Set baseline assignment G to initiation at k versus no initiation at k. Artificially censor controls immediately before later initiation. Estimate denominator initiation probabilities using pooled logistic regression on 1 + q_t + Sex + R + C + L_t and numerator probabilities on 1 + q_t. Form stabilized assignment and artificial-censoring weights without truncation. Fit the weighted pooled-logistic MSM event on G + j + j^2 + G:j + G:j^2 + q_k + q_k^2 using the natural expanded-row contributions. Predict 12-month risks at every start and average the risk differences equally. This method remains the status quo comparator; its population score projection is reported because equal averaging after fitting does not make its shared coefficient an equal-start projection.",
+   "variance_estimator": "Report the installed-style fixed-weight person-clustered sandwich as an implementation comparator. Primary inferential evaluation uses a joint linearized estimating-function procedure that stacks numerator, denominator, censoring, and outcome scores by original person. With A equal to the derivative of the mean stacked score, draw 999 seeded Rademacher multipliers xi_i and form one-step draws eta_b = eta_hat + A inverse times n_id inverse times sum_i xi_i U_i. Recompute all standardized predictions in every draw. This propagates estimated-weight uncertainty and repeated participation.",
+   "interval": "Primary intervals use the 2.5th and 97.5th percentiles of the 999 linearized draws. The fixed-weight sandwich Wald interval is reported separately and cannot alone support a coverage or diagnostic conclusion.",
+   "is_status_quo": true,
+   "nonconvergence": "Failure of any weight or outcome model to converge; rank deficiency affecting a required contrast; a nonfinite coefficient, estimate, score derivative, or interval; any absolute required coefficient above 20; a fitted initiation probability below 0.000001 or above 0.999999; or absence of both assignment arms at a required start. No fallback estimator is substituted.",
+   "implementation": "Implement expansion and weights with data.table and fit binomial logit models with stats::glm. Cluster only by original person. Reproduce the package-like natural-row fit separately from the equal-start analyses."
+  },
+  {
+   "name": "Equal-start flexible-nuisance common-effect sequential emulation",
+   "point_estimator": "Use the shared expanded data and stabilized weights. Let W_k be the sum of analysis weights over all outcome risk rows originating at start k and W_total the sum over starts. Multiply each row from start k by c_k = W_total divided by 12W_k, so every start contributes the same total weight to the estimating equation. Fit event on factor(j) interacted with splines::ns(q_k, df = 4), plus G interacted with factor(j), but include no treatment-by-start-time term. Predict all RD_k, theta_equal, theta_PT, and RD_12. This is the matched restricted model used for causal attribution.",
+   "variance_estimator": "Use the joint person-level linearized estimating-function procedure with 999 Rademacher draws. Include the estimated weight models and the start normalizers c_k in the joint functional. Use the complete covariance across outcome, weight, and normalization components.",
+   "interval": "Use percentile intervals from the linearized draws for theta_equal, RD_12, every RD_k, and the population-projection discrepancy.",
+   "is_status_quo": false,
+   "nonconvergence": "The shared weight-model criteria apply. The method fails if its outcome model, score derivative, start normalization, or required standardized contrast is singular or nonfinite, or if any required coefficient exceeds 20 in absolute value.",
+   "implementation": "The nuisance basis and start normalization are identical to the flexible effect-modified method. A difference between these two methods is attributable to the treatment-by-start-time restriction only when the flexible method satisfies its prespecified bias and coverage criteria."
+  },
+  {
+   "name": "Equal-start flexible effect-modified sequential emulation",
+   "point_estimator": "Use the same expanded data, stabilized weights, and c_k normalization as the matched common-effect estimator. Fit the complete hierarchical surface G * factor(j) * splines::ns(q_k, df = 4). This includes the treatment-by-follow-up-by-start-time interaction omitted from the original protocol. Standardize to every RD_k, theta_equal, theta_PT, and RD_12.",
+   "variance_estimator": "Use the joint person-level linearized estimating-function procedure with 999 Rademacher draws. Derive the full standardized RD-vector covariance from those draws. For the material diagnostic, form all 66 pairwise RD differences. In each draw calculate the maximum absolute studentized deviation across those differences; use its 95th percentile as the simultaneous critical value.",
+   "interval": "Report pointwise percentile intervals for causal summaries and simultaneous 95 percent intervals for all pairwise RD differences. The material diagnostic is positive only if at least one simultaneous pairwise interval lies wholly outside [-0.020,0.020]. It is negative only if every simultaneous pairwise interval lies within [-0.020,0.020]. Otherwise it is indeterminate. An 11-degree-of-freedom exact-homogeneity Wald test based on 11 independent RD contrasts is secondary and is never used as the material-heterogeneity decision.",
+   "is_status_quo": false,
+   "nonconvergence": "The method fails if the outcome model or joint linearization fails, any required three-way term is nonestimable, any required coefficient exceeds 20 in absolute value, a pairwise standard error is nonfinite, or a required standardized estimate cannot be produced.",
+   "implementation": "Display all 12 trial-specific estimates and intervals regardless of either diagnostic. Record the material diagnostic, exact-homogeneity test, theta_equal movement from the matched common model, curve error, and the entire predicted start-time curve."
+  },
+  {
+   "name": "Calendar-adjustment ablation family",
+   "point_estimator": "Fit three equal-start normalized outcome models while retaining the same flexible treatment surface G interacted with factor(j) and splines::ns(q_k, df = 4). The omitted variant excludes baseline calendar terms. The conventional variant includes factor(j) interacted with q_k and q_k squared. The flexible variant includes factor(j) interacted with splines::ns(q_k, df = 4) and is identical to the flexible effect-modified reference. The deliberately nonhierarchical omitted variant retains treatment-by-calendar terms so that treatment-effect representation is held fixed while baseline calendar adjustment is removed.",
+   "variance_estimator": "Use the same joint person-level linearized estimating-function procedure for all three variants. Use common multiplier draws across variants within a replicate so differences in bias, variance, and predictions retain their paired covariance.",
+   "interval": "Use percentile intervals from the common linearized draws. Report paired intervals for omitted minus flexible and conventional minus flexible estimates at every start and for theta_equal.",
+   "is_status_quo": false,
+   "nonconvergence": "A replicate is invalid for the ablation comparison if any of the three models fails its shared weight, outcome, linearization, or standardization criteria. No successful variant substitutes for a failed matched variant.",
+   "implementation": "Use identical data, weights, start normalization, treatment-effect surface, seeds, and prediction code across variants. Compare the four a-by-b cells within each h pattern. The interaction in signed bias, bias_(a=0.80,b=0.35) minus bias_(a=0.80,b=0) minus bias_(a=0,b=0.35) plus bias_(a=0,b=0), is the prespecified measure of the joint direct calendar trends."
+  },
+  {
+   "name": "Start-saturated weighted life-table benchmark",
+   "point_estimator": "Within every start, assignment arm, and follow-up month, estimate the weighted discrete hazard as sum(wY) divided by sum(w at risk). Form arm risk as one minus the product of one minus the 12 hazards. Compute every RD_k and theta_equal. This imposes no smoothing or common treatment effect across starts.",
+   "variance_estimator": "Stack person-level contributions for the treatment and censoring models and every weighted life-table cell. Propagate their joint influence through product survival, arm contrasts, and equal-start averaging. Generate the same 999 person-level linearized draws used for the model-based methods.",
+   "interval": "Use percentile intervals from the joint linearized draws for theta_equal and every RD_k.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs for an empty arm or risk set, nonfinite weight or hazard, nonfinite influence calculation, or effective sample size below 10 in any required cell. Effective sample size is square of sum(w) divided by sum(w squared).",
+   "implementation": "Compute grouped hazards with data.table. Use this method only as a low-restriction benchmark and corroborating trial-specific display. It cannot rescue a misspecified flexible model for attribution to the common-effect restriction."
+  },
+  {
+   "name": "Standalone month-12 emulation",
+   "point_estimator": "Restrict the weighted life-table estimator to people eligible at k = 12 and estimate RD_12 without borrowing from any other start.",
+   "variance_estimator": "Use the joint person-level influence procedure for estimated weights and the month-12 weighted life table, with 999 common linearized draws.",
+   "interval": "Use the 2.5th and 97.5th percentiles of the linearized RD_12 draws.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs for undefined weights or hazards, an empty assignment arm or risk set, a nonfinite estimate or interval, or effective sample size below 10 in any required cell.",
+   "implementation": "Pair its replicate estimate with the flexible pooled RD_12 estimate. Compare empirical variance and MSE using paired replicate resampling."
+  },
+  {
+   "name": "Full person-bootstrap inference calibration",
+   "point_estimator": "This overlay introduces no new point estimator. It refits the equal-start common-effect and flexible effect-modified estimators after resampling original people with replacement.",
+   "variance_estimator": "Use 399 full person-level nonparametric bootstrap resamples for the first 200 valid replicates in four prespecified sentinel scenarios: no h with no calendar trends; no h with both strong trends; monotone h with both strong trends; and cosine h with both strong trends. Every bootstrap repeats expansion, weight estimation, start normalization, outcome fitting, and standardization.",
+   "interval": "Construct percentile intervals and simultaneous pairwise RD bands from the full bootstrap. Compare their standard errors, coverage, and material-diagnostic classifications with the linearized procedure.",
+   "is_status_quo": false,
+   "nonconvergence": "A calibration interval requires at least 380 successful bootstrap resamples. Otherwise the replicate is excluded from calibration but remains in point-estimator summaries. If fewer than 180 calibration replicates remain in a sentinel scenario, inferential conclusions for sparse settings are declared uninformative.",
+   "implementation": "Use identical resampled person indices for the common and effect-modified fits. A simultaneous coverage difference exceeding 0.02 between full bootstrap and linearized inference suspends absolute coverage and diagnostic conclusions; point-bias, empirical-variance, and MSE conclusions remain reportable."
+  }
+ ],
+ "performance": {
+  "primary": "Four conclusions are estimated separately: scenario-specific accuracy of theta_equal under the matched common and flexible models; recovery of the trial-specific RD curve; operating characteristics of the RD-scale material-heterogeneity diagnostic; and empirical variance of flexible pooled RD_12 relative to standalone RD_12. Calendar-adjustment ablations form a fifth, separately labeled analysis. No conclusion substitutes for another.",
+  "secondary": [
+   "Signed bias and transformed absolute-bias bounds",
+   "Ordinary and bias-eliminated coverage",
+   "Empirical SE and mean linearized SE",
+   "Fixed-weight sandwich to linearized SE ratio",
+   "Full person-bootstrap to linearized SE ratio in sentinel scenarios",
+   "Mean squared error and paired MSE ratios",
+   "Restricted-model population projection minus theta_equal",
+   "Estimator bias relative to its own population projection",
+   "Trial-specific curve root mean squared error and maximum absolute error",
+   "Equal-scenario sensitivity of the material diagnostic in the material truth set",
+   "Equal-scenario specificity of the material diagnostic in the near-homogeneous truth set",
+   "Indeterminate material-diagnostic rate",
+   "Exact-homogeneity rejection rate reported separately",
+   "Probability of accurate theta_equal estimation despite material Delta_RD",
+   "Probability of a nonpositive material diagnostic when Delta_RD is material",
+   "Omitted and conventional calendar-adjustment bias relative to flexible adjustment",
+   "Factorial interaction in signed calendar-omission bias",
+   "Empirical variance and MSE ratios for flexible pooled versus standalone RD_12",
+   "Difference between theta_equal and theta_PT",
+   "Maximum weight and effective sample size by trial start and assignment arm",
+   "Convergence and valid-replicate rates",
+   "Peak memory and wall time from the feasibility pilot"
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "At nominal coverage 0.95, 2000 replicates give binomial Monte Carlo SE sqrt(0.95 times 0.05 divided by 2000) = 0.00487. A scenario requires at least 1900 valid paired replicates. All methods are resampled jointly within scenario. Metric uncertainty uses 9999 seeded two-layer resamples: valid replicate indices are sampled with replacement, and independent truth chunks are sampled with replacement. Truth values, bias, coverage indicators, MSE, diagnostic rates, and variance ratios are recomputed in every resample. For signed bias b = mean(theta_hat) minus theta_true, let [L_b,U_b] be its simultaneous interval. The absolute-bias interval is [0,max(abs(L_b),abs(U_b))] when L_b is at most zero and U_b is at least zero; otherwise it is [min(abs(L_b),abs(U_b)),max(abs(L_b),abs(U_b))]. Sensitivity is the unweighted mean of scenario-specific positive-diagnostic rates over the material truth set. Specificity is the unweighted mean of one minus the positive-diagnostic rate over the near-homogeneous truth set. Variance and MSE ratios are recomputed from paired replicate samples in every resample. Decision bounds use a 95 percent max-t interval across the frozen decision manifest containing common and flexible signed bias and coverage in all scenarios, calendar-ablation signed biases, diagnostic sensitivity and specificity, and every RD_12 variance ratio. For bootstrap draw b, T_b is the maximum absolute standardized deviation across manifest entries; the critical value is order statistic ceil(0.95 times 10000), capped at 9999. A zero bootstrap standard error gives a degenerate interval at the estimate. Descriptive results use pointwise 95 percent percentile intervals. Every fractional scenario requirement is rounded upward with the ceiling function."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "No simulation result is labeled evidence that the catalog problem is empirically real. Let H contain scenarios whose simultaneous truth lower bound for Delta_RD is at least 0.020, and let N contain scenarios whose simultaneous truth upper bound is at most 0.005. For estimator m in scenario s, call theta_equal estimation adequate when the simultaneous upper bound for absolute bias is at most 0.005 and the simultaneous lower coverage bound is at least 0.93. Call it inadequate when the simultaneous lower bound for absolute bias is at least 0.010 or the simultaneous upper coverage bound is at most 0.90. Other results are indeterminate. With at least three H scenarios and two N scenarios, conclude common-effect restriction materially degrades equal-start averaging under the imposed DGM only when the matched common estimator is inadequate and the flexible estimator is adequate in at least ceil(2 times |H| divided by 3) H scenarios, and both estimators are adequate in at least ceil(2 times |N| divided by 3) N scenarios. Saturated estimation may corroborate this conclusion but cannot satisfy the flexible-estimator requirement. Separately, call the RD-scale diagnostic adequate only when the simultaneous lower bounds are at least 0.80 for equal-scenario sensitivity and 0.90 for equal-scenario specificity. Call pooling efficiency retained only when the simultaneous upper variance-ratio bound is below 1 in at least ceil(2 times |N| divided by 3) N scenarios. For calendar-time confounding, conclude that omission is consequential only when the omitted-versus-flexible factorial interaction in signed bias has an absolute simultaneous lower bound above 0.005 in at least two of the three h patterns and the flexible reference is adequate in all contributing cells.",
+  "problem_is_not_real_if": "No result may be reported as showing that SEQ-01 is not real. The reachable negative pooling branch is labeled accurate averaging despite heterogeneity. It is selected when both the matched common and flexible estimators are adequate in at least ceil(2 times |H| divided by 3) material scenarios and in at least ceil(2 times |N| divided by 3) near-homogeneous scenarios. Material H scenarios and every trial-specific RD remain prominently reported under this branch. The diagnostic is labeled inadequate when the simultaneous upper bound for sensitivity is at most 0.60 or the upper bound for specificity is at most 0.80; intermediate results are inconclusive. Pooling efficiency is labeled not retained when the simultaneous lower variance-ratio bound is at least 1 in at least ceil(2 times |N| divided by 3) near-homogeneous scenarios. Calendar omission is labeled not consequential within this DGM only when every omitted-versus-flexible factorial interaction has an absolute simultaneous upper bound below 0.0025 and the flexible reference is adequate. Exact-homogeneity rejection never determines any of these branches.",
+  "uninformative_if": "A conclusion is uninformative when fewer than three scenarios enter H or fewer than two enter N; a truth interval crosses a threshold needed for that conclusion; fewer than 1900 paired valid replicates remain in any contributing scenario; the flexible estimator is not adequate where attribution to the common-effect restriction is claimed; matched common and flexible estimators fail together; simultaneous metric bounds cross their indifference thresholds; effective sample size is below 10 in more than 10 percent of replicates for a required cell; fewer than 180 full-bootstrap calibration replicates remain in a sentinel scenario; or the simultaneous difference between full-bootstrap and linearized coverage exceeds 0.02. Point-estimator bias, empirical variance, and MSE may still be reported when only inferential calibration fails.",
+  "both_branches_reachable": "The positive and negative pooling branches use the same estimators, the same adequacy definitions, the same simultaneous bounds, and the same ceil(2|S|/3) scenario requirement. A generated result can place the matched common model in the inadequate region while the flexible model is adequate, or it can place both in the adequate region despite material Delta_RD. The gap between the adequate and inadequate thresholds creates an explicit indifference region. Diagnostic and efficiency conclusions likewise have positive, negative, and indeterminate outcomes that can all be produced by the design."
+ },
+ "threats": [
+  {
+   "threat": "The DGM imposes calendar treatment-effect patterns and therefore cannot establish their empirical prevalence or realistic magnitude.",
+   "mitigation": "All conclusions use conditional operating-characteristic language. Fixed h mechanisms are crossed internally with identical observable covariate, treatment, and risk structures, and no parameter is solved from a desired estimator result. External prevalence or calibration claims are prohibited."
+  },
+  {
+   "threat": "The study answers only part of SEQ-01 and does not test the survival-conditioned later-eligibility claim.",
+   "mitigation": "The aims, cannot-detect statement, title, decision rule, and bears-on relation identify the work as a partial answer. The former s factor is removed. Natural changes in eligible populations remain descriptive and cannot be interpreted as evidence about outcome-model misspecification or identification."
+  },
+  {
+   "threat": "Calendar-time confounding could be conflated with treatment-effect modification.",
+   "mitigation": "The ablation family retains an identical flexible treatment-by-follow-up-by-start surface while changing only baseline calendar adjustment. The a-by-b factorial interaction in signed bias is reported within every h pattern."
+  },
+  {
+   "threat": "A shared treatment coefficient can target a model-dependent projection rather than theta_equal or theta_PT.",
+   "mitigation": "Every restricted model's population estimating-equation projection is explicitly computed. Matched attribution estimators equalize total start contributions in their score equations. Sampling bias relative to the projection and target discrepancy relative to theta_equal are reported separately."
+  },
+  {
+   "threat": "The flexible effect-modified model could remain misspecified after marginalization.",
+   "mitigation": "The model includes the complete treatment-by-follow-up-by-start-time surface. Attribution requires the flexible estimator itself to satisfy bias and coverage criteria. Start-saturated estimation is corroborating evidence only and cannot rescue a failed flexible model."
+  },
+  {
+   "threat": "A test of pooled-logit interaction coefficients would not test material marginal risk-difference heterogeneity.",
+   "mitigation": "The primary diagnostic is constructed from the standardized RD vector and its full joint person-level distribution. Simultaneous pairwise bands test the 0.020 material threshold directly. Exact homogeneity is a separate secondary analysis."
+  },
+  {
+   "threat": "Fixed-weight sandwich inference can be conservative and can distort coverage or diagnostic power in sparse settings.",
+   "mitigation": "Primary inference uses joint linearized estimating functions that include estimated weights. Full person-level bootstrap calibration is prespecified for four sentinel scenarios. The fixed-weight package-style sandwich is descriptive and cannot alone determine a verdict."
+  },
+  {
+   "threat": "Truth uncertainty can misclassify Delta_RD or understate bias uncertainty.",
+   "mitigation": "Independent truth chunks retain the joint RD vector. Truth simulation continues adaptively, threshold classifications require simultaneous separation, and two-layer metric resampling propagates truth uncertainty into every decision bound."
+  },
+  {
+   "threat": "A correctly specified initiation model favors inverse-probability weighting.",
+   "mitigation": "Correct specification is intentional for isolating calendar pooling. The study makes no claim about omitted nonlinearities, omitted interactions, unmeasured confounding, or treatment-model robustness."
+  },
+  {
+   "threat": "Fixed monthly observation, bimonthly starts, absorbing treatment, and a composite endpoint simplify the target-trial setting.",
+   "mitigation": "Conclusions are restricted to those conditions. They are not extended to irregular EHR visits, daily treatment decisions, switching, discontinuation, competing risks, or informative dropout."
+  },
+  {
+   "threat": "A single sample size and fixed effect patterns cannot establish universal performance.",
+   "mitigation": "Results are restricted to cohorts of 2000 people, 12 repeated starts, low monthly initiation, and the stated mechanisms. Scenario-level outputs, projection targets, and code are retained for later extensions."
+  },
+  {
+   "threat": "The computational workload and memory demand are unknown before implementation.",
+   "mitigation": "A mandatory feasibility pilot benchmarks complete replicates, linearized draws, serialization, peak resident memory, one full adaptive truth scenario, and observed scaling at one, two, four, and six workers. No full run starts until the observed resource envelope is recorded."
+  }
+ ],
+ "runtime_estimate": "No hour estimate is asserted before a pilot. The main experiment contains 12 scenarios times 2000 replicates, totaling 24000 replicates, plus the prespecified full-bootstrap calibration overlay. Phase 0 runs 20 complete replicates in a central scenario and 20 in the cosine, strong-adoption, strong-background-risk scenario. It records median and 90th-percentile wall time, CPU time, expanded-row count, linearization time, serialization time, and peak resident memory. The worst-case truth scenario is then run through its complete adaptive truth rule. Parallel batches are benchmarked at one, two, four, and six workers; extrapolation uses observed throughput rather than ideal division. The reported forecast equals the observed 90th-percentile replicate time times 24000 divided by measured throughput, plus observed truth, calibration-bootstrap, and summary times. Worker count is reduced if measured peak aggregate memory exceeds 70 percent of available RAM. The full protocol is feasible only if the pilot-derived forecast and storage requirement fit the declared compute allocation; otherwise the run is not started and no scientific conclusion is issued.",
+ "bears_on": [
+  {
+   "id": "SEQ-01",
+   "relation": "answers-part",
+   "what": "Answers only the residual calendar-time part of SEQ-01: consequences of omitted and restricted calendar adjustment, trial-specific reporting, material RD-scale diagnostics, explicit versus model-dependent start weighting, and conditional precision after person-level dependence and estimated-weight uncertainty are handled. It does not answer whether survival-conditioned later eligibility makes validity depend on outcome-model correctness, and it does not establish the real-world prevalence or magnitude of calendar-time heterogeneity."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019",
+   "doi_or_url": "https://doi.org/10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo uncertainty, scenario-specific reporting, and prespecified interpretation."
+  },
+  {
+   "cite": "Limozin L, Seaman SR, Su L. Inference procedures in sequential trial emulation with survival outcomes: comparing confidence intervals based on the sandwich variance estimator, bootstrap and jackknife. Statistical Methods in Medical Research. 2025",
+   "doi_or_url": "https://doi.org/10.1177/09622802251356594",
+   "used_for": "Evidence that repeated-person inference methods exist, that the simple sandwich has known conservative behavior, and that linearized or resampling inference requires explicit evaluation in sparse settings. It is not used to validate fixed-weight Wald coverage."
+  },
+  {
+   "cite": "DeMonte, Shook-Sa and Hudgens. Assessing COVID-19 vaccine effectiveness in observational studies via nested trial emulation. 2024",
+   "doi_or_url": "https://arxiv.org/abs/2403.18115",
+   "used_for": "Motivation for calendar-varying effects, homogeneity assessment, and trial-specific reporting. It is not used to validate the protocol's RD-scale material diagnostic."
+  },
+  {
+   "cite": "Keogh RH, et al. Causal inference in survival analysis using longitudinal observational data: sequential trials and marginal structural models. Statistics in Medicine. 2023",
+   "doi_or_url": "https://doi.org/10.1002/sim.9718",
+   "used_for": "Sequential-trial estimators, longitudinal comparisons, interaction assessment, and the conditional efficiency question."
+  },
+  {
+   "cite": "Caniglia EC, et al. Emulating target trials to avoid immortal time bias: an application to antibiotic initiation. Epidemiology. 2023",
+   "doi_or_url": "https://doi.org/10.1097/EDE.0000000000001601",
+   "used_for": "Applied motivation for repeated initiation opportunities and sequential eligibility."
+  },
+  {
+   "cite": "Su L, et al. TrialEmulation: an R package to emulate target trials for causal analysis of observational time-to-event data. 2024",
+   "doi_or_url": "https://arxiv.org/abs/2402.12083",
+   "used_for": "General sequence expansion, artificial censoring weights, and pooled marginal structural modeling. It is not used as evidence for the exact behavior of a later package release."
+  },
+  {
+   "cite": "TrialEmulation 0.0.4.11 source release. NAMESPACE; R/modelling.R lines 155-156; R/te_stats_glm_logit.R; R/trial_sequence.R lines 502-507",
+   "doi_or_url": "CRAN TrialEmulation 0.0.4.11",
+   "used_for": "Versioned definition of the package-like comparator, including trial-period terms and person-clustered robust covariance in the pinned implementation."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The not-real rule could negate the catalog problem merely because theta_equal was estimated accurately despite material start-specific heterogeneity.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "The protocol now separates equal-start accuracy, trial-specific heterogeneity, diagnostic performance, calendar adjustment, and efficiency. The negative branch is explicitly named accurate averaging despite heterogeneity and cannot imply homogeneity or dispensability of trial-specific estimates."
+   },
+   {
+    "finding": "The survival-conditioned later-eligibility arm was not tested.",
+    "severity": "fatal",
+    "how": "declared-limitation",
+    "what_changed": "The aims and bears-on relation now identify the study as a partial answer confined to the calendar-time arm. The protocol expressly states that it does not establish whether later eligibility makes validity depend on outcome-model correctness."
+   },
+   {
+    "finding": "The aims claimed to evaluate calendar-time confounding although every estimator adjusted for calendar time.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "A matched calendar-adjustment ablation family now compares omitted, quadratic, and flexible baseline calendar adjustment while retaining the same flexible treatment-effect surface."
+   },
+   {
+    "finding": "The s factor simultaneously changed survival selection, initiation confounding, prognostic effects, and weight variability.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The s factor and all claims attributing results to survival-conditioned eligibility were removed. Covariate effects on treatment and failure are held fixed across the 12 calendar scenarios."
+   },
+   {
+    "finding": "Imposed h patterns cannot establish that material heterogeneity is a real-world problem or that the magnitudes are representative.",
+    "severity": "limitation",
+    "how": "declared-limitation",
+    "what_changed": "All conclusions now use conditional operating-characteristic language. Empirical prevalence and magnitude claims are prohibited."
+   },
+   {
+    "finding": "The diagnostic tested pooled-logit interaction coefficients against zero while truth was defined by a marginal RD range of 0.02.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "The primary diagnostic now uses the standardized RD vector, its full person-level joint distribution, and simultaneous pairwise intervals evaluated directly against the 0.020 threshold. Exact homogeneity testing is separate."
+   },
+   {
+    "finding": "Scenarios labeled negative controls were not exact marginal-effect nulls because treatment effect modification and noncollapsibility remained.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The C-by-treatment interaction was removed, factor labels no longer define marginal nulls, and near-homogeneous scenarios are selected only when the simultaneous truth upper bound for Delta_RD is at most 0.005."
+   },
+   {
+    "finding": "theta_PT was incorrectly described as the implicit target of pooled logistic estimation.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "theta_PT is retained only as an explicit eligibility-weighted causal summary. Population estimating-equation projections are now computed for every restricted model, and matched analyses explicitly equalize total start contributions."
+   },
+   {
+    "finding": "Truth MCSE calculations did not cover Delta_RD or threshold classification.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "Truth is generated in independent chunks, joint RD uncertainty is retained, Delta_RD receives a simultaneous chunk-bootstrap interval, and simulation continues adaptively until classifications separate from decision thresholds or enter the indifference set."
+   },
+   {
+    "finding": "The proposed spline model lacked a treatment-by-follow-up-by-start-time interaction and might miss its own marginalized DGM.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The flexible model now fits the complete hierarchical surface G * factor(j) * ns(q_k, df = 4). Attribution requires this estimator itself to meet the bias and coverage criteria."
+   },
+   {
+    "finding": "Using fixed-weight sandwich inference for every method ignored recommended inference in sparse settings.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Primary inference now uses joint linearized estimating functions including estimated weights. Full person-level bootstrap calibration is required in four sentinel scenarios for both matched common and effect-modified estimators."
+   },
+   {
+    "finding": "Absolute-bias bounds, truth uncertainty, diagnostic aggregation, ratio uncertainty, scenario weighting, and rounding were undefined.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "The protocol now gives formulas for absolute-bias transformation, two-layer resampling, simultaneous max-t bounds, equal-scenario sensitivity and specificity, paired ratio resampling, minimum valid denominators, and ceiling-based integer thresholds."
+   },
+   {
+    "finding": "The positive and negative verdict branches used asymmetric evidentiary standards, and a saturated estimator could rescue a failed spline estimator.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Both pooling branches now use the same adequacy definitions and ceil(2|S|/3) requirement with an explicit indifference region. The matched flexible estimator must succeed for attribution; saturated estimation is corroborating only."
+   },
+   {
+    "finding": "The original 13-to-16-hour runtime estimate was unsupported.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The unsupported estimate was removed. A mandatory pilot now measures complete replicate time, full truth time, peak memory, serialization, linearization, bootstrap cost, and observed scaling before the main run."
+   },
+   {
+    "finding": "Limozin, Seaman, and Su did not validate the selected fixed-weight Wald procedure as settled inference in sparse scenarios.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The citation now documents available inference methods and known sandwich limitations. Fixed-weight Wald results are descriptive; joint linearized inference and full-bootstrap calibration support inferential conclusions."
+   },
+   {
+    "finding": "The TrialEmulation preprint did not establish exact behavior of the installed 2026 package implementation.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "A separate versioned citation now identifies TrialEmulation 0.0.4.11 and the supplied source locations defining trial-period terms and person-clustered covariance."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study settles only the calendar-time, trial-specific reporting, diagnostic, projection, and conditional efficiency part of SEQ-01.",
+   "The study does not establish whether survival-conditioned later eligibility makes validity depend on outcome-model correctness.",
+   "Imposed calendar-effect patterns do not establish empirical prevalence or realistic magnitudes.",
+   "Correct initiation models do not establish robustness to treatment-model misspecification or unmeasured confounding.",
+   "Results apply only to 2000-person cohorts, 12 bimonthly starts, absorbing initiation, monthly observation, and a 12-month composite failure endpoint.",
+   "Results do not automatically generalize to switching, discontinuation, competing risks, informative dropout, irregular observation, daily decisions, or structural positivity failure.",
+   "Full person-bootstrap calibration covers prespecified sentinel scenarios rather than every replicate in every scenario.",
+   "A scenario whose truth interval cannot separate from 0.005 or 0.020 at the truth-simulation cap remains indeterminate."
+  ]
+ }
+}

@@ -1,0 +1,309 @@
+{
+ "title": "Mechanistic stress test of exposure separation and horizon dependence in baseline-initiation target trials",
+ "question": "Within a prespecified 36-scenario stress grid, how much does natural later initiation after assignment to no initiation change the marginal initiate-now versus do-not-initiate-now risk difference relative to an oracle sustained-strategy benchmark at 6, 12, 24, 36, 60, and 120 months? Within the nonmonotone P3 profile, can identical marginal initiation curves or identical 60-month initiation probabilities yield meaningfully different oracle additive movement when switching selection or timing differs? How well do cumulative and current-treatment separation classify small oracle additive movement within this grid?",
+ "aims": "This study settles only the following mechanistic, DGM-specific part of CNF-01: it quantifies horizon-specific movement of a treatment-policy effect under fixed later-initiation mechanisms, tests within a fixed nonmonotone treatment-effect profile whether marginal trajectory summaries omit consequential switching information, and screens one prespecified separation cutoff against an oracle additive benchmark. P1 and P2 provide quantitative calibration only and do not vote on whether convergence is real. The study does not establish that an observed trajectory distinguishes biological inefficacy from convergence in an applied emulation. It does not study reporting prevalence, identify a sustained-strategy effect from baseline-assignment data, determine how local prescribing data should select a horizon, or establish a general horizon convention.",
+ "dgm": {
+  "covariates": "Each replicate contains 4000 independent individuals followed for 120 monthly cycles. Generate X1 from N(0,1), X2 from Bernoulli(0.35), X3 from N(0,1), and L0 = 0.50*X1 + 0.40*X2 + 0.30*X3 + epsilon0, where epsilon0 is N(0,0.75^2). For t=1,...,120, generate Lt = 0.70*L(t-1) + 0.15*X1 + 0.20*X2 + 0.10*X3 + epsilon_t, with independent epsilon_t from N(0,0.70^2). Baseline initiation is observational: A0 is Bernoulli with probability expit(-0.80 + 0.55*X1 + 0.75*X2 + 0.40*X3 + 0.35*L0). This creates moderate measured baseline confounding and approximately 40% baseline initiation. All variables in the assignment model are observed. Draw an independent ZS from N(0,1). For switching-selection parameter rho, define U = Phi(-rho*X1 + sqrt(1-rho^2)*ZS). U is marginally uniform, while rho=0.70 gives earlier initiation to individuals with larger X1. For a chosen 60-month initiation probability p60 and Weibull shape k, define F(t) = 1 - exp(log(1-p60)*(t/60)^k). The later-initiation month is T = min{t: U <= F(t)} and exceeds 120 when no threshold is crossed. Baseline initiators remain treated. Individuals with A0=0 have At=1 from month T onward and At=0 before T. No treatment discontinuation occurs.",
+  "outcome_model": "The outcome is an absorbing event. Let Y0=0. At month t, among individuals with Y(t-1)=0, generate an event with probability expit(-5.70 + 0.35*X1 + 0.55*X2 + 0.25*X3 + 0.30*Lt + 0.005*t + eta_t). Set Yt=1 after the first event and retain Yt=1 thereafter. Coefficients are on the log odds scale of the monthly discrete-time hazard. The untreated mechanism produces a moderate chronic-disease risk over five to ten years. There is administrative follow-up only, with no loss to follow-up or competing event.",
+  "treatment_effect": "Let d_t be completed treated months through month t, with d_t=0 while untreated. Four causal profiles are used. P0 has eta_t=0. P1 has an immediate homogeneous benefit, eta_t=log(0.70)*I(d_t>0). P2 has the same immediate benefit with effect modification, eta_t=log(0.70)*m(X1)*I(d_t>0). P3 has initiation toxicity followed by benefit: eta_t=log(1.50)*m(X1) during the first three treated months and eta_t=log(0.70)*m(X1) thereafter. P1 and P2 mechanically favor movement toward the treated-arm risk as comparator initiation becomes earlier, so their results are reported only as calibration. The prespecified mechanistic decisions use P3, whose time-varying effects allow attenuation, amplification, or reversal without solving a parameter to produce a chosen result. The treatment values are methodological stress parameters and are not estimates for a particular treatment.",
+  "effect_modification": "For profiles P2 and P3, define M=I(X1>0) and m(X1)=0.60+0.80*M. The monthly odds ratio corresponding to a base odds ratio of 0.70 is about 0.81 for X1<=0 and 0.61 for X1>0. The initiation-toxicity odds ratios are about 1.28 and 1.76, respectively. P1 is homogeneous, and P0 is null. Comparing P1 with P2 describes effect-modification sensitivity but does not contribute votes to a materiality conclusion. Within-profile comparisons hold the complete treatment-effect mechanism fixed.",
+  "factors": [
+   {
+    "name": "Comparator cumulative initiation by 60 months",
+    "levels": [
+     "p60=0.10",
+     "p60=0.40",
+     "p60=0.70"
+    ],
+    "rationale": "These fixed stress levels represent low, moderate, and high convergence. They are not claimed to represent a target distribution of health systems."
+   },
+   {
+    "name": "Later-initiation mechanism",
+    "levels": [
+     "M1: memoryless and nonselective, k=1.00 and rho=0",
+     "M2: memoryless and prognosis-dependent, k=1.00 and rho=0.70",
+     "M3: accelerating and prognosis-dependent, k=2.00 and rho=0.70"
+    ],
+    "rationale": "M1 and M2 have identical marginal initiation curves but differ in who switches. This is the internal comparison for whether the marginal curve alone determines oracle movement. M1, M2, and M3 have the same 60-month initiation probability within each p60 level but differ in timing or selection. This is the within-profile comparison for whether a single 60-month percentage is sufficient."
+   },
+   {
+    "name": "Causal treatment-effect profile",
+    "levels": [
+     "P0: null",
+     "P1: immediate homogeneous benefit with monthly odds ratio 0.70",
+     "P2: immediate effect-modified benefit with base monthly odds ratio 0.70",
+     "P3: three months of initiation toxicity with base odds ratio 1.50 followed by effect-modified benefit with base odds ratio 0.70"
+    ],
+    "rationale": "P0 is a negative control. P1 and P2 quantify two monotone mechanisms but do not determine a directional majority. P3 is the prespecified nonmonotone mechanism used for the study's mechanistic decision rules."
+   }
+  ],
+  "n_scenarios": 36,
+  "deliberately_true": "The design is fully factorial: 3 initiation levels by 3 switching mechanisms by 4 causal profiles. Baseline exchangeability given X1, X2, X3, and L0, consistency, positivity, correct measurement, and no informative censoring are true. The propensity-score model exactly matches the baseline assignment mechanism. Later treatment is part of the treatment-policy estimand and is never adjusted away. M1 and M2 agree on the complete marginal initiation curve while differing in switching selection. All switching mechanisms within a profile share the same treatment-effect mechanism. No conclusion uses a majority vote across P1, P2, and P3.",
+  "cannot_detect": "The design cannot determine whether an applied null treatment-policy estimate reflects biological inefficacy, later-initiation convergence, or both because the sustained-strategy benchmark is not identified by the proposed baseline-assignment analysis. It does not investigate reporting uptake, local prescribing data, or clinical horizon selection. It says nothing about irregular visits, treatment discontinuation, repeated stopping and restarting, measurement error, competing mortality, informative censoring, unmeasured confounding, postbaseline clinical triggers not represented by the switching model, or healthcare systems outside the fixed grid. Results concern marginal risk differences and need not hold on other effect scales. The grid is not an empirical distribution of clinical settings and cannot validate a universal cutoff."
+ },
+ "estimands": [
+  {
+   "name": "Marginal treatment-policy risk difference",
+   "definition": "For h in {6,12,24,36,60,120}, RD_TP(h) = Pr(Y_h under do(A0=1) and natural subsequent treatment =1) - Pr(Y_h under do(A0=0) and natural subsequent treatment =1). Later initiation after do(A0=0) follows the scenario-specific structural equation. The contrast is marginal for the DGM superpopulation. Negative values favor initiation now.",
+   "true_value_computation": "Begin with 2,000,000 new superpopulation individuals per scenario in chunks of 50,000. Use common baseline values, longitudinal innovations, switching variables, and outcome uniforms across interventions. Estimate each arm risk and the paired difference from chunk summaries. Sequentially double the truth sample when the direct precision requirements for RD_TP, G, Q_curve, Q_60, or any reported ratio are not met, up to 32,000,000 individuals."
+  },
+  {
+   "name": "Oracle marginal sustained-strategy risk difference",
+   "definition": "RD_S(h) = Pr(Y_h under treatment during every month =1) - Pr(Y_h under no treatment during any month =1). This is a distinct oracle benchmark within the simulation. The baseline-assignment analysis does not estimate RD_S, and the benchmark is not described as a corrected treatment-policy effect.",
+   "true_value_computation": "Use common random numbers under always-treated and never-treated interventions. The always-treated world equals the A0=1 treatment-policy world because discontinuation is absent, leaving three distinct outcome worlds per scenario. Apply the same sequential truth-simulation precision rules."
+  },
+  {
+   "name": "Oracle movement and descriptive retained-effect fraction",
+   "definition": "Define oracle additive movement G(h)=RD_TP(h)-RD_S(h). Define the descriptive signed fraction r(h)=RD_TP(h)/RD_S(h) only for non-null cells with abs(RD_S(h))>=0.020. Values between 0 and 1 denote same-direction attenuation, values above 1 denote amplification, and values below 0 denote sign reversal. G is the sole quantity used in materiality and diagnostic decisions. Neither G nor r is presented as observable from the baseline-assignment analysis.",
+   "true_value_computation": "Calculate G and eligible r values from paired large-sample truths. Require MCSE no greater than 0.00025 for each risk difference and G, and no greater than 0.02 for every reported r. Report the number of ratio-eligible cells out of the fixed total and by horizon. Cells failing the denominator rule have r recorded as undefined and remain in all G-based analyses."
+  },
+  {
+   "name": "Within-profile oracle mechanism contrasts",
+   "definition": "For P3, define D_curve(p60,h)=abs(G_M1(p60,h)-G_M2(p60,h)). M1 and M2 have identical marginal initiation curves, so this contrast tests whether that curve alone determines oracle movement while holding the treatment-effect profile fixed. Define Q_curve as the equally weighted mean of D_curve over the 3 p60 levels and 6 horizons. Also define D_60(p60)=max over M1, M2, and M3 of G(p60,60)-min over those mechanisms of G(p60,60), and Q_60 as its equally weighted mean over the 3 p60 levels. The latter tests whether a single 60-month initiation percentage determines movement within P3. Corresponding quantities for P1 and P2 are reported as calibration without entering a decision rule.",
+   "true_value_computation": "Use paired chunk-level truth estimates across mechanisms. Construct 99% Monte Carlo confidence intervals for Q_curve and Q_60. Continue truth simulation whenever either interval intersects the prespecified 0.005 boundary, up to 32,000,000 individuals per scenario. If an interval still intersects the boundary at the cap, classify that decision as boundary-indeterminate."
+  },
+  {
+   "name": "Marginal treatment-trajectory diagnostics",
+   "definition": "At each horizon h, estimate comparator cumulative initiation F0(h), current-treatment separation S_current(h)=Pr(A_h=1 under A0=1)-Pr(A_h=1 under A0=0), and cumulative treated-month separation S_cum(h)=h^(-1)*sum from t=1 to h of [Pr(A_t=1 under A0=1)-Pr(A_t=1 under A0=0)]. The candidate rule labels a horizon as adequately separated when S_cum(h)>=0.70. Its oracle validation label is small additive movement, I(abs(G(h))<0.010). This label is available only in the simulation.",
+   "true_value_computation": "The trajectory truths are analytic: F0(t)=F(t), S_current(t)=1-F(t), and S_cum(h)=h^(-1)*sum from t=1 to h of [1-F(t)]. Evaluate in-grid classification separately within P1, P2, and P3 across all 54 cells per profile, with equal weight for every p60-by-mechanism-by-horizon cell. Also report macro-averaged performance across the three profiles and confusion matrices within each distinct predictor-value stratum. These summaries describe only the prespecified stress grid."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Crude baseline-assignment contrast",
+   "point_estimator": "At each horizon, subtract the observed cumulative event proportion among A0=0 from that among A0=1. Do not condition on postbaseline treatment.",
+   "variance_estimator": "Use R1*(1-R1)/n1 + R0*(1-R0)/n0, where Ra and na are the observed risk and sample size in baseline arm a.",
+   "interval": "Use an untruncated pointwise 95% Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure if either baseline arm is empty or the estimate or SE is nonfinite. Otherwise retain the estimate, including estimates distorted by baseline confounding.",
+   "implementation": "Compute directly with data.table. This is a naive descriptive comparator and requires no fitted model."
+  },
+  {
+   "name": "Baseline IPTW treatment-policy estimator without trajectory reporting",
+   "point_estimator": "Fit glm(A0 ~ X1 + X2 + X3 + L0, family=binomial). At each horizon, estimate arm risks with normalized inverse-probability weights A0/e and (1-A0)/(1-e), then subtract the weighted A0=0 risk from the weighted A0=1 risk. Do not censor or adjust for later treatment.",
+   "variance_estimator": "Use an empirical stacked estimating-equation sandwich for the propensity coefficients and the two normalized weighted risks. Obtain the risk-difference variance from the full covariance matrix, including propensity-score estimation.",
+   "interval": "Use an untruncated pointwise 95% Wald interval for the risk difference.",
+   "is_status_quo": true,
+   "nonconvergence": "Declare failure if the propensity model does not converge, its model matrix is rank deficient, any propensity is nonfinite or lies outside [0.000001,0.999999], the estimating-equation Jacobian is singular, or the estimate or SE is nonfinite. Record maximum weight, effective sample size, and propensity range without truncating weights.",
+   "implementation": "Fit one base-R propensity model per replicate and reuse it at all six horizons. This method reports the treatment-policy effect without a postbaseline trajectory diagnostic."
+  },
+  {
+   "name": "Baseline IPTW treatment-policy estimator with standardized trajectory report",
+   "point_estimator": "Use exactly the same propensity fit, normalized weights, arm-risk estimates, and treatment-policy risk difference as the IPTW method without reporting. In addition, estimate weighted marginal monthly treatment probabilities in both baseline arms. Derive F0, S_current, and S_cum from those standardized trajectories.",
+   "variance_estimator": "Use the same stacked sandwich as the IPTW method without reporting for the risk difference. Add trajectory estimating equations to obtain pointwise trajectory variances and covariances, including propensity-score estimation.",
+   "interval": "The treatment-policy interval must be numerically identical to the corresponding IPTW interval without reporting. Use pointwise 95% Wald intervals clipped to [0,1] for trajectory probabilities and separations. No simultaneous trajectory band is claimed.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the same effect-component failure rules as the IPTW method without reporting. Declare the trajectory component failed only if its estimating equations or sandwich calculation fail. Report component-specific failures.",
+   "implementation": "Run the IPTW calculation once and create two output records from the same fitted effect model: one without the trajectory report and one with it. Assert equality of effect estimates, SEs, intervals, and convergence status to numerical tolerance. This paired construction isolates reporting from estimator choice."
+  },
+  {
+   "name": "AIPW treatment-policy estimator with standardized trajectory report",
+   "point_estimator": "At each horizon, fit glm(Y_h ~ A0*(X1 + I(X1>0) + X2 + X3 + L0) + I(X1^2) + I(L0^2) + X2:X3, family=binomial). Combine predictions with the fitted baseline propensity using mean[m1-m0 + A0*(Y_h-m1)/e - (1-A0)*(Y_h-m0)/(1-e)]. Postbaseline treatment is excluded because it mediates the treatment-policy effect. Attach the same propensity-standardized trajectory report used by the IPTW reporting method.",
+   "variance_estimator": "For each horizon, stack the propensity score equations, outcome-regression score equations, and AIPW risk-difference estimating equation. Use the empirical M-estimation sandwich A^(-1)BA^(-T). This includes first-order contributions from estimating both nuisance models and remains the specified variance calculation when the cumulative outcome regression is misspecified. Use the propensity-based stacked equations for trajectory variances.",
+   "interval": "Use an untruncated pointwise 95% Wald interval for the risk difference and pointwise 95% intervals clipped to [0,1] for trajectory quantities.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare the risk-difference component failed if either nuisance model does not converge, a model matrix is rank deficient, any required coefficient or prediction is nonfinite, a propensity lies outside [0.000001,0.999999], the stacked Jacobian is singular, or the estimate or SE is nonfinite. Report trajectory failures separately.",
+   "implementation": "Fit one propensity model and six outcome models per replicate. Implement one stacked sandwich per horizon. AIPW is an estimator-performance sensitivity analysis. Its bias, precision, or coverage is never attributed to trajectory reporting."
+  }
+ ],
+ "performance": {
+  "primary": "Report P3 cellwise oracle G(h), D_curve(p60,h), D_60(p60), Q_curve, and Q_60 with 99% Monte Carlo confidence intervals. The two Q statistics determine the narrowed mechanistic conclusions. P1 and P2 results are quantitative calibration and are never counted as votes.",
+  "secondary": [
+   "Cellwise bias, empirical SE, mean model SE, relative error in model SE, MSE, coverage, rejection rate, and convergence for crude, IPTW, and AIPW treatment-policy estimators",
+   "Cellwise type I error in the nine P0 scenarios at every horizon",
+   "Exact numerical agreement of the IPTW effect estimate, SE, interval, and convergence status with and without trajectory reporting",
+   "Bias and coverage for F0(h), S_current(h), and S_cum(h)",
+   "Oracle G in every cell and descriptive r only in prespecified ratio-eligible cells",
+   "Within-profile ranges of G across switching mechanisms for P1, P2, and P3, reported separately",
+   "Sensitivity, specificity, positive predictive value, negative predictive value, and balanced accuracy of S_cum(h)>=0.70 for I(abs(G(h))<0.010), separately by non-null profile",
+   "The same in-grid classification measures for S_current(h)>=0.70, with a prespecified comparison of balanced accuracy",
+   "Equal-weighted macro-averages across P1, P2, and P3 and confusion matrices at each distinct trajectory-predictor value",
+   "Monte Carlo SEs or intervals for every reported performance measure and large-sample truth",
+   "Cellwise 95% Monte Carlo intervals for coverage and rejection estimates, plus a simultaneous 95% Bonferroni Monte Carlo band across the 216 AIPW scenario-horizon coverage cells",
+   "The minimum and median coverage as descriptive summaries only; no decision uses the unadjusted minimum"
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "For a single coverage or rejection proportion near 0.95 or 0.05, 2000 replicates give MCSE sqrt(0.95*0.05/2000)=0.00487. This supports cellwise estimates to approximately half a percentage point. It does not give the raw minimum across 216 cells the same interpretation. The minimum is accompanied by simultaneous Monte Carlo bounds and is not a pass or fail criterion."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "The phrase problem is real refers only to the narrowed within-grid mechanistic claims. Marginal-curve insufficiency within P3 is supported if the 99% Monte Carlo lower confidence bound for Q_curve exceeds 0.005. Insufficiency of a single 60-month initiation percentage within P3 is supported if the corresponding lower bound for Q_60 exceeds 0.005. Classify the two claims separately. P1 and P2 cannot satisfy either decision by voting. Separately, the S_cum>=0.70 cutoff passes an in-grid screening criterion only if sensitivity and specificity for abs(G)<0.010 are each at least 0.80 within every non-null profile and its macro-averaged balanced accuracy exceeds that of S_current>=0.70 by at least 0.10. An in-grid pass is not acceptance of a general horizon convention.",
+  "problem_is_not_real_if": "A narrowed mechanistic claim is unsupported within the grid if the corresponding 99% Monte Carlo upper confidence bound for Q_curve or Q_60 is below 0.005. This is an equivalence-style conclusion about the simulated P3 mechanisms, not evidence that CNF-01 is absent in other settings. The candidate cutoff fails its in-grid screen if any prespecified criterion is not met after all oracle labels are resolved.",
+  "uninformative_if": "Classify either mechanistic claim as boundary-indeterminate if its 99% Monte Carlo interval still intersects 0.005 after the maximum truth run. Classify a profile-specific cutoff assessment as undefined if all cells in that profile have the same oracle class, and report its confusion matrix without inventing sensitivity or specificity. Estimator-performance conclusions are uninformative if more than 10% of fits fail in any cell, absolute estimator bias exceeds 0.005 in any primary estimator cell, or fewer than 95% of planned replicates are completed. Failure of the cutoff is informative evidence against that cutoff within the grid.",
+  "both_branches_reachable": "Each mechanistic decision uses the same statistic and a symmetric 0.005 equivalence boundary. A result entirely above the boundary supports insufficiency, a result entirely below it supports adequacy within the grid, and an interval crossing it is indeterminate. No branch depends on finding any adverse cell while the other requires every cell to behave."
+ },
+ "threats": [
+  {
+   "threat": "Persistent benefit and permanent comparator initiation mechanically favor attenuation in P1 and P2.",
+   "mitigation": "Treat P1 and P2 as cellwise calibration only. Use no majority rule. Base the prespecified mechanistic decisions on the nonmonotone P3 profile and symmetric equivalence thresholds."
+  },
+  {
+   "threat": "Variation across different causal profiles could be misattributed to switching or convergence.",
+   "mitigation": "Compute every mechanism comparison within a fixed causal profile. Q_curve and Q_60 use P3 alone. Report P1 and P2 separately without pooling their ranges with P3."
+  },
+  {
+   "threat": "The sustained-strategy benchmark could be mistaken for an estimand identified by the applied baseline-assignment analysis.",
+   "mitigation": "Label RD_S, G, r, and the additive classification target as oracle simulation quantities. The reporting package estimates only RD_TP and treatment trajectories. It makes no claim to separate biological inefficacy from convergence."
+  },
+  {
+   "threat": "Estimator changes could be mistaken for benefits of trajectory reporting.",
+   "mitigation": "Construct the IPTW effect-only and IPTW reporting outputs from the same fit and require identical effect estimates, SEs, intervals, and failure status. Evaluate AIPW separately as an estimator sensitivity analysis."
+  },
+  {
+   "threat": "Misspecified cumulative outcome regression could invalidate a plug-in AIPW influence-function SE.",
+   "mitigation": "Use a stacked M-estimation sandwich containing propensity, outcome-score, and AIPW estimating equations. Verify its implementation in the end-to-end pilot."
+  },
+  {
+   "threat": "The retained-effect ratio is unstable when RD_S is near zero.",
+   "mitigation": "Remove r from every decision rule. Report it only when abs(RD_S)>=0.020 and its direct MCSE is no greater than 0.02. Keep every cell in additive G analyses."
+  },
+  {
+   "threat": "Truth-simulation error could determine a threshold classification.",
+   "mitigation": "Set direct precision requirements for G, Q_curve, Q_60, and descriptive r. Extend truth runs when 99% Monte Carlo intervals intersect decision boundaries. Record unresolved boundaries as indeterminate rather than forcing a label."
+  },
+  {
+   "threat": "A hand-selected factorial grid cannot represent a target distribution of clinical settings.",
+   "mitigation": "Call all classification results in-grid discrimination. Report profile-specific and equal-weighted macro summaries. Do not propose a general convention without later validation against a prespecified, externally anchored target distribution."
+  },
+  {
+   "threat": "A single cumulative initiation percentage can conceal timing and switching selection.",
+   "mitigation": "Compare mechanisms within each fixed causal profile. Use M1 versus M2 for identical full marginal curves and M1 versus M2 versus M3 for identical 60-month initiation probabilities."
+  },
+  {
+   "threat": "Observed treatment trajectories reflect baseline confounding.",
+   "mitigation": "Estimate marginal trajectories under baseline assignment using the same correctly specified propensity standardization used for the IPTW treatment-policy analysis."
+  },
+  {
+   "threat": "The 0.70 cutoff could be selected because it performs well in the simulated grid.",
+   "mitigation": "Fix 0.70 before simulation, retain it after failure, and prohibit post hoc replacement. Describe success only as passing an in-grid screen."
+  },
+  {
+   "threat": "Fixed monthly visits, permanent treatment after initiation, and absence of censoring make the simulated data cleaner than claims or EHR data.",
+   "mitigation": "State these restrictions in the protocol and conclusions. Do not generalize to irregular observation, discontinuation, informative follow-up, or competing risks."
+  },
+  {
+   "threat": "Risk-difference movement is scale-dependent.",
+   "mitigation": "Use the marginal risk difference as the sole decision scale, publish arm-specific risks, and avoid claims about odds-ratio, risk-ratio, or hazard-ratio attenuation."
+  },
+  {
+   "threat": "The full longitudinal workload may exceed a fit-count-based runtime estimate.",
+   "mitigation": "Require a measured end-to-end pilot before the full run. Include data generation, all models, stacked sandwiches, three truth worlds, serialization, summaries, worker scaling, peak memory, and output size."
+  }
+ ],
+ "runtime_estimate": "No wall-clock estimate is claimed before measurement. The fixed replicate workload is 34.56 billion person-month updates from 36*2000*4000*120, plus model fitting, stacked sandwiches, and serialization. An initial 2,000,000-person truth run adds 8.64 billion longitudinal person-month histories across scenarios and outcome recursions under three distinct intervention worlds. Before the full run, execute an end-to-end pilot with 10 replicates in every scenario and 100,000 truth individuals per scenario. Measure generation time, fitting and sandwich time, serialization time, peak resident memory, and output bytes on one, two, and six workers. Extrapolate replicate and truth workloads separately, report observed parallel efficiency, and provide estimates for the initial truth run and the 32,000,000-person extension ceiling. The full run begins only after the pilot-derived runtime and storage budget are recorded.",
+ "bears_on": [
+  {
+   "id": "CNF-01",
+   "relation": "answers-part",
+   "what": "The study answers only the mechanistic stress-test part: it quantifies horizon-specific oracle movement and tests whether selected marginal trajectory summaries determine that movement under fixed simulated mechanisms. It does not establish that trajectory reporting distinguishes biological inefficacy from convergence in an applied null result, measure reporting uptake, identify sustained or dynamic effects, determine a local clinical horizon, or validate a universal cutoff."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019;38:2074-2102.",
+   "doi_or_url": "https://doi.org/10.1002/sim.8086",
+   "used_for": "ADEMP structure, performance-measure specification, and Monte Carlo uncertainty."
+  },
+  {
+   "cite": "Hernan MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. American Journal of Epidemiology. 2016;183(8):758-764.",
+   "doi_or_url": "https://doi.org/10.1093/aje/kwv254",
+   "used_for": "Definition and interpretation of observational assignment and adherence strategy contrasts."
+  },
+  {
+   "cite": "Cain LE, Robins JM, Lanoy E, Logan R, Costagliola D, Hernan MA. Using observational data to emulate a randomized trial of dynamic treatment-switching strategies. International Journal of Epidemiology. 2016;45(6):2038-2049.",
+   "doi_or_url": "https://doi.org/10.1093/ije/dyv295",
+   "used_for": "Definition and estimation of explicit dynamic treatment-switching strategies."
+  },
+  {
+   "cite": "Hernan MA, Hernandez-Diaz S. Beyond the intention-to-treat in comparative effectiveness research. Clinical Trials. 2012;9(1):48-55.",
+   "doi_or_url": "https://doi.org/10.1177/1740774511420743",
+   "used_for": "Distinguishing assignment effects from sustained-treatment effects under nonadherence and switching."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The simulation cannot settle the unresolved applied interpretation, reporting-uptake, or local-horizon components of CNF-01.",
+    "severity": "fatal",
+    "how": "declared-limitation",
+    "what_changed": "The title, question, aims, cannot-detect statement, decision rule, and bears-on relation now register a mechanistic stress test that answers only a named DGM-specific part. Claims about distinguishing biological inefficacy, reporting prevalence, and universal horizon selection were removed."
+   },
+   {
+    "finding": "P1 and P2 mechanically favor directional attenuation and previously supplied six of nine votes to a five-vote rule.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The majority rule was deleted. P1 and P2 are calibration profiles only. Prespecified mechanistic decisions use P3 alone, apply symmetric equivalence thresholds, and can conclude support, equivalence, or boundary indeterminacy."
+   },
+   {
+    "finding": "The previous range of r mixed switching mechanisms with different causal effect profiles.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "All mechanism contrasts now hold the treatment-effect profile fixed. Q_curve and Q_60 use P3 alone, while P1 and P2 ranges are reported separately."
+   },
+   {
+    "finding": "G, r, and retention were presented as estimated applied quantities even though no RD_S estimator was specified.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "RD_S, G, r, and the additive classification label are explicitly oracle validation targets. The applied reporting methods estimate only RD_TP and trajectories, and no claim says that the report identifies retention or biological efficacy."
+   },
+   {
+    "finding": "The status quo IPTW method and proposed AIPW reporting method confounded estimator choice with trajectory reporting.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The reporting comparison now uses the identical IPTW fit with and without added trajectory outputs. Equality of the effect estimate, SE, interval, and failure status is required. AIPW remains only an estimator-performance sensitivity analysis."
+   },
+   {
+    "finding": "The plug-in AIPW influence-function SE omitted nuisance-estimation contributions under outcome-model misspecification.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "AIPW variance now uses a stacked M-estimation sandwich containing propensity scores, outcome scores, and the AIPW estimating equation."
+   },
+   {
+    "finding": "Ratio-based rules did not specify how undefined r cells changed denominators.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "All decisions now use additive G. Descriptive r is restricted to non-null cells with abs(RD_S)>=0.020, undefined cells are explicitly counted and excluded only from ratio summaries, and no variable voting denominator remains."
+   },
+   {
+    "finding": "Risk-difference truth precision did not control uncertainty in ratio thresholds or ratio differences.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Ratio thresholds and r_low-r_high decisions were removed. Direct precision limits were added for G, Q_curve, Q_60, and descriptive r, with sequential truth extension and boundary-indeterminate outcomes."
+   },
+   {
+    "finding": "Sensitivity and specificity on the factorial grid could not justify a general horizon convention.",
+    "severity": "serious",
+    "how": "declared-limitation",
+    "what_changed": "The cutoff analysis is now explicitly an equal-weighted in-grid screen reported by profile and predictor stratum. A general convention requires separate validation against a prespecified externally anchored target distribution."
+   },
+   {
+    "finding": "The raw minimum coverage across 216 cells is downward-selected.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The minimum is descriptive only and receives a simultaneous 95% Bonferroni Monte Carlo band. Every cell retains its own Monte Carlo interval, and no rule uses the raw minimum."
+   },
+   {
+    "finding": "The six-to-ten-hour runtime estimate ignored tens of billions of longitudinal updates and truth-world recursions.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The unsupported wall-clock claim was removed. A measured end-to-end pilot across all scenarios, three truth worlds, stacked sandwiches, serialization, memory, storage, and worker scaling is now a gate before the full run."
+   },
+   {
+    "finding": "The 2025 scoping-review citation was incomplete, and the Cain citation was assigned a broader normative claim than it directly supports.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The incomplete scoping-review citation was removed rather than completed by inference. Cain et al. is now cited only for defining and estimating explicit dynamic switching strategies."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "This mechanistic stress test does not settle CNF-01 as a whole.",
+   "Observed treatment trajectories and RD_TP alone cannot identify RD_S, G, retained efficacy, or a decomposition of an applied null result.",
+   "The study does not measure trajectory-reporting uptake or determine how local prescribing data should select a follow-up horizon.",
+   "The factorial grid is not a target distribution of clinical settings, so classifier performance cannot validate a universal horizon convention.",
+   "P1 and P2 are deliberately monotone calibration profiles and cannot support a directional conclusion.",
+   "The DGM excludes treatment discontinuation, irregular observation, competing events, informative censoring, measurement error, unmeasured confounding, and unsimulated clinical triggers.",
+   "Conclusions are confined to marginal risk differences and the prespecified treatment, outcome, and switching mechanisms.",
+   "A credible wall-clock and storage estimate remains unavailable until the required end-to-end pilot is completed."
+  ]
+ }
+}

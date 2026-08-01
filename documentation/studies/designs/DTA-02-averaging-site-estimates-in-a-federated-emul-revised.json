@@ -1,0 +1,412 @@
+{
+ "title": "Conditional stress test of semantic drift, target alignment, aggregate alarms, and local validation in federated target trial emulation",
+ "question": "Conditional on each site already having a locally adjudicated canonical reference definition, how do prespecified eligibility, exposure, and outcome mapping discrepancies affect a six-site federated five-year risk difference under null, weak, and strong links between the discrepancy and potential outcomes; which aggregate or sampled validation gates detect those discrepancies; and what safety, release, and interval performance do the resulting estimators achieve?",
+ "aims": "This study settles only the conditional operating-characteristics part of DTA-02. It quantifies what happens after canonical local reference definitions exist and production mappings can be compared with them. It does not establish how sites should construct, adjudicate, or govern semantically valid reference definitions. The study will estimate scenario-specific target changes, unsafe-release probabilities, interval performance, mapping-detection accuracy, and validation burden. It will separate semantic target changes from site weighting, random-effects inference, and legitimate contextual effect heterogeneity. It will not issue a general verdict about the prevalence or practical magnitude of semantic incompatibility.",
+ "dgm": {
+  "covariates": "Each replicate contains six fixed site contexts with s_j equal to -1.25, -0.75, -0.25, 0.25, 0.75, and 1.25 and 3000 independent source records per site. Generate X1 from Bernoulli(expit(-0.20 + 0.45 s_j)); X2 from Bernoulli(expit(0.10 - 0.15 s_j)); X3 from Bernoulli(expit(-0.80 + 0.70 X1 - 0.20 X2 + 0.25 s_j)); and U from Bernoulli(expit(-1.00 + 0.40 X1 + 0.60 X3)). Generate renal function G = 75 - 10 X1 - 12 X3 - 10 U + 12 Z, where Z is standard normal. Intended eligibility is E = I(G >= 45). Generate treatment availability Q from Bernoulli(expit(-0.35 + 0.35 s_j + 0.30 X1 - 0.20 X2 + 0.50 X3)). If Q = 0, set D = 0. If Q = 1, set D to 1, 2, or 3 with probabilities 0.60, 0.20, and 0.20. The intended trial compares D = 1 with D = 0 and excludes D = 2 and D = 3. Treatment is independent of U conditional on site and measured X.",
+  "outcome_model": "Let kappa equal 0, 0.5, or 1. Define the untreated canonical-event risk b_jxU = expit(-1.80 + 0.35 X1 + 0.20 X2 + 0.55 X3 + 0.30 kappa U + 0.05 s_j). Define canonical-event risk differences delta_0 = 0, delta_1 = -0.06 - kappa(0.03 X3 + 0.06 U) + gamma s_j, delta_2 = delta_1 + 0.12 kappa, and delta_3 = 0.02. The canonical-event probability under category d is pY_d = b_jxU + delta_d. Define mutually exclusive near-event probabilities pW_0 = expit(-3.00 + 0.20 X1 + 0.10 X3), pW_1 = pW_0 + 0.06 kappa, pW_2 = pW_0 + 0.02 kappa, and pW_3 = pW_0 + 0.08 kappa. Generate one multinomial outcome with probabilities pY_D for canonical event Y, pW_D for near-event W, and 1 - pY_D - pW_D for no event. All probabilities remain inside the unit interval over the specified factor grid. The narrow outcome is Y and the broad outcome is C = I(Y = 1 or W = 1). There is complete five-year follow-up, no censoring, no competing event, and no missing data.",
+  "treatment_effect": "Effects are specified directly on the five-year risk-difference scale. At kappa = 0, U is neither prognostic for Y nor an effect modifier, categories D = 1 and D = 2 have the same canonical-event effect, and adding W does not alter the treatment contrast. At kappa = 0.5 and 1, eligibility mappings that alter the U distribution can alter the marginal effect, D = 2 becomes progressively weaker than D = 1, and the broad outcome acquires an additional treatment risk difference of 0.03 and 0.06. These fixed levels are stress-test conditions, not parameter values calibrated to an asserted empirical prevalence or chosen by solving for a desired simulation conclusion.",
+  "effect_modification": "Measured and unmeasured effect modification increases with kappa through X3 and U. Genuine contextual effect heterogeneity is controlled separately by gamma, which is 0 or 0.02 per unit of s_j. U is not an unmeasured confounder because treatment is independent of U conditional on site and measured X. At kappa = 0, the intended risk difference is constant across X and U within a site, although gamma can still produce genuine site-level effect heterogeneity.",
+  "factors": [
+   {
+    "name": "Local trial-component mapping",
+    "levels": [
+     "Compatible: all sites use G >= 45, compare D = 1 with D = 0 while excluding D = 2 and D = 3, and use Y",
+     "Visible eligibility drift: two sites use G >= 60",
+     "Aggregate-stealth eligibility drift: within each X cell, two sites retain exactly the canonical number eligible but preferentially select U = 1 records",
+     "Visible exposure drift: two sites classify D = 1 or D = 2 as exposed, D = 0 as comparator, and only D = 3 as excluded",
+     "Visible outcome drift: two sites use C = I(Y = 1 or W = 1)",
+     "Aggregate-equivalent label permutation: two sites uniformly permute Y labels within every X by reference-D cell while preserving all released cell counts, event counts, effect estimates, and cell-based variances"
+    ],
+    "rationale": "The applied levels represent threshold disagreement, a proxy that preserves ordinary eligibility summaries, neighboring treatment-code contamination, and narrow-versus-broad outcome disagreement. The permutation is an identifiability control only. It is excluded from claims about different causal estimands. Exactly two sites are affected, with the pair cycling equally across sites {1,6}, {2,5}, and {3,4}."
+   },
+   {
+    "name": "Mapping-consequence coupling",
+    "levels": [
+     "kappa = 0: the mapping discrepancy is numerically effect-neutral for the common-q causal contrast",
+     "kappa = 0.5: weak coupling between the discrepancy and potential outcomes",
+     "kappa = 1: strong coupling between the discrepancy and potential outcomes"
+    ],
+    "rationale": "Crossing every mapping with null, weak, and strong coupling prevents one consequence-bearing mechanism from determining the study conclusion. Results are reported by coupling level rather than averaged into a general claim."
+   },
+   {
+    "name": "Genuine site-context effect heterogeneity",
+    "levels": [
+     "gamma = 0",
+     "gamma = 0.02 per unit of s_j"
+    ],
+    "rationale": "These levels separate semantic mapping effects from legitimate contextual effect heterogeneity. No claim is made that the nonzero level is calibrated to a particular health network."
+   },
+   {
+    "name": "Accuracy of local reference adjudication",
+    "levels": [
+     "Perfect reference labels",
+     "Each binary reference label is independently flipped with probability 0.05; each three-class exposure reference label is replaced with either other class with total probability 0.05"
+    ],
+    "rationale": "The levels separate an ideal local reference process from modest adjudication error. The 5 percent value is a sensitivity condition and not an empirical estimate."
+   }
+  ],
+  "n_scenarios": 72,
+  "deliberately_true": "The design is fully factorial: 6 mapping conditions by 3 coupling levels by 2 contextual-effect levels by 2 reference-accuracy levels equals 72 scenarios. Conditional exchangeability and positivity hold. The common target distribution q_x is supplied to every matched common-q estimator. Exact enumeration establishes scenario truths before stochastic simulation. For broad exposure, D = 2 constitutes one quarter of the locally exposed group, so its affected-site contrast differs by 0.03 kappa and the equal-site six-site contrast differs by 0.01 kappa. For the broad outcome, the affected-site contrast differs by 0.06 kappa and the six-site contrast differs by 0.02 kappa. At kappa = 0, every applied mapping is numerically effect-neutral for the common-q contrast. The label permutation is effect-neutral at every kappa. Eligibility-mapping limits are obtained by exact enumeration and frozen before simulation. No coefficient may be changed after those limits are inspected.",
+  "cannot_detect": "The study cannot determine how a network should create an unquestioned semantic reference definition. It cannot prove semantic equivalence from summaries or sampled validation. It does not evaluate irregular visits, longitudinal treatment changes, grace periods, censoring, competing risks, missing data, high-dimensional confounding, nuisance-model misspecification, privacy noise, secure-aggregation failures, malicious sites, temporal coding drift, multiple simultaneous mapping errors, or generalization beyond six fixed site contexts. The expected signatures used by the calibrated aggregate gate are idealized and may not exist in practice. The coupling levels are not externally calibrated, so the study does not estimate the prevalence or real-world magnitude of semantic drift."
+ },
+ "estimands": [
+  {
+   "name": "Intended common-target, equal-site five-year risk difference",
+   "definition": "The intended protocol uses eligibility G >= 45, baseline assignment to D = 1 versus D = 0, exclusion of D = 2 and D = 3, narrow outcome Y, and complete follow-up to five years. Let q_x be the canonical eligible X distribution obtained by mixing the six source-site superpopulations and conditioning on E = 1. The scientific target is Psi = (1/6) sum over sites j and cells x of q_x times {Pr(Y under D = 1 | J = j, X = x, E = 1) - Pr(Y under D = 0 | J = j, X = x, E = 1)}.",
+   "true_value_computation": "Enumerate six sites, eight X cells, two U values, treatment categories, and multinomial outcomes. Weight by the sequential Bernoulli probabilities and Pr(G >= 45 | X,U,J). Normalize to obtain q_x and the required U distributions. Save the exact value for every kappa and gamma combination before generating stochastic replicates."
+  },
+  {
+   "name": "Locally mapped site-population contrasts",
+   "definition": "For each site and mapping, let p_jx be the X distribution among all locally eligible records before any treatment-arm restriction. The local contrast is theta_j = sum_x p_jx{mu_1jx - mu_0jx}, where local arm and outcome definitions follow that site's production mapping.",
+   "true_value_computation": "Enumerate the local eligibility, exposure, and outcome mapping within each site. Records in excluded treatment categories contribute to p_jx but not to arm-specific outcome means. Compute exact local means, treatment-category probabilities, influence-function variances, and locally mapped theta_j values."
+  },
+  {
+   "name": "Estimator-specific aggregation functionals",
+   "definition": "Inverse-variance fixed-effect, DerSimonian-Laird, common-q inverse-variance, and Paule-Mandel estimators are evaluated against their own prespecified probability-limit aggregation functionals. These functionals use their method-specific weights and are not relabeled as the equal-site scientific target.",
+   "true_value_computation": "Insert exact site-level contrasts and exact asymptotic site variances into each pooling formula. Solve the Paule-Mandel estimating equation deterministically. Report own-functional estimation error separately from the functional's discrepancy from Psi."
+  },
+  {
+   "name": "Passing-site common-q contrast",
+   "definition": "For a replicate with K passing sites, the passing-site target is the equal-site common-q average over those K site contexts. It is not the original six-site target.",
+   "true_value_computation": "For each realized passing-site set, average the exact common-q site contrasts over that set. Evaluate site-exclusion intervals against this random target and report their discrepancy from Psi separately."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Historical local-population inverse-variance fixed-effect averaging",
+   "point_estimator": "Within each site, estimate p_jx from every locally eligible record before excluding any treatment category. Estimate mu_ajx within the two locally defined analysis arms and compute theta_j = sum_x p_jx(mu_1jx - mu_0jx). Pool theta_j using inverse estimated variance weights.",
+   "variance_estimator": "For every locally eligible record use phi_i = delta_Xi - theta_j + I(A_i = 1)(Y_i - mu_1Xi)/pi_1Xi - I(A_i = 0)(Y_i - mu_0Xi)/pi_0Xi, where delta_x = mu_1x - mu_0x and pi_ax is the probability of local arm a among all locally eligible records in cell x. Records in excluded treatment categories contribute delta_Xi - theta_j. Set V_j to sample variance(phi_i)/n_eligible and use 1/sum_j(1/V_j) for the pooled variance while treating estimated weights as fixed.",
+   "interval": "Use an untruncated normal interval. Evaluate coverage against the exact inverse-variance aggregation functional, not automatically against Psi.",
+   "is_status_quo": true,
+   "nonconvergence": "Nonconvergence occurs if a represented X cell has fewer than five records in either analysis arm, an arm probability is zero, a site variance is nonfinite or nonpositive, or any site estimate is unavailable.",
+   "implementation": "Sites release theta_j, V_j, eligible X counts, analysis-arm counts, and diagnostics. The method is labeled historical local-population pooling and is retained to expose target mismatch."
+  },
+  {
+   "name": "Historical DerSimonian-Laird random-effects averaging",
+   "point_estimator": "Apply the DerSimonian-Laird moment estimator to the six locally targeted theta_j values and variances. Use weights 1/(V_j + tau_squared_DL) for the pooled point estimate.",
+   "variance_estimator": "Use the historical variance 1/sum_j 1/(V_j + tau_squared_DL). This calculation does not incorporate full uncertainty in tau_squared.",
+   "interval": "Use the historical untruncated normal interval. Its coverage is evaluated against its own aggregation functional and is not presented as current preferred small-site inference.",
+   "is_status_quo": true,
+   "nonconvergence": "Apply the local-estimator rules and require a positive finite DerSimonian-Laird denominator and pooled variance.",
+   "implementation": "This comparator represents common historical practice. Any poor interval behavior is reported as a property of this implementation and is not attributed to semantic incompatibility."
+  },
+  {
+   "name": "Historical Q and I-squared estimate-level gate",
+   "point_estimator": "Release the historical fixed-effect estimate only when Cochran Q has chi-square p at least 0.10 with five degrees of freedom and I-squared is at most 0.50.",
+   "variance_estimator": "When released, use the historical fixed-effect variance.",
+   "interval": "When released, use the historical fixed-effect normal interval.",
+   "is_status_quo": true,
+   "nonconvergence": "Computational nonconvergence follows the fixed-effect method. Gate rejection is diagnostic abstention.",
+   "implementation": "This benchmark measures whether effect heterogeneity alone distinguishes mapping error from genuine effect modification. Its failure is never used to decide whether a mapping discrepancy changes the target."
+  },
+  {
+   "name": "Matched common-q inverse-variance fixed-effect aggregation",
+   "point_estimator": "Supply the same q_x used by the equal-site method to every site. Compute theta_jq = sum_x q_x(mu_1jx - mu_0jx) and pool these site estimates using inverse V_jq weights.",
+   "variance_estimator": "Use V_jq = sum_x q_x squared times {s_1jx squared/n_1jx + s_0jx squared/n_0jx}. Treat estimated weights as fixed and use 1/sum_j(1/V_jq).",
+   "interval": "Use an untruncated normal interval. Evaluate coverage against its exact variance-weighted common-q functional and report the functional's discrepancy from equal-site Psi.",
+   "is_status_quo": false,
+   "nonconvergence": "Nonconvergence occurs if a q-positive cell has fewer than five records in either arm or any required variance is nonfinite or nonpositive.",
+   "implementation": "This matched comparator receives exactly the same target information as the equal-site estimator. It isolates variance weighting from semantic mapping."
+  },
+  {
+   "name": "Paule-Mandel random-effects aggregation with modified Hartung-Knapp inference",
+   "point_estimator": "Apply Paule-Mandel estimation of tau squared to the six common-q site estimates theta_jq. Pool with weights 1/(V_jq + tau_squared_PM).",
+   "variance_estimator": "Use the Hartung-Knapp scale factor based on weighted residual variation, bounded below by one, divided by the sum of random-effects weights.",
+   "interval": "Use a two-sided t interval with five degrees of freedom. Evaluate it against its exact method-specific aggregation functional and report discrepancy from equal-site Psi separately.",
+   "is_status_quo": false,
+   "nonconvergence": "Require finite common-q site estimates, a deterministic Paule-Mandel root or valid zero boundary solution, and positive finite interval variance.",
+   "implementation": "Implement the prespecified formula and verify it against metafor using method PM and the ad hoc modified Knapp-Hartung option. This is the small-k sensitivity comparator; it does not convert the fixed six-site roster into a random sample of sites."
+  },
+  {
+   "name": "Ungated equal-site common-q standardization",
+   "point_estimator": "Compute theta_jq at every site using the externally supplied q_x and estimate Psi by the arithmetic mean of the six theta_jq values.",
+   "variance_estimator": "Use Var = sum_j V_jq/36. Treat q_x as fixed.",
+   "interval": "Use an untruncated normal interval centered on the equal-site common-q estimate.",
+   "is_status_quo": false,
+   "nonconvergence": "Nonconvergence occurs if any q-positive cell has fewer than five local records in either arm, any required statistic is nonfinite, or the network variance is nonpositive.",
+   "implementation": "This is the primary ungated estimator of the scientific target. It also supplies the common point estimator used after aggregate or local validation gates pass."
+  },
+  {
+   "name": "Site-calibrated aggregate-deviation gate plus equal-site common-q standardization",
+   "point_estimator": "For each kappa and gamma condition, prespecify each site's compatible probability vectors for eligibility by X, exposure class by X, and outcome risk by X and reference treatment class. Compare each site's production summaries with its own expected compatible vectors using component-specific multinomial deviance statistics. Calibrate each statistic against 100000 independent compatible aggregate-count draws with the same site sizes. Convert the three statistics to calibrated p-values, apply Holm adjustment, and release the equal-site common-q estimate only when all adjusted p-values are at least 0.05.",
+   "variance_estimator": "When released, use sum_j V_jq/36.",
+   "interval": "When released, use the equal-site common-q normal interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Computational nonconvergence follows equal-site common-q standardization. An unavailable calibrated null distribution causes diagnostic abstention. A significant deviation is abstention rather than numerical nonconvergence.",
+   "implementation": "The gate compares observations with prespecified site-specific expectations. It never tests raw cross-site homogeneity. Compatible critical values and random-number seeds are frozen before mismatch replicates. The method is explicitly an idealized audit benchmark because exact expected signatures may be unavailable in real networks."
+  },
+  {
+   "name": "Local trial-component validation gate with 50 reviewed records per predicted class",
+   "point_estimator": "At each site, validate two eligibility classes, three exposure classes, and two outcome classes against the locally adjudicated reference. Sample 50 records without replacement from each production-predicted class. A class passes only when the one-sided 95 percent Wilson upper bound for discordance is at most 0.15. Release the all-site equal-site common-q estimate only if every class at every site passes.",
+   "variance_estimator": "When released, use sum_j V_jq/36. Validation uncertainty affects release but is not added to the conditional effect variance.",
+   "interval": "When released, use the equal-site common-q normal interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Effect-estimator nonconvergence follows common-q standardization. Insufficient validation records, a failed bound, or a missing component report causes protocol abstention.",
+   "implementation": "Nested validation samples are generated using one randomized ordering. Only class totals and discordance counts leave the site."
+  },
+  {
+   "name": "Local trial-component validation gate with 100 reviewed records per predicted class",
+   "point_estimator": "Apply the same seven-class-per-site rule using 100 reviewed records per predicted class and release only when every class at every site passes.",
+   "variance_estimator": "When released, use sum_j V_jq/36.",
+   "interval": "When released, use the equal-site common-q normal interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the 50-record rules, with fewer than 100 available records in a class treated as protocol abstention.",
+   "implementation": "The sample is nested within the 200-record ordering. Only confusion counts are shared."
+  },
+  {
+   "name": "Local trial-component validation gate with 200 reviewed records per predicted class",
+   "point_estimator": "Apply the same seven-class-per-site rule using 200 reviewed records per predicted class and release only when every class at every site passes.",
+   "variance_estimator": "When released, use sum_j V_jq/36.",
+   "interval": "When released, use the equal-site common-q normal interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the smaller-gate rules, with fewer than 200 available records in a class treated as protocol abstention.",
+   "implementation": "This is the largest prespecified validation design. Only confusion counts are shared."
+  },
+  {
+   "name": "Site-exclusion validation gate with 200 reviewed records per predicted class",
+   "point_estimator": "Apply the 200-record rule separately to each site. Exclude failing sites and average common-q site estimates equally when at least four sites pass. Label the result as the passing-site common-q contrast.",
+   "variance_estimator": "For K passing sites use the sum of their V_jq values divided by K squared.",
+   "interval": "Use an untruncated normal interval for the passing-site estimand. Evaluate coverage against that target and report discrepancy from the original six-site target separately.",
+   "is_status_quo": false,
+   "nonconvergence": "Abstain if fewer than four sites pass or an included site fails numerical criteria. Validation exclusion is not numerical nonconvergence.",
+   "implementation": "The estimate is never labeled as an estimate of the original six-site target."
+  }
+ ],
+ "performance": {
+  "primary": "For every mapping by kappa by gamma cell, report the exact paired change in the common-q probability-limit estimand relative to the compatible mapping and the finite-sample paired mean change with a familywise 95 percent Monte Carlo confidence interval. Report unsafe-release probability at absolute-error tolerances 0.005, 0.01, and 0.02 jointly with release probability. Harm magnitude and diagnostic performance are separate result families.",
+  "secondary": [
+   "Bias, empirical standard error, model-based standard error, mean squared error, and interval coverage against each estimator's own aggregation functional",
+   "Discrepancy between each estimator-specific aggregation functional and the equal-site scientific target",
+   "Coverage of the equal-site common-q estimator for Psi",
+   "Historical DerSimonian-Laird interval performance reported separately from semantic-mapping effects",
+   "Paule-Mandel and modified Hartung-Knapp interval performance with six sites",
+   "Network and site-level release, abstention, sensitivity, specificity, and predictive values",
+   "False abstention under compatible semantics at both gamma levels",
+   "Conditional bias and coverage among released estimates",
+   "Paired mapping-induced changes using common random numbers",
+   "Validation workload and the distribution of reviewed records required per released network",
+   "Passing-site coverage against its own target and discrepancy from the original target",
+   "Verification that the label permutation has zero exact estimand change and a paired finite-sample mean change inside the numerical equivalence margin",
+   "Monte Carlo standard errors and confidence bounds for every decision quantity"
+  ],
+  "n_rep": 5000,
+  "n_rep_derivation": "Run 5000 common-random-number replicates per scenario initially. For every binary adequacy criterion, use a 95 percent Wilson Monte Carlo confidence interval. For paired mean changes, use familywise 95 percent Bonferroni Monte Carlo intervals across the prespecified primary cells. Add batches of 5000 replicates to any unresolved scenario, preserving random-number streams, until all relevant bounds lie wholly inside an evidence region or 50000 replicates are reached. Safety is adequate only when its upper bound is at most 0.05 and inadequate when its lower bound is at least 0.07. Compatible release, sensitivity, and specificity are adequate only when their lower bounds are at least 0.90 and inadequate when their upper bounds are at most 0.88. Values in the indifference regions remain unclassified. Reaching 50000 replicates with a bound crossing a decision boundary produces an uninformative result rather than a forced classification."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "No catalog-wide real-versus-not-real verdict is issued. A specific applied mapping by kappa cell supports the scoped mechanism if its exact common-q probability limit differs from the paired compatible limit by more than 0.00000001 and the familywise 95 percent Monte Carlo interval for the paired finite-sample mean change excludes zero in the same direction. The magnitude is then reported at all three unsafe-release tolerances. This is evidence only for that prespecified stress-test cell.",
+  "problem_is_not_real_if": "A specific mapping by kappa cell supports no numerical change in the studied causal estimand if its exact paired difference is at most 0.00000001 in absolute value and the familywise 95 percent Monte Carlo interval lies entirely within the equivalence margin from -0.002 to 0.002. This does not establish semantic equivalence. A validation gate is operationally adequate only when the upper confidence bound for unsafe release is at most 0.05 in every cell with exact target change at least 0.01, the lower bound for compatible-network release is at least 0.90, and the lower bounds for site-level sensitivity and specificity are each at least 0.90.",
+  "uninformative_if": "A cell is uninformative if the compatible common-q estimator fails its validity checks, the exact truth table is incomplete, numerical nonconvergence exceeds 0.10, the paired Monte Carlo interval overlaps both the zero-equivalence and nonzero regions after 50000 replicates, or aggregate-count and row-level verification disagree. A validation gate is unclassified if any adequacy bound remains in its prespecified indifference region at the replication cap. The full run does not start if the complete-batch benchmark shows that the approved compute or memory budget is insufficient.",
+  "both_branches_reachable": "At kappa = 0, all applied mappings have exactly zero common-q target change, so the negative cell-level branch is reachable. At kappa = 1, broad exposure changes the six-site target by 0.01 and broad outcome mapping changes it by 0.02 before Monte Carlo error, so the positive cell-level branch is reachable. The permutation remains a zero-change identifiability control at every kappa. Diagnostic adequacy can pass or fail independently because it is evaluated with two-sided evidence regions and is not part of the mechanism verdict."
+ },
+ "threats": [
+  {
+   "threat": "A single consequence-bearing DGM could predetermine that mapping drift is harmful.",
+   "mitigation": "Cross every mapping with null, weak, and strong coupling. Use fixed risk-scale increments rather than solving a coefficient against a decision threshold. Report results by cell and make no prevalence-weighted or field-wide consequentiality claim."
+  },
+  {
+   "threat": "The study begins after the hardest semantic task has already been completed.",
+   "mitigation": "State in the question, aims, interpretation, and bears-on claim that locally adjudicated reference definitions are assumed. Treat the study as a conditional stress test. Empirical multisite work is required to study reference construction and governance."
+  },
+  {
+   "threat": "A local reference label can be wrong or clinically ambiguous.",
+   "mitigation": "Cross perfect reference labels with independent 5 percent adjudication error. Interpret successful validation as performance conditional on the stated reference process, not proof of semantic truth."
+  },
+  {
+   "threat": "A gate can obtain low unsafe-release probability by abstaining.",
+   "mitigation": "Require confidence-bound evidence for compatible-network release, sensitivity, and specificity. Report abstention and conditional effect performance separately."
+  },
+  {
+   "threat": "Raw homogeneity tests confuse legitimate site differences with mapping failure.",
+   "mitigation": "Use site-specific compatible expectations and calibrated null distributions. Keep the historical Q and I-squared gate only as an estimate-level benchmark. Never use gate failure as evidence that mapping incompatibility is consequential."
+  },
+  {
+   "threat": "Exact site-specific expected signatures favor the aggregate audit gate.",
+   "mitigation": "Label the gate an idealized benchmark and report its assumptions prominently. Do not infer that real networks can obtain equally accurate expected signatures."
+  },
+  {
+   "threat": "Inverse-variance pooling and equal-site pooling answer different aggregation questions.",
+   "mitigation": "Compute exact estimator-specific functionals, evaluate own-functional error separately, provide common-q matched comparators, and report every functional's discrepancy from Psi."
+  },
+  {
+   "threat": "The historical DerSimonian-Laird normal interval performs poorly with six sites.",
+   "mitigation": "Label it historical, add Paule-Mandel with modified Hartung-Knapp inference, and do not attribute interval differences to semantic validation."
+  },
+  {
+   "threat": "The label permutation changes records without changing a causal estimand.",
+   "mitigation": "Keep it as an identifiability control only. Exclude it from conclusions about averaging estimates of different questions."
+  },
+  {
+   "threat": "Exact discrete-cell adjustment favors common-q standardization.",
+   "mitigation": "Describe this as an isolation design. The study does not evaluate nuisance-model misspecification or high-dimensional learning."
+  },
+  {
+   "threat": "Only one component fails at a time and only two sites are affected.",
+   "mitigation": "Rotate the affected pair across site contexts and restrict conclusions to one-component failures affecting two of six sites."
+  },
+  {
+   "threat": "The simulation workload could exceed the available compute budget.",
+   "mitigation": "Simulate exact multinomial and hypergeometric sufficient-statistic counts instead of allocating patient rows. Benchmark complete batches before the main run and include generation, every mapping, validation sampling, all methods, serialization, checkpointing, and restart overhead."
+  },
+  {
+   "threat": "Exact aggregation omits privacy perturbation and implementation failures.",
+   "mitigation": "Treat pooled-equivalent computation as outside scope. Secure aggregation, privacy leakage, differential-privacy noise, and malicious behavior require separate studies."
+  }
+ ],
+ "runtime_estimate": "No wall-time claim is made before measurement. The base design contains 72 by 5000 = 360000 scenario replicates; adaptive continuation can raise selected cells to 50000 replicates. The implementation samples multinomial cell counts and multivariate-hypergeometric validation counts exactly, avoiding repeated allocation of 18000 patient rows. Before the main run, benchmark 100 complete replicates in each of the 72 cells. Measure wall time, peak resident memory, worker serialization, checkpoint size, and restart time. Scale the measured 95th-percentile batch time to the base and maximum workloads and add 25 percent restart overhead. The run proceeds only after the resulting estimate fits the approved compute and memory budget. A small row-level implementation is retained solely to verify the aggregate generator on prespecified seeded checks.",
+ "bears_on": [
+  {
+   "id": "DTA-02",
+   "relation": "answers-part",
+   "what": "Conditional on locally adjudicated canonical reference definitions, the study quantifies when specified eligibility, exposure, and outcome mappings change a common-target federated estimand; separates semantic effects from weighting and genuine heterogeneity; and evaluates aggregate and sampled validation gates. It does not establish how networks create valid reference semantics, prove equivalence for arbitrary coding systems, or estimate the real-world prevalence of incompatibility."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, scenario prespecification, Monte Carlo uncertainty, and performance reporting."
+  },
+  {
+   "cite": "Li et al. Federated target trial emulation using distributed observational data for treatment effect estimation. npj Digital Medicine. 2025",
+   "doi_or_url": "10.1038/s41746-025-01803-y",
+   "used_for": "Motivation for treating privacy-preserving distributed estimation as feasible while isolating semantic compatibility."
+  },
+  {
+   "cite": "Manke-Reimers M, et al. When, why and how are estimated effects transported between populations? A scoping review. European Journal of Epidemiology. 2025",
+   "doi_or_url": "10.1007/s10654-025-01217-w",
+   "used_for": "Motivation for explicit target populations and transport weighting."
+  },
+  {
+   "cite": "Federated target trial emulation for time-to-event outcomes via POLARIS. 2026",
+   "doi_or_url": "10.21203/rs.3.rs-9613167/v1",
+   "used_for": "Justification for not re-studying pooled-equivalent federated likelihood machinery."
+  },
+  {
+   "cite": "Privacy-preserving distributed algorithms in action: ten principles for high-quality multi-site clinical studies. JAMIA. 2026",
+   "doi_or_url": "10.1093/jamia/ocag119",
+   "used_for": "Motivation for site-level validation and governance before aggregation."
+  },
+  {
+   "cite": "Cochran WG. The combination of estimates from different experiments. Biometrics. 1954",
+   "doi_or_url": "10.2307/3001666",
+   "used_for": "Cochran Q as the historical estimate-heterogeneity diagnostic."
+  },
+  {
+   "cite": "DerSimonian R, Laird N. Meta-analysis in clinical trials. Controlled Clinical Trials. 1986",
+   "doi_or_url": "10.1016/0197-2456(86)90046-2",
+   "used_for": "The historical moment estimator for between-site variance."
+  },
+  {
+   "cite": "Higgins JPT, Thompson SG. Quantifying heterogeneity in a meta-analysis. Statistics in Medicine. 2002",
+   "doi_or_url": "10.1002/sim.1186",
+   "used_for": "Definition and interpretation of I-squared."
+  },
+  {
+   "cite": "IntHout J, Ioannidis JPA, Borm GF. The Hartung-Knapp-Sidik-Jonkman method for random effects meta-analysis is straightforward and considerably outperforms the standard DerSimonian-Laird method. BMC Medical Research Methodology. 2014",
+   "doi_or_url": "10.1186/1471-2288-14-25",
+   "used_for": "Small-k random-effects inference and the limitations of normal DerSimonian-Laird intervals."
+  },
+  {
+   "cite": "Veroniki AA, et al. Methods to estimate the between-study variance and its uncertainty in meta-analysis. Research Synthesis Methods. 2016",
+   "doi_or_url": "10.1002/jrsm.1164",
+   "used_for": "Selection and interpretation of Paule-Mandel and alternative between-study variance estimators."
+  },
+  {
+   "cite": "Viechtbauer W. Conducting meta-analyses in R with the metafor package. Journal of Statistical Software. 2010",
+   "doi_or_url": "10.18637/jss.v036.i03",
+   "used_for": "Independent implementation check for Paule-Mandel and Knapp-Hartung calculations."
+  },
+  {
+   "cite": "Wilson EB. Probable inference, the law of succession, and statistical inference. Journal of the American Statistical Association. 1927",
+   "doi_or_url": "10.1080/01621459.1927.10502953",
+   "used_for": "Wilson confidence bounds for local discordance and Monte Carlo proportions."
+  },
+  {
+   "cite": "Holm S. A simple sequentially rejective multiple test procedure. Scandinavian Journal of Statistics. 1979",
+   "doi_or_url": "https://www.jstor.org/stable/4615733",
+   "used_for": "Multiplicity adjustment across aggregate component tests."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The study assumes that canonical local reference mappings already exist and therefore does not settle semantic reference construction or governance.",
+    "severity": "limitation",
+    "how": "declared-limitation",
+    "what_changed": "The question, aims, cannot-detect statement, threats, and bears-on claim now describe the study as a conditional stress test and explicitly exclude construction of semantic reference definitions."
+   },
+   {
+    "finding": "The aggregate-equivalent outcome permutation does not define a different marginal causal estimand.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The permutation is now labeled an identifiability control, kept separate from applied incompatibility scenarios, and excluded from different-estimand claims."
+   },
+   {
+    "finding": "The original DGM built a causal consequence into every applied mapping and then used those consequences to declare the problem real.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "Every mapping is crossed with null, weak, and strong consequence coupling. Effects are specified using fixed risk-scale increments, no coefficient is solved against a decision threshold, and conclusions are scenario-specific rather than field-wide."
+   },
+   {
+    "finding": "The local fixed-effect estimator used the X distribution after treatment-category exclusion, which differed from the declared eligible-population target.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Local p_jx is now estimated from every locally eligible record before arm restriction. The influence function includes all eligible records in its target-distribution term and arm-specific residuals only for the relevant treatment categories."
+   },
+   {
+    "finding": "Inverse-variance and random-effects pooling do not target the declared equal-site common-q estimand under heterogeneous site effects.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Each pooling method now has an exact estimator-specific aggregation functional. Own-functional error and discrepancy from Psi are reported separately. An ungated equal-site common-q comparator remains the estimator of the scientific target."
+   },
+   {
+    "finding": "The proposed estimator received exact q_x while conventional comparators used different target information, and the six-site DerSimonian-Laird normal interval was an unfair interval benchmark.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "A matched common-q inverse-variance comparator and a Paule-Mandel random-effects comparator with modified Hartung-Knapp inference were added. DerSimonian-Laird is retained only as a labeled historical analysis."
+   },
+   {
+    "finding": "The aggregate gate tested raw homogeneity even though the compatible DGM deliberately generated site differences, making false abstention and the diagnostic conclusion circular.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "Raw cross-site homogeneity tests were replaced with deviations from prespecified site-specific compatible distributions and calibrated null reference distributions. Diagnostic performance is evaluated separately from whether a mapping changes the estimand."
+   },
+   {
+    "finding": "The original consequentiality thresholds might be unreachable after only two of six sites were affected.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Analytic target changes for broad exposure and broad outcome mappings are disclosed, eligibility limits are enumerated and frozen before simulation, and the two-of-four global threshold rule was removed. The decision now classifies each prespecified cell and contains reachable zero and nonzero branches."
+   },
+   {
+    "finding": "At 2500 replicates, Monte Carlo uncertainty could change classifications near the 0.05 and 0.90 boundaries.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The initial replication count is 5000, all decisions use prespecified Monte Carlo confidence bounds and indifference regions, and unresolved cells receive staged batches up to 50000 replicates."
+   },
+   {
+    "finding": "The three-to-eight-hour runtime estimate lacked a complete benchmark.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The unsupported hour estimate was removed. The implementation uses exact sufficient-statistic count simulation and requires a complete-batch benchmark, memory measurement, scaling calculation, and restart allowance before the main run."
+   },
+   {
+    "finding": "The exact meta-analysis, heterogeneity, Wilson, and Holm procedures were uncited.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "Method-specific citations were added, and historical procedures are distinguished from the small-k random-effects sensitivity analysis."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study assumes that each site already has a locally adjudicated canonical reference definition.",
+   "The study cannot determine how semantic reference definitions should be constructed, validated, or governed across coding systems.",
+   "The mapping-consequence levels are stress-test conditions and are not externally calibrated estimates of real-world prevalence or magnitude.",
+   "The site-calibrated aggregate gate assumes compatible site-specific expected distributions that may be unavailable in practice.",
+   "The study covers one mapping failure at a time in two of six fixed sites.",
+   "The study does not prove semantic equivalence from aggregate summaries, sampled review, or a null numerical effect.",
+   "The study does not cover longitudinal treatment, incomplete follow-up, missing data, competing events, high-dimensional nuisance estimation, privacy perturbation, malicious sites, or secure-computation failures.",
+   "Historical fixed-effect, DerSimonian-Laird, Q, and I-squared procedures are benchmarks rather than endorsements of current preferred practice."
+  ]
+ }
+}

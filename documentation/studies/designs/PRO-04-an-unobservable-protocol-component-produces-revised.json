@@ -1,0 +1,363 @@
+{
+ "title": "Conditional numerical consequences of three already formalized protocol substitutions: a randomized-parameter simulation benchmark",
+ "question": "Within a prespecified synthetic distribution of coherent eligibility, treatment-strategy, and outcome substitutions, what proportions produce a material numerical discrepancy or preserve the numerical 24-month risk difference; how does stipulated silent labeling affect finite-sample inference at the power-selected sample size; and how accurately can an ideal two-phase validation design estimate and classify the intended-to-operational estimand gap?",
+ "aims": "This study settles only the following part of PRO-04: the conditional numerical consequences of three already formalized, coherent, single-component substitutions and the finite-sample performance of an ideal two-phase validation design. For every generated mechanism, estimate the intended effect psi_I, operational effect psi_O, and Delta = psi_O - psi_I. Estimate a response surface and the standardized probabilities of numerical preservation and material change under the declared synthetic mechanism distribution. Illustrate, without using it to determine whether substitution occurred, how labeling an estimator for psi_O as though it targeted psi_I changes coverage at the selected sample size. Evaluate validation-only and augmented two-phase estimators of psi_I and Delta. This study does not settle how an analyst detects or names an unknown realized target from available artifacts, whether a partially specified target has a coherent intervention, whether reporting requirements change behavior, or what proportion of applied emulations silently substitute targets.",
+ "dgm": {
+  "covariates": "For each replicate, generate N independent individuals, where N is selected by the prespecified diagnostic power calculation before the main simulation. Generate X1 from Bernoulli(0.50), X2 from Uniform(-1,1), and X3 from Bernoulli(expit(-0.30 + 0.60 X1 + 0.50 X2)). Generate B = 0.70 X1 + 0.60 X2 + 0.80 X3 + epsilon_B, where epsilon_B is standard normal, and define ideal eligibility E = I(B >= 0.65). Generate validation membership V from Bernoulli(0.50), independently of baseline variables, assignment, potential outcomes, operational measurements, and mechanism parameters. The intended protocol enrolls E = 1 individuals, compares high-intensity strategy 2 with no treatment, follows everyone for 24 months without censoring, and uses the true binary clinical endpoint. Exactly one component is operationally compromised in each mechanism. Its gold-standard value is observed only when V = 1; the remaining two components are observed exactly.",
+  "outcome_model": "Let p0 = 0.16 + 0.05 X1 + 0.04 X2 + 0.06 X3 + 0.05(1-E). Define base deviations g1 = 0.04 + 0.02(1-E) + 0.02 X1 and g2 = -0.04 + 0.08(1-E) + 0.04 X1. In absent-modification strata, set lambda = 0 and d1 = d2 = -0.06. In present-modification strata, draw lambda from Uniform(0,1) independently of all operational parameters, then set d1 = -0.06 + lambda g1 and d2 = -0.06 + lambda g2. Define d0 = 0 and p_z = p0 + d_z. These probabilities remain within 0.02 and 0.38. Generate a common U_Y from Uniform(0,1) and define Y^z = I(U_Y < p_z), with observed true endpoint Y = Y^Z. The parameter lambda is drawn independently of the numerical preservation and material-change margins.",
+  "treatment_effect": "For eligibility and outcome mechanisms, assign Z independently with probabilities 0.50, 0.10, and 0.40 for strategies 0, 1, and 2. For strategy mechanisms, first assign A from Bernoulli(0.50). If A = 0, set Z = 0. If A = 1, set Z = 2 with probability q(X1) and Z = 1 otherwise. The operational record retains only A_star = I(Z > 0). The intended contrast sets Z = 2 versus Z = 0. The operational contrast sets A_star = 1, invoking the generated mixture of strategies 1 and 2, versus A_star = 0. Operational fidelity parameters and treatment-effect parameters are generated independently.",
+  "effect_modification": "The absent level sets lambda = 0, producing a constant risk difference for both active strategies. It supplies exact numerical-preservation controls for eligibility and strategy substitutions. The present level draws lambda from Uniform(0,1), producing a continuum from no heterogeneity to the originally specified heterogeneous model. The response surface is estimated over lambda; no parameter is solved for or selected to force Delta across a decision margin.",
+  "factors": [
+   {
+    "name": "Compromised protocol component",
+    "levels": [
+     "Eligibility: replace E with E_star and analyze E_star = 1",
+     "Treatment strategy: replace exact Z with A_star = I(Z > 0)",
+     "Outcome: replace Y with recorded endpoint Y_star"
+    ],
+    "rationale": "These are the three concrete, already formalized substitutions retained from the original protocol. The study does not generalize them to the other four target-trial components."
+   },
+   {
+    "name": "Mean operational fidelity",
+    "levels": [
+     "Mild: draw eligibility sensitivity from Uniform(0.88,0.96) and specificity from Uniform(0.93,0.98); draw the active-strategy high-intensity fraction from Uniform(0.75,0.95); draw outcome sensitivity from Uniform(0.85,0.95)",
+     "Severe: draw eligibility sensitivity from Uniform(0.65,0.80) and specificity from Uniform(0.80,0.90); draw the active-strategy high-intensity fraction from Uniform(0.40,0.65); draw outcome sensitivity from Uniform(0.60,0.80)"
+    ],
+    "rationale": "These are synthetic stress-test distributions, not empirically estimated prevalence distributions. Outcome specificity is drawn from Uniform(0.990,0.999) at both levels. Fidelity draws are independent of lambda and of all decision margins."
+   },
+   {
+    "name": "Treatment-effect modification",
+    "levels": [
+     "Absent: lambda = 0",
+     "Present: lambda is drawn from Uniform(0,1)"
+    ],
+    "rationale": "The absent level retains exact preservation controls. The present level produces a response surface rather than one hand-selected heterogeneous-effect mechanism."
+   },
+   {
+    "name": "Operational dependence",
+    "levels": [
+     "Nondifferential: conditional operational probabilities equal their generated mean fidelity parameters",
+     "Differential with matched mean fidelity: conditional probabilities vary with X1 or assigned strategy, but their relevant population-weighted means equal the corresponding nondifferential fidelity draws"
+    ],
+    "rationale": "For differential eligibility sensitivity and specificity, use separate logistic models with slopes drawn as a random sign times Uniform(0.5,1.5); solve each intercept so sensitivity among E = 1 and specificity among E = 0 equal their generated marginal targets. For strategy coarsening, use logit q(X1) = a_q + b_q X1, draw b_q as a random sign times Uniform(0.5,1.5), and solve a_q so E[q(X1) | E = 1] equals the generated high-intensity fraction. For outcome sensitivity, use a logistic model over assigned-strategy scores -1, 0, and 1, draw its slope the same way, and solve its intercept so sensitivity averaged among true events under the randomized assignment distribution and E = 1 equals the generated target. This calibration changes dependence while holding mean fidelity fixed."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The 24 scenarios are strata from 3 components by 2 fidelity distributions by 2 effect-modification distributions by 2 dependence structures. Mechanism parameters are redrawn independently in every replicate from distributions frozen before the run. Assignment probabilities are known, positivity holds, follow-up is complete, and validation is independent with a known probability. Operational quantities are deliberately coherent and the intended variables are available without error in validation records. The same generated baseline distribution supports paired computation of psi_I and psi_O. The design estimates properties of the declared synthetic parameter distribution; it does not use the existence of one threshold-crossing cell as evidence.",
+  "cannot_detect": "The study cannot determine whether PRO-04 exists, detect an unnamed substitution from code or prose, construct a language for partially specified interventions, establish that an observed-data functional is causal, evaluate all seven protocol components, test a reporting mandate, or estimate the prevalence of silent substitution in applied research. It cannot assess simultaneous component failures, nonrandom validation, imperfect gold standards, unknown validation probabilities, bridge-model misspecification, censoring, time-varying treatment, confounding, positivity violations, survival estimands, or effect scales other than the 24-month risk difference. Successful recovery applies only to the ideal two-phase design deliberately generated here."
+ },
+ "estimands": [
+  {
+   "name": "Intended protocol effect, psi_I(H)",
+   "definition": "For generated mechanism parameters H, psi_I(H) = P(Y^2 = 1 | E = 1,H) - P(Y^0 = 1 | E = 1,H). It compares the fully specified high-intensity strategy with no treatment among ideally eligible individuals using the true endpoint.",
+   "true_value_computation": "Integrate over X1, X3, and E exactly by finite summation and over X2 by Gauss-Legendre quadrature. Start with 128 nodes and repeat with 256 nodes. Double the node count until the absolute difference between successive estimates is below 0.0000001."
+  },
+  {
+   "name": "Operational protocol effect, psi_O(H)",
+   "definition": "For eligibility mechanisms, psi_O(H) = P(Y^2 = 1 | E_star = 1,H) - P(Y^0 = 1 | E_star = 1,H). For strategy mechanisms, psi_O(H) is the risk under the generated q(X1) mixture of Z = 1 and Z = 2 minus the risk under Z = 0 among E = 1. For outcome mechanisms, psi_O(H) = P(Y_star^2 = 1 | E = 1,H) - P(Y_star^0 = 1 | E = 1,H). Each target is defined before individual-level data are generated.",
+   "true_value_computation": "Use the same converged quadrature nodes as for psi_I(H). Integrate classification probabilities, strategy-mixture probabilities, sensitivity, and specificity analytically conditional on each quadrature point."
+  },
+  {
+   "name": "Protocol substitution gap, Delta(H)",
+   "definition": "Delta(H) = psi_O(H) - psi_I(H). Numerical preservation is defined as |Delta(H)| <= 0.01 and material numerical change as |Delta(H)| >= 0.02. These classifications concern values, not estimand identity. Mechanisms with 0.01 < |Delta(H)| < 0.02 form a gray region.",
+   "true_value_computation": "Subtract the paired converged quadrature values. If successive quadrature results could assign Delta to different classes, continue doubling the node count until both results lie in the same class or their absolute difference is below 0.00000001. Report boundary cases without classification if numerical resolution remains inadequate."
+  },
+  {
+   "name": "Standardized mechanism-distribution probabilities",
+   "definition": "Let P_M be the equally weighted mean across the 24 strata of Pr_H(|Delta(H)| >= 0.02), and let P_P be the corresponding mean of Pr_H(|Delta(H)| <= 0.01). The probabilities refer only to the declared synthetic parameter distributions.",
+   "true_value_computation": "Classify the converged Delta(H) for each independently generated mechanism. Estimate each stratum probability from its 2500 mechanism draws, standardize with weight 1/24 per stratum, and obtain confidence intervals by resampling mechanism draws within strata."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Stipulated silent-labeling analysis",
+   "point_estimator": "This is a deliberately stipulated behavior, not an empirically established status quo. It ignores validation data, estimates psi_O, and labels the result as psi_I. For eligibility and outcome mechanisms, use S = E_star or E as appropriate, T = Z, W = Y or Y_star, and t in {2,0}. Define h_it = S_i I(T_i = t)/pi_t, d_t = mean(h_it), and mu_t = mean(h_it W_i)/d_t; report mu_2 - mu_0. For strategy mechanisms, use S = E, T = A_star, W = Y, t in {1,0}, and report mu_1 - mu_0.",
+   "variance_estimator": "For each arm, compute IF_it = h_it(W_i - mu_t)/d_t. Use IF_i = IF_i2 - IF_i0 for eligibility and outcome mechanisms and IF_i = IF_i1 - IF_i0 for strategy mechanisms. Set SE = sd(IF_i)/sqrt(N).",
+   "interval": "Untruncated two-sided Wald interval: estimate plus or minus 1.96 SE. Coverage against psi_I is reported only as a sample-size-dependent illustration of wrong-target labeling.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure if a required weighted denominator is zero or an estimate or SE is nonfinite. Flag arm-specific effective sample size below 20 without deleting the replicate.",
+   "implementation": "Use explicit component-specific active-arm indices. Unit tests must verify that eligibility and outcome analyses use arms 2 and 0 and that strategy analyses use operational arms 1 and 0."
+  },
+  {
+   "name": "Explicitly labeled operational analysis",
+   "point_estimator": "Use the same observations, weights, arm indices, and numerical estimator as the stipulated silent-labeling analysis, but identify psi_O as the target and attach its generated operational definition.",
+   "variance_estimator": "Use the same component-specific influence functions and sandwich SE. Evaluate bias and coverage against psi_O(H).",
+   "interval": "Untruncated two-sided Wald interval: estimate plus or minus 1.96 SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the same zero-denominator, nonfinite-value, and effective-sample-size rules as the stipulated analysis.",
+   "implementation": "The numerical equality of this estimate and the stipulated silent-labeling estimate isolates labeling from estimation."
+  },
+  {
+   "name": "Validation-only recovery of the intended effect",
+   "point_estimator": "Use V = 1 records and their validated E, Z, and Y values. For t in {2,0}, set h_it = V_i E_i I(Z_i = t)/[0.50 pi_t(X1_i)], calculate the two Hajek arm means, and report mu_2 - mu_0. In strategy mechanisms, pi_2(X1) = 0.50 q(X1) and pi_0 = 0.50. In eligibility and outcome mechanisms, pi_2 = 0.40 and pi_0 = 0.50.",
+   "variance_estimator": "Use IF_it = h_it(W_i - mu_t)/mean(h_it), IF_i = IF_i2 - IF_i0, and SE = sd(IF_i)/sqrt(N). Validation and assignment probabilities are treated as known.",
+   "interval": "Untruncated two-sided Wald interval: estimate plus or minus 1.96 SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure for an empty required weighted arm or a nonfinite estimate or SE. Retain and flag low-effective-sample-size replicates.",
+   "implementation": "This is an intentionally inefficient complete-case comparator. Its results establish only finite-sample behavior under independent, error-free validation."
+  },
+  {
+   "name": "Augmented two-phase recovery of the intended effect",
+   "point_estimator": "For each ideal arm t in {2,0}, define validated numerator contribution G_it = E_i I(Z_i = t)Y_i/pi_t(X1_i) and denominator contribution H_it = E_i I(Z_i = t)/pi_t(X1_i). Using five-fold cross-fitting, regress each contribution among validated records on a fixed basis containing 1, X1, X2, X3, X1 X2, the operational component, observed treatment indicators, and prespecified operational-component by treatment interactions. For Q in {G,H}, estimate its population mean by mean[m_Q(O_i) + V_i/0.50 {Q_i - m_Q(O_i)}]. Form each arm mean as the augmented numerator mean divided by the augmented denominator mean and report the arm-2 minus arm-0 contrast.",
+   "variance_estimator": "For each ratio, use the delta-method influence function formed from the augmented numerator and denominator pseudo-outcomes. Subtract the arm-0 influence function from the arm-2 influence function and use its sample standard deviation divided by sqrt(N). Cross-fitting keeps nuisance estimation separate from evaluation folds.",
+   "interval": "Untruncated two-sided Wald interval: estimate plus or minus 1.96 SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure if a fitted fold is rank deficient after the prespecified redundant-column removal rule, an augmented denominator is nonpositive, or an estimate or SE is nonfinite. Report validation-only results even if augmentation fails.",
+   "implementation": "The known validation probability makes the augmented estimator consistent under this DGM even if the fixed working regressions are misspecified. Augmentation uses the full operational sample for precision; it is not presented as protection against nonrandom validation or an imperfect gold standard."
+  },
+  {
+   "name": "Full-data ideal oracle",
+   "point_estimator": "Use all latent gold-standard E, Z, and Y values. Apply the known-probability Hajek estimator to arms 2 and 0 and report mu_2 - mu_0.",
+   "variance_estimator": "Use the empirical influence-function sandwich SE for the two weighted arm means.",
+   "interval": "Untruncated two-sided Wald interval: estimate plus or minus 1.96 SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure for a zero denominator or nonfinite estimate or SE.",
+   "implementation": "Oracle failure is an implementation or interval-calibration warning and cannot support a conclusion about substitution."
+  },
+  {
+   "name": "Complete-case paired gap diagnostic",
+   "point_estimator": "Within V = 1, estimate psi_O,V and psi_I,V on the same individuals and calculate Delta_hat_CC = psi_O,V - psi_I,V. Classify a replicate as preserving when its 90% interval lies wholly within [-0.01,0.01]. Classify it as changed when its 95% interval lies wholly above 0.01 or wholly below -0.01. Otherwise classify it as indeterminate.",
+   "variance_estimator": "Construct influence functions for both constituent effects on the common validation sample. Use IF_Delta = IF_O - IF_I so covariance is retained.",
+   "interval": "Use Delta_hat_CC plus or minus 1.645 SE for preservation and plus or minus 1.96 SE for changed classification.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure if either constituent estimator fails. Indeterminate is a substantive classification.",
+   "implementation": "This method is retained only as an efficiency comparator. Its failure cannot be interpreted as failure of the two-phase validation design."
+  },
+  {
+   "name": "Augmented two-phase gap diagnostic",
+   "point_estimator": "Estimate psi_O from the full operational sample and psi_I with the augmented two-phase estimator. Set Delta_hat_AUG = psi_O_hat - psi_I_hat_AUG. Classify preservation when the 90% interval lies wholly within [-0.01,0.01]. Classify change when the 95% interval lies wholly above 0.01 or wholly below -0.01. Otherwise classify the result as indeterminate.",
+   "variance_estimator": "Use IF_Delta = IF_O,full - IF_I,AUG from the joint estimating equations, retaining covariance from the shared full sample and validation records. Set SE_Delta = sd(IF_Delta)/sqrt(N).",
+   "interval": "Use Delta_hat_AUG plus or minus 1.645 SE_Delta for preservation and plus or minus 1.96 SE_Delta for changed classification.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure if either constituent estimator or the joint influence-function calculation fails. Indeterminate remains a substantive result.",
+   "implementation": "This is the primary diagnostic. Evaluate preserving classification only when true |Delta| <= 0.005 and changed classification only when true |Delta| >= 0.03. Mechanisms nearer a decision boundary contribute to response-surface summaries but not binary diagnostic accuracy."
+  }
+ ],
+ "performance": {
+  "primary": "The primary performance targets are P_M and P_P under the declared synthetic mechanism distribution, accompanied by the continuous response surface for Delta(H). These targets quantify conditional numerical consequences and do not adjudicate whether the underlying estimands are identical or whether PRO-04 is real.",
+  "secondary": [
+   "Signed and absolute Delta(H) across all generated mechanisms",
+   "Bias of every estimator against its declared estimand",
+   "Coverage of explicitly labeled operational intervals for psi_O(H)",
+   "Coverage of oracle, validation-only, and augmented intervals for psi_I(H)",
+   "Coverage of the stipulated silent-labeling interval for psi_I(H) as a sample-size-dependent illustration",
+   "Empirical SE, mean influence-function SE, relative SE error, RMSE, and mean interval width",
+   "Nonconvergence and low-effective-sample-size rates",
+   "Preserving-class sensitivity among mechanisms with |Delta| <= 0.005",
+   "Changed-class sensitivity among mechanisms with |Delta| >= 0.03",
+   "False changed-class rate among preserving mechanisms",
+   "Indeterminate probability by true Delta band",
+   "Efficiency ratio of complete-case and augmented gap estimators",
+   "Sensitivity of P_M and P_P to alternative margin pairs of 0.005 and 0.015, and 0.02 and 0.03"
+  ],
+  "n_rep": 2500,
+  "n_rep_derivation": "Each of the 24 strata receives 2500 independent mechanism and dataset replicates. For a stratum-level probability p, the worst-case Monte Carlo SE is sqrt[0.25/2500] = 0.01; at p = 0.95 it is 0.00436. Before the main simulation, fix validation probability at 0.50 and compute the asymptotic variance of the augmented gap estimator and augmented intended-effect estimator over the compact mechanism support using converged quadrature and deterministic multistart maximization. Inflate the largest variance by 10%. Choose N, rounded upward to the nearest 1000, so that normal-theory probability is at least 0.80 for declaring preservation at |Delta| = 0.005, at least 0.80 for declaring change at |Delta| = 0.03, and the expected augmented psi_I 95% interval width is at most 0.04. Freeze the resulting N before generating any performance replicate."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "This schema label does not adjudicate whether PRO-04 is real. After all validity gates pass, conclude only that material numerical consequences are common in the declared synthetic mechanism distribution if the lower endpoint of the stratified 95% confidence interval for P_M is greater than 0.30. Wrong-target coverage and the performance of either validation estimator do not enter this conclusion.",
+  "problem_is_not_real_if": "This schema label does not establish estimand identity or refute PRO-04. After all validity gates pass, conclude only that no important numerical discrepancy was demonstrated in the declared synthetic mechanism distribution if the upper endpoint of the stratified 95% confidence interval for P_M is less than 0.10 and the lower endpoint for P_P is greater than 0.80.",
+  "uninformative_if": "Apply an ordered decision table. First, declare the global numerical conclusion invalid if quadrature does not converge, any mechanism calibration fails, an eligibility or strategy lambda = 0 control has |Delta| greater than 0.0000001, or any oracle or explicitly labeled operational stratum has a 95% Monte Carlo interval for bias extending outside [-0.005,0.005] or a 95% Wilson interval for coverage extending outside [0.93,0.97]. Second, if valid, apply the positive rule. Third, if the positive rule does not apply, apply the negative rule. Every remaining valid result is classified as mixed or threshold-indeterminate; report the response surface and both probability intervals without a binary conclusion. Separately label augmented validation recovery useful only if its bias interval lies within [-0.005,0.005], its coverage interval lies within [0.93,0.97], RMSE is at most 0.015, and mean 95% interval width is at most 0.04. Label it calibrated but imprecise if only the precision criteria fail. Label the augmented diagnostic usable only if the lower 95% confidence bounds for preserving and changed classification are each at least 0.80 and the upper bound for indeterminate probability in both scored classes is at most 0.20.",
+  "both_branches_reachable": "The positive rule requires evidence that a substantial fraction of independently generated mechanisms has a material gap; the negative rule requires evidence that material gaps are rare and numerical preservation is common. Neither rule depends on one scenario misbehaving or on every scenario behaving. Mechanism parameters are sampled independently of the margins, and mixed results have an explicit third classification, so positive, negative, and threshold-indeterminate outcomes are all attainable."
+ },
+ "threats": [
+  {
+   "threat": "The study assumes that each operational target has already been coherently specified and named.",
+   "mitigation": "Restrict the aims and PRO-04 attachment to numerical consequences after formalization. State that detection, naming, partial interventions, and noncausal observed-data functionals remain outside the study."
+  },
+  {
+   "threat": "A hand-selected mechanism grid could encode the desired threshold crossings.",
+   "mitigation": "Generate fidelity, dependence, and effect-modification parameters independently from distributions frozen before the run. Estimate continuous response surfaces and standardized probabilities rather than treating the existence of one crossing as decisive. Do not resample or remove generated mechanisms."
+  },
+  {
+   "threat": "The synthetic parameter distributions do not represent the prevalence of mechanisms in applied target trial emulations.",
+   "mitigation": "Label P_M and P_P as probabilities under the declared synthetic distribution. Report stratum-specific results and do not translate them into claims about applied frequency."
+  },
+  {
+   "threat": "Numerically equal effects can arise from distinct estimands.",
+   "mitigation": "Define psi_I and psi_O through separate interventions before data generation. Use preservation only to describe equality within a numerical margin; never infer conceptual identity."
+  },
+  {
+   "threat": "Wrong-target coverage depends on sample size and precision.",
+   "mitigation": "Treat it only as a finite-sample illustration at the power-selected N. Exclude it from the positive and negative numerical-consequence rules."
+  },
+  {
+   "threat": "Differential and nondifferential mechanisms could differ in both dependence and mean fidelity.",
+   "mitigation": "Solve differential-model intercepts so population-weighted sensitivity, specificity, or strategy composition matches the generated nondifferential target before any outcome is simulated."
+  },
+  {
+   "threat": "Independent validation, an error-free gold standard, known sampling probability, and positivity guarantee consistency under ideal two-phase sampling.",
+   "mitigation": "Describe recovery results solely as finite-sample calibration and precision under these assumptions. Do not claim broader recoverability."
+  },
+  {
+   "threat": "A validation-only diagnostic discards operational information from nonvalidated records.",
+   "mitigation": "Use the augmented two-phase diagnostic as primary and retain the complete-case version only as an efficiency benchmark."
+  },
+  {
+   "threat": "Diagnostic accuracy is unattainable when true gaps lie on classification boundaries.",
+   "mitigation": "Power the study at |Delta| = 0.005 for preservation and |Delta| = 0.03 for change. Report boundary and gray-region mechanisms without scoring them as diagnostic errors."
+  },
+  {
+   "threat": "A nearly unbiased validation estimator can achieve nominal coverage through very wide intervals.",
+   "mitigation": "Require RMSE no greater than 0.015 and mean 95% interval width no greater than 0.04 in addition to bias and coverage criteria."
+  },
+  {
+   "threat": "Only one of three protocol components is compromised at a time.",
+   "mitigation": "Label results as component-specific first-order behavior. Do not extrapolate to the other four components or simultaneous substitutions."
+  },
+  {
+   "threat": "Known randomization, complete follow-up, and a fixed endpoint remove common observational-data complications.",
+   "mitigation": "Do not generalize to confounding, censoring, switching, dynamic regimes, irregular observation, or positivity failures."
+  },
+  {
+   "threat": "Working regressions in the augmented estimator can be inefficient or numerically unstable.",
+   "mitigation": "Use a fixed low-dimensional basis, cross-fitting, prespecified redundant-column removal, and the validation-only estimator as a robustness comparator."
+  },
+  {
+   "threat": "Wald interval failure could be confused with target mismatch.",
+   "mitigation": "Require oracle and correctly labeled operational calibration before interpreting any finite-sample interval result."
+  },
+  {
+   "threat": "The numerical margins are methodological judgment calls.",
+   "mitigation": "Report continuous Delta values and repeat only the classification summary under the two prespecified alternative margin pairs."
+  },
+  {
+   "threat": "Runtime cannot be audited before N is selected and implementation throughput is measured.",
+   "mitigation": "Run a representative pilot after N is fixed. Record hardware, operating system, R version, package versions, worker count, rows processed per second, peak memory, serialization cost, and checkpoint cost before publishing a wall-clock estimate."
+  }
+ ],
+ "runtime_estimate": "No unsupported wall-clock estimate is prespecified. After the power calculation fixes N, benchmark 100 complete replicates from each of the 24 strata using the final implementation. Estimate total runtime from observed person-record throughput, quadrature time, cross-fitting time, checkpoint cost, and summary cost; multiply the resulting estimate by 1.25 for contingency. Publish the benchmark code, hardware and software record, peak memory, worker count, and projected runtime before starting the main run.",
+ "bears_on": [
+  {
+   "id": "PRO-04",
+   "relation": "answers-part",
+   "what": "This study answers only the conditional numerical-consequence part for three already formalized, coherent substitutions. It quantifies the distribution of Delta, illustrates finite-sample wrong-target labeling, and evaluates ideal two-phase recovery and gap classification. It does not answer how substitutions are detected or named, whether partially specified operational quantities are causal, whether reporting requirements change practice, how the other four components behave, or how often silent substitution occurs."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019;38:2074-2102.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo error planning, and separation of method performance from simulation truth."
+  },
+  {
+   "cite": "Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. American Journal of Epidemiology. 2016;183(8):758-764.",
+   "doi_or_url": "10.1093/aje/kwv254",
+   "used_for": "The linked target-trial protocol components and the need to map a conceptual protocol to available data."
+  },
+  {
+   "cite": "Moreno-Betancur M, Wijesuriya R, Carlin JB. The ideal trial: defining causal estimands that balance relevance and feasibility in target trial emulations and actual randomized trials. Epidemiology. 2026;37(2):153-162.",
+   "doi_or_url": "10.1097/EDE.0000000000001933",
+   "used_for": "Separation of ideal, target, and operationally feasible trial specifications."
+  },
+  {
+   "cite": "An operational target trial emulation framework for causal inference using electronic health records. npj Digital Medicine. 2026.",
+   "doi_or_url": "10.1038/s41746-026-02563-z",
+   "used_for": "Operational realization of target-trial components in electronic health record data. No prevalence or numerical-fidelity claim is attributed to this work."
+  },
+  {
+   "cite": "Applying the estimand and target trial frameworks to external control analyses using observational data: a case study. Frontiers in Pharmacology. 2024.",
+   "doi_or_url": "10.3389/fphar.2024.1223858",
+   "used_for": "One applied example of jointly specifying an estimand and a target-trial framework. It is not used as evidence for a reporting convention or prevalence claim."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The study assumes away the central detection and naming problem in PRO-04 and covers only three already formalized component substitutions.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "The title, question, aims, primary target, conclusions, and bears_on statement now say that the study settles only the conditional numerical-consequence part of PRO-04. Detection, naming, partial interventions, reporting requirements, historical trial agreement, and the other four components are explicitly outside scope."
+   },
+   {
+    "finding": "Numerical agreement and wrong-target coverage cannot determine whether estimand substitution occurred.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Estimand identity is separated from Delta. Wrong-target coverage is a finite-sample illustration only, and the negative conclusion is renamed to no important numerical discrepancy in the declared synthetic distribution."
+   },
+   {
+    "finding": "The severe strategy cells guarantee a material gap and make the original negative branch impossible.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "Fixed threshold-forcing cells were replaced by independently generated mechanism parameters and a response-surface target. The decision concerns a substantial standardized probability of material gaps, not the existence of any selected crossing."
+   },
+   {
+    "finding": "MCAR validation with an error-free gold standard and known probabilities guarantees asymptotic recovery.",
+    "severity": "serious",
+    "how": "declared-limitation",
+    "what_changed": "The recovery aim is limited to finite-sample calibration and precision under ideal two-phase sampling. The protocol states that it does not establish recovery under nonrandom validation, imperfect gold standards, unknown probabilities, or bridge-model misspecification."
+   },
+   {
+    "finding": "Differential and nondifferential factor levels change both dependence and marginal accuracy.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Differential logistic-model intercepts are solved so population-weighted sensitivity, specificity, and strategy composition match the corresponding nondifferential fidelity draws."
+   },
+   {
+    "finding": "The operational methods inconsistently use arm 1 where eligibility and outcome scenarios require arm 2.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "All eligibility and outcome formulas now report mu_2 - mu_0 and IF_2 - IF_0. Strategy formulas explicitly use operational arms 1 and 0. Implementation tests are required for these indices."
+   },
+   {
+    "finding": "The paired complete-case diagnostic discards 80 percent of operational information and can manufacture indeterminacy.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "An augmented two-phase diagnostic using the full operational sample is now primary. The complete-case diagnostic is retained only as an efficiency comparator."
+   },
+   {
+    "finding": "The diagnostic thresholds lack a supporting power calculation and score mechanisms on the classification boundaries.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Validation probability is increased to 0.50, N is selected from a prespecified worst-case influence-function power calculation, the changed rule no longer requires the point estimate to cross the true-class boundary, and accuracy is scored only for |Delta| <= 0.005 or |Delta| >= 0.03."
+   },
+   {
+    "finding": "The original real, not-real, and uninformative branches are not exhaustive, and scenario-count uncertainty is undefined for fixed design points.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The protocol now uses an ordered exhaustive table: validity failure, positive numerical conclusion, negative numerical conclusion, or mixed threshold-indeterminate result. Mechanism parameters are random within strata, so uncertainty for P_M and P_P is estimated by within-stratum resampling rather than a binomial model over fixed scenarios."
+   },
+   {
+    "finding": "Validation recovery can be declared successful despite extremely wide intervals.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Recovery now requires RMSE no greater than 0.015 and mean 95% interval width no greater than 0.04 in addition to bias and coverage calibration."
+   },
+   {
+    "finding": "The silent operational analysis is called the status quo without evidence about reporting prevalence.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The method is renamed the stipulated silent-labeling analysis, is_status_quo is false, and no prevalence claim is made."
+   },
+   {
+    "finding": "The original truth MCSE statement does not ensure reliable classification near a margin.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "Random truth enumeration is replaced by converged deterministic quadrature, with additional refinement whenever successive values could change a class assignment."
+   },
+   {
+    "finding": "The runtime estimate cites an unavailable machine benchmark.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The fixed wall-clock claim is removed. A mandatory representative pilot must record hardware, software, throughput, memory, and checkpoint costs before a projected runtime is accepted."
+   },
+   {
+    "finding": "Two citations contain incomplete or unauditable author attribution.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "Unverified author attributions are removed. The supplied titles and DOIs are retained, and their uses are narrowed to the claims directly supported by the payload."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study does not settle the central PRO-04 problem of detecting and naming an unknown operational target from available artifacts.",
+   "Only eligibility, treatment-strategy, and outcome substitutions are studied; the other four target-trial components are not covered.",
+   "Every operational target is coherently specified before simulation, so the study does not address partially specified interventions or noncausal observed-data functionals.",
+   "The mechanism distributions are synthetic stress-test distributions and do not estimate the prevalence of substitutions in applied research.",
+   "Validation is independent, error-free, and sampled with a known probability; recovery conclusions are limited to finite-sample behavior under that ideal design.",
+   "Only one component is compromised at a time.",
+   "The study excludes confounding, censoring, time-varying treatment, nonpositivity, irregular observation, survival estimands, and effect scales other than a 24-month risk difference.",
+   "Numerical preservation does not establish that intended and operational estimands are conceptually identical.",
+   "Wrong-target coverage is specific to the power-selected sample size and cannot determine whether substitution occurred."
+  ]
+ }
+}

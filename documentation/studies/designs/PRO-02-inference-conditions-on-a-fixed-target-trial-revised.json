@@ -1,0 +1,373 @@
+{
+ "title": "Finite-sample coverage after a recorded finite search over target trial protocols",
+ "question": "For the explicitly recorded finite-search part of PRO-02, what unconditional marginal coverage deficits arise when deterministic, treatment-effect-blind selectors use pooled outcome counts or covariate-outcome associations to choose among 4 or 16 target trial protocols, and what finite-sample tail behavior, failure rates, and precision costs arise when Bonferroni simultaneous inference or a separate sample-splitting policy is implemented?",
+ "aims": "The part addressed is marginal selected-estimand coverage after a fully recorded, finite, deterministic search over age eligibility thresholds and outcome horizons using outcome-relevant information but no treatment-effect contrast. The primary aim is to estimate global coverage deficits for naive intervals after pooled-outcome workability selection and prognostic-association selection while varying prognostic-score alignment and distance from the workability cutoff. Secondary aims are to quantify bias, interval width, failure rates, target movement, and fixed-candidate calibration; evaluate finite-sample tail calibration and precision costs of Bonferroni intervals; evaluate sample splitting as a distinct design-and-analysis policy; and determine whether multiverse spread predicts noncoverage. The study does not address undocumented or sequential human protocol development, rejected specifications outside the declared library, comparators, grace periods, washout rules, or changing outcome definitions. It cannot settle or close PRO-02 as a whole.",
+ "dgm": {
+  "covariates": "Generate independent individuals. Draw U_Z uniformly between Phi(-2) and Phi(2), set Z=Phi_inverse(U_Z), and define age=55+10Z years. Draw S from Bernoulli(0.50). Draw C from Bernoulli(expit(-0.40+0.50Z+0.35S)). Draw epsilon_B from N(0,1) and set B=0.30Z+0.40(C-0.5)+0.20(S-0.5)+0.80epsilon_B. Draw baseline treatment A from Bernoulli(e), where logit(e)=-0.30+0.45Z+0.35(S-0.5)+0.60(C-0.5)+0.35B. A denotes initiation at time zero followed by perfect adherence through follow-up; A=0 denotes no initiation. Everyone is event-free at time zero. There is no loss to follow-up or competing event. Candidate protocols compare these strategies among people with age at least c and use first event by horizon h. The K=4 library is c in {50,55} crossed with h in {36,60} months. The K=16 library is c in {45,50,55,60} crossed with h in {24,36,48,60} months. The prespecified reference protocol is c=55 and h=60.",
+  "outcome_model": "For each cohort size n and event-count regime m in {35,70,140}, choose lambda_{n,m} before the main simulation by deterministic root finding on a separate fixed draw of 10,000,000 covariate vectors. Under the null treatment-effect structure, lambda_{n,m} makes the expected pooled event count for the anchor protocol c=55 and h=36 equal m. The same locked lambda_{n,m} is then used for every treatment-effect structure, library size, and prognostic-score setting at that n and m. The calibration uses only pooled expected event counts and never uses treatment-effect estimates, interval coverage, or simulation results. Draw U_T from Uniform(0,1). Define eta(A)=0.35Z+0.25(S-0.5)+0.50(C-0.5)+0.30B+A(theta0+theta1Z), and set T=-log(U_T)/(lambda_{n,m}*exp(eta(A))). Observe time=min(T,60), delta=I(T<=60), and Y_h=I(T<=h) for every candidate horizon. The conditional hazard is constant in time on the proportional-hazards scale.",
+  "treatment_effect": "Three fixed structures are used. The null structure sets theta0=0 and theta1=0. The homogeneous protective structure sets theta0=-0.287682072, corresponding to a hazard ratio of 0.75, and theta1=0. The heterogeneous structure sets theta0=-0.287682072 and theta1=0.25. No treatment-effect parameter is selected or calibrated to produce a desired coverage result.",
+  "effect_modification": "Only the heterogeneous structure contains effect modification. Its conditional hazard ratio is exp(-0.287682072+0.25Z), equal to 0.455, 0.750, and 1.237 at Z=-2, 0, and 2. This creates protocol-specific causal effects because age eligibility thresholds select different distributions of Z. The null and homogeneous structures ensure that any finding is not built entirely from effect heterogeneity.",
+  "factors": [
+   {
+    "name": "Cohort size",
+    "levels": [
+     "n=4000",
+     "n=8000"
+    ],
+    "rationale": "These represent moderate and large single-database emulations while preserving variation in eligible sample size and estimator precision."
+   },
+   {
+    "name": "Expected event-count distance from the 70-event cutoff",
+    "levels": [
+     "Below boundary: 35 expected pooled events at the anchor protocol under the null",
+     "At boundary: 70 expected pooled events at the anchor protocol under the null",
+     "Above boundary: 140 expected pooled events at the anchor protocol under the null"
+    ],
+    "rationale": "The fixed selector retains its arbitrary 70-event rule while the study varies pooled outcome frequency, which is observable to an analyst. The three levels distinguish selection driven by a tuned boundary from behavior away from that boundary. Calibration targets event counts only and cannot target undercoverage."
+   },
+   {
+    "name": "Recorded protocol search size",
+    "levels": [
+     "K=4",
+     "K=16"
+    ],
+    "rationale": "The nested libraries isolate the effect of expanding a known finite search."
+   },
+   {
+    "name": "Treatment-effect structure",
+    "levels": [
+     "null",
+     "homogeneous hazard ratio 0.75",
+     "age-modified hazard ratio exp(-0.287682072+0.25Z)"
+    ],
+    "rationale": "The levels distinguish selection behavior under no effect, a conventional homogeneous effect, and effect modification."
+   },
+   {
+    "name": "Prognostic-score alignment",
+    "levels": [
+     "Higher alignment: R_H=0.30Z+0.20(S-0.5)+0.40(C-0.5)+0.20B",
+     "Reduced alignment: R_L=0.30Z+0.20(S-0.5)"
+    ],
+    "rationale": "Both scores are fixed before simulation and neither copies the outcome linear predictor. They are crossed with every generated-data scenario. Their population squared correlations with each candidate outcome are calculated and published before the main run."
+   }
+  ],
+  "n_scenarios": 72,
+  "deliberately_true": "The first four factors define 36 unique generated-data cells. Each generated dataset is evaluated under both prognostic-score settings using common random numbers, yielding 72 registered analysis scenarios. Consistency, conditional exchangeability given Z, S, C, and B, positivity, independent sampling, perfect measurement, and a correctly specified propensity model are deliberately true. Every candidate is a legitimate target trial defined before its estimate is calculated. Candidate estimates remain strongly correlated because eligibility populations and follow-up horizons are nested. Selection algorithms and tie rules are frozen before simulation. Before the main replicates, an independent design diagnostic records lambda_{n,m}, expected eligible treatment-group sizes, expected pooled event counts, signed distances from the 70-event cutoff, and population squared correlations between each prognostic score and each candidate outcome. These diagnostics are locked before any coverage result is generated. The effect-seeking selector remains a positive control and is excluded from the substantive decision rule.",
+  "cannot_detect": "The study cannot assess undocumented or sequential human searches, candidates outside the recorded library, changing comparators, grace periods, washout rules, changing outcome definitions, scientific validity of the selected question, time-varying treatment, treatment switching, informative censoring, competing events, irregular observation, measurement error, nuisance-model misspecification, machine-learning estimators, or longitudinal TMLE. It estimates marginal coverage for selected superpopulation estimands, not exact conditional coverage given a particular selection event. It cannot establish that every data-informed revision invalidates inference, reconstruct an undocumented selection event, or settle PRO-02 as a whole."
+ },
+ "estimands": [
+  {
+   "name": "Randomly selected protocol risk difference",
+   "definition": "For selector s and observed selection data D_s, let K_s(D_s)=(c_s,h_s). The estimand is Psi_s=P(T^1<=h_s | age>=c_s)-P(T^0<=h_s | age>=c_s), where T^a is the event time under sustained strategy A=a. It is a marginal superpopulation risk difference. Coverage is marginal over cohort generation and protocol selection. Each replicate is scored against the truth for the protocol actually selected in that replicate, never against the reference protocol.",
+   "true_value_computation": "For each of the 18 unique cohort-size, event-count-regime, and treatment-effect parameter sets, independently generate 2,000,000 covariate vectors. For every possible protocol and a in {0,1}, calculate p_a,h(X)=1-exp(-lambda_{n,m}*h*exp(0.35Z+0.25(S-0.5)+0.50(C-0.5)+0.30B+a(theta0+theta1Z))) and average it among age>=c. Use common covariate draws for both strategies and all protocols. Divide draws into 200 batches and calculate the Monte Carlo SE of every risk difference. Extend in increments of 1,000,000 if any truth MCSE exceeds 0.00005. The locked truth table is created before the simulation replicates."
+  },
+  {
+   "name": "Prespecified candidate risk differences",
+   "definition": "For each fixed k=(c,h), Psi_k=P(T^1<=h | age>=c)-P(T^0<=h | age>=c). Fixed-candidate coverage is estimated across all replicates for every candidate in the declared library. No candidate is exempted because of a low selection frequency.",
+   "true_value_computation": "Use the same locked table of Monte Carlo-integrated truths. Report fixed-candidate results for every candidate and separately for the reference protocol c=55 and h=60."
+  },
+  {
+   "name": "Protocol-induced target movement",
+   "definition": "For each replicate, report Psi_Ks-Psi_ref, where Psi_ref is the 60-month risk difference among people aged at least 55. This is target movement, not estimator bias. Estimator bias is estimate(Psi_Ks)-Psi_Ks.",
+   "true_value_computation": "Look up both values in the locked candidate-truth table. Do not score the selected interval against Psi_ref."
+  },
+  {
+   "name": "Global selected-interval coverage deficits",
+   "definition": "Let I_Wgr indicate that the naive workability-selected interval in generated-data cell g and replicate r was produced and covered its selected truth. Let I_Hgr and I_Lgr denote the corresponding indicators for the higher-alignment and reduced-alignment prognostic selectors. Any failure to produce an interval sets the relevant indicator to zero. Define W_gr={I_Wgr+(I_Hgr+I_Lgr)/2}/2, which gives equal weight to the workability and prognostic selector families and equal weight to the two prognostic-score settings. Let C_all be the equally weighted mean of W_gr over all 36 generated-data cells and replicates, and define D_all=0.95-C_all. Define D_nonboundary identically after restricting generated-data cells to the 35-event and 140-event regimes. The near-boundary deficit is secondary.",
+   "true_value_computation": "Estimate each coverage by its registered stratified sample mean. Estimate the Monte Carlo variance using the within-cell sample variance of W_gr, retaining covariance among selectors evaluated on the same replicate, and sum the cell-specific contributions under equal cell weights. Construct a simultaneous 95% confidence rectangle for D_all and D_nonboundary using two-sided 97.5% normal intervals with critical value qnorm(0.9875). No paired fixed-candidate coverage-loss indicator is defined or used."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Prespecified-candidate IPW calibration",
+   "point_estimator": "Fit e_gamma(X)=P(A=1|X) by logistic regression with predictors Z, S-0.5, C-0.5, and B. For each candidate k and a in {0,1}, estimate mu_a,k as the Hajek mean solving sum I(age>=c)I(A=a)/p_a(X)*(Y_h-mu_a,k)=0, with p_1=e_gamma and p_0=1-e_gamma. Estimate Psi_k=mu_1,k-mu_0,k. Do not truncate weights.",
+   "variance_estimator": "Use a joint empirical M-estimation sandwich. Stack the propensity score U_gamma=x(A-e_gamma) with both weighted-mean equations for every candidate. Let Ahat be the empirical negative derivative matrix and Bhat the empirical outer product of the stacked scores. Use Ahat_inverse Bhat Ahat_inverse_transpose divided by n, then apply each risk-difference contrast. This accounts for propensity estimation and supplies all cross-candidate covariances.",
+   "interval": "For ordinary fixed-candidate calibration, use estimate plus or minus 1.959964 times its sandwich SE. For fixed-family tail calibration, also construct every candidate interval using qnorm(1-0.05/(2K)), approximately 2.50 for K=4 and 2.96 for K=16, and record whether all K intervals simultaneously cover their truths.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs if the propensity model does not converge, is rank deficient, has nonfinite coefficients or probabilities, a treatment-specific weighted denominator is zero, the sandwich matrix cannot be inverted, or an estimate or SE is nonfinite or nonpositive. Effective sample size below 20 in either arm is also a failure. For candidatewise unconditional coverage, a candidate failure is scored as noncoverage. For fixed-family simultaneous coverage, failure of any family member is scored as familywise noncoverage.",
+   "implementation": "Fit one propensity model per full replicate and compute all candidate estimates and the joint sandwich algebraically. Evaluate ordinary fixed-candidate calibration for every declared candidate. Evaluate Bonferroni-tail calibration through unconditional all-candidate familywise coverage before interpreting selected Bonferroni coverage."
+  },
+  {
+   "name": "Naive interval after pooled-outcome workability selection",
+   "point_estimator": "Order candidates by decreasing eligibility threshold and then increasing horizon. Select the first candidate having at least 100 eligible people in each treatment group and at least 70 pooled observed events, where event counts ignore treatment labels. The 70-event threshold is an arbitrary prespecified example of investigator behavior and is not an adequacy rule for IPW inference. If none qualifies, select the candidate with the largest pooled event count and break ties using the same order. Report its fitted-propensity IPW risk difference.",
+   "variance_estimator": "Use only the selected candidate's ordinary M-estimation sandwich SE. Omit the selection rule from the variance calculation.",
+   "interval": "Use an untruncated estimate plus or minus 1.959964 SE.",
+   "is_status_quo": true,
+   "nonconvergence": "Apply the IPW failure rules to the selected candidate and record whether no candidate met the workability thresholds. A failure to produce the selected interval remains in the unconditional denominator and is scored as noncoverage.",
+   "implementation": "This recorded-algorithm comparator uses pooled outcome prevalence and sample-size feasibility but never calculates or ranks a treatment effect. Expected counts and their distances from the cutoff are published before coverage simulation."
+  },
+  {
+   "name": "Naive interval after prognostic-association selection",
+   "point_estimator": "In every generated-data cell, separately apply the higher-alignment score R_H=0.30Z+0.20(S-0.5)+0.40(C-0.5)+0.20B and the reduced-alignment score R_L=0.30Z+0.20(S-0.5). Standardize the applicable fixed score using the full cohort. Among candidates with at least 100 people in each treatment group and variation in Y_h, select the candidate maximizing the squared Pearson correlation between the score and Y_h within its eligible population. Pool treatment groups and never use an effect contrast. Break ties by decreasing eligibility threshold and then increasing horizon. Report the selected fitted-propensity IPW risk difference.",
+   "variance_estimator": "Use the selected candidate's ordinary M-estimation sandwich SE and ignore selection.",
+   "interval": "Use an untruncated estimate plus or minus 1.959964 SE.",
+   "is_status_quo": true,
+   "nonconvergence": "Failure occurs under the IPW rules or if no candidate has outcome variation and the required treatment-group sizes. A failure remains in the unconditional denominator and is scored as noncoverage.",
+   "implementation": "This formalizes two recorded versions of protocol revision after inspecting covariate-outcome associations. Neither score is an oracle copy of the outcome model. Their population alignment with each candidate outcome is recorded before the main simulation."
+  },
+  {
+   "name": "Naive interval after effect-seeking selection",
+   "point_estimator": "Calculate every candidate's ordinary IPW estimate and SE, then select the smallest standardized statistic estimate divided by SE because benefit is defined as a negative risk difference. Break exact ties using the fixed candidate order.",
+   "variance_estimator": "Use the selected candidate's ordinary M-estimation sandwich SE and ignore selection.",
+   "interval": "Use an untruncated estimate plus or minus 1.959964 SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Exclude nonestimable candidates from ranking. Fail the method if all candidates are nonestimable. Retain failures in the unconditional denominator and score them as noncoverage.",
+   "implementation": "This is a positive control for explicit effect-directed searching. It is excluded from the decision about effect-blind searches."
+  },
+  {
+   "name": "Outcome-blinded metadata selection with full-sample inference",
+   "point_estimator": "Using only Z, S, C, B, and A, calculate inverse-probability-weighted absolute standardized mean differences for those four covariates within each eligibility population. Select the eligibility threshold minimizing the maximum absolute standardized difference, requiring effective sample size at least 20 in both groups. Set h=60 because outcomes are unavailable to choose a horizon. Break ties by threshold closest to 55, then by the lower threshold. After unmasking outcomes, report the full-sample IPW risk difference.",
+   "variance_estimator": "Use the selected candidate's ordinary M-estimation sandwich SE. Do not add selection to the variance estimator.",
+   "interval": "Use an untruncated estimate plus or minus 1.959964 SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs if propensity estimation fails, no threshold meets the effective-sample-size requirement, or the selected estimate or SE fails. Retain failures in the unconditional denominator and score them as noncoverage.",
+   "implementation": "This represents a design team exposed to treatment and covariate metadata but no outcome prevalence, covariate-outcome association, or treatment effect."
+  },
+  {
+   "name": "Recorded-search simultaneous Bonferroni inference",
+   "point_estimator": "Use the same selected IPW estimate produced by each full-data selector.",
+   "variance_estimator": "Use the same candidate-specific M-estimation sandwich SE. No independence between candidates is assumed.",
+   "interval": "For a library of K candidates, use estimate plus or minus qnorm(1-0.05/(2K)) times SE. Use the original declared K even if a selector cannot choose some candidates.",
+   "is_status_quo": false,
+   "nonconvergence": "The method fails if any candidate in the declared simultaneous family is nonestimable or if the selected estimate fails. A failure is retained in the unconditional denominator and scored as noncoverage.",
+   "implementation": "Construct intervals for the complete recorded library before applying a selector. First evaluate unconditional fixed-family coverage using the same Bonferroni critical value. Only after that calibration report selected coverage, tail failures, interval width, and rejection rates. The generic simultaneous-coverage principle is not treated as a simulation finding, and finite-sample validity for these IPW Wald pivots is not assumed."
+  },
+  {
+   "name": "Fifty-fifty design and analysis policy",
+   "point_estimator": "Randomly assign individuals 1:1 to design and analysis partitions using a replicate-specific seed independent of all data. Apply each outcome-informed selector only in the design partition. For workability selection, use partition-scaled thresholds of at least 50 people per treatment group and 35 pooled events. For prognostic selection, require at least 50 people per treatment group and apply both fixed prognostic scores. Fit a new correctly specified propensity model in the analysis partition and estimate all candidate IPW risk differences there, reporting the protocol selected by the corresponding design-partition rule. Never reuse design-partition outcomes or estimates.",
+   "variance_estimator": "Use the analysis-partition M-estimation sandwich, including analysis-partition propensity estimation.",
+   "interval": "Use an untruncated estimate plus or minus 1.959964 SE based only on the analysis partition.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs if selection cannot be completed in the design partition or the selected protocol fails the IPW, effective-sample-size, or sandwich criteria in the analysis partition. Retain failures in the unconditional policy denominator and score them as noncoverage.",
+   "implementation": "This is a distinct design-and-analysis policy, not a variance correction holding the full-data selection policy fixed. Score coverage against the policy's own selected estimand. Report its selection frequencies and target movement. Compare interval widths with full-cohort fixed-candidate intervals only within the same selected candidate, and do not interpret raw policy-level differences as correction-versus-status-quo effects."
+  },
+  {
+   "name": "Existing multiverse display",
+   "point_estimator": "Retain and display all K candidate IPW risk differences, their ordering, and the reference protocol. Calculate the range, interquartile range, and range divided by the median candidate SE.",
+   "variance_estimator": "Use each candidate's ordinary M-estimation sandwich SE.",
+   "interval": "Display candidatewise 95% Wald intervals only. Do not label their envelope or specification range as a selection-adjusted confidence interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Report the proportion and identity of nonestimable candidates. The display is incomplete if any candidate fails; failures are not silently dropped from summaries.",
+   "implementation": "Use the established multiverse approach as a descriptive diagnostic. Evaluate whether its standardized range predicts replicate-level noncoverage using AUC and risks in prespecified range categories below 1, from 1 through 2, and above 2."
+  }
+ ],
+ "performance": {
+  "primary": "Estimate unconditional C_all, D_all=0.95-C_all, and D_nonboundary as defined above, with failures to produce an interval scored as noncoverage. Report their simultaneous 95% Monte Carlo confidence rectangle. Fixed-candidate coverage is a calibration gate estimated separately for every declared candidate; it is not subtracted from selected coverage and is not described as a paired outcome.",
+  "secondary": [
+   "Unconditional and conditional-on-success coverage for every selector and scenario",
+   "Ordinary 95% fixed-candidate coverage for every candidate without a selection-frequency exemption",
+   "Fixed-family simultaneous coverage using the K-specific Bonferroni critical value",
+   "Coverage in the near-boundary event-count regime reported separately from nonboundary coverage",
+   "Coverage under effect-seeking and outcome-blinded selection",
+   "Bias of estimate minus the truth for the selected protocol",
+   "Empirical SE of selected-protocol estimation errors",
+   "Mean model SE and relative error in model SE",
+   "MSE and bias-eliminated coverage",
+   "Rejection rate for the selected protocol's true null",
+   "Method-specific failure probability, with the stage and reason for each failure",
+   "Median interval width and within-candidate width ratios",
+   "Selection frequency for every protocol",
+   "Protocol-specific expected event counts and signed distances from the workability cutoff",
+   "Population prognostic-score alignment and empirical selector behavior under both score settings",
+   "Frequency with which the selected estimand differs from the reference estimand by more than 0.01 risk-difference units",
+   "Policy-level target movement and selection agreement for sample splitting",
+   "Propensity-weight effective sample size and maximum weight",
+   "Multiverse range, standardized range, and AUC for predicting naive-interval noncoverage",
+   "Cell-specific inferential summaries only with familywise 95% Monte Carlo bounds; otherwise cell results are labeled descriptive",
+   "The Bonferroni implementation is classified finite-sample adequate only if both fixed-family unconditional coverage and global selected coverage have simultaneous lower confidence bounds above 0.93 and failure probability below 0.05. It is classified inadequate if either upper bound is below 0.93; otherwise it is inconclusive. This classification does not affect the PRO-02 subproblem verdict.",
+   "The sample-splitting policy is classified adequate for its own selected estimand only if its global unconditional coverage lower bound exceeds 0.93 and failure probability is below 0.05. It is classified inadequate if the coverage upper bound is below 0.93; otherwise it is inconclusive. Precision loss and target movement remain separate policy outcomes."
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "For a cell-specific coverage probability near 0.95, MCSE=sqrt(0.95*0.05/R). Requiring MCSE no greater than 0.005 gives R at least 1900, so use 2000 replicates per registered analysis scenario. This gives MCSE 0.00487 at 95% coverage and 0.00671 at 90% coverage. Common random numbers pair the two prognostic-score settings. Variance calculations for global statistics retain within-replicate covariance among selectors. No empirical covariance for an undefined paired fixed-versus-selected coverage loss is used."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "First pass the calibration gate: in every generated-data cell, every candidate in the declared library must have unconditional fixed-candidate 95% coverage between 0.93 and 0.97, truth MCSE at most 0.00005, and candidate failure probability below 0.05. If the gate passes, the recorded finite-search problem is materially real when the simultaneous 95% lower confidence bounds for both D_all and D_nonboundary exceed 0.02. Bonferroni or sample-splitting success is irrelevant to this classification.",
+  "problem_is_not_real_if": "After the same calibration gate, the recorded finite-search problem is not materially real at the prespecified two-percentage-point threshold when the simultaneous 95% upper confidence bounds for both D_all and D_nonboundary are below 0.02. This conclusion is restricted to the declared selectors, score settings, protocol components, and libraries of at most 16 candidates.",
+  "uninformative_if": "Classify the result as mixed or uninformative if the simultaneous confidence rectangle intersects the 0.02 threshold for either global deficit, if the fixed-candidate calibration gate fails for any declared candidate, if truth MCSE remains above 0.00005 after 10,000,000 integration draws, or if implementation failure prevents estimation of a registered global statistic. Near-boundary undercoverage without nonboundary undercoverage is reported as boundary-dependent and cannot by itself satisfy either substantive branch. Correction failure does not make evidence about naive coverage uninformative.",
+  "both_branches_reachable": "If the design produces near-nominal naive coverage across boundary and nonboundary regimes, both upper bounds can fall below 0.02. If it produces persistent material undercoverage, both lower bounds can exceed 0.02. The two branches use the same global estimands, calibration gate, materiality threshold, and simultaneous uncertainty procedure; neither depends on one exceptional cell or on every individual cell."
+ },
+ "threats": [
+  {
+   "threat": "A recorded finite algorithmic search omits the undocumented sequence of human revisions that makes PRO-02 broadly open.",
+   "mitigation": "State in the title, question, aims, interpretation, and bears_on field that the study answers only the recorded finite-search part. Do not use its result to close PRO-02. Addressing the full problem requires a separate prospective or empirical study that records actual development paths, rejected specifications, and the information viewed at each decision."
+  },
+  {
+   "threat": "A simulation can manufacture post-selection failure by choosing the most favorable treatment estimate.",
+   "mitigation": "Treat effect-seeking selection only as a positive control. Base the substantive decision on selectors using pooled outcome counts or covariate-outcome associations without treatment-effect contrasts."
+  },
+  {
+   "threat": "An oracle prognostic score can encode perfect agreement with the outcome DGM.",
+   "mitigation": "Use two fixed scores that do not reproduce the outcome linear predictor. Cross both score settings with every generated-data cell and publish their population alignment before coverage simulation."
+  },
+  {
+   "threat": "Workability-selection behavior can be driven entirely by expected counts tuned to the 70-event boundary.",
+   "mitigation": "Cross below-boundary, at-boundary, and above-boundary regimes with all other factors. Publish expected counts before simulation. Require material coverage deficits in the nonboundary regimes as well as globally."
+  },
+  {
+   "threat": "Scoring a selected estimate against the reference estimand would misclassify target movement as estimator bias.",
+   "mitigation": "Score every interval against the truth for its selected protocol and report target movement separately."
+  },
+  {
+   "threat": "Sparse outcomes or unstable weights can cause fixed-protocol Wald undercoverage.",
+   "mitigation": "Calibrate every declared candidate without a selection-frequency exemption. Count failures as noncoverage and make failure of any required fixed-candidate calibration render the substantive result uninformative."
+  },
+  {
+   "threat": "Dropping nonconvergent replicates can change coverage by an amount comparable to the decision threshold.",
+   "mitigation": "Use unconditional coverage with every failure scored as noncoverage for all decision rules. Also report conditional-on-success coverage and stage-specific failure probabilities."
+  },
+  {
+   "threat": "Normal-theory pivots can be calibrated at 1.96 but fail at Bonferroni critical values.",
+   "mitigation": "Evaluate fixed-family simultaneous coverage using the exact K-specific Bonferroni critical value before interpreting selected Bonferroni coverage."
+  },
+  {
+   "threat": "Bonferroni success largely follows from a generic simultaneous-coverage principle when candidate pivots are valid.",
+   "mitigation": "Treat the principle as established. Study only finite-sample tail calibration, failure, width, and rejection behavior of its IPW Wald implementation. Keep remedy performance out of the naive-coverage decision rule."
+  },
+  {
+   "threat": "Sample splitting changes the selected-protocol distribution and therefore the random estimand.",
+   "mitigation": "Treat splitting as a distinct policy. Score it against its own selected truth, report target movement and selection frequencies, and compare widths only within the same selected candidate."
+  },
+  {
+   "threat": "Searching many pointwise Monte Carlo intervals can create a chance qualifying pattern.",
+   "mitigation": "Use prespecified global deficits with a simultaneous confidence rectangle for the substantive verdict. Apply familywise Monte Carlo bounds to any cell-specific inferential claims."
+  },
+  {
+   "threat": "The correctly specified treatment model and absence of censoring make the data cleaner than applied emulations.",
+   "mitigation": "Treat these conditions as deliberate isolation of selection. Do not generalize numerical results to nuisance-model misspecification, informative censoring, treatment switching, or time-varying strategies."
+  },
+  {
+   "threat": "Monte Carlo error in candidate truths can be mistaken for estimator bias or distorted coverage.",
+   "mitigation": "Use common-random-number integration, batch MCSEs, a 0.00005 stopping threshold, and truth files locked before simulation."
+  },
+  {
+   "threat": "The nested candidate library may understate multiplicity relative to weakly correlated protocol choices.",
+   "mitigation": "Report the empirical candidate-estimate correlation matrix and effective library size. Interpret K=4 and K=16 as nested finite searches, not worst-case bounds for arbitrary protocol development."
+  }
+ ],
+ "runtime_estimate": "The 72 registered analysis scenarios comprise 36 unique generated-data cells evaluated under two paired prognostic-score settings. Run 2000 replicates per analysis scenario by generating 72,000 unique datasets and reusing each dataset across its paired score settings. Each replicate requires one full-data propensity fit and one analysis-partition propensity fit; all candidate estimates, selectors, split-policy outputs, and sandwich matrices are algebraic. This is approximately 144,000 low-dimensional logistic fits. The 18 unique truth integrations require at least 36,000,000 covariate draws, and the six lambda calibrations use separate fixed draws. A 100-replicate corner pilot must verify timing, memory, failure handling, and creation of the pre-run design-diagnostic table. The expected total runtime is approximately 6 to 12 hours on 6 workers. lmtp, concrete, CICI, Stan, and cmdstanr are unnecessary.",
+ "bears_on": [
+  {
+   "id": "PRO-02",
+   "relation": "answers-part",
+   "what": "It estimates unconditional coverage deficits for fully recorded finite searches over age eligibility and outcome horizon using two treatment-effect-blind selection mechanisms. It also evaluates finite-sample behavior of two implementable policies. It does not address undocumented sequential human decisions, rejected candidates outside the library, changing comparators, grace periods, washout rules, or changing outcome definitions, and it cannot close PRO-02."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo uncertainty, and simulation reporting."
+  },
+  {
+   "cite": "Hansford HJ, et al. Design and implementation of observational studies emulating a target trial. JAMA Network Open. 2026",
+   "doi_or_url": "10.1001/jamanetworkopen.2025.58262",
+   "used_for": "The range of protocol decisions that can form a candidate emulation library and the distinction between the narrow simulated library and broader protocol development."
+  },
+  {
+   "cite": "Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA. 2025",
+   "doi_or_url": "10.1001/jama.2025.13350",
+   "used_for": "Distinguishing transparent reporting of a final protocol from recording rejected specifications and decision paths."
+  },
+  {
+   "cite": "Uncertainty in the estimated effects of statin initiation on risk of dementia: using a multiverse analysis. European Journal of Epidemiology. 2025",
+   "doi_or_url": "10.1007/s10654-025-01231-y",
+   "used_for": "Applied precedent for displaying estimates across target trial specifications; used only as a descriptive comparator."
+  },
+  {
+   "cite": "Berk R, Brown L, Buja A, Zhang K, Zhao L. Valid post-selection inference. Annals of Statistics. 2013",
+   "doi_or_url": "10.1214/12-AOS1077",
+   "used_for": "The generic principle that simultaneous coverage can protect a target selected from a declared family. It is not used as evidence of finite-sample validity for IPW Wald-Bonferroni intervals."
+  },
+  {
+   "cite": "Hernan MA, Robins JM. Using Big Data to emulate a target trial when a randomized trial is not available. American Journal of Epidemiology. 2016",
+   "doi_or_url": "10.1093/aje/kwv254",
+   "used_for": "Explicit alignment of eligibility, treatment strategies, time zero, follow-up, and causal estimand."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The frozen finite algorithmic search answers a neighboring subproblem and cannot settle undocumented sequential human protocol development in PRO-02.",
+    "severity": "fatal",
+    "how": "declared-limitation",
+    "what_changed": "The title, question, aims, cannot_detect field, threats, interpretation, and bears_on field now identify the exact recorded finite-search part addressed and prohibit using the study to close PRO-02. The protocol states that a separate prospective or empirical decision-log study is required for the full problem."
+   },
+   {
+    "finding": "Sample splitting and simultaneous Bonferroni coverage largely follow by construction when their assumptions and pivots are valid.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Correction success was removed from the problem-existence rule. The study now treats the generic principles as established and evaluates only finite-sample tail calibration, interval width, failure, rejection behavior, and policy-level target movement under separate correction classifications."
+   },
+   {
+    "finding": "The prognostic score copied the outcome linear predictor, and event-count behavior was not varied by distance from the workability cutoff.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The oracle score was replaced by higher-alignment and reduced-alignment fixed scores, both crossed with every generated-data cell. Below-boundary, at-boundary, and above-boundary event-count regimes were added. Population score alignment, expected counts, and cutoff distances are locked and published before coverage simulation."
+   },
+   {
+    "finding": "The proposed paired coverage loss relative to fixed-candidate calibration was undefined because the selected and fixed labels refer to the same interval on a selected replicate.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "The undefined paired contrast was removed. The primary quantities are explicitly defined nominal coverage deficits, D_all and D_nonboundary. Their estimators, weighting, failure scoring, Monte Carlo variances, and simultaneous confidence bounds are specified."
+   },
+   {
+    "finding": "Calibration at the 1.96 critical value does not validate Bonferroni intervals at approximately 2.50 or 2.96.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Fixed-family simultaneous calibration using the exact K-specific Bonferroni critical value is now required before interpreting selected Bonferroni coverage."
+   },
+   {
+    "finding": "Coverage denominators after nonconvergence were unspecified and differed across methods.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Every method now reports unconditional coverage with failure to produce an interval scored as noncoverage. Conditional-on-success coverage and stage-specific failure rates are secondary outputs."
+   },
+   {
+    "finding": "The split-sample procedure changes the selected-protocol distribution and random estimand, so it is not a direct correction-versus-status-quo comparison.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Sample splitting is now labeled and analyzed as a distinct design-and-analysis policy. Thresholds are scaled to the design-partition size, coverage is scored against the policy's own selected truth, target movement is reported, and width comparisons are restricted to the same selected candidate."
+   },
+   {
+    "finding": "The problem-existence rule incorrectly required at least one correction to succeed.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Naive selected coverage and fixed-candidate calibration alone determine the substantive verdict. Bonferroni and sample-splitting results use separate adequacy rules and cannot alter the problem-existence classification."
+   },
+   {
+    "finding": "Candidates selected in fewer than 5% of replicates were exempt from fixed-candidate calibration despite contributing to selected coverage.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The calibration gate now covers every candidate in every declared library, without a selection-frequency exemption. Candidate failures count as noncoverage."
+   },
+   {
+    "finding": "The global verdict searched 48 pointwise Monte Carlo intervals without multiplicity control.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The cell-count rule was replaced by prespecified global coverage deficits. The verdict uses a simultaneous 95% confidence rectangle for D_all and D_nonboundary. Cell-specific inferential claims require familywise Monte Carlo bounds."
+   },
+   {
+    "finding": "Peduzzi et al. did not validate a 70-event threshold for Hajek IPW risk differences with sandwich inference.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The citation was removed. Seventy events is now described solely as an arbitrary prespecified example of investigator behavior, with no adequacy claim."
+   },
+   {
+    "finding": "Berk et al. do not establish finite-sample validity of normal-theory Bonferroni intervals for marginal IPW risk differences with estimated propensity scores.",
+    "severity": "limitation",
+    "how": "declared-limitation",
+    "what_changed": "The citation is restricted to the generic simultaneous-coverage principle. The protocol separately calibrates the actual IPW Wald-Bonferroni family and states that finite-sample validity is not supplied by Berk et al."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study addresses only deterministic searches over a known finite library of age thresholds and outcome horizons. It does not establish inference after undocumented sequential human protocol development and cannot close PRO-02.",
+   "The study does not observe actual protocol-development paths, rejected alternatives, or the information viewed during human decisions. A prospective or empirical decision-log component is required for that question.",
+   "Bonferroni and sample-splitting principles are not new findings. The study evaluates only their finite-sample implementation, tail behavior, failures, precision costs, and policy consequences in this DGM.",
+   "Berk et al. support a generic simultaneous-inference principle, not finite-sample validity of the specified IPW Wald-Bonferroni intervals.",
+   "The clean treatment model, perfect measurement, absence of censoring, fixed treatment at time zero, and nested candidate library limit generalization to more complex emulations.",
+   "Coverage is marginal over protocol selection for the selected superpopulation estimand. Exact conditional coverage given a particular selection event is not established.",
+   "Results cannot establish that every data-informed protocol revision invalidates inference or that searches involving other protocol components behave similarly."
+  ]
+ }
+}

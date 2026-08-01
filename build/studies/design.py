@@ -468,6 +468,136 @@ def critique_report():
     print("  findings:", dict(tot))
 
 
+REVISE_PROMPT = """You revise a simulation-study protocol that has been
+reviewed and found unsound. Produce the corrected protocol, not a reply to the
+reviewer.
+
+Answer from the payload. Do not use tools, do not spawn sub-agents, do not load
+skills.
+
+## What you are given
+
+  problems           the catalog entry the study must settle
+  proposed_design    the protocol as written
+  critique           the review, with findings graded fatal, serious, minor and
+                     limitation
+
+## How to treat the review
+
+A finding is not advisory and it is not a debate. Every fatal and every serious
+finding is resolved in one of exactly two ways, and the output says which:
+
+  design decision      the protocol changes so the finding no longer applies
+  declared limitation  the protocol cannot fix it, and it is stated in the
+                       protocol as something the study does not establish
+
+There is no third option. A finding you disagree with is still resolved: say so
+in `disputed`, give the reason, and then still pick one of the two.
+
+Three things the review found across this program, so check yours for them
+whether or not the reviewer named them:
+
+1. **Answering a neighbouring question.** Seventeen of the thirty-two fatal
+   findings were this. The study must settle the catalog entry it is attached
+   to. If it can only settle a part, say which part in the aims, in those words,
+   and do not describe the rest as covered.
+
+2. **A mechanism that encodes its conclusion.** If a parameter is solved for so
+   that the studied effect comes out at a chosen size, the study measures the
+   arithmetic rather than the phenomenon. Fix this by holding the mechanism
+   fixed and varying something the analyst could observe, or by making the
+   decisive comparison internal: two arms of the design that agree on everything
+   the analyst can see and differ in the thing under test.
+
+3. **A decision rule that cannot come out negative.** If the "problem is real"
+   branch needs any scenario to misbehave and the "not real" branch needs every
+   scenario to behave, the rule returns one answer whatever happens. Both
+   branches must be reachable by a result the design can actually produce.
+
+Keep everything the review did not fault. Do not redesign what was sound.
+
+## Output
+
+Reply with JSON only, no prose before or after. Same schema as the design you
+were given, plus a `revision` block.
+
+{{"title":"...","question":"...","aims":"...",
+ "dgm":{{"covariates":"...","outcome_model":"...","treatment_effect":"...",
+        "effect_modification":"...","factors":[{{"name":"...","levels":["..."],
+        "rationale":"..."}}],"n_scenarios":24,"deliberately_true":"...",
+        "cannot_detect":"..."}},
+ "estimands":[{{"name":"...","definition":"...","true_value_computation":"..."}}],
+ "methods":[{{"name":"...","point_estimator":"...","variance_estimator":"...",
+        "interval":"...","is_status_quo":false,"nonconvergence":"...",
+        "implementation":"..."}}],
+ "performance":{{"primary":"...","secondary":["..."],
+        "n_rep":2000,"n_rep_derivation":"..."}},
+ "decision_rule":{{"problem_is_real_if":"...","problem_is_not_real_if":"...",
+        "uninformative_if":"...","both_branches_reachable":"..."}},
+ "threats":[{{"threat":"...","mitigation":"..."}}],
+ "runtime_estimate":"...",
+ "bears_on":[{{"id":"...","relation":"answers|answers-part|does-not-touch",
+        "what":"..."}}],
+ "citations":[{{"cite":"...","doi_or_url":"...","used_for":"..."}}],
+ "revision":{{"resolved":[{{"finding":"...","severity":"...",
+        "how":"design-decision|declared-limitation","what_changed":"..."}}],
+        "disputed":[{{"finding":"...","why":"...","still_resolved_as":"..."}}],
+        "declared_limitations":["..."]}}}}
+
+PAYLOAD:
+"""
+
+
+def revise_one(pid, entry, slug):
+    """One revision pass over one reviewed design."""
+    try:
+        design = json.load(open(os.path.join(OUT, f"{slug}-design.json"),
+                                encoding="utf8"))
+        crit = json.load(open(os.path.join(OUT, f"{slug}-critique.json"),
+                              encoding="utf8"))
+        d = call(REVISE_PROMPT, {"problems": [entry], "proposed_design": design,
+                                 "critique": crit}, "revised", slug)
+    except Exception as e:
+        print(f"  {pid}: FAILED ({type(e).__name__})", flush=True)
+        return pid, None
+    r = d.get("revision") or {}
+    lim = len(r.get("declared_limitations") or [])
+    res = r.get("resolved") or []
+    dd = sum(1 for x in res if x.get("how") == "design-decision")
+    print(f"  {pid}: {len(res)} findings resolved ({dd} by design change, "
+          f"{len(res)-dd} declared), {lim} limitations", flush=True)
+    return pid, d
+
+
+def revise_all(parallel):
+    """Revise every design that has a critique and no revision yet.
+
+    A review whose findings never reach the protocol is decoration. This is the
+    step that makes the critique load-bearing: every fatal and serious finding
+    comes back either as a change to the design or as a limitation the protocol
+    states about itself, and the output records which of the two it was.
+    """
+    P = {p["id"]: p for p in json.load(open(REGISTRY, encoding="utf8"))}
+    done = {os.path.basename(f).split("-")[0] + "-" + os.path.basename(f).split("-")[1]
+            for f in glob.glob(os.path.join(OUT, "*-revised.json"))}
+    todo = []
+    for f in sorted(glob.glob(os.path.join(OUT, "*-critique.json"))):
+        slug = os.path.basename(f).rsplit("-critique.json", 1)[0]
+        pid = slug.split("-")[0] + "-" + slug.split("-")[1]
+        if pid in done:
+            print(f"  {pid}: cached"); continue
+        if pid in P:
+            todo.append((pid, P[pid], slug))
+    if not todo:
+        print("every reviewed design has been revised"); return
+    print(f"{len(todo)} designs to revise with {MODEL} at {EFFORT} effort, "
+          f"{parallel} at a time", flush=True)
+    with ThreadPoolExecutor(max_workers=parallel) as pool:
+        futs = [pool.submit(revise_one, pid, ent, slug) for pid, ent, slug in todo]
+        n = sum(1 for f in as_completed(futs) if f.result()[1] is not None)
+    print(f"\n{n} of {len(todo)} revised")
+
+
 def report():
     """One table over every design, plus each design written out in full.
 
@@ -608,6 +738,7 @@ def main():
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--critique-all", action="store_true")
     ap.add_argument("--critique-report", action="store_true")
+    ap.add_argument("--revise-all", action="store_true")
     a = ap.parse_args()
 
     if a.all:
@@ -616,6 +747,8 @@ def main():
         return critique_all(a.parallel)
     if getattr(a, 'critique_report', False):
         return critique_report()
+    if getattr(a, 'revise_all', False):
+        return revise_all(a.parallel)
     if a.report:
         return report()
     if not a.slug:

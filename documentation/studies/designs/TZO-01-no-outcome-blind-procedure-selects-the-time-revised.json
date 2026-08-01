@@ -1,0 +1,325 @@
+{
+ "title": "Outcome-masked selection of covariate and nuisance-model time resolution when treatment order is known",
+ "question": "Within a finite, stylized domain where treatment initiation and outcome times are known exactly, can a rule based only on treatment and visit processes select among 1-, 2-, 4-, and 8-week covariate-update and nuisance-model grids while preserving bias and coverage and improving efficiency relative to an always-one-week analysis? How much systematic movement occurs among the expected estimates from those grids? This study answers only the grid-selection and grid-diagnostic part of TZO-01. It does not select a clinically meaningful grace period or address settings where treatment-outcome order is unavailable.",
+ "aims": "Evaluate resolution-specific clone-censor-weight estimators using separately coarsened longitudinal histories, exact protocol-deviation censoring, and nuisance models whose dimension changes with grid width. Compare an outcome-blind process-selected grid with prespecified 1-, 2-, 4-, and 8-week grids, an always-one-week comparator using equal or greater data resources, and a full-history exact-order benchmark. Estimate cell-specific paired differences between expected grid estimates and report a locked multiverse. Quantify RD12-RD4 only as a contrast between distinct grace-period strategies. The aims cover only the grid-selection and grid-diagnostic subproblem under known treatment and outcome ordering.",
+ "dgm": {
+  "covariates": "Each replicate contains an independent outcome-masked design sample of 1000 people and an analysis sample of 4000 people. Everyone is eligible at time 0 and has process histories generated through week 104. Draw age from N(60, 10^2) truncated to 40 through 80 and define Xage=(age-60)/10. Draw female F from Bernoulli(0.50), comorbidity C from Bernoulli(0.35), S0 from N(0.30 Xage+0.40 C-0.20 F,1), and baseline recorded marker Z0=S0+N(0,0.15^2). At the start of week k, untreated people initiate irreversible treatment with probability 1-exp[-exp(etaA)], where etaA=alphaA+0.75 Z+0.35 C+0.20 Xage-0.15 F+0.30 I(a visit occurred in the preceding week)+0.20 k/52. Treatment starts at that weekly boundary. After the treatment decision, latent state evolves as Sk=0.90 S(k-1)+0.05 Xage+0.08 C-0.04 F+N(0,0.35^2). Treatment does not affect this state. A visit occurs during week k with probability expit(alphaV+0.35 C+0.25 F+0.35 max(Z,0)+0.12 min(R,12)+0.10 sin(2 pi k/52)), where R is complete weeks since the last visit. Its exact time is k+Uniform(0.05,0.95). At a visit, Z is replaced by Sk+N(0,0.15^2); otherwise Z is carried forward. At most one visit occurs per week. For each candidate grid, a separate analysis file is constructed. Longitudinal marker and visit information is updated only at that grid's boundaries, the last marker available at the boundary is carried through the interval, visit history is reduced to the preceding interval's count and boundary-measured time since the last visit, and the nuisance baseline hazard has one unrestricted intercept per grid interval. Exact treatment and outcome times are retained solely to censor deviations before later outcomes and to calculate time at risk. They are not used to restore within-grid covariate histories. The design sample provides treatment and visit outcomes for process-model scoring but no clinical outcome labels.",
+  "outcome_model": "The first clinical event follows a piecewise exponential model. During week k its rate per week is exp[-6.10+0.30 Xage+0.40 C-0.20 F+betaS Sk+0.15 k/52+psi(s,C)], where s is exact weeks since treatment initiation. An exponential waiting time is drawn within each week, and exact event time is retained. The process-independent null uses betaS=0. The other five outcome mechanisms use betaS=0.55. Full treatment and visit paths are generated before outcomes and do not respond to the event. Analysis follow-up ends at the first event or week 104. This construction permits the same treatment and visit paths to be reused across matched outcome mechanisms without leaking outcomes to the selector.",
+  "treatment_effect": "Six outcome mechanisms are fixed before simulation and are not solved or tuned to produce a chosen bias, grid displacement, or selector result. Mechanism 1 is a process-independent exact null with betaS=0 and psi(s,C)=0. Mechanism 2 is a time-varying-confounded exact null with betaS=0.55 and psi(s,C)=0. Mechanism 3 is a weak smooth effect with betaS=0.55 and psi(s,C) increasing linearly from 0 at initiation to log(0.93)+C log(0.98/0.93) at week 8, then remaining constant. Mechanism 4 is immediate benefit with psi(s,C)=log(0.70)+C log(0.85/0.70). Mechanism 5 is delayed smooth benefit with psi(s,C)=0 before week 3, followed by a linear ramp over five weeks to log(0.65)+C log(0.80/0.65), then remaining constant. Mechanism 6 is offset biphasic effect with psi(s,C)=log(1.25)+C log(1.35/1.25) before week 1.5, psi(s,C)=0 from week 1.5 through less than week 5.5, a linear ramp over three weeks to log(0.65)+C log(0.80/0.65), and the terminal value thereafter. The 1.5-, 5.5-, and 8.5-week transitions are not aligned with the candidate coarse grids.",
+  "effect_modification": "Comorbidity modifies every nonnull treatment effect on the log hazard scale as specified in the treatment-effect profiles. Both null mechanisms remain exactly null in both strata. Treatment has no effect on the state, visit, or subsequent natural-treatment processes.",
+  "factors": [
+   {
+    "name": "Visit intensity",
+    "levels": [
+     "Frequent: alphaV=-1.75",
+     "Sparse: alphaV=-3.45"
+    ],
+    "rationale": "The levels create contrasting amounts of observable longitudinal information. They are stylized process conditions, not claims about a named clinical application. Realized visit frequencies are reported for every cell."
+   },
+   {
+    "name": "Natural treatment pressure",
+    "levels": [
+     "Lower uptake: alphaA=-4.05",
+     "Higher uptake: alphaA=-2.85"
+    ],
+    "rationale": "The levels contrast sparse and common early initiation while allowing assessment of nuisance-model support and weight stability. Realized initiation probabilities replace nominal calibration claims."
+   },
+   {
+    "name": "Outcome mechanism",
+    "levels": [
+     "Process-independent exact null",
+     "Time-varying-confounded exact null",
+     "Weak eight-week smooth effect",
+     "Immediate heterogeneous benefit",
+     "Three-week delayed five-week smooth benefit",
+     "Off-grid early harm followed by delayed smooth benefit"
+    ],
+    "rationale": "The two nulls, weak effect, immediate effect, delayed effect, and nonaligned biphasic effect prevent one latency mechanism from determining the answer. Matched mechanisms use identical treatment and visit paths, so the outcome-blind selector makes the same choice while the outcome relationship changes."
+   },
+   {
+    "name": "Grace-period protocol",
+    "levels": [
+     "G=4 weeks",
+     "G=12 weeks"
+    ],
+    "rationale": "These are stylized protocol contrasts selected to create distinct initiation windows while remaining exact boundaries in every candidate grid. They are not asserted to be clinically meaningful for any application and are never candidates in the selection rule."
+   }
+  ],
+  "n_scenarios": 48,
+  "deliberately_true": "The factorial design contains 2 visit intensities by 2 treatment pressures by 6 outcome mechanisms by 2 grace protocols, giving 48 cells. Both grace protocols are evaluated on the same underlying data, and matched outcome mechanisms reuse the same treatment and visit paths. Eligibility, assignment opportunities, and follow-up begin at time 0. Every candidate partition includes time 0, G, and week 104. Conditional exchangeability is true given the full weekly recorded history. The one-week estimator observes that history at every decision time. Coarser estimators receive only their prespecified boundary-updated histories. All estimators censor a known protocol deviation at its exact time before accepting a later outcome. Fine grids fit more nuisance intercepts and update longitudinal predictors more often, so their statistical and computational cost is part of the comparison.",
+  "cannot_detect": "The study cannot select a clinically meaningful grace period, establish that four or twelve weeks is appropriate for any disease, or treat RD12-RD4 as sensitivity analysis for one estimand. It cannot establish a universal process-only grid selector because matched outcome mechanisms deliberately share the same observable treatment and visit laws. It addresses only covariate-update and nuisance-model resolution when exact treatment and outcome ordering is retained. It does not address interval-censored treatment times, unknown treatment-outcome order, subweekly treatment decisions, multiple same-week visits, competing events, recurrent outcomes, fatal outcomes that alter care, multiple treatment versions, interference, unmeasured confounding under the full weekly history, treatment-confounder feedback, machine-learning nuisance estimators, or clinical materiality. The finite mechanism library does not estimate the prevalence of grid sensitivity in applied studies."
+ },
+ "estimands": [
+  {
+   "name": "Two-year risk difference for grace period G",
+   "definition": "For G equal to 4 or 12 weeks, define gEarly,G as natural treatment initiation at weekly decisions before G followed by forced initiation at the week-G boundary among those still untreated. Define gDelay,G as prevention of initiation before G followed by return to the natural initiation process from G onward. The estimand is RDG=P(TY at or before 104 under gEarly,G)-P(TY at or before 104 under gDelay,G). It is a marginal superpopulation intention-to-follow-the-specified-dynamic-strategy contrast. Negative values favor earlier initiation. Every candidate grid targets this same weekly strategy because exact treatment deviations and G remain observable.",
+   "true_value_computation": "For each structural mechanism, simulate independent people under gEarly,4, gDelay,4, gEarly,12, and gDelay,12 using common exogenous random numbers. Use exact zero for both null mechanisms. For nonnull mechanisms, begin with 2000000 people. Use paired empirical variances for Monte Carlo standard errors and extend in independent batches to 4000000 if any risk-difference standard error exceeds 0.00050."
+  },
+  {
+   "name": "Change induced by changing the grace-period strategy",
+   "definition": "DeltaG=RD12-RD4 on the absolute two-year risk scale. This is a contrast between two protocol-defined causal estimands. It is not a criterion for choosing G and is not interpreted as movement of one fixed estimand.",
+   "true_value_computation": "Compute DeltaG from the four coupled intervention risks. Use exact zero under both null mechanisms. For nonnull mechanisms, extend truth simulation to 4000000 if the paired Monte Carlo standard error exceeds 0.00050."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Prespecified 4-week clone-censor-weight comparator",
+   "point_estimator": "Clone every analysis-sample person to gEarly,G and gDelay,G. Censor each clone at the exact weekly boundary at which a known protocol deviation occurs, before accepting any later outcome. Fit a weekly complementary-log-log initiation model with one intercept per 4-week grid interval and predictors frozen at the start of that interval: Xage, F, C, last available Z, the preceding interval's visit count, and boundary-measured time since the last visit. Split intervals at G and week 104. Estimate arm risks with normalized weighted product-limit estimators and subtract them.",
+   "variance_estimator": "Stack the initiation-model score with both arm-specific weighted hazard scores. Use the empirical original-person cluster sandwich to include clone covariance and estimated-weight uncertainty. Apply the delta method to the two risks and their difference.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference. Report arm-specific complementary-log-log intervals as supplementary output.",
+   "is_status_quo": true,
+   "nonconvergence": "Nonconvergence occurs if the initiation model fails, has a nonfinite coefficient, has Hessian condition number above 1e12, produces a nonfinite adherence weight, leaves an empty arm risk set before week 104, or produces a nonpositive or nonfinite sandwich variance. Extreme weights remain observed results rather than being relabeled as nonconvergence.",
+   "implementation": "This represents a fixed grid chosen before outcomes are examined. Exact deviation censoring is used because exact treatment order is available. Endpoint-delayed censoring is excluded from primary comparisons and appears only as a labeled implementation stress test."
+  },
+  {
+   "name": "Always-one-week resource comparator",
+   "point_estimator": "Apply the same exact-censoring estimator with covariates updated weekly and one unrestricted baseline-hazard intercept for each week. The effect-sample comparator uses the same 4000-person analysis sample as the selected-grid method. A total-resource comparator additionally analyzes all 5000 people after the selector has been irreversibly locked and the design-sample outcomes are released. Neither comparator uses outcomes or process fit to choose a grid.",
+   "variance_estimator": "Use the stacked original-person cluster sandwich separately for the 4000-person and 5000-person analyses.",
+   "interval": "Use unbounded 95% Wald intervals for both risk differences.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the common initiation-model, risk-set, weight, and sandwich failure criteria. Report failure separately for the 4000-person and 5000-person versions.",
+   "implementation": "This is the trivial outcome-blind rule of always using the finest candidate grid. The 4000-person version equalizes effect-sample size. The 5000-person version gives the fixed rule every participant consumed by the selector and therefore tests whether the adaptive rule is dominated in total data use."
+  },
+  {
+   "name": "Prespecified resolution-specific grid multiverse",
+   "point_estimator": "Repeat the exact-censoring estimator on separately constructed 1-, 2-, 4-, and 8-week histories. Each grid controls when marker and visit predictors update and the number of nuisance baseline-hazard intercepts. Exact treatment starts remain available only for ordering and censoring. For each replicate, retain all four estimates and their paired differences from the one-week estimate. Estimate DDelta=E(RDhatDelta-RDhat1) from paired replicate means. Define the systematic expected-estimate range as maxDelta E(RDhatDelta)-minDelta E(RDhatDelta).",
+   "variance_estimator": "Use one joint stacked original-person cluster sandwich containing the shared person-level contributions and all grid-specific initiation and hazard scores. Use paired Monte Carlo covariance across replicates for DDelta and the expected-estimate range.",
+   "interval": "Use 95% Wald intervals for each risk difference and simultaneous 95% Monte Carlo intervals for D2, D4, and D8. The simultaneous intervals use the replicate-level covariance and a prespecified max-t calibration.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the common failure criteria separately to each grid. Retain converged method results, flag each failed grid, and require all four estimates for the expected-estimate range.",
+   "implementation": "The within-replicate range max(RDhat1,RDhat2,RDhat4,RDhat8)-min(RDhat1,RDhat2,RDhat4,RDhat8) is retained only as a descriptive applied multiverse quantity. It is calibrated against its matched-null distribution and cannot determine whether systematic grid movement exists."
+  },
+  {
+   "name": "Outcome-blind process-selected grid",
+   "point_estimator": "Before any outcome labels are available, construct the four candidate histories in the independent 1000-person design sample. For each grid, fit the same initiation model used by that grid and a corresponding weekly visit-occurrence model. Use fixed 10-fold cross-validation. Score each model on held-out exact treatment-start and visit indicators while restricting predictors to that grid's coarsened history. For each process, divide mean negative log likelihood by that process's intercept-only negative log likelihood, then average the two ratios with equal weight. A grid is supported only if every fold produces finite predictions and the full-data fits meet the common convergence criteria. Select the coarsest supported grid whose joint score is within one estimated standard error of the lowest supported score. If no grid is supported, declare the selector unsupported. Lock the grid and apply its exact-censoring estimator to the independent 4000-person analysis sample.",
+   "variance_estimator": "Use the locked grid's stacked original-person cluster sandwich in the analysis sample. Because grid selection uses an independent sample without outcomes, the interval is conditional on the locked grid. Empirical coverage across replicates evaluates the complete two-sample procedure.",
+   "interval": "Use an unbounded 95% Wald interval from the locked-grid sandwich estimator.",
+   "is_status_quo": false,
+   "nonconvergence": "The method fails if no candidate is supported in the design sample or if the locked-grid analysis meets a common model, risk-set, weight, or variance failure criterion. A failed selector is not replaced automatically by the one-week grid.",
+   "implementation": "Run selection separately for each G because inserting G changes the partition. Record the selected grid, cross-validated process scores, nuisance dimension, selector CPU time, analysis CPU time, peak memory, and data consumed. No outcome-based tie-breaking or threshold retuning is permitted."
+  },
+  {
+   "name": "Full-history exact-order benchmark",
+   "point_estimator": "Use full weekly recorded histories, exact treatment and event times, exact protocol-deviation censoring, and the correctly specified smooth initiation model containing the DGM treatment terms. Estimate both arm risks with weighted product-limit estimators. Repeat with known DGM treatment probabilities as an oracle-weight supplementary benchmark.",
+   "variance_estimator": "For estimated weights, use the stacked original-person cluster sandwich with the initiation score and exact-time weighted hazard scores. For known weights, omit the initiation-score component.",
+   "interval": "Use unbounded 95% Wald intervals for the estimated-weight benchmark. Oracle-weight intervals are supplementary.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the common risk-set, weight, and sandwich criteria. The estimated-weight version also applies the initiation-model criteria.",
+   "implementation": "This benchmark separates loss from coarsened covariate and nuisance histories from artificial-censoring order. Agreement between the one-week estimator and the estimated full-history benchmark is an implementation check, not an assumed result."
+  }
+ ],
+ "performance": {
+  "primary": "For every scenario cell separately, estimate D2, D4, and D8 as paired differences between expected fixed-grid estimates and the expected always-one-week estimate, with simultaneous Monte Carlo intervals. Also estimate selected-grid bias, coverage, and mean squared error relative to the scenario's RDG.",
+  "secondary": [
+   "Scenario-specific systematic expected-estimate range computed from replicate means",
+   "Bias and absolute bias of every estimator relative to RDG",
+   "Empirical standard error",
+   "Mean model-based standard error",
+   "Relative error in model-based standard error",
+   "Mean squared error",
+   "Bias-eliminated coverage",
+   "Null and nonnull rejection rates",
+   "Convergence and selector-support rates",
+   "Selection frequencies for all four grids",
+   "Paired selected-grid minus one-week expected-estimate difference",
+   "Selected-grid to one-week mean squared error ratio for the 4000-person and total-resource 5000-person comparators",
+   "Coverage differences between selected and fixed-grid estimators",
+   "Nuisance parameter count, CPU seconds, wall-clock seconds, and peak memory",
+   "DeltaG and its Monte Carlo uncertainty, reported only as a contrast between estimands",
+   "Maximum weight, weight coefficient of variation, and arm-specific effective sample size",
+   "Descriptive within-replicate multiverse spread and its matched-null distribution",
+   "Continuous association between outcome-blind cross-validated process score and absolute systematic grid displacement, with no sensitivity, specificity, or universal cutoff claim"
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "For coverage near 0.95, MCSE=sqrt[0.95(1-0.95)/R]. Requiring MCSE at most 0.005 gives R at least 1900, so 2000 replicates gives MCSE 0.00487. Coverage classifications use Monte Carlo confidence bounds rather than raw estimates. Paired differences use their observed replicate covariance. A result whose simultaneous interval overlaps a decision boundary remains uninformative rather than triggering additional post hoc replicates."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "No prevalence or program-wide conclusion is made. Classify each scenario cell separately. Let sigma1 be the empirical sampling standard deviation of the always-one-week estimator and define delta=0.10 sigma1. This makes squared systematic displacement equal to 1% of the one-week sampling variance at the boundary. Grid dependence is established in a cell if at least one simultaneous 95% Monte Carlo interval for D2, D4, or D8 lies wholly outside [-delta,delta]. The selected grid is acceptable in that cell only if its selected-minus-one-week interval lies wholly inside [-delta,delta], its 95% Monte Carlo interval for coverage lies inside [0.925,0.975], and the upper 95% Monte Carlo bound for its mean squared error ratio relative to the total-resource 5000-person always-one-week comparator is below 0.90. The 10% mean squared error improvement is the prespecified efficiency gain required to justify reserving 20% of participants for grid selection.",
+  "problem_is_not_real_if": "Within a scenario cell, support numerical grid invariance at the stated precision scale only if all simultaneous 95% Monte Carlo intervals for D2, D4, and D8 lie wholly inside [-delta,delta]. Classify the selector as dominated in a cell if a simultaneous interval establishes displacement beyond delta, its coverage interval lies wholly outside [0.925,0.975], or the lower 95% Monte Carlo bound for its mean squared error ratio relative to the total-resource one-week comparator is at least 0.90. These are cell-specific operating conclusions and do not establish clinical irrelevance.",
+  "uninformative_if": "Classify a cell as uninformative when neither the non-equivalence nor equivalence condition is met, when any relevant Monte Carlo interval overlaps its boundary, when more than 5% of replicates fail for a required comparator, when the selector is unsupported in more than 5% of replicates, when median arm-specific effective sample size is below 100, or when truth Monte Carlo standard error remains above 0.00050 after extension.",
+  "both_branches_reachable": "The same design can produce a non-equivalent cell when a paired expected-estimate difference is resolved beyond delta, an equivalent cell when every difference is resolved inside delta, or an uninformative cell when uncertainty overlaps the boundary. The process-independent null permits grid invariance without forcing it, while matched outcome mechanisms can reveal dependence without changing anything visible to the selector."
+ },
+ "threats": [
+  {
+   "threat": "A delayed-censoring implementation could manufacture a coarse-grid discrepancy.",
+   "mitigation": "Every primary estimator censors a known deviation at its exact time before accepting a later outcome. Endpoint-delayed censoring is confined to a labeled stress test and cannot enter the decision rule."
+  },
+  {
+   "threat": "One outcome latency pattern could encode the desired conclusion.",
+   "mitigation": "Use two null mechanisms, a weak smooth effect, an immediate effect, a delayed smooth effect, and an off-grid biphasic effect. Fix all coefficients before outcomes are run and never solve them against a performance threshold. Reuse identical treatment and visit paths across matched outcome mechanisms."
+  },
+  {
+   "threat": "Changing G changes the treatment strategy and causal estimand.",
+   "mitigation": "Define separate regimes and truths for each G. Label DeltaG only as a contrast between estimands. Never use it to select G or to judge grid validity."
+  },
+  {
+   "threat": "Treatment and visit processes cannot identify outcome latency or a uniquely adequate grid.",
+   "mitigation": "Hold those processes fixed across matched outcome mechanisms and report divergent selector performance when it occurs. Interpret the rule only through its finite-domain operating characteristics."
+  },
+  {
+   "threat": "The independent design sample adds data that a fixed finest-grid rule does not require.",
+   "mitigation": "Include an always-one-week comparator with the same 4000-person effect sample and a total-resource comparator that analyzes all 5000 people after grid lock. Require a prespecified mean squared error advantage over the total-resource comparator before calling the selector acceptable."
+  },
+  {
+   "threat": "Fine-grid statistical cost could remain too small to create a genuine tradeoff.",
+   "mitigation": "Fit one unrestricted nuisance baseline-hazard intercept per grid interval and update covariates only at grid boundaries. Report dimension, convergence, uncertainty, runtime, memory, weight variability, and effective sample size for every grid."
+  },
+  {
+   "threat": "Parametric nuisance choices may determine the comparison.",
+   "mitigation": "Use the same covariate terms at every resolution, changing only update frequency and time-intercept dimension. Compare all methods with the correctly specified full-history model and known-probability oracle weights. Limit conclusions to these nuisance specifications."
+  },
+  {
+   "threat": "Artificial-censoring weights may become unstable when initiation is uncommon.",
+   "mitigation": "Factor treatment pressure explicitly and report untruncated primary weights, failures, maximum weights, coefficients of variation, and effective sample sizes. Repeat capped-at-20 and empirical 1st- and 99th-percentile truncation analyses as labeled sensitivities that cannot replace primary results."
+  },
+  {
+   "threat": "Exact treatment and outcome times make the study narrower than the full temporal-resolution problem.",
+   "mitigation": "State this restriction in the title, question, aims, data construction, limitations, and bears_on classification. Do not generalize results to interval-censored treatment or unknown treatment-outcome order."
+  },
+  {
+   "threat": "The selected grace periods lack clinical calibration.",
+   "mitigation": "Treat four and twelve weeks as stylized protocol contrasts only. Make no claim that either value is clinically plausible, preferable, or transferable to an application."
+  },
+  {
+   "threat": "A finite hand-specified mechanism library cannot estimate practical prevalence or diagnostic sensitivity.",
+   "mitigation": "Make decisions separately for each cell. Do not count affected cells, estimate sensitivity or specificity, or describe equal weighting of cells as a population distribution."
+  },
+  {
+   "threat": "Software mistakes could create apparent differences among grids.",
+   "mitigation": "Unit-test hand-constructed trajectories, require censoring before later outcomes, verify exact null truths, compare one-week and full-history implementations, and retain replicate-level seeds, grid-specific inputs, selector locks, timing records, and failure logs."
+  }
+ ],
+ "runtime_estimate": "Runtime is unknown until measured. Before the main run, benchmark 100 complete observational replicates allocated across all visit-intensity, treatment-pressure, and outcome-mechanism combinations, including both grace protocols and every primary and sensitivity estimator. Separately benchmark the truth kernel for each nonnull mechanism using batches of 100000 people. Record generation, coarsening, nuisance fitting, scoring, sandwich calculation, sensitivity analysis, serialization, CPU time, wall time, and peak memory as separate stages. Extrapolate worker-hours to 48000 observational datasets and the required truth batches, with bootstrap 95% prediction intervals and a prespecified 20% rerun reserve. Release the projected resource table before launching the main run. Do not claim a wall-clock duration until these benchmarks exist, and do not reduce the 2000 analysis replicates to meet a runtime target.",
+ "bears_on": [
+  {
+   "id": "TZO-01",
+   "relation": "answers-part",
+   "what": "The study evaluates an outcome-blind selector and locked multiverse for covariate-update and nuisance-model grid resolution when exact treatment and outcome ordering is retained. It reports systematic expected-estimate movement and the cost of fine grids. It does not select a clinically meaningful grace period, address loss of treatment-outcome order, or settle the full TZO-01 entry."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo uncertainty, and performance reporting."
+  },
+  {
+   "cite": "Hernán MA, Sauer BC, Hernández-Díaz S, Platt R, Shrier I. Specifying a target trial prevents immortal time bias and other self-inflicted injuries in observational analyses. Journal of Clinical Epidemiology. 2016.",
+   "doi_or_url": "10.1016/j.jclinepi.2016.04.014",
+   "used_for": "Alignment of eligibility, treatment assignment, and follow-up."
+  },
+  {
+   "cite": "Cain LE, Robins JM, Lanoy E, Logan R, Costagliola D, Hernán MA. Using observational data to emulate a randomized trial of dynamic treatment-switching strategies. International Journal of Epidemiology. 2016.",
+   "doi_or_url": "10.1093/ije/dyv295",
+   "used_for": "Grace-period strategies and dynamic treatment emulation."
+  },
+  {
+   "cite": "Maringe C, Benitez Majano S, Exarchakou A, et al. Reflection on modern methods: trial emulation in the presence of immortal-time bias. International Journal of Epidemiology. 2020.",
+   "doi_or_url": "10.1093/ije/dyaa057",
+   "used_for": "Clone-censor-weight implementation and artificial censoring."
+  },
+  {
+   "cite": "Ferreira Guerra et al. Impact of discretization of the timeline for longitudinal causal inference methods. Statistics in Medicine. 2020.",
+   "doi_or_url": "10.1002/sim.8710",
+   "used_for": "Prior evidence that discretization changes retained information and can change the target parameter."
+  },
+  {
+   "cite": "Tankpinou Zoumenou H, et al. Time Partitioning in Target Trial Emulation. 2026.",
+   "doi_or_url": "https://arxiv.org/abs/2603.15924",
+   "used_for": "The distinction between coarse and fine partitions and preservation of temporal ordering."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The candidate grids retained the same treatment, observation, covariate, and nuisance histories, so the design tested delayed censoring rather than temporal resolution.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "Each candidate now receives a separately coarsened longitudinal history, updates covariates only at its boundaries, and fits a resolution-specific nuisance model whose dimension changes with grid width. Exact treatment and outcome times are retained only for safe ordering. The title, question, aims, limitations, and bears_on entry restrict the claim accordingly."
+   },
+   {
+    "finding": "The protocol cannot select a clinically meaningful grace period and therefore addresses only part of TZO-01.",
+    "severity": "fatal",
+    "how": "declared-limitation",
+    "what_changed": "The protocol now states explicitly that it answers only the grid-selection and grid-diagnostic subproblem. Four and twelve weeks remain separate stylized strategies and estimands. No result is permitted to select or validate G."
+   },
+   {
+    "finding": "Delayed endpoint censoring combined with instantaneous treatment effects mechanically generated the coarse-grid discrepancy.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "All primary methods now censor deviations at their exact time. The outcome library contains two nulls, weak, immediate, delayed smooth, and nonaligned biphasic mechanisms under matched process histories. Coefficients are fixed without solving for target performance. Endpoint delay is only a labeled stress test."
+   },
+   {
+    "finding": "The status quo comparator was deliberately denied ordering information available in the simulated data.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The prespecified 4-week comparator now uses exact deviation censoring. The deliberately degraded endpoint convention is removed from primary comparisons and is not labeled status quo."
+   },
+   {
+    "finding": "The selector was not compared with always choosing one week or with a resource-equivalent fixed-grid analysis.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The methods now include always-one-week comparators using the same 4000-person effect sample and all 5000 participants consumed by the two-sample selector. Selector acceptability requires a prespecified efficiency advantage without material bias or coverage loss."
+   },
+   {
+    "finding": "Mean within-replicate range M is inflated by sampling noise and could establish a problem even when grid estimators have identical expectations.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The decision now uses paired differences between grid-specific expected estimates and their simultaneous Monte Carlo intervals. The within-replicate range remains descriptive, is null-calibrated, and cannot enter the decision rule."
+   },
+   {
+    "finding": "Unjustified absolute thresholds and counts of hand-selected cells were used to make prevalence-like practical conclusions.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "All conclusions are cell-specific. The protocol removes counts across cells and defines a precision-relative equivalence margin equal to 0.10 of the one-week sampling standard deviation, for which squared displacement is 1% of sampling variance. The efficiency threshold is tied to the cost of reserving 20% of participants for selection."
+   },
+   {
+    "finding": "Diagnostic sensitivity and specificity were underdefined, based on too few mechanisms, and mechanically linked to the delayed-censoring discrepancy.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The binary ordering-conflict classifier, cutoff, sensitivity, and specificity claims are removed. Process score and systematic grid displacement are reported only as continuous descriptive calibration quantities."
+   },
+   {
+    "finding": "Coverage near 0.93 or 0.97 would have been classified from raw estimates despite Monte Carlo uncertainty.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "Coverage decisions now use Monte Carlo confidence intervals and an explicit indifference region. Boundary-overlapping results are classified as uninformative."
+   },
+   {
+    "finding": "The wall-time estimate was unsupported and likely optimistic.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Runtime is declared unknown until representative end-to-end and truth-kernel benchmarks are completed. The benchmark must report stage-specific worker-hours, memory, uncertainty intervals, sensitivity costs, serialization, and a rerun reserve before the main run."
+   },
+   {
+    "finding": "DOI 10.1097/EDE.0000000000000043 was attributed to Sperling rather than Sperrin.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The erroneous attribution and citation-dependent rationale were removed. The visit-intensity levels are now explicitly stylized rather than attributed to that paper."
+   },
+   {
+    "finding": "Evidence from fourteen DPP-4 inhibitor studies was generalized to the clinical plausibility of four- and twelve-week grace periods.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The generalization and citation were removed. Both grace periods are labeled stylized method-comparison settings with no clinical applicability claim."
+   },
+   {
+    "finding": "The PDS and Wanis references were bibliographically incomplete.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "Both incomplete references were removed rather than completed with information unavailable in the payload. The protocol retains only citations whose supplied bibliographic records support their stated uses."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study settles only the grid-selection and grid-diagnostic part of TZO-01.",
+   "Exact treatment initiation and outcome times are available for ordering, so the study does not address interval-censored treatment or unknown treatment-outcome order.",
+   "Treatment and observation processes alone do not identify a clinically meaningful grace period or outcome latency.",
+   "Four- and twelve-week grace periods are stylized contrasts and are not calibrated to a clinical application.",
+   "The finite mechanism library supports cell-specific operating conclusions only. It does not estimate how often grid sensitivity occurs in practice.",
+   "The selector is not claimed to work for all outcome laws, nuisance estimators, or data-generating mechanisms.",
+   "Clinical materiality is not established. Decision margins express statistical precision and resource utility within this simulation.",
+   "Runtime and hardware feasibility remain unknown until the prespecified benchmark is completed."
+  ]
+ }
+}

@@ -1,0 +1,325 @@
+{
+ "title": "Pair-level precision sensitivity of replication labels under fixed, noncalibrated trial-emulation mechanisms",
+ "question": "Under fixed logit and probit data-generating mechanisms chosen independently of an absolute-risk tolerance, does the probability produced by either of two illustrative binary agreement operators change materially when the underlying estimands and mismatch mechanism remain fixed and only sampling precision changes; how do joint-uncertainty tolerance procedures and the published sceptical p-value behave in the same benchmark pairs?",
+ "aims": "This study settles only the pair-level precision-conflation part of BEN-02: whether a binary agreement label can change materially when the trial estimand, emulation estimand, population and measurement mechanisms remain fixed and only sampling precision changes. It separately estimates raw and available-information-aligned discrepancies; compares methods that genuinely answer the common question of whether an absolute risk-difference discrepancy is inside a prespecified tolerance; reports the published sceptical p-value according to its own interpretation; and distinguishes observable population mismatch from mismatch caused by an unavailable modifier or outcome measurement. It does not settle how tolerances should be chosen, whether binary labels dominate published practice, or how to calibrate prediction intervals, databases, control outcomes, heterogeneous benchmark portfolios or prospective forecasts.",
+ "dgm": {
+  "covariates": "Each replicate contains an independent randomized-trial cohort and observational-emulation cohort. Both use baseline eligibility, initiation A=1 versus noninitiation A=0, baseline time zero, no grace period, no switching or censoring, and a binary outcome by day 365. L1 is Bernoulli(0.50), L2 is Bernoulli(0.40), and L1 and L2 are independent. Z is an observed effect modifier and U is an unavailable effect modifier. Z and U are mutually independent and independent of L1 and L2 within each cohort. Trial treatment is Bernoulli(0.50), independently of all covariates. Emulation treatment follows logit P(A=1|L1,L2,Z)=-0.40+0.80L1-0.60L2+0.70Z. U does not affect treatment, so withholding U creates incomplete alignment information without introducing unmeasured confounding. Analysts receive L1, L2, Z, A and the measured outcome, but not U or the outcome-measurement parameters. Data are generated as exact multinomial counts over L1, L2, Z, U, A and Y, then collapsed over U for analysis. Counts at the three precision levels are nested by drawing independent multinomial increments, so the within-mechanism precision contrast changes only the analyst-observed sample size and sampling error.",
+  "outcome_model": "Let eta=alpha+0.45L1-0.35L2+0.20L1L2+0.55Z+0.30U+A(-0.85+0.65Z+0.45U). In the logit family, P(Y*=1|A,L1,L2,Z,U)=expit(eta), with alpha=-2.20 for the lower-risk baseline and alpha=-1.00 for the common-risk baseline. In the probit family, P(Y*=1|A,L1,L2,Z,U)=Phi(eta), with alpha=-1.40 and -0.45 for the corresponding baseline-risk levels. Y* is the common latent outcome. Trial measurement is perfect. Emulation measurement is also perfect except in the measurement-mismatch mechanism, where sensitivity is 0.85 and specificity is 0.98, giving P(Y=1|Y* probability p)=0.02+0.83p. These coefficients and measurement parameters are fixed before computing any marginal risk difference and are not solved against a tolerance or desired method performance.",
+  "treatment_effect": "The primary causal scale is the marginal 365-day risk difference. Conditional effects arise from the fixed latent-index treatment term -0.85+0.65Z+0.45U. Trial and emulation marginal effects are obtained by exact summation over their respective covariate and measurement distributions. No population probability, interaction coefficient or sample size is selected to produce a requested risk-difference discrepancy. The primary tolerance Delta=0.02 is applied only after all scenario truths have been computed and frozen.",
+  "effect_modification": "Both Z and U modify treatment effects on the latent index. The conditional treatment term ranges from -0.85 at Z=U=0 to 0.25 at Z=U=1, permitting quantitative and qualitative heterogeneity without forcing a marginal null effect. Z can be used for alignment; U cannot. Comparing observed-Z shift with hidden-U shift therefore holds the structural outcome law fixed while varying whether the alignment-relevant information is available to the analyst.",
+  "factors": [
+   {
+    "name": "Outcome family",
+    "levels": [
+     "Logit Bernoulli model",
+     "Probit Bernoulli model"
+    ],
+    "rationale": "Both mechanisms are specified on latent-index scales rather than on the proposed marginal risk-difference scale. This prevents the DGM from algebraically encoding the tolerance method's preferred answer."
+   },
+   {
+    "name": "Baseline risk",
+    "levels": [
+     "Lower baseline risk",
+     "Common baseline risk"
+    ],
+    "rationale": "The two intercepts test whether performance depends on outcome prevalence while leaving treatment and effect-modification coefficients unchanged."
+   },
+   {
+    "name": "Mismatch mechanism",
+    "levels": [
+     "Aligned population and measurement: qZ=qU=0.50 in both cohorts and perfect measurement",
+     "Observable population shift: trial qZ=0.35 and emulation qZ=0.65, with qU=0.50 and perfect measurement",
+     "Unavailable-modifier population shift: trial qU=0.35 and emulation qU=0.65, with qZ=0.50 and perfect measurement",
+     "Outcome-measurement mismatch: qZ=qU=0.50 in both cohorts, perfect trial measurement and fixed imperfect emulation measurement"
+    ],
+    "rationale": "The mechanisms distinguish exact design alignment, mismatch removable with observed information, mismatch not removable with available information, and measurement-induced estimand difference. None is calibrated to Delta."
+   },
+   {
+    "name": "Nested precision pattern",
+    "levels": [
+     "Trial n=500; emulation n=5000",
+     "Trial n=2500; emulation n=25000",
+     "Trial n=25000; emulation n=250000"
+    ],
+    "rationale": "These round sample sizes are fixed without reference to computed discrepancies, pilot results or decision thresholds. Within each structural scenario, nested samples provide an internal comparison in which the mechanism and estimands are identical and only observable precision changes."
+   }
+  ],
+  "n_scenarios": 48,
+  "deliberately_true": "The 48 analyzed cells comprise 2 outcome families by 2 baseline-risk levels by 4 mismatch mechanisms by 3 nested precision patterns. The structural outcome law is shared by the trial and emulation. Treatment, eligibility, time zero, outcome horizon and treatment strategies are aligned. Positivity, consistency and exchangeability hold; there is no censoring, nonadherence, missingness or treatment confounding by U. Trial and emulation samples are independent. Raw trial-emulation covariance is therefore zero, but the available-information transported estimator uses the empirical trial covariate distribution and its covariance with the trial effect is retained through a stacked influence function. Propensity modeling is correctly specified. Conditional outcome risks are estimated by saturated observed-covariate cells, so outcome-link misspecification is not imposed. The analyst never receives scenario truths, U or measurement calibration. Finite-cell truths are frozen before Delta or any performance threshold is applied.",
+  "cannot_detect": "The study cannot establish between-question heterogeneity, between-database calibration, prospective prediction-interval coverage, behavioral contamination from knowing a trial result, or the value of realistic positive and negative control questions. It cannot determine a clinically or socially correct tolerance or loss for an indeterminate decision. It does not study overlapping trial and emulation samples, time-varying treatment, irregular visits, grace periods, informative censoring, residual treatment confounding, estimated outcome-measurement correction, unknown eligibility differences or high-dimensional nuisance learning. The equal weighting of structural scenarios is an illustrative design distribution rather than an empirical distribution of benchmark studies."
+ },
+ "estimands": [
+  {
+   "name": "Trial measured-outcome marginal risk difference",
+   "definition": "psiT=P(Y^1=1 in the trial population and trial measurement system)-P(Y^0=1 in that population and measurement system). It is marginal over L1, L2, Z and U and targets the trial superpopulation.",
+   "true_value_computation": "Sum treated and untreated measured-outcome probabilities over the 16 L1, L2, Z and U cells using the exact trial population probabilities. Trial measurement equals the latent outcome measurement."
+  },
+  {
+   "name": "Emulation measured-outcome marginal risk difference",
+   "definition": "psiE=P(Y^1=1 in the emulation population and emulation measurement system)-P(Y^0=1 in that population and measurement system). It uses the same strategies and horizon as psiT but the emulation population and measurement system.",
+   "true_value_computation": "Sum the exact treated and untreated measured-outcome probabilities over the emulation covariate distribution. In the measurement-mismatch mechanism, transform latent risks using 0.02+0.83p before marginalization."
+  },
+  {
+   "name": "Raw pair-level discrepancy",
+   "definition": "deltaRaw=psiE-psiT on the absolute 365-day risk-difference scale. The tolerance methods classify |deltaRaw| relative to Delta=0.02. The binary direction and interval-overlap operators are not treated as estimators or tests of this tolerance estimand.",
+   "true_value_computation": "Compute both component effects by deterministic finite-cell summation and subtract. Numerical summation error must be below 1e-12."
+  },
+  {
+   "name": "Available-information-aligned discrepancy",
+   "definition": "deltaObservedAlign=psiEtoT,LZ-psiT, where psiEtoT,LZ standardizes the emulation conditional measured-outcome treatment contrast to the trial distribution of observed L1, L2 and Z. It does not standardize U or correct outcome measurement.",
+   "true_value_computation": "Use exact emulation conditional risks marginalized over the emulation distribution of U and its measurement system, then average them over the trial distribution of L1, L2 and Z. This discrepancy is zero under exact alignment and is removed by observed-Z standardization in the observable-shift mechanism. It can remain nonzero under hidden-U shift or measurement mismatch."
+  },
+  {
+   "name": "Common latent aligned discrepancy",
+   "definition": "deltaLatentAlign compares both structural Y* treatment effects after standardization to the full trial distribution of L1, L2, Z and U under perfect measurement. It is a DGM decomposition target and is not presented as an analyst-identified estimand.",
+   "true_value_computation": "Because the structural outcome law is shared, exact finite-cell standardization gives deltaLatentAlign=0 in every scenario. This result validates the decomposition only; it is not evidence that real applications observe the required variables or measurement parameters."
+  },
+  {
+   "name": "Aggregate binary-label precision sensitivity",
+   "definition": "For illustrative operator j and structural scenario s, let pjsn be its probability of reporting agreement at precision n. Define Vj as the equally weighted mean across the 16 structural scenarios of max_n(pjsn)-min_n(pjsn). Define S=max(Vdirection,Voverlap). S measures the largest average dependence on sampling precision among the two prespecified operators while causal truths remain fixed.",
+   "true_value_computation": "Estimate pjsn from the nested Monte Carlo replicates. Construct the sampling interval for S by a stratified paired bootstrap that resamples complete three-precision label vectors within each structural scenario and recomputes both maxima."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Underlying trial and emulation effect estimators",
+   "point_estimator": "Estimate psiT by the randomized treated sample risk minus the untreated sample risk. For the emulation, fit e(L1,L2,Z)=P(A=1|L1,L2,Z) by binomial glm with L1+L2+Z. Estimate m_a(L1,L2,Z) as the frequency-weighted risk within each observed A, L1, L2 and Z cell. For each observation define H=m_1-m_0+A(Y-m_1)/e-(1-A)(Y-m_0)/(1-e); psiEhat is the sample mean of H.",
+   "variance_estimator": "Use the usual two-arm risk-difference variance for psiT and the empirical influence-function variance for psiE. Because the raw cohort estimators use independent samples, var(deltaRawhat)=var(psiEhat)+var(psiThat).",
+   "interval": "Report two-sided 95% Wald intervals for psiT, psiE and deltaRaw. Coverage is evaluated as performance and is not used as a prerequisite that predetermines the substantive verdict.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs if a trial arm is empty, a required observed covariate-treatment cell is empty, the propensity model fails or is rank deficient, a required value is nonfinite, an estimated propensity is outside [1e-6,1-1e-6], or an influence-function variance is nonpositive.",
+   "implementation": "Generate nested multinomial count increments and perform all estimation from frequency-weighted cell tables without expanding individual records. Run the 16 structural scenarios through studies/_shared/R/harness.R with six workers and retain the complete paired outputs across precision levels."
+  },
+  {
+   "name": "Available-information transported AIPW estimator",
+   "point_estimator": "Let X=(L1,L2,Z). Estimate the trial target distribution fT(X), emulation distribution fE(X), conditional outcome risks m_a(X) and emulation propensity e(X). Estimate psiEtoT,LZ by averaging m_1(X)-m_0(X) over fT and adding the emulation residual correction weighted by fT(X)/fE(X). Compare this estimate with psiThat.",
+   "variance_estimator": "Use a stacked influence function with an emulation component for treatment and outcome estimation and a trial component for estimation of fT. Estimate var(deltaObservedAlignhat) from the influence function of psiEtoT,LZ-psiT, including the covariance between the target-distribution component and the trial effect estimator.",
+   "interval": "Report two-sided 95% Wald intervals for psiEtoT,LZ and deltaObservedAlign.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the underlying estimator criteria and additionally fail if an observed target cell has zero emulation support, a density ratio is nonfinite, or the stacked variance is nonpositive.",
+   "implementation": "Use only L1, L2 and Z for alignment. U and measurement parameters remain unavailable. Report recovery separately by mismatch mechanism; do not call this a positive control or claim that it implements real control-outcome calibration."
+  },
+  {
+   "name": "Illustrative direction-match reporting operator",
+   "point_estimator": "Report agreement when sign(psiEhat)=sign(psiThat), with sign(0)=0. This is an explicitly constructed binary operator used to study precision sensitivity. It is not attributed to Wang, Köppe or another source as a recommended replication method.",
+   "variance_estimator": "Retain the separate component standard errors for description, but the operator discards them.",
+   "interval": "Report the component 95% intervals without using them in the label.",
+   "is_status_quo": false,
+   "nonconvergence": "Nonconvergence is inherited from either component estimator.",
+   "implementation": "Report its agreement probability and precision sensitivity. Do not label its output true or false against the unrelated |deltaRaw|<Delta tolerance truth."
+  },
+  {
+   "name": "Illustrative confidence-interval-overlap reporting operator",
+   "point_estimator": "Report agreement when the closed 95% Wald intervals for psiT and psiE intersect. This is an illustrative reporting operator, not a claimed reconstruction of an author-recommended rule.",
+   "variance_estimator": "Use the separate component variances.",
+   "interval": "The intervals are estimate plus or minus 1.959964 standard errors; endpoint contact counts as overlap.",
+   "is_status_quo": false,
+   "nonconvergence": "Nonconvergence is inherited from either component estimator or a nonfinite interval endpoint.",
+   "implementation": "Evaluate max(lowerT,lowerE)<=min(upperT,upperE). Report the operator's own agreement probability and precision sensitivity without converting it into tolerance-classification error."
+  },
+  {
+   "name": "Forced plug-in absolute-tolerance classifier",
+   "point_estimator": "Using deltaRawhat and Delta=0.02, classify aligned when |deltaRawhat|<Delta and materially mismatched otherwise. This method answers the same tolerance question as the abstaining procedures but always makes a decision.",
+   "variance_estimator": "Use seDelta^2=seT^2+seE^2 for continuous reporting, although the forced classification uses only deltaRawhat.",
+   "interval": "Report the 95% interval for deltaRaw alongside the classification.",
+   "is_status_quo": false,
+   "nonconvergence": "Nonconvergence is inherited from deltaRawhat.",
+   "implementation": "Use this as the nonabstaining reference for common-loss and error-versus-decision-rate comparisons. Repeat at Delta values 0.01, 0.03 and 0.05."
+  },
+  {
+   "name": "Three-way joint-uncertainty tolerance procedure",
+   "point_estimator": "Using Delta=0.02, classify aligned when the entire 90% interval for deltaRaw lies inside [-Delta,Delta]; classify materially mismatched when the entire interval lies above Delta or below -Delta; otherwise classify indeterminate.",
+   "variance_estimator": "Use the joint raw-discrepancy standard error sqrt(seT^2+seE^2).",
+   "interval": "Report a 95% interval for estimation and use deltaRawhat plus or minus 1.644854 seDelta for the three-way decision.",
+   "is_status_quo": false,
+   "nonconvergence": "Nonconvergence is inherited from deltaRawhat. Indeterminate is a valid decision.",
+   "implementation": "Evaluate wrong-decision probability, indeterminate probability, decision rate and common loss throughout the scenario grid. Repeat at Delta values 0.01, 0.03 and 0.05 without rerunning simulations."
+  },
+  {
+   "name": "Graded normal-compatibility score for the tolerance region",
+   "point_estimator": "Define GDelta=Phi((Delta-deltaRawhat)/seDelta)-Phi((-Delta-deltaRawhat)/seDelta). GDelta is the mass that a normal confidence distribution assigns to the tolerance region. It is not described as a posterior probability. Larger values indicate greater compatibility with |deltaRaw|<Delta.",
+   "variance_estimator": "Use the joint raw-discrepancy standard error.",
+   "interval": "For threshold c, classify aligned when GDelta>=c, mismatched when GDelta<=1-c and indeterminate otherwise. Evaluate c from 0.50 through 0.99 rather than selecting a favorable cutoff after simulation.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs when deltaRawhat or seDelta is nonfinite or seDelta is nonpositive.",
+   "implementation": "Report the complete error-versus-decision-rate and common-loss curves. Do not claim that the normal compatibility interpretation remains calibrated when the component Wald approximation fails."
+  },
+  {
+   "name": "Published graded sceptical p-value",
+   "point_estimator": "Compute the sceptical p-value pS from the two signed effect estimates, their standard errors, p-values and relative precision exactly as specified by Köppe et al. Smaller pS values indicate a higher degree of replication success. Preserve the continuous pS rather than replacing it with the protocol's tolerance truth.",
+   "variance_estimator": "Use the two method-specific effect estimates and standard errors required by the published construction. Do not replace the source's relative-precision calculation with a trial-only or combined-standard-error surrogate.",
+   "interval": "Invert the published construction for its combined confidence set when the cited method defines that inversion. Describe coverage as approximate for the simulation estimators rather than exact finite-sample coverage.",
+   "is_status_quo": false,
+   "nonconvergence": "Nonconvergence is inherited from either component estimate. Before simulation, failure to reproduce the source's published numerical examples is a protocol-integrity failure and stops this method's analysis.",
+   "implementation": "Archive the exact source equation, locator, interpretation and unit-test values before running simulations. Apply only the published interpretation of pS. Report its distribution and source-defined replication-success frequency separately from absolute-tolerance classification."
+  }
+ ],
+ "performance": {
+  "primary": "The primary performance quantity is S=max(Vdirection,Voverlap), where each V is the equal-weighted average across the 16 fixed structural scenarios of the range in agreement probability over the three nested precision levels. This directly measures the pair-level precision-conflation component while holding each scenario's estimands and mismatch mechanism fixed. The protocol does not score either illustrative binary operator as false against the absolute-tolerance truth.",
+  "secondary": [
+   "Agreement probability for each illustrative binary operator at every precision level and structural scenario.",
+   "Paired changes in label output between adjacent nested sample sizes and between the smallest and largest samples.",
+   "Bias, empirical standard error, mean model standard error, mean squared error, 95% coverage and nonconvergence for psiT, psiE, deltaRaw, psiEtoT,LZ and deltaObservedAlign.",
+   "The exact scenario distribution of deltaRaw, computed before applying Delta, demonstrating that no mechanism was solved to a requested discrepancy.",
+   "Residual discrepancy after observed-information alignment, stratified by exact alignment, observed-Z shift, hidden-U shift and outcome-measurement mismatch.",
+   "For tolerance methods only, wrong definitive decision probability, correct definitive decision probability, indeterminate probability and decision rate using the common truth |deltaRaw|<Delta versus |deltaRaw|>Delta. Exact boundary truths, if any arise without calibration, are reported separately.",
+   "Common decision loss R(lambda)=P(wrong definitive)+lambda P(indeterminate) for lambda from 0 to 1 in increments of 0.05. Correct definitive decisions have loss zero. No method is called superior unless its risk is lower over the stated loss range.",
+   "Error-versus-decision-rate curves for the graded compatibility score over all prespecified cutoffs.",
+   "Continuous sceptical p-values, source-defined replication-success frequency and inverted confidence-set behavior, without reinterpreting pS as a tolerance classifier.",
+   "Normal-theory calculations for the illustrative operators and tolerance rules as implementation benchmarks; departures of finite-sample simulation results from those calculations are reported rather than treated as discoveries.",
+   "Sensitivity of S to equal weighting within each mismatch mechanism and to materiality thresholds of 0.05 and 0.15. These sensitivities do not replace the prespecified primary threshold."
+  ],
+  "n_rep": 10000,
+  "n_rep_derivation": "For a scenario-specific Bernoulli probability, the worst-case Monte Carlo standard error is sqrt(0.25/10000)=0.005. An independent difference of two such probabilities has worst-case MCSE 0.00707; the nested paired differences use their empirical covariance and a paired bootstrap. A paired difference has an absolute worst-case standard error bound of 0.01 at 10000 replicates. The primary S averages 16 structural scenarios, but its uncertainty is obtained by recomputation rather than by assuming independence after the maximum operation. Use 20000 stratified paired bootstrap resamples for the single primary 95% Monte Carlo interval. Secondary families of scenario-level contrasts use paired max-statistic intervals. No additional replicates are added merely to force a threshold crossing; a confidence interval that crosses its relevant threshold yields an inconclusive conclusion."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "For the pair-level precision-conflation part of BEN-02 only, the lower endpoint of the prespecified two-sided 95% Monte Carlo interval for S is greater than 0.10.",
+  "problem_is_not_real_if": "For the same pair-level component and the same scalar S, the upper endpoint of the prespecified two-sided 95% Monte Carlo interval is less than 0.10.",
+  "uninformative_if": "The result is inconclusive if the interval for S includes 0.10. It is methodologically uninformative if finite-cell truth checks fail, the published sceptical p-value implementation does not reproduce its source examples, or any structural scenario must be removed because underlying-estimator nonconvergence exceeds 1%. Tolerance-method performance cannot change the BEN-02 verdict because it answers a separate operational question.",
+  "both_branches_reachable": "Both substantive branches compare the same aggregate statistic with the same threshold. If agreement probabilities remain nearly constant over precision, S can lie below 0.10 and support the not-real branch. If at least one operator changes materially on average, S can lie above 0.10 and support the real branch. Any interval crossing 0.10 produces the third, inconclusive result; no branch depends on success in every scenario or failure in any selected scenario."
+ },
+ "threats": [
+  {
+   "threat": "The materiality threshold S=0.10 and equal structural-scenario weights are judgments rather than discoverable constants.",
+   "mitigation": "Prespecify them before truth calculation, report results by mismatch mechanism, and provide sensitivity at thresholds 0.05 and 0.15. Restrict the conclusion to this stated design distribution."
+  },
+  {
+   "threat": "The two binary operators are illustrative and the protocol does not establish that primary benchmarking programs recommend or predominantly use them.",
+   "mitigation": "Set is_status_quo to false, make no source attribution for their exact definitions, and describe conclusions conditionally on use of these operators. Questions about prevalence and downstream citation require a separate reporting study."
+  },
+  {
+   "threat": "The sceptical p-value addresses graded replication evidence rather than the protocol's absolute-risk tolerance decision.",
+   "mitigation": "Apply its published interpretation and report it separately. Do not score it as erroneous against |deltaRaw|<Delta or force it into the common tolerance loss."
+  },
+  {
+   "threat": "The fixed logit and probit mechanisms remain stylized and use correct treatment propensity specification.",
+   "mitigation": "Use two links, two baseline risks and four mismatch mechanisms. Interpret results as isolation of pair-level estimand and sampling behavior, not as robustness to residual confounding or high-dimensional nuisance estimation."
+  },
+  {
+   "threat": "Unavailable U and fixed outcome misclassification simplify real failures of alignment and measurement.",
+   "mitigation": "Withhold both from the available-information estimator and distinguish its estimand from the common latent target. Do not claim that the simulation identifies unknown modifiers or measurement parameters."
+  },
+  {
+   "threat": "Wald and normal-confidence-distribution approximations can fail in the smallest binary samples.",
+   "mitigation": "Report estimator bias, empirical and model standard errors, coverage and nonconvergence before interpreting method output. Coverage is a diagnostic, not a nominal success criterion built into the verdict."
+  },
+  {
+   "threat": "Nested sampling creates dependence between precision levels that differs from comparing unrelated completed studies.",
+   "mitigation": "Use nesting only for the internal precision contrast, where it removes irrelevant between-replicate variation. Estimate paired uncertainty directly and also report each marginal agreement probability."
+  },
+  {
+   "threat": "Available-information transport shares an estimated trial target distribution with the trial effect estimator.",
+   "mitigation": "Use a stacked influence function that includes the resulting covariance. Retain simple variance addition only for the raw discrepancy, whose cohort estimates are independent."
+  },
+  {
+   "threat": "A single pair cannot estimate portfolio heterogeneity, database calibration or prediction-interval coverage.",
+   "mitigation": "Declare these outside scope in the aims, DGM, bears_on statement and revision block. Do not extrapolate pair-level operating characteristics to portfolio calibration."
+  },
+  {
+   "threat": "The simulated aligned and mismatched mechanisms are not realistic positive and negative control questions.",
+   "mitigation": "Call them mismatch mechanisms and alignment diagnostics only. A control-based study requires multiple clinical questions and databases with externally justified control effects and is not represented here."
+  }
+ ],
+ "runtime_estimate": "There are 16 structural scenarios, each with 10000 replicate families analyzed at three nested precision levels, giving 480000 benchmark-pair analyses. Each analysis requires one propensity glm on at most 16 observed covariate-treatment cells; outcome regression, effect estimation, transport, rule evaluation and truth calculation use cell arithmetic. The workload is therefore approximately 480000 small glm fits plus algebraic calculations. On six workers, a provisional budget is 3 to 10 hours. A 100-replicate pilot must report observed fits per second and revise the runtime estimate before the full run; pilot results cannot change mechanisms, thresholds or replicate counts.",
+ "bears_on": [
+  {
+   "id": "BEN-02",
+   "relation": "answers-part",
+   "what": "The study settles only the pair-level precision-conflation part: whether two explicitly defined binary labels materially depend on sampling precision when the causal estimands and mismatch mechanism are fixed. It also shows what observed-information alignment can and cannot remove and evaluates tolerance procedures with joint uncertainty under a common loss. It does not establish the prevalence of binary reporting, select a correct tolerance, or resolve portfolio heterogeneity, prediction calibration, database calibration, realistic controls or prospective forecasting."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019;38:2074-2102.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo uncertainty planning and separation of method performance from simulation error."
+  },
+  {
+   "cite": "Wang SV, Schneeweiss S, RCT-DUPLICATE Initiative. Emulation of randomized clinical trials with nonrandomized database analyses: results of 32 clinical trials. JAMA. 2023;329(16):1376-1385.",
+   "doi_or_url": "10.1001/jama.2023.4221",
+   "used_for": "The benchmark-pair setting and the fact that a major benchmarking program reports multiple agreement metrics. It is not used as the source of the protocol's two illustrative binary operators."
+  },
+  {
+   "cite": "Köppe et al. Assessing the replicability of RCTs in RWE emulations. BMC Medical Research Methodology. 2025.",
+   "doi_or_url": "10.1186/s12874-025-02589-z",
+   "used_for": "The published sceptical p-value, its quantitative interpretation, relative-precision calculation and confidence-set inversion."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The protocol answered a narrow pair-level equivalence question rather than the full BEN-02 problem.",
+    "severity": "fatal",
+    "how": "declared-limitation",
+    "what_changed": "The title, question, aims and bears_on statement now say that the study settles only the pair-level precision-conflation part of BEN-02. Portfolio heterogeneity, prediction calibration, database calibration, control questions and prospective forecasting are explicitly excluded from any claim of resolution."
+   },
+   {
+    "finding": "The simulated positive and negative controls were DGM checks rather than the control strategy requested by BEN-02.",
+    "severity": "serious",
+    "how": "declared-limitation",
+    "what_changed": "All positive-control and negative-control claims were removed. The scenarios are now called mismatch mechanisms and alignment diagnostics. The protocol states that it does not evaluate realistic control questions across databases or clinical questions."
+   },
+   {
+    "finding": "The DGM solved population parameters to produce selected discrepancies and encoded precision effects, null-sign behavior, ratio instability, transport recovery and nominal coverage.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "The additive calibrated DGM, solved qE values, exact-null stratum, ratio analysis and verdict-linked coverage requirements were removed. Fixed logit and probit mechanisms are specified independently of Delta; discrepancies are computed afterward. The primary comparison uses nested samples under an unchanged mechanism, so only observable precision varies. Available-information alignment succeeds only when the relevant information is observed and can fail under hidden-U or measurement mismatch."
+   },
+   {
+    "finding": "Direction and null-test outputs were scored as false against an unrelated absolute-tolerance estimand.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The binary operators are evaluated only through their own agreement probabilities and precision sensitivity. Tolerance errors are computed only for methods that explicitly classify |deltaRaw| relative to Delta. Failure to reject a point null is no longer interpreted as affirmative tolerance alignment."
+   },
+   {
+    "finding": "The proposed method could abstain while forced binary comparators could not, and existing graded alternatives were omitted.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Methods answering the tolerance question are compared using error-versus-decision-rate curves and the common loss P(wrong)+lambda P(indeterminate) over lambda from 0 to 1. A forced plug-in classifier supplies a nonabstaining reference. The published sceptical p-value is included and applied under its own published interpretation rather than being forced into the tolerance decision."
+   },
+   {
+    "finding": "The real and not-real criteria were structurally asymmetric and made the not-real result effectively unreachable.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "Both branches now compare the same scalar S with the same threshold of 0.10 using opposite endpoints of one two-sided Monte Carlo interval. An interval crossing the threshold is inconclusive. No branch depends on any-scenario failure versus every-scenario success."
+   },
+   {
+    "finding": "Monte Carlo cutoffs ignored threshold uncertainty, multiplicity and the fact that the former inconclusive clause could not be triggered.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The primary conclusion uses a threshold-specific paired-bootstrap interval for one aggregate statistic. Secondary scenario families use paired max-statistic intervals. Any interval crossing its relevant threshold is inconclusive, and there is no simultaneous requirement that every nominal boundary rate remain below a fixed point estimate."
+   },
+   {
+    "finding": "The exact four comparator definitions were not mapped to published sources and recommendations.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Unsupported status-quo and author-recommendation claims were removed. Direction matching and interval overlap are labeled illustrative operators with is_status_quo=false. Wang is cited only for the benchmark setting and multi-metric reporting. The sceptical p-value is the only literature comparator and its equation, locator, interpretation and source examples must be archived before execution."
+   },
+   {
+    "finding": "The BMJ metadata conflicted, Köppe was misspelled, and the uncited Fieller construction was described as exact.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The unresolved BMJ record was removed because the payload cannot establish consistent metadata. Köppe is spelled with the published diacritic. The ratio and Fieller analyses were removed, so no unsupported exact-coverage claim remains."
+   },
+   {
+    "finding": "A single independent benchmark pair cannot establish prediction calibration, portfolio heterogeneity, database calibration or retrospective behavioral effects.",
+    "severity": "limitation",
+    "how": "declared-limitation",
+    "what_changed": "These exclusions remain explicit in the aims, cannot_detect field, threats, bears_on statement and declared limitations. No result from this study is allowed to resolve those portions of BEN-02."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study settles only the pair-level precision-conflation part of BEN-02.",
+   "It does not determine a clinically or socially correct discrepancy tolerance or abstention loss.",
+   "It does not establish that the two illustrative binary operators are recommended or predominant in benchmarking literature.",
+   "It does not evaluate realistic positive or negative control questions across databases and clinical topics.",
+   "It does not estimate between-question heterogeneity, between-database calibration or prospective prediction-interval coverage.",
+   "It does not reproduce researcher behavior caused by retrospective knowledge of a trial result.",
+   "It does not study overlapping samples, time-varying treatment, censoring, residual treatment confounding or high-dimensional nuisance estimation.",
+   "The hidden-modifier and outcome-measurement mechanisms are stylized and do not identify unknown real-world alignment failures.",
+   "Equal weighting of the structural scenarios is an illustrative design distribution, not an empirical distribution of target trial emulations.",
+   "The BMJ citation is omitted until its authors and publication year can be resolved consistently from the DOI."
+  ]
+ }
+}

@@ -24,7 +24,7 @@ A finding is not advisory. It goes into the protocol as a design decision or as 
 | 14 | PRO-02 | unsound | 0 | 0 | 1 | 2 |
 | 15 | PRO-04 | unsound | 0 | 0 | 3 | 3 |
 | 16 | SEQ-01 | unsound | 0 | 0 | 2 | 3 |
-| 17 | TZO-01 | unsound | 0 | 0 | 3 | 4 |
+| 17 | TZO-01 | unsound | 0 | 0 | 3 | 3 |
 
 ---
 
@@ -1384,121 +1384,89 @@ The 2024 TrialEmulation preprint cannot by itself establish the exact behavior o
 
 **Verdict.** unsound
 
-The protocol is unsound as a study intended to settle TZO-01. It studies deliberately delayed censoring when exact weekly treatment order is already known; it neither selects a grace period nor examines the nuisance-model cost of fine grids. The marginal risk-difference estimands and superpopulation truths are coherent, and variance estimation is even-handed, but the main grid finding and apparent selector success are structurally favored by the DGM and fallback rule. The decision rules, diagnostic validation, runtime estimate, and citation metadata also require revision before running.
+The protocol is unsound as a study intended to settle TZO-01, although it could support a narrower CCW implementation study. It retains exact weekly histories and changes only how long known treatment deviations remain uncensored, so it does not study the full temporal-resolution problem or its fine-grid tradeoff. It explicitly does not select a grace period, and the nonnull outcome models make delayed endpoint censoring harmful by construction. The marginal estimands, superpopulation truths, outcome masking, sandwich variances, and primary Monte Carlo precision are otherwise well specified.
 
 **[FATAL] answers-problem**
 
-TZO-01 asks about outcome-blind selection of the time grid or grace period, together with movement under alternatives. The design explicitly cannot select a clinically meaningful grace period, fixes time zero without studying alternatives, and treats RD4 and RD12 as different estimands. DeltaG therefore quantifies a consequence of two chosen strategies; it does not select G or resolve that half of the problem.
+The candidate grids do not change the resolution of the treatment, observation, covariate, or nuisance-model histories. Every analysis retains exact weekly treatment decisions and fits the same weekly initiation model; the grid only determines how long a known prohibited initiation remains in the gDelay risk set. The study therefore answers whether deliberately delayed artificial censoring creates bias, not how to select the temporal resolution of a target-trial emulation. It also removes the fine-grid nuisance-model and weight-instability tradeoff named in TZO-01, making the one-week grid essentially free.
 
-*Fix:* Treat this as a grid-only partial study and leave TZO-01 open, or add a separate clinically anchored procedure and validation design for choosing G. Comparing two prespecified grace periods is not a selection procedure.
+*Fix:* Either narrow the claim to within-interval artificial-censoring error under weekly decisions, or construct separately coarsened data versions in which each method observes and models only the information available at its grid resolution. A genuine selector study must include the statistical or computational cost of fine grids and compare valid estimators fitted at each resolution.
 
 **[FATAL] answers-problem**
 
-The candidate grids do not change the longitudinal information set. Every method retains exact weekly treatment decisions, uses the exact weekly propensity model, and keeps a fixed-dimensional nuisance model. Grid width changes only how long a known protocol deviation is ignored. This answers the neighboring question of delayed artificial censoring, not how to select temporal resolution when coarsening changes confounder information, decision opportunities, and nuisance-model burden.
+The protocol explicitly says it cannot select a clinically meaningful grace period. DeltaG measures the difference between two distinct causal estimands; it is not a procedure for choosing G. Consequently, the design addresses only part of a problem that asks for selection of the time grid or grace period and a measure of movement under alternatives.
 
-*Fix:* For each grid, consistently coarsen the observed treatment and covariate histories, fit the method recommended at that resolution, and include the bias versus nuisance-instability tradeoff. Otherwise relabel the study as an event-ordering implementation experiment.
-
-**[FATAL] dgm-builds-in-finding**
-
-Grid dependence is imposed by the combination of treatment starts exactly at weekly boundaries, exact censoring on the 1-week grid, censoring delayed to 2-, 4-, or 8-week endpoints, and retention of outcomes after prohibited starts. The immediate profile sets psi to log(0.60) or log(0.80) from initiation, while the biphasic profile places changes at 0, 2, and 6 weeks. Consequently, the coarse gDelay arm deliberately contains outcomes generated under treatment. The eight immediate-benefit cells alone are enough to satisfy the six-cell rule if the constructed discrepancy exceeds its threshold.
-
-*Fix:* Apply coherent artificial censoring under every method. If coarsened observation is the target, remove the exact order before analysis and vary latent within-bin ordering independently of the candidate grids. Validate conclusions on effect-timing mechanisms selected independently of the grid boundaries.
+*Fix:* Describe the study as resolving only the grid-diagnostic subproblem. Settling the grace-period component would require a separately defined clinical or decision-theoretic criterion using information beyond treatment and observation intensities; process data alone cannot identify a uniquely meaningful G.
 
 **[SERIOUS] dgm-builds-in-finding**
 
-The treatment and visit histories supplied to the selector have exactly the same distribution under the null, immediate, and biphasic outcome profiles. A process-only selector must therefore select the same grid distribution even when the outcome-relevant resolution differs. Passing 22 cells would show only that a fixed default happened to work for these handpicked outcome laws; it would not show that the rule identified an adequate grid.
+The coarse-grid discrepancy is generated by construction. A prohibited start is known at its weekly boundary, but the endpoint estimator retains subsequent outcomes in the gDelay arm. Those outcomes are then generated under an instantaneous treatment effect: hazard ratios 0.60 and 0.80 under immediate benefit, and 1.40 and 1.60 for the first two weeks followed by 0.55 and 0.75 after week 6 under the biphasic profile. Wider bins mechanically retain treated follow-up for longer. The exact-null cells are useful controls, but they do not make the nonnull finding an emergent property of grid selection.
 
-*Fix:* Describe the rule as a domain-specific default rather than a successful selector. Develop it on separate mechanisms, freeze it, and evaluate it on externally specified validation mechanisms with different effect latencies and grid alignments.
-
-**[SERIOUS] estimand**
-
-RD4, RD12, and their superpopulation truths are well defined, but no estimator for DeltaG is specified. It is unclear whether DeltaG uses the fixed 4-week analyses, exact-order analyses, selected grids that may differ between G values, or every method. No joint covariance or interval construction across the two grace protocols is given, yet DeltaG bias and a Monte Carlo interval drive reported conclusions.
-
-*Fix:* Specify each DeltaG estimator, including how differing selected grids are handled and how covariance between RD12 and RD4 is estimated. Distinguish the truth-generation interval from Monte Carlo uncertainty in an estimated DeltaG.
-
-**[FATAL] fair-comparison**
-
-The method labeled status quo is intentionally denied correct artificial censoring. Because exact weekly start times are used, clone-censor-weighting requires a clone to leave the risk set at its known deviation before accepting a later outcome. Retaining post-deviation outcomes until a 4-week endpoint is not the recommended CCW implementation. The comparison therefore pits coherent methods against a known ordering error.
-
-*Fix:* Implement standard CCW with censoring before every outcome known to occur after deviation. To study genuinely unavailable ordering, coarsen timestamps for every comparator and prespecify a defensible common tie convention.
+*Fix:* Interpret these cells only as stress tests of delayed censoring. Add independently calibrated mechanisms with delayed, smooth, negligible, and differently aligned effect onset, and apply each method to honestly coarsened observables. Do not use the resulting count of affected cells as evidence about prevalence in practice.
 
 **[SERIOUS] fair-comparison**
 
-When no grid passes the aliasing criterion, the selector silently defaults to the 1-week grid and this is not counted as selector failure. The 1-week grid is the oracle resolution by construction because all treatment decisions occur weekly. The proposed method can therefore appear successful precisely when its selection rule supplied no answer.
+The method labeled status quo is denied ordering information that the simulated data contain. Recommended CCW practice censors a clone when a known protocol deviation occurs before accepting later outcomes. Here the four-week method knows the weekly start time but waits until the interval endpoint, while the benchmark uses the correct order. That is a deliberately degraded hybrid implementation, not an established status quo comparator.
 
-*Fix:* Classify failure of every candidate to pass as unsupported. Report fallback separately and exclude fallback runs from any claim that the selector succeeded.
+*Fix:* If exact ordering is available, give the fixed-grid method exact deviation censoring. If the intended setting has only coarsened records, remove exact ordering from every method's inputs and implement the convention recommended for such data. Label endpoint-delayed censoring as a stress-test method unless literature establishes it as routine practice.
 
-**[MINOR] fair-comparison**
+**[SERIOUS] fair-comparison**
 
-The selected method receives an additional independent sample of 1000 people, while the fixed method analyzes only 4000. Counting the extra sample in a narrative does not make MSE or precision comparisons resource matched.
+The adaptive rule is not required to improve on the trivial outcome-blind rule of always choosing one week, even though one week agrees with exact ordering and carries no increased nuisance-model burden in this DGM. It also consumes an additional 1000-person design sample. The selector could therefore be declared a partial solution while being dominated in bias, precision, or total data requirements by a prespecified finest-grid analysis.
 
-*Fix:* Compare methods under the same total-person budget, or restrict comparative claims to properties such as bias that are not being presented as equal-resource efficiency.
-
-**[SERIOUS] decision-rule**
-
-M is the within-replicate range of four noisy estimates. Its expectation is positive even when all grids are unbiased for exactly the same estimand. A lower Monte Carlo bound for mean M above 0.02 can therefore declare a practical grid problem because of ordinary paired estimation noise rather than systematic discretization error.
-
-*Fix:* Base the decision on paired mean differences or grid-specific biases relative to the common truth. If realized-estimate range remains of interest, calibrate its excess over a no-grid-effect reference distribution.
+*Fix:* Include always-one-week and resource-equivalent fixed-grid comparators. Require the selector to deliver a prespecified efficiency, computation, or data-use advantage without materially worsening bias or coverage.
 
 **[SERIOUS] decision-rule**
 
-The Wilson bound for the aliasing rate treats occupied person-bins as independent Bernoulli observations. Bins from the same person are correlated through recurrent visits, carried-forward Z, latent state, and irreversible treatment. The resulting bound can be too narrow and can select grids at an uncontrolled rate.
+Mean M is the expected range of four noisy estimates, not the range of their expected values. Because max minus min is nonnegative, mean M can exceed 0.02 even when all grid estimators have identical expectations. Its Monte Carlo confidence interval only estimates that noise-inflated quantity precisely. The real-problem rule can therefore fire because alternative analyses fluctuate, rather than because grid choice creates systematic movement.
 
-*Fix:* Estimate aliasing uncertainty at the person-cluster level, such as with a cluster bootstrap or a subject-level estimating equation, and account for comparison across nested candidate grids.
-
-**[SERIOUS] decision-rule**
-
-With 2000 replicates, coverage MCSE near 0.95 is 0.00487 and its approximate 95% Monte Carlo margin is 0.0095. The success rule classifies raw coverage estimates against 0.93 and 0.97, so results near either boundary cannot be classified reliably. The 5% failure threshold has essentially the same Monte Carlo margin, and the phrase 'bias no more than 0.005 worse' does not specify whether absolute or signed bias is compared.
-
-*Fix:* Use Monte Carlo confidence bounds and prespecified indifference regions for every threshold, increase replication where boundary decisions matter, and define 'worse' as an explicit function such as absolute-bias difference.
+*Fix:* Base the decision on paired mean differences or the range of scenario-specific expected estimates. If within-dataset multiverse spread remains an applied diagnostic, calibrate it against its null distribution and do not let it alone establish grid-induced bias.
 
 **[SERIOUS] decision-rule**
 
-The unit for sensitivity and specificity is undefined. Bias is a scenario-level expectation, so using absolute bias above 0.01 creates only 24 labeled units, with very coarse and imprecise sensitivity and specificity. Treating 48000 replicates as units would replace bias with single-replicate error, create pseudoreplication, and reuse the same outcomes in both O4 and the target label.
+The thresholds 0.01, 0.02, six of 24 scenarios, and 22 of 24 scenarios have no clinical or decision-theoretic justification. The 24 cells are hand-selected factorial conditions, not a probability sample from a domain; paired grace-period cells are correlated, and outcome profiles repeat the same treatment and visit laws. Counting cells cannot support a prevalence-like conclusion that the problem is practically real.
 
-*Fix:* Define diagnostics at the scenario-mechanism level and validate them on a substantially larger, independently generated set of mechanisms. Require confidence bounds, not point estimates alone, to clear 0.80.
-
-**[SERIOUS] decision-rule**
-
-The selector support counts do not assess support for the intervention actually estimated. Under lower uptake, approximately 25% cumulative initiation by week 12 implies only about a 2% to 3% weekly initiation probability. The forced gEarly action at one exact boundary may consequently be represented by roughly 70 to 100 natural initiators, with weights around 40 or larger and effective sample size near the protocol's uninformative cutoff. Fifty starts anywhere in the design sample does not diagnose this positivity problem.
-
-*Fix:* Pilot and prespecify arm-specific support checks at each forced boundary and within important covariate strata. Calibrate sample size and treatment pressure against the weighted effective sample size for each intervention, not total treatment starts.
+*Fix:* Justify materiality from a named application or utility scale, and define a distribution or weighting over mechanisms before summarizing across cells. Otherwise make only cell-specific conclusions.
 
 **[SERIOUS] decision-rule**
 
-The decision regions are not mutually exclusive and have no precedence rule. A study can meet the six-scenario real criterion while also becoming uninformative because another scenario exceeds 5% failures or because more than half of the remaining intervals cross thresholds.
+The diagnostic sensitivity and specificity rule is underdefined and poorly resolved. The threat section implies that the unit is the 24 scenario cells, in which case 2000 replicates reduce within-cell Monte Carlo error but do not increase the number of validation mechanisms. Point sensitivity and specificity of 0.80 can then rest on only a few cells with very wide binomial uncertainty. O4 also counts the same post-deviation outcomes that directly create the endpoint discrepancy, making its association with M partly mechanical.
 
-*Fix:* Define a deterministic hierarchy in which feasibility and Monte Carlo adequacy are assessed first, followed by one mutually exclusive substantive classification.
+*Fix:* Define the classification unit explicitly, validate the fixed cutoff on a separate and substantially larger collection of mechanisms, and require lower confidence bounds rather than point sensitivity and specificity to exceed the target.
+
+**[MINOR] decision-rule**
+
+Two thousand replicates give coverage MCSE 0.00487 and an approximate 95% Monte Carlo half-width of 0.0095. This is adequate for detecting gross undercoverage, but the selector-success rule classifies raw coverage estimates at 0.93 and 0.97 without using their Monte Carlo intervals, so results close to either boundary will be classified arbitrarily.
+
+*Fix:* Use one-sided Monte Carlo bounds or an explicit indifference region for the coverage criterion.
 
 **[SERIOUS] feasibility**
 
-The runtime estimate counts GLM fits but understates their size and the surrounding work. The main run contains up to about 12.5 billion design and analysis person-weeks before event truncation, while truth generation adds about 10 billion regime person-weeks. It also requires multiple grid-by-grace risk calculations, stacked score construction, truncation analyses, selector variants, diagnostics, and serialization. Completing this in 6 to 10 hours on six workers is unsupported without compiled, benchmarked code.
+The stated wall-time is unsupported and likely optimistic without compiled-kernel benchmarks. The design entails up to about 10 billion analysis-sample person-weeks, another 2.5 billion design-sample person-weeks, about 10 billion regime-person-weeks for truth generation, 24000 large weekly GLMs, joint scores for multiple grids and grace periods, and several sensitivity analyses. Completing this in roughly 6 to 10 wall-clock hours on six workers requires performance that has not yet been demonstrated.
 
-*Fix:* Run the stated timing pilot before locking the protocol, measure generation, GLM, score, and truth workloads separately, and extrapolate from observed peak memory and wall time. Revise the computational plan if the measured projection misses the claimed window.
+*Fix:* Treat the runtime as unknown until timing both representative full replicates and the truth kernel. Extrapolate worker-hours separately for generation, fitting, scoring, sensitivity analyses, serialization, and expected reruns; include uncertainty rather than only a point range.
 
 **[MINOR] citation**
 
-The Epidemiology citation is attributed to 'Sperling et al.' The lead surname is Sperrin, not Sperling, and the incorrect name is repeated in the factor rationale.
+The Epidemiology citation with DOI 10.1097/EDE.0000000000000043 is repeatedly attributed to Sperling. The first author is Sperrin, not Sperling.
 
-*Fix:* Replace the author string with the bibliographic metadata associated with DOI 10.1097/EDE.0000000000000043.
+*Fix:* Correct the author name everywhere and supply the complete reference.
 
 **[SERIOUS] citation**
 
-Maringe et al. supports cloning, artificial censoring, and weighting; it does not support retaining an outcome after a known protocol deviation until a coarse endpoint. The central claim that this is a common status quo convention is therefore uncited and conflicts with the defining CCW ordering.
+DOI 10.1002/pds.5071 concerns a specific systematic review of 14 DPP-4 inhibitor studies. Its reported 0-to-180-day range and absence of sensitivity analyses support a statement about that review sample, not the general clinical plausibility of four- and twelve-week grace periods across an unspecified target-trial domain.
 
-*Fix:* Do not use Maringe et al. to legitimize the delayed-censoring comparator. Supply direct evidence that the exact convention is recommended or commonly implemented, or replace it with a valid CCW comparator.
+*Fix:* Name the review and its population, restrict the claim to that evidence base, and calibrate G to a defined clinical application before calling either value practically meaningful.
 
 **[MINOR] citation**
 
-The entries labeled 'Pharmacoepidemiology and Drug Safety systematic review identified in the catalog audit' and 'Wanis et al. work' are placeholders rather than complete citations. The supplied PDS quotation supports the stated 0-to-180-day range and absence of sensitivity analyses, but readers cannot audit either entry from the bibliography as written.
+The PDS and Wanis references are given as descriptions rather than auditable bibliographic citations. The Wanis conceptual use is appropriate, but the protocol should cite the full work and its published version rather than only a generic label and arXiv URL.
 
-*Fix:* Insert verified authors, title, journal or repository, year, and identifier for both works.
+*Fix:* Supply authors, title, year, journal or repository, and stable identifier for both references.
 
-**[CITATION]** Sperling et al. Optimal CD4 count for initiating HIV treatment. DOI 10.1097/EDE.0000000000000043: The lead surname is Sperrin, not Sperling.
+**[CITATION]** Sperling et al.; DOI 10.1097/EDE.0000000000000043: Wrong author surname. The cited paper is by Sperrin et al., not Sperling et al.
 
-**[CITATION]** Maringe C, Benitez Majano S, Exarchakou A, et al. DOI 10.1093/ije/dyaa057: Supports CCW and artificial censoring generally, but not retention of outcomes after a known deviation until a coarse endpoint.
+**[CITATION]** Pharmacoepidemiology and Drug Safety systematic review; DOI 10.1002/pds.5071: The reference is bibliographically incomplete, and evidence from 14 DPP-4 inhibitor studies is generalized beyond that review's setting.
 
-**[CITATION]** Pharmacoepidemiology and Drug Safety systematic review identified in the catalog audit. DOI 10.1002/pds.5071: The substantive use is supported by the supplied quotation, but the citation omits authors and title.
-
-**[CITATION]** Wanis et al. work on natural and stochastic grace-period strategies. arXiv:2212.11398: The citation omits the verified title, complete author attribution, year, and publication information.
+**[CITATION]** Wanis et al.; arXiv:2212.11398: The conceptual attribution is appropriate, but the citation lacks a title, year, full author information, and the available published-version details.
 

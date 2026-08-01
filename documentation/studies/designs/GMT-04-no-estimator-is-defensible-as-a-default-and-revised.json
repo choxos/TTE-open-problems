@@ -1,0 +1,327 @@
+{
+ "title": "A bounded common-estimand benchmark of prespecified parametric IPTW, g-formula, and longitudinal TMLE implementations",
+ "question": "Within a fixed six-visit binary longitudinal data-generating mechanism, how often do the three named point-estimation implementations produce 36-month marginal risk differences whose within-replicate range exceeds 0.03 when they target the same sustained strategies? How do their bias, precision, coverage, output validity, and diagnostics behave under correct specification, joint misspecification, selective positive controls, practical overlap loss, and a composite hidden-variable identification failure?",
+ "aims": "Settle only the public-benchmark and named-implementation-disagreement part of GMT-04. The study will provide a reproducible common-estimand benchmark, measure consequential disagreement among three prespecified parametric implementations, evaluate two IPTW interval procedures, and demonstrate whether within-dataset agreement can coexist with shared error. It will not determine a universal estimator default, rank estimator families generally, synthesize existing simulation evidence, or establish a reporting requirement.",
+ "dgm": {
+  "covariates": "For each benchmark scenario, generate 4000 independent eligible individuals who are event-free at month 0. Decisions occur at k=0,...,5, corresponding to months 0, 6, 12, 18, 24, and 30; follow-up ends at month 36. Let expit(x)=1/{1+exp(-x)}. Generate independent W1~Bernoulli(0.50), W2~Bernoulli(0.35), and U~Bernoulli(0.30). Generate L0~Bernoulli(expit(-0.70+1.00W1+0.70W2+0.50W1W2+0.80U)). Set L[-1]=A[-1]=A[-2]=0. At each event-free visit, generate A_k~Bernoulli(expit(-0.20+s{1.20L_k+0.50W1-0.50W2+0.70U+1.10A_[k-1]-0.70}+delta_g{1.00L_[k-1](W2-0.35)-0.80A_[k-2](W1-0.50)})). Generate monotone loss during interval k with probability expit(-4.00+0.70L_k+0.35W2+0.30A_k+0.25U+0.12k+delta_g{0.80L_[k-1](A_[k-1]-0.50)-0.50A_[k-2](W1-0.50)}). Generate full trajectories before applying the loss mask. Among event-free individuals and for k<5, generate L_[k+1]~Bernoulli(expit(-0.80+1.35L_k+0.45W1+0.35W2+0.55U-0.75A_k+0.15k+delta_Q{0.65L_[k-1](W2-0.35)-0.45L_[k-1](L_k-0.50)})). Conditional draws are independent given the stated history.",
+  "outcome_model": "Let E_[k+1] indicate a first event during interval k. Among individuals event-free at its start, P(E_[k+1]=1)=expit(-4.60+0.20k+1.00L_k+0.55W1+0.35W2+0.75U-0.45A_k-0.30A_kW1+delta_Q{0.70L_[k-1](W2-0.35)-0.50L_[k-1](L_k-0.50)}). An event is absorbing. The terminal outcome is Y=1 if any event occurs by month 36. The centered omitted terms alter conditional structure without uniformly increasing treatment prevalence or event risk.",
+  "treatment_effect": "Treatment has an interval-specific direct log odds coefficient of -0.45 for W1=0 and lowers the odds of the next adverse covariate state through a coefficient of -0.75. The direct outcome coefficient is -0.75 for W1=1 because of the A_k by W1 interaction. The sustained-strategy effect is history-dependent and will be computed marginally.",
+  "effect_modification": "The A_k by W1 coefficient is -0.30. The direct conditional treatment odds ratio is exp(-0.45) when W1=0 and exp(-0.75) when W1=1. U affects treatment, L, loss, and outcome but does not modify the treatment coefficient.",
+  "factors": [
+   {
+    "name": "Practical overlap scale s",
+    "levels": [
+     "0.60: mild practical overlap stress",
+     "1.00: moderate practical overlap stress",
+     "1.70: severe cumulative practical positivity stress"
+    ],
+    "rationale": "The levels preserve structural positivity while creating increasingly rare six-visit sustained histories. The severe level is boundary evidence and does not enter the primary declaration."
+   },
+   {
+    "name": "Nuisance-stress role",
+    "levels": [
+     "G0Q0: delta_g=0 and delta_Q=0; reference scenario in which the prespecified nuisance formulas contain the required conditional functions",
+     "G1Q0: delta_g=1 and delta_Q=0; selective treatment and loss-model positive control",
+     "G0Q1: delta_g=0 and delta_Q=1; selective transition and outcome-model positive control",
+     "G1Q1: delta_g=1 and delta_Q=1; joint misspecification with no prespecified robustness winner"
+    ],
+    "rationale": "G1Q0 and G0Q1 verify expected directional robustness properties but cannot support the substantive declaration. No rule requires an MSE reversal between them. The bounded primary declaration uses only observed-U G0Q0 and G1Q1 scenarios at s=0.60 and s=1.00. Because the mechanisms are not externally calibrated, conclusions remain internal to this benchmark."
+   },
+   {
+    "name": "Analysis observability of U",
+    "levels": [
+     "Observed U: U is supplied to every implementation and included in every applicable nuisance model",
+     "Hidden U: the generated U is removed before analysis"
+    ],
+    "rationale": "Hiding U creates a composite identification failure involving treatment confounding, dependent loss, baseline and longitudinal covariate evolution, and outcome prediction. Results cannot be attributed to any one pathway. The same generated data support paired observed-U and hidden-U analyses."
+   },
+   {
+    "name": "Decision-rule calibration scenarios outside the factorial benchmark",
+    "levels": [
+     "C0 null control: U is observed; treatment depends only on its previous value with P(A0=1)=0.50 and P(A_k=A_[k-1])=0.80; loss is independent with probability 0.02; treatment coefficients in the L and event mechanisms are zero; all working models contain the generating functions",
+     "C1 separation control: use observed U, s=1.00, delta_g=0, and the G0Q1 structure with the omitted transition and event interaction coefficients multiplied by two; this is an intentionally strong implementation-differentiating positive control"
+    ],
+    "rationale": "C0 and C1 assess whether the symmetric decision procedure can return its negative and positive branches. They are excluded from all scientific conclusions about GMT-04."
+   }
+  ],
+  "n_scenarios": 26,
+  "deliberately_true": "The substantive benchmark contains 24 factorial scenarios from 3 overlap levels, 4 nuisance structures, and 2 U-observability states. Two separate calibration controls bring the total to 26. Exactly three substantive G0Q0 scenarios are benign with respect to measured exchangeability and nuisance specification: those with observed U. Hidden-U G0Q0 scenarios are not benign. In observed-U scenarios, consistency, sequential exchangeability, structural positivity, correct temporal ordering, and conditional independent loss hold. Treatment-confounder feedback is present because A_k changes L_[k+1], which changes later treatment and event risk. In hidden-U scenarios, sequential exchangeability and conditional independent loss are deliberately false. All benchmark probabilities remain strictly between zero and one.",
+  "cannot_detect": "The study does not address irregular visits, continuous treatment, grace periods, treatment versions, interference, measurement error, competing events, intermittent covariate missingness, more than six decisions, matching, baseline-only estimators, g-estimation, structural nested models, highly adaptive nuisance learning, or identification failures other than the specified composite hidden U. It cannot estimate how frequently its mechanisms occur in practice, establish a universal default, or justify a mandatory three-family comparison."
+ },
+ "estimands": [
+  {
+   "name": "36-month marginal sustained-strategy risk difference",
+   "definition": "RD36=Pr(Y under A_0=...=A_5=1 and no loss by month 36)-Pr(Y under A_0=...=A_5=0 and no loss by month 36). All simulated individuals are eligible at month 0; there is no grace period; treatment is assigned at six fixed visits; follow-up begins immediately; and the outcome is the first event by month 36. The estimand is a superpopulation marginal risk difference. Negative values favor sustained treatment.",
+   "true_value_computation": "Compute each regime risk by deterministic forward state recursion over the eight W1,W2,U strata, L0, the required lagged L states, and event-free status. At each visit set A_k to the regime value, set loss to zero, add event mass using the stated hazard, and propagate surviving mass through the L transition. Require state probabilities to sum to one within 1e-12. Before any estimator replicate is generated, a truth-only program must write the exact always-treated risk, never-treated risk, and RD for delta_Q=0, delta_Q=1, C0, and C1 to an immutable truth manifest. A separately written seeded 5,000,000-person intervention simulation must agree with each recursion result within three simulation MCSEs. The numerical truth values are not contained in the supplied protocol evidence, so no truth-based analysis is authorized until a dated amendment copies the verified values and their distances from zero into this field. The former benefit threshold of -0.03 is removed."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Prespecified parametric IPTW clone-censor pooled-logistic implementation with nuisance-adjusted interval",
+   "point_estimator": "Clone each individual to the always-treated and never-treated protocols and artificially censor a clone at its first treatment deviation. Fit pooled logistic models A_k~factor(k)+W1+W2+U+L_k+A_[k-1] and retention~factor(k)+W1+W2+U+L_k+A_k, omitting U in hidden-U scenarios. Bound fitted probabilities at 0.01 and 0.99. Form cumulative inverse probabilities of adherence and retention. Fit a weighted pooled logistic event model saturated in regime by interval; convert its six hazards to 36-month risks and subtract. Scaling weights to mean one within regime and interval is permitted because it leaves the saturated hazard estimates unchanged.",
+   "variance_estimator": "Stack treatment-model scores, retention-model scores, weight-normalization equations, and weighted event-model scores at the individual level. Estimate A as the derivative of the stacked mean score and B as the empirical covariance of individual stacked scores; use A_inverse B A_inverse-transpose divided by n. Apply the joint delta method to the two risks and their difference. Validate this interval against a subject-level nonparametric bootstrap with 400 resamples for the first 25 planned replicate identifiers in each of four prespecified anchor scenarios. Bootstrap validation is descriptive and cannot determine the main declaration.",
+   "interval": "Primary IPTW interval: untruncated two-sided Wald interval for RD36 using the nuisance-adjusted SE. This is the only IPTW interval used in coverage summaries that compare the three named point implementations.",
+   "is_status_quo": false,
+   "nonconvergence": "Classify a common output failure only when the implementation cannot return two finite risks in [0,1], a finite RD in [-1,1], and a finite nonnegative RD variance. Package errors and failed model fits are reported as software failures. Rank deficiency, absolute coefficients above 20, condition numbers above 1e12, clipping frequency, extreme weights, and sparse cells are diagnostic flags rather than components of the primary disagreement endpoint. Repeat output summaries using coefficient cutoffs of 10, 20, and 30 and condition-number cutoffs of 1e8, 1e10, and 1e12.",
+   "implementation": "Use data.table and stats::glm. Compute stacked equations and derivatives directly. Freeze all formulas and probability bounds before generating substantive results. This is a named candidate implementation; the protocol makes no claim that it is a universal or documented current-practice default."
+  },
+  {
+   "name": "Fixed-weight IPTW sandwich comparator",
+   "point_estimator": "Use exactly the same point estimate, fitted weights, weighted event model, regime risks, and RD as the nuisance-adjusted IPTW implementation.",
+   "variance_estimator": "Use the individual-cluster empirical sandwich from the weighted event model while treating fitted and bounded weights as fixed. Apply the joint delta method to the two product-limit risks.",
+   "interval": "Untruncated two-sided Wald interval using the fixed-weight SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the same common output-validity criteria as the primary IPTW implementation. Record method-specific matrix and coefficient diagnostics separately.",
+   "implementation": "Retain this procedure only as an explicitly labeled historical variance comparator. It shares the IPTW point estimate, is excluded from point-estimate disagreement, and cannot supply the IPTW coverage result used in any primary interpretation."
+  },
+  {
+   "name": "Prespecified pooled parametric longitudinal g-formula implementation",
+   "point_estimator": "Fit pooled logistic transition models L_[k+1]~factor(k)+W1+W2+U+L_k+A_k and event models E_[k+1]~factor(k)+W1+W2+U+L_k+A_k+A_k:W1 among the applicable observed risk sets, omitting U in hidden-U scenarios. Standardize over the empirical baseline distribution and calculate both sustained-regime risks by deterministic state recursion. Subtract the risks.",
+   "variance_estimator": "Use a subject-cluster stacked M-estimation sandwich for all transition and event coefficients. Add the empirical-baseline contribution m_a(W1,W2,U,L0)-psi_a to each regime influence function. Obtain recursion derivatives with central differences using step 1e-5 times max(1, absolute coefficient). Form the RD influence function by subtraction.",
+   "interval": "Untruncated two-sided Wald interval for RD36 using the influence-function SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the common output-validity criteria. Report glm errors, rank deficiency, large coefficients, recursion mass errors, nonfinite gradients, and condition numbers as separate software or numerical diagnostics. Do not include diagnostic guard triggers in the primary disagreement indicator if valid output remains available.",
+   "implementation": "Use stats::glm and deterministic recursion over binary states. Conclusions refer only to this pooled main-effect implementation. They do not represent the parametric g-formula family generally."
+  },
+  {
+   "name": "Prespecified formula-based longitudinal TMLE implementation",
+   "point_estimator": "Run ltmle::ltmle separately for the two static treatment vectors with survivalOutcome=TRUE. Use the same treatment and loss formulas and the same 0.01 and 0.99 probability bounds as IPTW. Use separate time-specific Q regressions saturated in the current binary state W1 by W2 by U by L_k by A_k; omit U in hidden-U scenarios and omit the delta_Q lagged terms. Convert targeted survival estimates to event risks and subtract. Do not use a SuperLearner ensemble.",
+   "variance_estimator": "Extract the subject-level influence curve for each targeted regime mean. After converting survival to risk, estimate Var(RD36) from the empirical variance of IC_always-IC_never divided by n. Retain cross-regime covariance.",
+   "interval": "Untruncated two-sided Wald interval for RD36 using the influence-curve SE.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the common output-validity criteria. Report ltmle errors, internal fit failures, rank deficiency, large nuisance or fluctuation coefficients, extreme clever covariates, clipping, and zero influence-curve variance as separate diagnostics. A diagnostic guard does not enter the primary disagreement indicator when finite valid risks and an RD are returned.",
+   "implementation": "Before execution, vendor the exact ltmle source archive and reference manual corresponding to the installed version, record its SHA-256 checksum and session information, and unit-test the behavior of Qform, gform, survivalOutcome, probability bounds, convergence reporting, and returned influence curves. If the specified version cannot be recovered exactly, the study remains uninformative pending an amendment. Conclusions refer only to this formula-based implementation and not to data-adaptive targeted learning."
+  }
+ ],
+ "performance": {
+  "primary": "For each complete replicate triplet, define D=1 when max(IPTW RD, g-formula RD, LTMLE RD)-min(IPTW RD, g-formula RD, LTMLE RD)>0.03. Define four primary scenarios as observed-U G0Q0 and G1Q1 at s=0.60 and s=1.00. Let p_primary be the equal-weight mean of the four scenario-specific Pr(D=1) values. The threshold of 0.03 is a prespecified three-percentage-point difference between estimates and is not selected from the simulated truth or observed performance. Method-specific software failures and common invalid outputs are separate outcomes and do not make D positive.",
+  "secondary": [
+   "For every named implementation: bias, empirical SE, mean model SE, relative model-SE error, MSE, 95 percent coverage, bias-eliminated coverage, convergence, common output validity, and Monte Carlo SE. IPTW coverage in the named-implementation comparison uses only the nuisance-adjusted interval.",
+   "Unconditional common output-failure rates, software-error rates, and every method-specific diagnostic rate. Conditional-on-output summaries retain the original planned denominator alongside the conditional denominator.",
+   "Mean, median, 90th percentile, and 95th percentile of the within-replicate three-implementation range among complete triplets.",
+   "Paired replicate-level MSE differences and MSE ratios for the named implementations. Report paired Monte Carlo intervals and do not convert these results into estimator-family rankings.",
+   "For hidden-U scenarios, estimate the joint within-replicate event H=1 when the three-implementation range is below 0.01 and every returned estimate has absolute error above 0.02. Report Pr(H=1), its Monte Carlo interval, and the conditional distribution of the three errors given H=1.",
+   "Diagnostic performance for gross error, defined as a common invalid output, absolute estimation error above 0.03, or an interval excluding the truth on the wrong side. Report sensitivity, specificity, false-positive rate, and positive predictive value only when the applicable denominator is at least 400.",
+   "Positive-control behavior in G1Q0 and G0Q1. These results verify implementation responsiveness but cannot enter the substantive declaration.",
+   "Decision-rule calibration in C0 and C1. Use 10000 stratified bootstrap resamples of the replicate-level D values to estimate how often the planned rule returns the negative branch under C0 and the positive branch under C1.",
+   "Validate the nuisance-adjusted IPTW SE against the subject-level bootstrap subset. Report the ratio of analytic to bootstrap SE and the difference in interval coverage.",
+   "Use Holm familywise adjustment within each prespecified collection of scenario-specific pairwise secondary comparisons. The single p_primary declaration requires no across-scenario multiplicity adjustment. Mark secondary MSE or conditional-rate results imprecise when their prespecified precision targets are missed."
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "The only substantive declaration depends on the Bernoulli event D. With 2000 replicates in each of four equally weighted primary scenarios, the worst-case Monte Carlo SE of p_primary is sqrt(0.25/(4 times 2000))=0.0056 and the worst-case normal 95 percent half-width is approximately 0.0110. A scenario-specific Bernoulli proportion has worst-case MCSE 0.0112 and half-width 0.0219. Coverage and hidden-U joint-event proportions have the same worst-case scenario-specific precision. Conditional diagnostic rates require at least 400 applicable replicates, which gives a worst-case approximate 95 percent half-width of 0.049. The primary Monte Carlo interval is p_primary plus or minus 1.96 times sqrt{sum_s[p_s(1-p_s)/2000]/16}, truncated to [0,1]. Scenario-specific proportions use Wilson intervals. Paired MSE differences use a paired percentile bootstrap with 10000 resamples; MSE is not verdict-determining and is labeled imprecise when its relative Monte Carlo SE exceeds 10 percent. The replicate count cannot be changed after implementation labels or performance results are viewed."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "Interpret this schema label only as material dependence among the three named implementations within the bounded benchmark. First require the verified numerical truth manifest, successful implementation audit, at least 95 percent complete triplets in every primary scenario, all 2000 planned replicates per scenario, a C0 upper 95 percent Monte Carlo bound below 0.20, and a C1 lower bound above 0.20. After those gates pass, declare material implementation dependence when the lower 95 percent Monte Carlo bound for p_primary exceeds 0.20. Positive controls, severe-overlap scenarios, hidden-U scenarios, MSE rankings, interval comparisons, and diagnostic performance cannot make this branch fire.",
+  "problem_is_not_real_if": "Interpret this schema label only as no material dependence detected among the three named implementations within the bounded benchmark. Apply exactly the same validity and calibration gates. Declare no material implementation dependence when the upper 95 percent Monte Carlo bound for p_primary is below 0.20. This conclusion applies only to observed-U G0Q0 and G1Q1 scenarios at s=0.60 and s=1.00 and cannot establish a universal default.",
+  "uninformative_if": "Validity gates take precedence over both declarations. Classify the study as uninformative if the truth manifest or independent truth check is absent; either calibration control fails its expected branch; fewer than 2000 planned replicates are completed in any primary scenario; complete-triplet frequency is below 0.95 in any primary scenario; an implementation audit finds different treatment protocols, populations, censoring interventions, horizons, or effect scales; or the 95 percent Monte Carlo interval for p_primary includes 0.20. Also classify any attempted field-wide estimator ranking, universal-default conclusion, or reporting mandate as outside the protocol.",
+  "both_branches_reachable": "Both branches use the same estimand, scenarios, validity gates, threshold, and two-sided Monte Carlo interval. Results with p_primary near 0.10 can produce an upper bound below 0.20; results near 0.30 can produce a lower bound above 0.20. Results near the 0.20 boundary are uninformative rather than being forced into either branch."
+ },
+ "threats": [
+  {
+   "threat": "Selective nuisance quadrants encode known robustness behavior.",
+   "mitigation": "Label G1Q0 and G0Q1 as positive controls, remove the required MSE reversal, and exclude both from the substantive declaration. Only G0Q0 and G1Q1 enter p_primary."
+  },
+  {
+   "threat": "The benchmark mechanisms are not externally calibrated.",
+   "mitigation": "Restrict every conclusion to the fixed mechanisms and named implementations. Do not estimate real-world prevalence, recommend a universal default, or use the results as a reporting mandate."
+  },
+  {
+   "threat": "A comparison of named implementations could be misreported as an estimator-family ranking.",
+   "mitigation": "Name the formulas, fitting structure, software, bounds, and interval procedure in every table. Use implementation rather than family in all conclusions. Treat unequal nuisance flexibility as part of the compared implementation rather than an intrinsic property of IPTW, g-formula, or TMLE."
+  },
+  {
+   "threat": "A three-method comparison could be mistaken for an identification check.",
+   "mitigation": "Treat hidden U as a composite positive control for shared identification failure. Never infer identification from agreement or rank methods by their hidden-U bias."
+  },
+  {
+   "threat": "Hidden U combines several identification failures.",
+   "mitigation": "Describe it as jointly affecting treatment, baseline and longitudinal covariates, loss, and outcome. Do not attribute hidden-U bias to treatment confounding or dependent loss alone."
+  },
+  {
+   "threat": "Methods could target different protocols or populations.",
+   "mitigation": "Use one eligibility rule, two static six-visit strategies, no grace period, intervention on loss, one superpopulation, one 36-month horizon, and one marginal risk-difference scale. Automated checks must compare regime arrays, risk sets, loss times, and baseline standardization weights."
+  },
+  {
+   "threat": "Numerical guard rules could create apparent disagreement.",
+   "mitigation": "Define primary disagreement only among complete valid output triplets. Report common invalid outputs, software errors, and method-specific guard triggers separately. Repeat summaries across prespecified coefficient and condition-number cutoffs."
+  },
+  {
+   "threat": "Interval construction could unfairly disadvantage IPTW.",
+   "mitigation": "Use nuisance-adjusted IPTW inference as the primary IPTW interval, validate it against a subject-level bootstrap subset, and retain the fixed-weight sandwich only as a labeled comparator."
+  },
+  {
+   "threat": "Probability bounding could conceal practical positivity problems.",
+   "mitigation": "Use the same fixed 0.01 and 0.99 bounds for IPTW and TMLE; report clipping, cumulative weights, effective sample size, and clever covariates; and keep severe-overlap results outside the substantive declaration."
+  },
+  {
+   "threat": "Conditioning on successful fits could make unstable implementations appear accurate.",
+   "mitigation": "Report every failure rate on the planned denominator first. Require at least 95 percent complete triplets for the declaration and label conditional summaries explicitly."
+  },
+  {
+   "threat": "Unknown truth placement could determine threshold endpoints.",
+   "mitigation": "Remove sign and benefit-threshold declarations. Prohibit simulation until exact regime risks and RDs are independently verified and frozen. Choose the 0.03 estimate-range threshold without reference to those truths."
+  },
+  {
+   "threat": "A coding error in truth evaluation or event ordering could determine the result.",
+   "mitigation": "Use deterministic recursion, state-mass checks, a separately written intervention simulator, common-random-number comparisons, and unit tests for absorbing events and monotone loss before the main run."
+  },
+  {
+   "threat": "The decision procedure could favor a positive conclusion.",
+   "mitigation": "Use one scalar endpoint, one threshold, symmetric confidence-bound rules, explicit C0 and C1 calibration controls, and an uninformative region centered on the threshold."
+  },
+  {
+   "threat": "Secondary MSE and diagnostic estimates may remain noisy.",
+   "mitigation": "Keep them out of the declaration, report paired Monte Carlo uncertainty, require minimum conditional denominators, adjust prespecified secondary comparison families for multiplicity, and label missed precision targets."
+  }
+ ],
+ "runtime_estimate": "The frozen design contains 26 scenarios times 2000 replicates, giving 52000 analyzed datasets and 104000 ltmle regime fits. At the unverified assumption of five seconds per ltmle fit, this equals 144.4 core-hours or 24.1 ideal wall-hours on six workers before other fitting, stacked derivatives, diagnostics, bootstrap validation, serialization, truth checks, and memory contention. A stratified timing pilot must run the complete pipeline on ten replicate identifiers in each of four prespecified cases: benign observed U, joint misspecification, hidden U, and severe overlap. Record six-worker throughput, peak resident memory, and storage. Freeze the observed wall-time and storage estimate before the main run. There is no automatic reduced design. If the fixed design is infeasible, issue a new protocol amendment before viewing substantive results.",
+ "bears_on": [
+  {
+   "id": "GMT-04",
+   "relation": "answers-part",
+   "what": "The study supplies a public common-estimand benchmark and quantifies disagreement, interval behavior, output validity, and shared hidden-variable error for three named parametric implementations. It does not establish a universal estimator default, compare all estimator families, synthesize prior simulations, or justify requiring every emulation to report weighting, outcome-modeling, and doubly robust estimates."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP organization, Monte Carlo uncertainty, and performance-measure definitions."
+  },
+  {
+   "cite": "Robins JM, Hernán MA, Brumback B. Marginal structural models and causal inference in epidemiology",
+   "doi_or_url": "10.1097/00001648-200009000-00011",
+   "used_for": "Background on marginal structural models and treatment-confounder feedback. It is not cited as validation of the protocol's exact covariance estimator."
+  },
+  {
+   "cite": "Cole SR, Hernán MA. Constructing inverse probability weights for marginal structural models",
+   "doi_or_url": "10.1093/aje/kwn164",
+   "used_for": "Background on longitudinal inverse-probability weights and practical positivity. It is not cited as validation of the fixed-weight interval."
+  },
+  {
+   "cite": "McGrath S, Lin V, Zhang Z, Petito LC, Logan RW, Hernán MA, Young JG. gfoRmula: An R package for estimating the effects of sustained treatment strategies via the parametric g-formula",
+   "doi_or_url": "10.1016/j.patter.2020.100008",
+   "used_for": "Background on parametric g-formula estimation of sustained treatment strategies."
+  },
+  {
+   "cite": "Bang H, Robins JM. Doubly robust estimation in missing data and causal inference models",
+   "doi_or_url": "10.1111/j.1541-0420.2005.00377.x",
+   "used_for": "General double-robustness concepts only. It is not used to validate the exact longitudinal TMLE implementation."
+  },
+  {
+   "cite": "ltmle: Longitudinal Targeted Maximum Likelihood Estimation. CRAN",
+   "doi_or_url": "https://cran.r-project.org/package=ltmle",
+   "used_for": "Software locator only. Exact behavior must be established from the vendored versioned source, manual, checksum, and implementation tests before execution."
+  },
+  {
+   "cite": "Su L, et al. TrialEmulation: an R package to emulate target trials for causal analysis of observational time-to-event data",
+   "doi_or_url": "https://arxiv.org/abs/2402.12083",
+   "used_for": "Background on sequence-of-trials intention-to-treat and per-protocol analyses. It does not establish that any variance procedure in this protocol is current practice."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The simulation cannot answer whether an estimator is a universal default or whether multi-family comparison should be mandatory.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "The title, question, aims, decision rule, and GMT-04 relation now state that the study answers only the bounded benchmark and named-implementation-disagreement part. Universal-default, synthesis, and reporting-mandate conclusions are prohibited."
+   },
+   {
+    "finding": "Estimator family, nuisance specification, software, truncation, and numerical rules change together.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "All comparisons and conclusions now concern the fully named parametric implementations. Family rankings were removed, and implementation details must accompany every result."
+   },
+   {
+    "finding": "The G1Q0 versus G0Q1 MSE reversal is encouraged by construction.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "G1Q0 and G0Q1 are labeled positive controls, excluded from the substantive declaration, and no reversal or MSE ranking is required. The primary rule uses G0Q0 and G1Q1 only."
+   },
+   {
+    "finding": "Hidden U combines treatment confounding, dependent loss, and misspecified covariate evolution, and the stated benign-scenario count was wrong.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Hidden U is explicitly defined as a composite identification failure. No pathway-specific attribution is permitted, and the benign G0Q0 count is corrected to three observed-U scenarios."
+   },
+   {
+    "finding": "Exact numerical truths and their distances from zero and -0.03 were withheld.",
+    "severity": "serious",
+    "how": "declared-limitation",
+    "what_changed": "The benefit and sign thresholds were removed. The protocol is not authorized to run until independently verified numerical regime risks and RDs are frozen in a truth manifest and copied into a dated amendment. Until then, the study establishes no truth-based performance result."
+   },
+   {
+    "finding": "Nuisance-model flexibility is unequal across LTMLE and the g-formula.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The study no longer interprets differences as intrinsic family performance. It evaluates the exact pooled g-formula and time-specific saturated LTMLE implementations and declares their unequal nuisance structure part of the implementation contrast."
+   },
+   {
+    "finding": "IPTW interval comparison could use the inferior fixed-weight interval to drive conclusions.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The nuisance-adjusted IPTW interval is primary and is the only IPTW interval used in named-implementation coverage comparisons. Bootstrap validation was added, and the fixed-weight interval is a nondecisive historical comparator."
+   },
+   {
+    "finding": "The primary Z endpoint can be driven by unequal numerical guards.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Primary disagreement now uses only the within-replicate range among complete valid output triplets. Common invalid outputs, software errors, and method-specific guards are separate outcomes with cutoff sensitivity analyses."
+   },
+   {
+    "finding": "The positive and negative declarations were asymmetric and made a negative result implausible.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Both branches now compare the two sides of the same 0.20 threshold using the same p_primary estimate, scenarios, gates, and two-sided Monte Carlo interval. C0 and C1 calibration controls and explicit precedence rules were added."
+   },
+   {
+    "finding": "Hidden-U agreement was based on scenario means rather than agreement within individual datasets.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The hidden-U endpoint is now the joint within-replicate event that the estimate range is below 0.01 while every estimate is more than 0.02 from truth."
+   },
+   {
+    "finding": "Eight hundred replicates did not justify the MSE, coverage, conditional diagnostic, and multiplicity-dependent criteria.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The substantive declaration now depends on one Bernoulli endpoint, and the count is increased to 2000 per scenario. Interval methods, conditional minimum denominators, paired MSE uncertainty, multiplicity handling, and precision-failure labels are prespecified. MSE and diagnostics cannot determine the declaration."
+   },
+   {
+    "finding": "The 16-scenario runtime fallback had no compatible decision rule.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The fallback was removed. One 26-scenario design is frozen; any reduction requires a new amendment before substantive results are viewed."
+   },
+   {
+    "finding": "The cited sources do not validate the exact fixed-weight clone-censor covariance procedure, its status-quo label, or the exact longitudinal TMLE behavior.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Unsupported current-practice and recommended-procedure labels were removed. Background citations are limited to supported uses. Exact software must be version-pinned, checksummed, inspected, and tested; the study evaluates the procedures empirically without claiming that the supplied literature validates them."
+   },
+   {
+    "finding": "The runtime estimate relied on unmeasured fit time and ideal parallel scaling.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "A stratified full-pipeline timing and memory pilot is mandatory, and the observed resource estimate must be frozen before the main run."
+   },
+   {
+    "finding": "The gfoRmula citation misstated the author list.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The citation now lists McGrath, Lin, Zhang, Petito, Logan, Hernán, and Young."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study does not settle GMT-04 as a universal or normative problem.",
+   "Results apply only to the named parametric implementations, fixed six-visit strategies, and specified data-generating mechanisms.",
+   "The mechanisms are not externally calibrated, so the study does not estimate how often consequential disagreement occurs in applied target trial emulations.",
+   "G1Q0, G0Q1, C0, and C1 are controls whose conclusions are built into their roles; they cannot serve as substantive evidence.",
+   "Hidden U is a composite identification failure and cannot identify the contribution of treatment confounding, dependent loss, or covariate-process misspecification separately.",
+   "The supplied evidence does not contain evaluated numerical truth values. No simulation or truth-based conclusion is authorized until the truth-manifest amendment is complete.",
+   "No supplied citation validates the exact covariance and software implementations as recommended practice. The study estimates their operating behavior but does not confer methodological endorsement.",
+   "The study does not evaluate matching, baseline-only adjustment, g-estimation, structural nested models, data-adaptive targeted learning, irregular observation, continuous treatment, or other data structures excluded in cannot_detect."
+  ]
+ }
+}

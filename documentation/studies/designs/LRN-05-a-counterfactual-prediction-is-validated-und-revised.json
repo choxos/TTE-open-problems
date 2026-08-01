@@ -1,0 +1,285 @@
+{
+ "title": "Scenario-specific operating characteristics of counterfactual performance measures under omitted binary confounding for static sustained strategies",
+ "question": "Across 24 prespecified sensitivity scenarios for static always-treat and never-treat strategies, what is the scenario-specific paired change in estimated 24-month counterfactual calibration, AUC, and Brier score when exact artificial-censoring weights omit U rather than condition on U; when do Monte Carlo confidence bounds establish consequential distortion or negligible distortion; and how often do conventional weight diagnostics flag consequential distortion?",
+ "aims": "The primary aim is to estimate, separately within each scenario, the paired omission effect on the weak-calibration intercept of an exactly calibrated always-treat risk score. The paired comparison uses the same simulated records, strategy, score, metric, and estimator, and differs only in whether the exact treatment weight conditions on U. Coverage of the exact observed-history estimator is evaluated alongside the paired omission effect. Secondary aims quantify strategy-specific effects on the calibration slope, fixed-bin calibration curve, Brier score, AUC, and marginal risk; characterize false reassurance for a deliberately miscalibrated score; distinguish omission of U from omission of measured history and treatment-model approximation; separate practical positivity from exchangeability failure; and estimate the operating characteristics of prespecified weight diagnostics. This study answers only the scenario-specific operating-characteristics portion of LRN-05 for static binary sustained strategies. It does not settle LRN-05 as a whole.",
+ "dgm": {
+  "covariates": "Each replicate contains 4000 independent individuals followed for 24 fixed monthly cycles, indexed t=0,...,23. Draw X1 from N(0,1), X2 from Bernoulli(0.50), and the latent binary frailty U from Bernoulli(0.30), independently. Draw L0 from Bernoulli(expit(-0.40+0.45X1+0.65X2+0.80U)). For each later month among event-free individuals, draw Lt from Bernoulli(expit(-0.70+1.35L(t-1)+0.25X1+0.35X2-0.50A(t-1))). Thus Lt is an observed time-varying confounder affected by prior treatment. At t=0, draw A0 from Bernoulli(expit(alpha+0.35X1+0.50X2+0.90L0+gammaU)). For t=1,...,23, draw At from Bernoulli(expit(alpha+3.50(2A(t-1)-1)+0.25X1+0.35X2+0.75Lt+gammaU)). Within each month the order is Lt, At, and then the event. Treatment and covariate generation stop after the event. There is no loss to follow-up, competing event, or missing measured covariate.",
+  "outcome_model": "Among individuals event-free at the start of month t, generate the event with probability 1-exp(-exp(eta_t)), where eta_t=-4.80+0.30X1+0.40X2+0.50Lt+deltaU-0.40At-0.30AtX2. At eta=-4.80, the untreated 24-month risk before covariate contributions is 1-exp(-24exp(-4.80))=0.179. Once an event occurs, Y(24)=1; otherwise Y(24)=0 after month 23.",
+  "treatment_effect": "The protocols are g1: set At=1 at every monthly decision while alive, and g0: set At=0 at every monthly decision while alive. On the event-rate scale, the direct treatment rate ratio is exp(-0.40)=0.670 when X2=0 and exp(-0.70)=0.497 when X2=1. Treatment also lowers the odds of Lt=1 in the next month by exp(-0.50)=0.607, producing an additional mediated effect because Lt raises the event rate. Marginal risk differences are time-dependent and are not constrained to be constant.",
+  "effect_modification": "X2 modifies the direct treatment effect through the -0.30AtX2 interaction. The treatment rate ratio changes from 0.670 for X2=0 to 0.497 for X2=1. X1 and L history produce additional heterogeneity in absolute benefit without interacting with treatment.",
+  "factors": [
+   {
+    "name": "Latent association profile",
+    "levels": [
+     "P0 joint null: gamma=0 and delta=0",
+     "P1 treatment-only weak reverse association: gamma=log(0.80)=-0.223144 and delta=0",
+     "P2 treatment-only strong positive association: gamma=log(4.00)=1.386294 and delta=0",
+     "P3 outcome-only weak harmful association: gamma=0 and delta=log(1.25)=0.223144",
+     "P4 outcome-only strong harmful association: gamma=0 and delta=log(2.00)=0.693147",
+     "P5 weak positive selection and harmful U: gamma=log(1.25)=0.223144 and delta=log(1.25)=0.223144",
+     "P6 moderate positive selection and harmful U: gamma=log(2.50)=0.916291 and delta=log(1.50)=0.405465",
+     "P7 strong positive selection and harmful U: gamma=log(4.00)=1.386294 and delta=log(2.00)=0.693147",
+     "P8 weak reverse selection and harmful U: gamma=log(0.80)=-0.223144 and delta=log(1.25)=0.223144",
+     "P9 strong reverse selection and harmful U: gamma=log(0.40)=-0.916291 and delta=log(2.00)=0.693147",
+     "P10 partially canceling outcome pathways with positive treatment selection: gamma=log(2.50)=0.916291 and delta=log(0.75)=-0.287682",
+     "P11 partially canceling outcome pathways with reverse treatment selection: gamma=log(0.40)=-0.916291 and delta=log(0.75)=-0.287682"
+    ],
+    "rationale": "The profiles include joint-null, treatment-only, outcome-only, weak, moderate, strong, opposite-direction, and partially canceling mechanisms. In P10 and P11, the direct protective effect of U partly opposes its risk-increasing path through L0. Every coefficient is fixed on an interpretable association scale before simulation and is not solved for a desired metric bias, coverage value, or decision threshold. Profiles are sensitivity points, not independent confirmations of a global proposition."
+   },
+   {
+    "name": "Support for sustained treatment",
+    "levels": [
+     "alpha=-0.50, adequate-support condition",
+     "alpha=-2.00, stressed-support condition"
+    ],
+    "rationale": "For X1=0, X2=0, L=0, and U=0, baseline treatment probabilities are 0.378 and 0.119. After prior treatment, the corresponding continuation probabilities are 0.953 and 0.818. All probabilities remain strictly between zero and one, so this factor changes practical support without introducing structural nonpositivity."
+   }
+  ],
+  "n_scenarios": 24,
+  "deliberately_true": "The design crosses 12 fixed latent association profiles with two support conditions. The target-trial protocol is fixed before analysis: eligibility at t=0, treatment assignment every month, no grace period, 24-month follow-up, all-cause binary event by month 24, and sustained always-treat versus never-treat strategies. Consistency, no interference, correct temporal ordering, perfect measurement of X1, X2, L, A, and the event, and positivity in principle are true. The fixed oracle prediction is exactly P(Y under g by month 24 given X1,X2,L0); prediction-model estimation error is absent. A second score, expit(-0.35+0.75logit(p)), introduces known moderate miscalibration. The decisive comparison is internal and paired: full-history and exact observed-history artificial-censoring estimators use the same records, score, strategy, and metric, and differ only in whether the treatment probability conditions on U. The exact observed-history benchmark eliminates propensity-model error without restoring exchangeability when both gamma and delta are nonzero.",
+  "cannot_detect": "The study cannot discover whether unmeasured confounding exists or matters in an application, validate exchangeability, establish a universal confounding threshold, or prove that observational counterfactual validation is generally reliable or unreliable. It does not construct sensitivity intervals, evaluate transport between databases, train learned treatment rules, or map predictions to clinical actions and utilities. It says nothing about irregular visits, informative observation times, continuous doses, grace periods, dynamic rules, competing risks, ordinary loss to follow-up, measurement error, interference, multiple or continuous hidden confounders, prediction-model training uncertainty, or nonparametric prediction models. Fixed monthly observation and binary static strategies are deliberate restrictions."
+ },
+ "estimands": [
+  {
+   "name": "Strategy-specific counterfactual weak calibration and ten-bin calibration curve",
+   "definition": "For each strategy g in {g0,g1} and fixed score r_g, weak calibration is the superpopulation pair (alpha_g,beta_g) satisfying logit P(Y under g by month 24=1 given r_g)=alpha_g+beta_g logit(r_g). The strategy-specific calibration curve contains c_gk=P(Y under g by month 24=1 given r_g in population risk decile k), k=1,...,10, with calibration error c_gk-E(r_g given decile k). For the oracle score p_g, the true weak-calibration values are alpha_g=0 and beta_g=1. For q_g=expit(-0.35+0.75logit(p_g)), the true values are alpha_g=0.35/0.75=0.466667 and beta_g=1/0.75=1.333333. Curves are reported separately by strategy. No subtraction of the kth g1 bin from the kth g0 bin is defined because strategy-specific score deciles can contain different individuals.",
+   "true_value_computation": "For each baseline profile B=(X1,X2,L0), calculate P(U=1 given B) by Bayes' rule from the stated U and L0 models. Under each strategy, propagate survivor mass over the two U states and two Lt states for 24 months. This finite-state recursion gives p_g(B) without outcome simulation. Integrate over X1 by deterministic Gaussian quadrature and sum exactly over X2 and L0. Compute score quantiles and bin risks from the resulting weighted population distribution. Start with quadrature orders 128, 256, and 512, then continue doubling until every cut point and bin risk changes by less than 0.00025. An independent two-million-profile Monte Carlo calculation in 20 batches must agree within 0.0005 after accounting for its batch Monte Carlo SE. Failure of either precision check makes the affected calibration result uninformative."
+  },
+  {
+   "name": "Counterfactual Brier score",
+   "definition": "For each strategy and score, BS_g=E[(Y under g by month 24-r_g)^2] in the baseline superpopulation. Report BS_g1, BS_g0, and BS_g1-BS_g0. Lower values indicate better squared-error performance, but the cross-strategy difference is descriptive because each strategy induces a different counterfactual outcome distribution.",
+   "true_value_computation": "At each deterministic quadrature support point, use the exact p_g(B) recursion and evaluate p_g(B)(1-p_g(B))+(p_g(B)-r_g(B))^2. Average with the population quadrature weights. Increase quadrature order until every strategy-specific score and contrast changes by less than 0.0001, and verify against the independent batched Monte Carlo calculation."
+  },
+  {
+   "name": "Counterfactual cumulative-dynamic AUC",
+   "definition": "At month 24, AUC_g is the probability that r_g(B_i)>r_g(B_j), plus one half the tie probability, for independent individuals with Y_i under g=1 and Y_j under g=0. Report each strategy-specific AUC and the descriptive difference AUC_g1-AUC_g0.",
+   "true_value_computation": "At the deterministic quadrature support points, use p_g(B) as the case weight and 1-p_g(B) as the control weight. Sort scores and calculate the weighted rank statistic. Increase quadrature order until every AUC and descriptive difference changes by less than 0.0001. Verify the result against the independent two-million-profile calculation, whose batch Monte Carlo SE must be below 0.0005."
+  },
+  {
+   "name": "Marginal 24-month strategy risk contrast",
+   "definition": "RD_24=E[Y under g1 by month 24]-E[Y under g0 by month 24], with negative values favoring sustained treatment. This contextual estimand verifies that the prediction targets correspond to the prespecified protocols; it is not the primary object of the study.",
+   "true_value_computation": "Average the exact recursively calculated p_g1(B) and p_g0(B) with common deterministic quadrature weights and subtract. Increase quadrature order until the contrast changes by less than 0.0001."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Full-history oracle artificial-censoring IPW",
+   "point_estimator": "For strategy g, define C_i^g=1 when observed treatment follows g through the earlier of the event month and month 23. Event-free individuals must adhere through month 23. Use the exact product probability pi_i^g of the observed adherence path conditional on X1, X2, complete L and A history, U, and being event-free. Set w_i^g=C_i^g/pi_i^g and calculate products on the log scale. Estimate fixed-bin risks and Brier scores by normalized weighted means, weak calibration by weighted logistic regression of Y on 1 and logit(r), AUC by the normalized weighted case-control rank statistic, and marginal risk by the normalized weighted mean of Y. No weight truncation is used.",
+   "variance_estimator": "Use a subject-level empirical sandwich. Let psi_i contain the weighted score equations for calibration coefficients, weighted mean equations for bin risks, Brier score and risk, and the first-order Hajek projection for the weighted AUC. With J=-n^(-1)sum d psi_i/d theta and K=n^(-1)sum psi_i psi_i transpose, estimate covariance as J^(-1)KJ^(-T)/n. Estimate cross-strategy covariance by stacking g0 and g1 equations for the same individual. Treatment probabilities are known, so no nuisance-score block is added.",
+   "interval": "Use two-sided 95% Wald intervals for calibration coefficients and strategy contrasts. For bin risks, Brier scores, AUCs, and marginal risks, form Wald intervals on the logit scale using delta-method SEs and transform endpoints to the probability scale. Clipping to [1e-8,1-1e-8] is permitted only for transformation; reported point estimates are unchanged.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs if either weighted case or control mass is zero, a calibration Newton solve fails to reach a maximum score component below 1e-8 within 50 iterations, the calibration Hessian condition number exceeds 1e12, or any estimate, SE, or covariance element is nonfinite. Large weights alone are diagnostics and are not silently classified as failure.",
+   "implementation": "Implement the stated probabilities directly in base R and data.table. This positive-control estimator conditions on U, so sequential exchangeability is true under the DGM."
+  },
+  {
+   "name": "Exact complete observed-history artificial-censoring IPW",
+   "point_estimator": "Use the oracle metric estimators, but replace each treatment probability by the exact P(At=g given X1,X2, complete observed L and A history, and survival to t), integrating over rather than conditioning on U. Compute this probability with a two-state forward filter. Initialize P(U given X1,X2,L0) by Bayes' rule. Before each treatment decision, update the posterior using prior treatment, survival, and the new Lt; average the two U-specific treatment probabilities; then update with the observed treatment likelihood. This method knows the exact propensity conditional on the complete measured history and therefore isolates exchangeability failure from propensity-model error.",
+   "variance_estimator": "Use the same subject-level sandwich as the oracle method, including the weighted AUC Hajek projection and joint g0 and g1 covariance. Filtered probabilities are treated as known DGM quantities.",
+   "interval": "Use the oracle method's two-sided 95% Wald intervals and probability-scale transformations.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the oracle method's zero-mass, Newton, Hessian, and finite-value rules. Also fail if a filtered posterior or prescribed-action probability is outside [0,1] by more than 1e-12; values within numerical tolerance are clipped before log-weight calculation.",
+   "implementation": "This is the primary mechanistic benchmark. It is not an applied estimator because the latent-state distribution is unavailable in ordinary validation data. Its paired difference from the full-history oracle is the primary omission effect."
+  },
+  {
+   "name": "Exact reduced-history artificial-censoring IPW",
+   "point_estimator": "Use the same metric estimators with exact treatment probabilities conditional only on the reduced history used by the fitted comparator. At baseline this is P(A0 given X1,X2,L0). At follow-up it is P(At given X1,X2,Lt,A(t-1),survival to t). Obtain the follow-up probability by a forward recursion that marginalizes U and all earlier measured histories not contained in the reduced state. This method deliberately omits earlier measured history but has no treatment-model estimation or functional-form error.",
+   "variance_estimator": "Use the subject-level sandwich for known weights, including the weighted AUC Hajek projection and joint strategy covariance.",
+   "interval": "Use the oracle method's two-sided 95% Wald intervals and probability-scale transformations.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the oracle method's failure rules and the numerical probability checks used for exact complete observed-history IPW.",
+   "implementation": "Compare this method with exact complete observed-history IPW to measure information loss from reducing the measured history. Compare it with the fitted reduced-history method to measure treatment-model estimation and sieve approximation error without conflating those errors with different conditioning sets."
+  },
+  {
+   "name": "Estimated reduced-history sieve artificial-censoring IPW",
+   "point_estimator": "Fit a baseline logistic model using a five-degree natural spline for X1 and all interactions with X2 and L0. Fit a pooled follow-up logistic sieve using natural splines for month and X1, X2, Lt, A(t-1), and their prespecified interactions. The model conditions on exactly the reduced variables used by the exact reduced-history method. U and earlier measured history are deliberately omitted. Form untruncated artificial-censoring weights and calculate all metrics with the common metric functions.",
+   "variance_estimator": "Stack the baseline and follow-up treatment-model score vectors, clustered by individual, with the metric estimating equations. Compute the full centered finite-difference Jacobian with step 1e-6 times max(1,absolute parameter value), and use J^(-1)KJ^(-T)/n. Include the weighted AUC Hajek projection and its finite-difference derivative with respect to treatment-model coefficients.",
+   "interval": "Use two-sided 95% Wald intervals for calibration coefficients and contrasts; use delta-method logit-scale intervals for bin risks, Brier scores, AUCs, and marginal risks.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs if either treatment model reports converged=FALSE, has a nonfinite coefficient, or has an absolute coefficient above 20; if a metric meets the oracle method's failure rules; or if the stacked covariance is singular after symmetric eigenvalues below 1e-10 times the largest eigenvalue are declared singular. Extreme fitted probabilities and weights are reported but do not alone cause deletion.",
+   "implementation": "Use stats::glm, splines::ns, and individual-clustered score sums. This is a deliberately defined approximation comparator, not a claim about universally recommended practice. Its difference from exact reduced-history IPW combines parameter-estimation error and residual sieve approximation error, and is labeled accordingly."
+  },
+  {
+   "name": "Unweighted observed strategy adherers",
+   "point_estimator": "Restrict to individuals whose observed treatment follows the strategy through the event or month 23, assign weight one, and calculate the same calibration, Brier, AUC, and risk estimators. This comparator treats observed adherers as a representative validation sample.",
+   "variance_estimator": "Use the subject-level sandwich for unweighted metric equations and the ordinary Hajek projection for AUC. No treatment-model score block is included.",
+   "interval": "Use two-sided 95% Wald intervals for calibration coefficients and contrasts; use logit-scale delta-method intervals for bin risks, Brier scores, AUCs, and marginal risks.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs when there are no adherent cases or controls, fewer than two nonempty calibration bins, failure of the calibration Newton or Hessian criteria, or any nonfinite estimate or SE. Retain the number of adherers and events as performance outcomes.",
+   "implementation": "Use the same metric functions as the weighted methods after replacing weights by one."
+  }
+ ],
+ "performance": {
+  "primary": "For each scenario, the primary performance quantities are the paired mean omission effect on the oracle-score weak-calibration intercept under g1, defined as the exact complete observed-history estimate minus the full-history oracle estimate, and coverage of the exact complete observed-history estimator's nominal 95% interval. Report Monte Carlo confidence bounds for both quantities. No count of scenarios is treated as independent confirmation that unmeasured confounding exists or that LRN-05 is globally real.",
+  "secondary": [
+   "Scenario-specific bias, empirical SE, mean model SE, relative model-SE error, MSE, 95% coverage, bias-eliminated coverage, rejection rate, and convergence for every scalar estimand and method.",
+   "Paired omission effects for the calibration slope, each of the ten fixed calibration-bin risks, Brier score, AUC, and marginal risk under each strategy.",
+   "Strategy-specific calibration curves only. No kth-bin subtraction across strategy-specific decile partitions is reported.",
+   "Simultaneous familywise 95% Monte Carlo confidence bounds across the ten calibration bins, constructed by Bonferroni adjustment, so selection of the maximum absolute bin distortion is included in uncertainty.",
+   "For the deliberately miscalibrated score, the frequency with which omission of U moves the estimated intercept at least 0.10 closer to 0 or the slope at least 0.10 closer to 1 while moving it away from its true value. Report this frequency with a Monte Carlo confidence interval rather than as a global yes or no declaration.",
+   "Normalized maximum weight, 99th percentile weight, effective sample size ESS=(sum w)^2/sum(w^2), and the proportion of prescribed-action probabilities below 0.05.",
+   "A diagnostic flag equal to one if ESS/4000 is below 0.25, the maximum mean-one-normalized weight exceeds 50, or more than 1% of required treatment probabilities are below 0.05. Report flag probability, sensitivity, and specificity with Monte Carlo confidence intervals after scenario labels are assigned.",
+   "Differences between full-history oracle and exact complete observed-history estimates isolate omission of U; differences between exact complete and exact reduced-history estimates isolate omission of measured history; differences between exact and fitted reduced-history estimates combine parameter estimation and residual sieve approximation; unweighted differences quantify selection among adherers.",
+   "All convergence and diagnostic proportions receive two-sided 95% Wilson Monte Carlo intervals. They are descriptive unless expressly included in the scenario rule."
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "Run 500 precision-pilot replicates per scenario that are excluded from final performance summaries. The minimum final run is 2000 independent replicates per scenario. At coverage 0.90, 2000 replicates give MCSE sqrt(0.90(0.10)/2000)=0.00671 and an approximate two-sided 95% half-width of 0.0132. For ten simultaneous bin-coverage bounds, the Bonferroni critical value 2.807 gives half-width 2.807sqrt(0.90(0.10)/2000)=0.0188. For convergence and diagnostic probabilities, the worst-case two-sided half-width is 1.96sqrt(0.25/2000)=0.0219. Bias precision is determined from the excluded pilot. For each scalar paired effect use R=ceiling((1.96s/h)^2), where s is its pilot SD and h is 0.01 for the calibration intercept, 0.002 for Brier score, and 0.005 for AUC. For calibration-bin effects use R=ceiling((2.807s_k/0.005)^2) and take the maximum across bins. The final scenario-specific R is the maximum of 2000 and all applicable requirements, rounded up to 1000, with a cap of 10000. Freeze the resulting R table before the final run. If a required R exceeds 10000, the affected scenario-metric classification is declared Monte Carlo inconclusive rather than forced into either branch."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "No catalog-level problem-is-real verdict is produced. Within each scenario, strategy, and metric, classify consequential omission distortion only when the family-appropriate 95% Monte Carlo lower confidence bound for the absolute paired omission effect exceeds 0.10 for the calibration intercept, 0.02 for a calibration-bin risk, 0.01 for the Brier score, or 0.02 for AUC, and the corresponding upper Monte Carlo confidence bound for exact complete observed-history interval coverage is at most 0.90. Calibration-bin bounds are simultaneous across all ten bins. The full-history oracle must pass its positive-control gate in that scenario. Each classification is a sensitivity result for that one scenario and is not pooled across neighboring profiles.",
+  "problem_is_not_real_if": "No catalog-level problem-is-not-real verdict is produced. Within a scenario, strategy, and metric, classify no consequential omission distortion when the 95% Monte Carlo upper confidence bound for the absolute paired omission effect is below 0.05 for the calibration intercept, 0.01 for every calibration-bin risk, 0.005 for the Brier score, or 0.01 for AUC, and the Monte Carlo confidence interval for exact complete observed-history coverage lies within 0.93 to 0.97. Calibration-bin bounds are simultaneous. This label means only that the stated mechanism did not produce consequential distortion at the prespecified resolution.",
+  "uninformative_if": "Classify a scenario-metric result as uninformative when its confidence bounds fall between the consequential and negligible regions; the full-history oracle fails its positive-control gate; fewer than 95% of final replicates yield the estimate; a required replicate count exceeds 10000; deterministic truth calculations fail their convergence checks; the independent truth verification disagrees by more than 0.0005; or a familywise control-profile check detects consequential paired distortion when gamma=0 or delta=0. Failure confined to the fitted reduced-history method is treatment-model approximation or estimation failure and does not determine the omission-of-U classification.",
+  "both_branches_reachable": "Both scenario-level branches are reachable. Strong profiles can produce confidence bounds wholly beyond the consequential thresholds, while weak or partially canceling profiles can produce bounds wholly within the negligible region. Exchangeability failure is constructed in joint profiles, but neither the magnitude of a metric-specific paired effect nor coverage crossing is fixed by that construction. Results near either boundary remain uninformative."
+ },
+ "threats": [
+  {
+   "threat": "The DGM constructs exchangeability failure whenever gamma and delta are both nonzero.",
+   "mitigation": "The protocol makes no claim to discover whether unmeasured confounding can matter. It estimates a response surface over fixed weak, moderate, strong, reverse-direction, and partially canceling profiles. Its decisive quantity is a paired internal comparison that differs only in access to U. Scenario cells are sensitivity points and are never counted as independent proof."
+  },
+  {
+   "threat": "Strategy-specific calibration bins could be mistaken for common causal strata.",
+   "mitigation": "Each strategy's curve is reported separately. No g1 minus g0 contrast between strategy-specific deciles is defined."
+  },
+  {
+   "threat": "Treatment-model misspecification or omitted measured history could be mistaken for omission of U.",
+   "mitigation": "Exact complete observed-history probabilities isolate omission of U. Exact reduced-history probabilities isolate the effect of discarding earlier measured history. The fitted reduced-history model uses the same conditioning set as its exact comparator, and its residual difference is labeled as estimation plus sieve approximation error."
+  },
+  {
+   "threat": "Practical positivity could dominate the result.",
+   "mitigation": "Support is an explicit factor. No weight is silently truncated. Weight distributions, prescribed-action probabilities, ESS, convergence, and oracle performance are reported. Scenario labels require a passing full-history oracle gate."
+  },
+  {
+   "threat": "A correctly calibrated score could conceal whether confounding makes a bad score look good.",
+   "mitigation": "Every dataset is evaluated with both an exact oracle score and a deterministic score having known intercept and slope miscalibration. False reassurance is reported as a scenario-specific frequency with Monte Carlo uncertainty."
+  },
+  {
+   "threat": "Prediction-model training error or overfitting could obscure validation behavior.",
+   "mitigation": "Prediction functions are fixed by the DGM and finite-state recursion before replicates begin. No prediction model is trained in the validation sample."
+  },
+  {
+   "threat": "An incorrect artificial-censoring implementation could create apparent distortion.",
+   "mitigation": "The protocol fixes within-month ordering and adherence through the event month for cases and through month 23 for event-free individuals. Unit checks compare large-sample oracle-IPW estimates with enumerated counterfactual truths for every distinct delta value before the final run."
+  },
+  {
+   "threat": "The sandwich variance or weighted AUC influence calculation could be wrong.",
+   "mitigation": "Before the final run, compare sandwich SEs with full individual-level bootstrap SEs using 199 resamples in 25 datasets from each of four anchor scenarios. Every bootstrap resample refits applicable treatment models. A relative difference above 10% triggers code correction and repetition of the check before results are released."
+  },
+  {
+   "threat": "Numerical approximation of population score quantiles could be interpreted as estimator bias.",
+   "mitigation": "Calibration cut points and metric truths use deterministic quadrature with an explicit order-doubling rule. An independent batched Monte Carlo calculation verifies the complete procedure, including quantile construction."
+  },
+  {
+   "threat": "Dropping failed replicates could make unstable methods appear accurate.",
+   "mitigation": "Convergence is a reported outcome. Performance summaries give unconditional failure rates and conditional estimates among successful replicates. A scenario-metric classification requires at least 95% successful final replicates."
+  },
+  {
+   "threat": "Monte Carlo error could determine a threshold declaration.",
+   "mitigation": "Every declaration uses Monte Carlo confidence bounds and an indifference region. Calibration-bin bounds control familywise error across all ten bins. A separate precision pilot determines scenario-specific replication requirements before the final run."
+  },
+  {
+   "threat": "The computational schedule could be understated.",
+   "mitigation": "No overnight or wall-time commitment is made before end-to-end benchmarks of complete replicates and full bootstrap resamples. Projections include model refitting, numerical derivatives, metric output, worker scaling, checkpointing, and the complete bootstrap workload."
+  },
+  {
+   "threat": "The study could be misread as settling LRN-05, validating exchangeability, or evaluating clinical utility.",
+   "mitigation": "The title, aims, decision rule, catalog attachment, and declared limitations restrict conclusions to scenario-specific operating characteristics for static binary sustained strategies. The catalog verdict is not changed solely because this simulation succeeds."
+  }
+ ],
+ "runtime_estimate": "The minimum final run contains 24 scenarios times 2000 replicates, or 48000 replicates, plus 12000 excluded precision-pilot replicates. At most 10000 final replicates per scenario are permitted, giving a maximum of 240000 final replicates. With two fitted treatment models per replicate, the minimum final run contains 96000 GLM fits and the pilots contain another 24000. The bootstrap validation contains 4 times 25 times 199=19900 full resampled analyses and 39800 additional treatment-model fits when the fitted comparator is checked. Before committing resources or a completion time, benchmark 50 complete replicates from each of four anchor scenarios spanning adequate and stressed support on one worker and six workers. Separately benchmark at least 200 full bootstrap resamples with model refitting. Extrapolate using the observed median and 90th-percentile times, measured parallel efficiency, checkpoint and serialization costs, and a 20% operational margin. Record the projected main-run and bootstrap times before launch. If the projection exceeds available resources, affected scenario-metric results remain Monte Carlo inconclusive under the prespecified replication cap; the protocol does not substitute an unsupported overnight estimate.",
+ "bears_on": [
+  {
+   "id": "LRN-05",
+   "relation": "answers-part",
+   "what": "The study supplies scenario-specific operating characteristics for counterfactual calibration, AUC, and Brier estimators under omitted binary confounding for static sustained treatment strategies. It evaluates paired distortion, false reassurance, practical positivity, and diagnostic performance. It does not construct sensitivity intervals, address continuous or dynamic strategies, transport between databases, train learned rules, map predictions to decisions, validate exchangeability, or settle LRN-05 as a whole. The catalog verdict must not be changed solely because this simulation succeeds."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine 2019;38(11):2074-2102",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo uncertainty, precision planning, and reporting of bias, variance, coverage, and convergence."
+  },
+  {
+   "cite": "Keogh RH, Van Geloven N. Prediction under interventions: evaluation of counterfactual performance using longitudinal observational data. Epidemiology 2024;35(3):329-339",
+   "doi_or_url": "10.1097/EDE.0000000000001713",
+   "used_for": "Artificial censoring and inverse-probability evaluation of calibration, discrimination, and Brier scores under sustained strategies."
+  },
+  {
+   "cite": "Boyer CB, Dahabreh IJ, Steingrimsson JA. Estimating and evaluating counterfactual prediction models. Statistics in Medicine 2025;44(23-24):e70287",
+   "doi_or_url": "10.1002/sim.70287",
+   "used_for": "Counterfactual loss, ROC-area, and calibration estimands, including evaluation of a fixed misspecified prediction model."
+  },
+  {
+   "cite": "Lin L, Sperrin M, Jenkins DA, Martin GP, Peek N. A scoping review of causal methods enabling predictions under hypothetical interventions. Diagnostic and Prognostic Research 2021;5(1):3",
+   "doi_or_url": "10.1186/s41512-021-00092-9",
+   "used_for": "The scoping findings, the immaturity of the literature, and the requested extensions to broader treatment and model classes. The citation does not justify the binary starting point, which is this protocol's declared restriction."
+  },
+  {
+   "cite": "Sachs MC, Sjolander A, Gabriel EE. Aim for clinical utility, not just predictive accuracy. Epidemiology 2020;31(3):359-364",
+   "doi_or_url": "10.1097/EDE.0000000000001173",
+   "used_for": "An example and methodological argument for constructing and evaluating an explicit decision rule. It is not used to claim that prediction-to-decision mapping is generally resolved."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The study answers only the operating-characteristics portion of LRN-05.",
+    "severity": "limitation",
+    "how": "declared-limitation",
+    "what_changed": "The title, question, aims, decision rule, cannot-detect statement, threats, and catalog attachment now restrict the study to scenario-specific operating characteristics for static binary sustained strategies and prohibit changing the overall catalog verdict solely from this simulation."
+   },
+   {
+    "finding": "The original real-versus-not-real rule treated constructed exchangeability failure and repeated threshold crossings as empirical proof.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The global binary declaration and multi-cell count were removed. Fixed weak, strong, opposite-direction, and partially canceling profiles now define a sensitivity response surface. The primary quantity is a paired internal comparison differing only in access to U, and every conclusion is scenario-specific."
+   },
+   {
+    "finding": "The contrast between kth strategy-specific calibration deciles compared different subpopulations.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The cross-strategy calibration-bin contrast was deleted. Each strategy-specific calibration curve is reported separately using its own population score partition."
+   },
+   {
+    "finding": "Calibration cut-point uncertainty was omitted from the population-decile truth calculation.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "Population cut points and bin truths now use deterministic quadrature with an order-doubling convergence rule and independent batched Monte Carlo verification of the complete procedure."
+   },
+   {
+    "finding": "The fitted comparator and exact benchmark conditioned on different measured histories, so their difference mixed several error sources.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "An exact reduced-history comparator was added using precisely the fitted model's conditioning set. Exact complete versus exact reduced comparisons isolate omitted measured history, while fitted versus exact reduced comparisons are labeled as estimation plus sieve approximation error. The fitted method is no longer described as recommended current practice."
+   },
+   {
+    "finding": "The decision rule ignored Monte Carlo classification error for coverage, bias thresholds, selected calibration bins, convergence, and diagnostics.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Declarations now require Monte Carlo confidence bounds to clear separated consequential or negligible regions. Calibration-bin bounds are simultaneous across ten bins. An excluded precision pilot and prespecified formulas determine scenario-specific replication counts, with inconclusive classification when required precision exceeds the cap."
+   },
+   {
+    "finding": "The overnight runtime estimate omitted substantial computation, including 19900 bootstrap analyses and up to 39800 bootstrap GLM refits.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The unsupported wall-time estimate was removed. Complete-replicate and full-bootstrap benchmarks with refitting, worker-scaling measurements, checkpoint overhead, and an operational margin are mandatory before resources or completion time are committed."
+   },
+   {
+    "finding": "The Sachs and Lin citations were used to support claims broader than their demonstrated scope.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "Sachs and colleagues now support one explicit decision-rule framework rather than general closure. Lin and colleagues support the scoping findings and requested extensions, while the binary design is identified as this protocol's deliberate restriction."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study settles only scenario-specific operating characteristics for selected artificial-censoring IPW performance estimators under a binary latent-confounder DGM.",
+   "Constructing exchangeability failure cannot establish whether unmeasured confounding exists or matters in an application.",
+   "Scenario results do not validate exchangeability or provide a universal confounding threshold.",
+   "The study does not construct metric-specific sensitivity intervals.",
+   "The study does not address continuous doses, dynamic strategies, transport, learned-rule training, or prediction-to-decision mapping.",
+   "The fitted reduced-history method is an approximation comparator and does not represent all recommended longitudinal IPW practice.",
+   "Scenario-metric results requiring more than 10000 final replicates are reported as Monte Carlo inconclusive.",
+   "No wall-time commitment is valid until the prespecified end-to-end benchmark is completed."
+  ]
+ }
+}

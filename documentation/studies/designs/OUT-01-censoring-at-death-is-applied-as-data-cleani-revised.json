@@ -1,0 +1,268 @@
+{
+ "title": "A Mechanism Study of Standardized Cox Net-Risk Displacement Under Competing Death",
+ "question": "Within a prespecified 36-scenario mechanism grid, what are the signed and absolute differences at 12, 36, and 60 months between a standardized death-censored Cox net-risk contrast and a protocol-defined total cumulative-incidence contrast, and do the death-censored and multistate estimators recover their respective targets?",
+ "aims": "This study settles only one part of OUT-01: it quantifies, in a baseline-assigned first-event setting with fully measured baseline causes, how far a standardized death-censored Cox net-risk contrast lies from a protocol-defined total cumulative-incidence contrast, and it verifies both estimators against their own targets. It does not settle whether censoring decisions are silent or prevalent, whether other reported quantities are mismatched, whether eliminating death is scientifically meaningful, or how to estimate sustained recurrent-terminal contrasts.",
+ "dgm": {
+  "covariates": "Each replicate contains 4000 independently sampled, eligible, event-free individuals at time zero. Generate Z from N(0,1), representing age in decades above 65; M from Bernoulli(0.50); C from Bernoulli(expit(-0.40 + 0.35 Z + 0.25 M)); S = 0.30 Z + 0.50 C + epsilon, with epsilon from N(0,0.64); and Q from N(0,1). Assign observed baseline treatment A from Bernoulli(expit(-0.20 + 0.25 Z + 0.20 M + 0.50 C + 0.35 S + 0.20 Q)). Treatment remains fixed through 60 months. All five covariates are available to every estimator. This creates measured baseline confounding with practical overlap while preserving conditional exchangeability. Follow-up is exact and continuous, with administrative censoring only at 60 months.",
+  "outcome_model": "Generate a latent time to the first nonfatal primary event and a latent time to death using conditionally independent piecewise-exponential clocks. The observed time is their minimum or 60 months, and status is 1 for the primary event, 2 for death first, and 0 for administrative censoring. Primary-event baseline hazards per month are 0.0025 from 0 through 12 months, 0.0040 after 12 through 36 months, and 0.0060 after 36 through 60 months. Its cause-specific hazard is lambda_Y0(t) times exp(0.20 Z + 0.10 M + 0.45 C + 0.30 S + gamma Q + beta_YA A + beta_YAC A C). Death baseline hazards are selected by the mortality factor. Its cause-specific hazard is lambda_D0(t) times exp(0.45 Z + 0.15 M + 0.65 C + 0.35 S + gamma Q + beta_DA A). For each cause, draw an independent unit exponential threshold and invert its piecewise cumulative hazard. The reference individual's primary-event risk without competing death is 1 - exp(-0.27) = 0.237 over 60 months.",
+  "treatment_effect": "For the primary-event factor, the null level sets beta_YA = 0 and beta_YAC = 0. The heterogeneous protective level sets beta_YA = -0.510826 and beta_YAC = 0.405465, producing primary-event hazard ratios of 0.60 when C = 0 and 0.90 when C = 1. The death-effect factor is log-symmetric around the null: the harmful level sets beta_DA = 0.510826, the neutral level sets beta_DA = 0, and the protective level sets beta_DA = -0.510826, producing death hazard ratios of 1.666667, 1.00, and 0.60. Treatment assignment is observational, but the counterfactual strategies intervene on A and hold it fixed.",
+  "effect_modification": "C modifies the treatment effect on the primary event only. Under the protective level, the cause-specific hazard ratio is 0.60 without C and 0.90 with C. There is no treatment by covariate interaction for death. Z, M, C, and S remain shared prognostic causes of both event hazards at every level of the Q factor. Q contributes either no additional shared prognosis or a strong additional shared prognostic effect. Conditional on all measured covariates, the latent event thresholds are independent.",
+  "factors": [
+   {
+    "name": "Competing mortality burden",
+    "levels": [
+     "Low: death hazards 0.0005, 0.0008, and 0.0012 per month across the three intervals",
+     "Moderate: death hazards 0.0018, 0.0030, and 0.0045 per month",
+     "High: death hazards 0.0040, 0.0070, and 0.0100 per month"
+    ],
+    "rationale": "For the reference individual without a primary event, these imply five-year death risks of approximately 5.3%, 18.3%, and 36.6%. They are prespecified stress-test levels, not an estimate of the distribution of mortality burdens in applied emulations."
+   },
+   {
+    "name": "Treatment effect on death",
+    "levels": [
+     "Harmful: beta_DA = 0.510826, hazard ratio 1.666667",
+     "Neutral: beta_DA = 0, hazard ratio 1.00",
+     "Protective: beta_DA = -0.510826, hazard ratio 0.60"
+    ],
+    "rationale": "Log-symmetric harmful and protective effects prevent the opportunity pathway from being examined in only one direction. These are fixed stress-test values and are not solved for to produce a desired displacement."
+   },
+   {
+    "name": "Treatment effect on the primary event",
+    "levels": [
+     "Null: beta_YA = 0 and beta_YAC = 0",
+     "Heterogeneous protective: hazard ratio 0.60 when C = 0 and 0.90 when C = 1"
+    ],
+    "rationale": "The null level supplies exact causal-null controls when the treatment effect on death is also neutral. The heterogeneous level examines a clinically interpretable nonnull contrast without requiring homogeneous conditional effects."
+   },
+   {
+    "name": "Additional shared Q prognosis",
+    "levels": [
+     "None: gamma = 0",
+     "Strong additional prognosis: gamma = 0.693147, hazard ratio 2.00 per standard deviation of Q for both causes"
+    ],
+    "rationale": "This factor contrasts no additional prognostic contribution from Q with a strong additional contribution. It does not claim that shared prognosis is absent when gamma equals zero because Z, M, C, and S remain common causes of both hazards."
+   }
+  ],
+  "n_scenarios": 36,
+  "deliberately_true": "The design is fully factorial: 3 by 3 by 2 by 2 equals 36 scenarios. Cause-specific proportional-hazards models are correctly specified; every treatment confounder and shared cause is measured; positivity holds structurally; latent event and death times are independent conditional on measured covariates; treatment is fixed; there is no loss to follow-up; and a mathematical intervention setting the death hazard to zero is defined. Consequently, the death-censored method should estimate the hypothetical no-death risk correctly. This own-target calibration is only an implementation check. The complete truth surface is calculated, archived, and locked before estimator replications begin. No parameter, threshold, or scenario is changed after inspecting that surface. Six scenarios in which both treatment-effect factors are null are exact controls where both causal risk differences equal zero.",
+  "cannot_detect": "The study cannot estimate how often applied emulations censor death silently or how frequently any particular analysis is used. It cannot evaluate cause-specific hazard ratios, Kaplan-Meier risks, Fine-Gray contrasts, or other quantities that may be reported after censoring death. It cannot establish whether eliminating death is scientifically meaningful or identifiable outside the deliberately favorable DGM. It does not address treatment discontinuation, time-varying treatment, time-varying confounding, irregular or interval-censored observation, dependent censoring after conditioning, unmeasured common causes, recurrent outcomes, joint recurrent-terminal estimands, separable treatment components, multiple competing causes, or model misspecification. The factor grid is a stress-test surface and does not represent the prevalence of settings in practice."
+ },
+ "estimands": [
+  {
+   "name": "Primary 60-month total-effect cumulative-incidence risk difference",
+   "definition": "In the target superpopulation, set A = 1 for everyone at eligibility and hold it through 60 months, then repeat with A = 0. Under each strategy, death follows its natural treatment-specific law and precludes the primary event. The estimand is Pr(T_Y under A = 1 is at most 60 and precedes T_D under A = 1) minus Pr(T_Y under A = 0 is at most 60 and precedes T_D under A = 0). The scale is a marginal absolute risk difference. The same contrast at 12 and 36 months is secondary.",
+   "true_value_computation": "Draw 2000000 independent superpopulation covariate profiles and reuse them across all scenarios and both treatment strategies. Within each piecewise interval, calculate the conditional primary-event increment as survival at the interval start times lambda_Y divided by lambda_Y plus lambda_D times 1 - exp(-(lambda_Y + lambda_D) times interval length). Sum increments and average profile-specific risks. Estimate truth Monte Carlo standard errors from 200 batches of 10000 profiles. The required scenario-specific Monte Carlo standard error is at most 0.0005. If it is larger, add independent batches until the requirement is met."
+  },
+  {
+   "name": "Hypothetical no-death 60-month net-risk difference",
+   "definition": "For the same superpopulation and sustained treatment strategies, intervene additionally to set the death hazard to zero throughout follow-up while leaving the primary-event structural hazard unchanged. The estimand is Pr(T_Y under A = 1 and death eliminated is at most 60) minus the corresponding probability under A = 0. It is a mathematical simulation benchmark, not an assertion that death can be eliminated clinically.",
+   "true_value_computation": "For each shared covariate profile, set lambda_D to zero and compute 1 - exp(-sum over intervals of lambda_Y times interval length) under each treatment. Average the paired profile-specific differences and apply the same batch Monte Carlo standard-error requirement."
+  },
+  {
+   "name": "Estimand displacement",
+   "definition": "The hypothetical no-death risk difference minus the total-effect cumulative-incidence risk difference at 60 months, expressed in percentage points. Signed and absolute displacement are reported for every scenario. A genuine reversal requires both risk differences to have absolute magnitude above 0.001 and opposite signs. If one contrast has absolute magnitude at most 0.001 and the other exceeds 0.001, it is classified as zero versus nonzero rather than as a reversal.",
+   "true_value_computation": "Subtract the paired truths within every Monte Carlo batch and calculate the standard error from the paired batch differences. Form a two-sided 95% t interval for signed displacement using the 200 batch estimates. Convert it to an interval for absolute displacement by using zero as the lower bound when the signed interval crosses zero and otherwise taking the smaller and larger absolute endpoints. Lock the complete scenario-level truth table before fitting any replicate estimator."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Standardized death-censored cause-specific Cox net-risk estimator",
+   "point_estimator": "Fit a Cox model for the primary event using Surv(time, event = (status == 1)), so deaths enter as censoring times. Include A, Z, M, C, S, Q, and A by C; use an unspecified Breslow baseline hazard. For each individual, set A first to 1 and then to 0, predict the primary-event survival curve, calculate 1 minus survival at 12, 36, and 60 months, average over the realized baseline covariate distribution, and subtract risks. The calculation contains no death hazard. Evaluate this estimate only against its hypothetical no-death target for bias and coverage. Its interval inclusion of the total-effect truth is retained solely as a sample-size-specific wrong-target diagnostic.",
+   "variance_estimator": "Use the full subject-level influence-function decomposition for the Cox coefficients, Breslow baseline hazard, and empirical standardization distribution. Calculate the risk-difference influence value jointly from both treatment predictions and estimate variance as the empirical variance of those values divided by 4000. Use the iid prediction machinery in riskRegression 2026.3.11 and retain individual contributions for independent verification.",
+   "interval": "Use a two-sided 95% Wald interval for the no-death risk difference: estimate plus or minus 1.959964 times its influence-function standard error. Do not truncate the risk-difference interval.",
+   "is_status_quo": true,
+   "nonconvergence": "Count failure if the Cox fit errors; reports an infinite coefficient; has a singular or non-finite covariance matrix; has an information-matrix condition number above 1e10; produces a non-finite cumulative baseline hazard, risk, standard error, or influence contribution; or has no primary events. Retain every warning and its reason even if the estimate remains usable.",
+   "implementation": "Fit once per replicate and reuse this primary-event model in the multistate method. Label all stored results as standardized death-censored Cox net risk. The status-quo flag applies only to this narrowly defined reporting pattern and does not assert that it represents all applied handling of death. Store wrong-target interval inclusion separately and never label it coverage."
+  },
+  {
+   "name": "Protocol-aligned multistate cause-specific Cox g-computation",
+   "point_estimator": "Fit a primary-event Cox model using Surv(time, event = (status == 1)) and a death Cox model using Surv(time, event = (status == 2)). Both models include A, Z, M, C, S, Q, and A by C; the death interaction has true coefficient zero. For each individual and treatment strategy, combine the two predicted cause-specific cumulative hazards into the primary-event cumulative incidence by summing survival immediately before each event time times the primary-event hazard increment. Average individual cumulative incidences at 12, 36, and 60 months and subtract A = 0 from A = 1. Death remains a competing event and follows its treatment-specific law.",
+   "variance_estimator": "Use the joint subject-level influence-function decomposition supplied by the two cause-specific Cox fits and empirical standardization. Stack contributions from both causes so their within-subject covariance is retained. Estimate risk-difference variance as the empirical variance of the final subject-level influence values divided by 4000.",
+   "interval": "Use a two-sided 95% Wald interval for the marginal cumulative-incidence risk difference with multiplier 1.959964 and no truncation.",
+   "is_status_quo": false,
+   "nonconvergence": "Count failure if either cause-specific model meets any Cox failure criterion; either cause has no events; the cumulative-incidence recursion produces a risk outside zero to one by more than 1e-10; the two cause probabilities sum above one by more than 1e-10; or any estimate, variance, or influence contribution is non-finite.",
+   "implementation": "Use riskRegression::CSC and its iid-enabled prediction and treatment-standardization functions, with survival::coxph fits retained for diagnostics. Fit only two cause-specific Cox models per replicate. Before production, verify influence-function standard errors against 1000 subject-level bootstrap resamples in one fixed low-, moderate-, and high-mortality dataset. Require agreement within 5% or resolve the implementation before proceeding."
+  }
+ ],
+ "performance": {
+  "primary": "Scenario-specific signed and absolute displacement at 60 months between the hypothetical no-death net-risk difference and the total-effect cumulative-incidence risk difference. The complete surface is the result; no unweighted scenario count is interpreted as prevalence in practice.",
+  "secondary": [
+   "Scenario-specific displacement at 12 and 36 months",
+   "Own-target bias of the multistate method against the total-effect truth",
+   "Own-target bias of the death-censored method against the hypothetical no-death truth",
+   "Own-target empirical coverage with exact binomial Monte Carlo confidence intervals",
+   "Empirical standard error",
+   "Mean model standard error",
+   "Relative error in model standard error",
+   "Mean squared error",
+   "Bias-eliminated own-target coverage",
+   "Own-target rejection rate, interpreted as type I error only when the corresponding true contrast has absolute magnitude at most 0.001",
+   "Convergence proportion and warning frequency",
+   "Absolute displacement divided by the mean death-censored standard error at n = 4000",
+   "Wrong-target interval inclusion for the total-effect truth, labeled as a sample-size-specific diagnostic rather than coverage",
+   "Genuine reversal, zero-versus-nonzero, concordant-direction, and joint-null classifications using the prespecified 0.001 tolerance",
+   "Factor-specific ranges of displacement, with no interpretation as frequencies in applied settings"
+  ],
+  "n_rep": 4000,
+  "n_rep_derivation": "The replicate count is chosen for implementation-calibration precision, not for a hard wrong-target inclusion boundary. At coverage 0.95, 4000 replicates give Monte Carlo standard error 0.00345 and an approximate 95% half-width of 0.0068. At coverage 0.90, they give standard error 0.00474 and an approximate 95% half-width of 0.0093. A half-width of 0.005 at 0.90 would require approximately 13830 replicates and is not claimed here. Exact binomial Monte Carlo intervals accompany every coverage and interval-inclusion estimate."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "No verdict is issued for OUT-01 as a whole. After implementation calibration passes, a scenario is classified as showing material standardized Cox net-risk displacement if the lower bound of the prespecified 95% Monte Carlo interval for absolute 60-month estimand displacement exceeds 0.010.",
+  "problem_is_not_real_if": "No verdict is issued for OUT-01 as a whole. After implementation calibration passes, a scenario is classified as not showing material standardized Cox net-risk displacement if the upper bound of the same 95% Monte Carlo interval is below 0.010.",
+  "uninformative_if": "A scenario is indeterminate if its absolute-displacement interval includes 0.010. The estimator study is uninformative if truth Monte Carlo standard error exceeds 0.0005; unresolved influence-function and bootstrap standard-error disagreement exceeds 5%; or either method has more than two of 36 scenarios with absolute own-target bias above 0.005, relative model-standard-error error above 10%, convergence below 0.98, or an exact 95% binomial interval for own-target coverage lying wholly outside 0.93 through 0.97.",
+  "both_branches_reachable": "Both scenario-level branches use the same displacement statistic, the same 0.010 threshold, and opposite Monte Carlo confidence bounds. A result can fall entirely above the threshold, entirely below it, or overlap it. Neither branch depends on a count across designer-selected cells, wrong-target interval inclusion, or repeated versions of the same displacement."
+ },
+ "threats": [
+  {
+   "threat": "The no-death and total-effect estimands can differ algebraically, so a one-directional grid could encode the desired qualitative result.",
+   "mitigation": "Use log-symmetric harmful and protective treatment effects on death around a neutral level. Fix all mechanisms before calculating truth, archive the complete truth surface before estimator replications, and report every scenario descriptively. Own-target calibration is an implementation check and is not evidence that the broader catalog problem is real."
+  },
+  {
+   "threat": "The factor grid is not sampled or weighted from an external distribution of applied settings.",
+   "mitigation": "Do not estimate prevalence, frequency, or average practical impact. Report scenario-specific results and factor-specific ranges only. Describe low, moderate, and high mortality and the treatment-effect values as stress-test settings."
+  },
+  {
+   "threat": "The DGM and fitted Cox models are congenial, which can make both estimators look unrealistically well calibrated.",
+   "mitigation": "State that this is a mechanism experiment. Require calibration of both methods to their own targets before interpreting displacement. Do not claim robustness to misspecification, flexible nuisance estimation, or machine learning."
+  },
+  {
+   "threat": "Conditional independence and complete measurement make the hypothetical no-death estimand unusually identifiable.",
+   "mitigation": "Treat this as a deliberately favorable assumption for the death-censored estimator. Label death elimination as a mathematical intervention and do not generalize identification to latent shared causes, dependent censoring, or ill-defined death prevention."
+  },
+  {
+   "threat": "The observational treatment mechanism may create sparse support and make an estimand difference look like extrapolation.",
+   "mitigation": "Record treatment prevalence and true treatment probabilities in every replicate. Flag a replicate if either treatment arm has fewer than 500 individuals or if more than 1% of individuals have true treatment probabilities below 0.05 or above 0.95. Summarize flagged replicates separately."
+  },
+  {
+   "threat": "A variance implementation error could be mistaken for estimator failure.",
+   "mitigation": "Validate influence-function standard errors against 1000-resample subject bootstraps in three fixed datasets, retain individual influence contributions, and use own-target bias-eliminated coverage to separate interval construction from point-estimator bias."
+  },
+  {
+   "threat": "Wrong-target interval inclusion depends on sample size and tends toward zero for any fixed nonzero displacement as precision increases.",
+   "mitigation": "Do not call wrong-target inclusion coverage and do not use it in the decision rule. Report absolute displacement divided by the method's mean standard error so the sample-size dependence is explicit."
+  },
+  {
+   "threat": "Monte Carlo error in the truth could be counted as estimand displacement or estimator bias.",
+   "mitigation": "Use common covariate profiles across scenarios and strategies, paired batch calculations, a required scenario-specific Monte Carlo standard error of 0.0005, and adaptive addition of batches if that threshold is missed."
+  },
+  {
+   "threat": "Exact event times and fixed baseline treatment remove several difficulties present in longitudinal emulations.",
+   "mitigation": "Restrict the conclusion to baseline-assigned sustained strategies with exact first-event data. Classify treatment switching, recurrent events, irregular observation, and time-varying confounding as unanswered."
+  },
+  {
+   "threat": "An absolute risk-difference threshold of 0.010 is not clinically important in every application.",
+   "mitigation": "Use 0.010 only as a protocol reference for scenario-level labeling. Report continuous signed and absolute displacement with Monte Carlo uncertainty and leave application-specific importance to the reader."
+  }
+ ],
+ "runtime_estimate": "The production grid contains 36 times 4000 = 144000 replicate datasets and two reused cause-specific Cox fits per replicate, totaling 288000 production Cox fits. The variance validation contains 3000 bootstrap resamples. No wall-time claim is made before a pilot. On the intended hardware, benchmark at least 100 production-equivalent replicates in one low-, moderate-, and high-mortality scenario and at least 100 bootstrap resamples from each fixed validation dataset. Record processor and memory specifications, worker count, median and 95th-percentile wall time, peak memory, serialized output size, and checkpointing time. Extrapolate production fitting, prediction, influence-contribution storage, all 3000 bootstrap resamples, truth calculations, and serialization separately, then add 20% operational overhead. Archive the benchmark and extrapolation before authorizing the full run.",
+ "bears_on": [
+  {
+   "id": "OUT-01",
+   "relation": "answers-part",
+   "what": "This study answers only the special-case mechanism question of how much a standardized death-censored Cox net-risk contrast can differ from a protocol-defined total cumulative-incidence contrast under baseline-assigned treatment and exact first-event data. It does not answer the prevalence or silence claim, represent other reported censoring analyses, establish the scientific meaning of death elimination, or address sustained recurrent-terminal estimation."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods",
+   "doi_or_url": "https://doi.org/10.1002/sim.8086",
+   "used_for": "ADEMP structure, performance reporting, and Monte Carlo error planning"
+  },
+  {
+   "cite": "Young JG, Stensrud MJ, Tchetgen Tchetgen EJ, Hernan MA. A causal framework for classical statistical estimands in failure-time settings with competing events",
+   "doi_or_url": "https://doi.org/10.1002/sim.8471",
+   "used_for": "Distinguishing total cumulative-incidence effects from hypothetical effects involving elimination of the competing event"
+  },
+  {
+   "cite": "ICH E9(R1) addendum on estimands and sensitivity analysis in clinical trials",
+   "doi_or_url": "https://www.ema.europa.eu/en/ich-e9-statistical-principles-clinical-trials-scientific-guideline",
+   "used_for": "Requiring the intercurrent-event strategy and treatment contrast to be declared as part of the protocol"
+  },
+  {
+   "cite": "McGrath S, Lin V, Zhang Z, et al. gfoRmula: An R Package for Estimating the Effects of Sustained Treatment Strategies via the Parametric g-formula",
+   "doi_or_url": "https://doi.org/10.1016/j.patter.2020.100008",
+   "used_for": "Acknowledging that competing-risk estimation under sustained treatment strategies exists and that this study evaluates a narrowly defined estimand mismatch rather than a missing estimator"
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The simulation cannot settle the silent-decision, prevalence, reporting, meaningful-death-elimination, or recurrent-terminal parts of OUT-01.",
+    "severity": "fatal",
+    "how": "declared-limitation",
+    "what_changed": "The title, question, aims, cannot-detect statement, decision rule, and bears-on statement now say that the study settles only the special-case standardized Cox net-risk displacement part of OUT-01. No whole-entry verdict is produced."
+   },
+   {
+    "finding": "The simulated comparator represents only standardized Cox net risk and not the broader range of analyses that may censor death.",
+    "severity": "serious",
+    "how": "declared-limitation",
+    "what_changed": "The comparator and study question are explicitly restricted to standardized death-censored cause-specific Cox net risk. Cause-specific hazard ratios, Kaplan-Meier risks, Fine-Gray contrasts, and other analyses are listed as outside scope."
+   },
+   {
+    "finding": "The DGM and decision rule encoded a favorable conclusion through the death-elimination intervention, one-directional death effects, selected factor values, and repeated consequences of the same displacement.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Treatment effects on death are now log-symmetric harmful, neutral, and protective levels. The entire truth surface is locked before estimator simulation. Results are scenario-specific and descriptive, own-target calibration is only an implementation check, and no frequency or whole-problem conclusion is inferred from the selected grid."
+   },
+   {
+    "finding": "The shared-prognosis factor incorrectly labeled gamma equals zero as absence of shared prognosis even though other covariates affected both hazards.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The factor is renamed additional shared Q prognosis. Its rationale and effect-modification description state that Z, M, C, and S remain shared prognostic causes at both levels."
+   },
+   {
+    "finding": "Interval inclusion of the total-effect truth by an interval for the no-death estimand was incorrectly called coverage.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Estimand displacement is the primary result. Each estimator's coverage is evaluated only against its own target. Inclusion of the total-effect truth by the death-censored interval is labeled wrong-target interval inclusion, reported with displacement relative to standard error, and excluded from the decision rule."
+   },
+   {
+    "finding": "The original decision rule counted displacement, wrong-target bias, and wrong-target interval inclusion as separate evidence and interpreted counts over selected scenarios as frequency.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The revised rule uses only the Monte Carlo interval for scenario-specific absolute estimand displacement. It makes no unweighted aggregate or prevalence claim, and each scenario can be material, not material, or indeterminate."
+   },
+   {
+    "finding": "Four thousand replicates were incorrectly described as resolving a 0.90 coverage boundary with precision 0.005.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The derivation now distinguishes Monte Carlo standard error from a 95% half-width, states the approximate half-widths at 0.90 and 0.95, notes that about 13830 replicates would be needed for a 0.005 half-width at 0.90, and removes the 0.90 boundary from the decision rule."
+   },
+   {
+    "finding": "Sign reversal was undefined when the no-death contrast was exactly zero and the total-effect contrast was nonzero.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "A 0.001 tolerance now distinguishes genuine opposite-sign reversals from zero-versus-nonzero displacement, concordant directions, and joint-null contrasts."
+   },
+   {
+    "finding": "The stated Surv(time, status = 1) call did not create the intended event indicator.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The primary-event model now uses Surv(time, event = (status == 1)), and the death model uses Surv(time, event = (status == 2))."
+   },
+   {
+    "finding": "The overnight runtime estimate lacked a timed pilot, hardware specifications, prediction and storage costs, and demonstrated bootstrap timing.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The unsupported hour estimate is removed. Production now requires documented benchmarks of representative replicates and bootstrap batches on the intended hardware, including wall-time tails, memory, output size, serialization, checkpointing, and a 20% operational allowance."
+   },
+   {
+    "finding": "The gfoRmula citation reversed the first two authors, and package documentation could not support a comparative rarity claim about lmtp.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The gfoRmula citation now begins McGrath S, Lin V, Zhang Z, et al. The protocol makes no comparative rarity claim about lmtp and does not use package documentation to support one."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study settles only the standardized Cox net-risk displacement part of OUT-01 and does not settle OUT-01 as a whole.",
+   "A simulation cannot determine whether censoring at death is silent or how prevalent estimand mismatch is in applied emulations.",
+   "The comparator does not represent cause-specific hazard ratios, Kaplan-Meier risks, Fine-Gray contrasts, or every analysis that treats death as censoring.",
+   "The stress-test grid has no externally estimated scenario distribution and supports no prevalence-weighted average practical effect.",
+   "The no-death intervention is a mathematical benchmark whose scientific meaning and identification outside the favorable DGM are not established.",
+   "The study covers baseline-assigned treatment and exact first-event outcomes only; recurrent-terminal estimands, treatment switching, time-varying confounding, and irregular observation remain unanswered.",
+   "Correctly specified Cox models and complete measurement do not establish robustness under misspecification, unmeasured common causes, or dependent censoring.",
+   "Wrong-target interval inclusion is specific to n = 4000 and is not an intrinsic performance property of the death-censored estimator."
+  ]
+ }
+}

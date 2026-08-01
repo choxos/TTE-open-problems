@@ -1,0 +1,389 @@
+{
+ "title": "Latent eligibility without validation and with internal probability validation: a paired ADEMP simulation",
+ "question": "When two full-data laws have exactly the same no-validation observed-data distribution but different eligibility among people with unrecorded measurements, can they imply materially different 60-month marginal risk differences among truly eligible people? Conditional on internal Bernoulli validation with known inclusion probabilities, what are the operating characteristics of model-based, design-based, augmented, sensitivity-analysis, and partial-identification methods?",
+ "aims": "This study settles only the following part of ELG-01: it demonstrates whether the all-eligible causal effect is structurally unidentified from the stipulated no-validation observed data, and it evaluates recovery under internal probability validation with known inclusion probabilities and perfect transportability. It compares observationally equivalent latent-eligibility laws without choosing their treatment-effect difference in advance. It separately evaluates methods that use no validation and methods that use the same validation information. It does not settle the part of ELG-01 concerning absent, external, nonprobability, nontransportable, or unknown-probability validation sources. It also does not establish how frequently or how strongly these mechanisms occur in real EHR data.",
+ "dgm": {
+  "covariates": "Generate n = 4000 independent people per replicate. Draw Z uniformly on [-1,1] and define age as 65 + 15Z years. Draw male sex S from Bernoulli(0.50). Draw specialist access H from Bernoulli(expit(0.10 - 0.50Z + 0.40S)). Draw comorbidity C from Bernoulli(expit(-1.00 + 0.80Z + 0.50S - 0.70H)). Draw recorded treatment intent I from Bernoulli(expit(-0.50 + 0.50Z + 0.90C - 0.60H + 0.30S)). Treatment is initiated once at baseline with P(A = 1 | Z,S,C,H,I) = expit(-0.30 + 0.35Z + 0.65C + 0.75I - 0.40H + 0.20S). Generate the clinical recording indicator first from R ~ Bernoulli(expit(alpha_m + 0.50Z + 0.80C + 0.70I - 0.60H)), where alpha_m is calibrated to P(R = 0) = m. This is a pattern-mixture factorization of the joint law, not a claim that recording causally precedes biological eligibility. Draw a standard logistic error epsilon and define T = 0.85 - 0.65Z - kappa C + 0.25S + 0.50H + lambda(1-R) + epsilon, G = 45 + 5T, and E = 1(G >= 45). Thus P(E = 1 | X,R) = expit(0.85 - 0.65Z - kappa C + 0.25S + 0.50H + lambda(1-R)). For fixed m and kappa, changing lambda leaves the joint distribution of X, A, Y, R, and G or E when R = 1 exactly unchanged. It changes only G and E where R = 0. Paired lambda arms use identical X, A, Y, R, epsilon, and method seeds, and the no-validation observed records must be bitwise identical. Clinical records reveal G and E only when R = 1. For R = 0, draw V independently with probability 0.125, 0.500, 0.050, or 0.200 for the combinations (m = 0.20, expected validation n = 100), (m = 0.20, expected validation n = 400), (m = 0.50, expected validation n = 100), and (m = 0.50, expected validation n = 400), respectively. Validation reveals G and E without error. Define Q = 1 when R = 1 or V = 1. Define rho = 1 for R = 1 and the applicable known validation probability for R = 0. Calibrate and freeze the two alpha_m values using a 10,000,000-person draw with seed 81001 and require marginal missingness error below 0.0001.",
+  "outcome_model": "The protocol has one baseline eligibility assessment, immediate initiation of A = 1 versus A = 0, no switching, complete follow-up, and a binary event by 60 months. Define p0 = 0.20 + 0.04Z + 0.08C - 0.03H + 0.03I + 0.02S. Draw one UY uniformly on [0,1], define Y0 = 1(UY <= p0), define Y1 = 1(UY <= p0 + delta(C)), and observe Y = AY1 + (1-A)Y0. Eligibility and G have no residual prognostic effect after X. Consequently, changing hidden eligibility changes the target population but not the no-validation distribution of treatment or outcome.",
+  "treatment_effect": "Under homogeneous effects, delta(C) = -0.06 for everyone. Under heterogeneous effects, delta(C) = -0.04 when C = 0 and -0.12 when C = 1. All generated risks remain between 0 and 1. The homogeneous level is an implementation control because target-population composition cannot change a constant causal risk difference.",
+  "effect_modification": "C is the only treatment-effect modifier and is fully recorded. Its treatment-effect contrast is crossed with kappa, which independently controls the direct association between C and eligibility. The study treats both levels as sensitivity settings rather than empirically calibrated constants.",
+  "factors": [
+   {
+    "name": "Marginal proportion with unrecorded clinical eligibility",
+    "levels": [
+     "0.20",
+     "0.50"
+    ],
+    "rationale": "These levels represent moderate and severe incomplete ascertainment. They are sensitivity settings and are not claimed to describe a particular database."
+   },
+   {
+    "name": "Latent-score shift among people with unrecorded eligibility",
+    "levels": [
+     "lambda = 0",
+     "lambda = log(2)",
+     "lambda = log(4)"
+    ],
+    "rationale": "Lambda is the conditional log odds shift in true eligibility among R = 0 relative to R = 1. The three arms have the same no-validation observed-data law. Lambda is not estimated from that law and is not chosen to produce a prespecified effect difference."
+   },
+   {
+    "name": "Expected number of validation assessments among R = 0",
+    "levels": [
+     "100",
+     "400"
+    ],
+    "rationale": "These are internal Bernoulli validation budgets with known inclusion probabilities. The realized validation count is random."
+   },
+   {
+    "name": "Treatment-effect structure on the risk-difference scale",
+    "levels": [
+     "homogeneous: delta = -0.06",
+     "heterogeneous: delta = -0.04 for C = 0 and -0.12 for C = 1"
+    ],
+    "rationale": "This factor independently switches effect modification off or on."
+   },
+   {
+    "name": "Direct comorbidity coefficient in the eligibility model",
+    "levels": [
+     "kappa = 0",
+     "kappa = 1.10"
+    ],
+    "rationale": "This factor independently removes or introduces the direct eligibility association with the effect modifier. Residual association through Z, S, and H may remain when kappa = 0."
+   }
+  ],
+  "n_scenarios": 48,
+  "deliberately_true": "Consistency, no interference, conditional treatment exchangeability, practical treatment positivity, a correctly specified treatment propensity model, a deterministic eligibility threshold, complete outcome follow-up, and known ignorable internal validation sampling are true. The primary eligibility model is correctly specified. Outcome is independent of E conditional on recorded X. Paired lambda arms have exactly the same no-validation information. These restrictions isolate latent target-population membership from treatment confounding, censoring, and outcome measurement.",
+  "cannot_detect": "The study cannot estimate a real-world lambda, establish empirical materiality, or establish performance with external or nonprobability validation, unknown validation probabilities, nontransportability, validation measurement error, an eligibility threshold measured with error, irregular visits, time-varying eligibility, sequential trials, treatment switching, censoring, competing events, unrecorded effect modifiers, unmeasured treatment confounding, severe treatment nonpositivity, or arbitrary nuisance-model misspecification. It evaluates one baseline criterion and a binary 60-month endpoint. Internal probability validation point identifies the stipulated target, so its operating characteristics do not resolve the harder case in which suitable validation information is unavailable."
+ },
+ "estimands": [
+  {
+   "name": "60-month marginal causal risk difference among truly eligible people",
+   "definition": "For each full-data law, RD60,E = P(Y1 = 1 | E = 1) - P(Y0 = 1 | E = 1). This compares immediate baseline initiation with no initiation, no switching, and complete 60-month follow-up. It is marginal over the truly eligible population.",
+   "true_value_computation": "For homogeneous effects, RD60,E is exactly -0.060000. For heterogeneous effects, RD60,E = -0.04 - 0.08P(C = 1 | E = 1). For each unique combination of m, kappa, and lambda, compute P(E = 1) and P(C = 1 | E = 1) by averaging the conditional probability r_m(X)expit(eta_kappa(X)) + [1-r_m(X)]expit(eta_kappa(X)+lambda) over a shared 10,000,000-person covariate draw with seed 20260731. Compute paired influence-value Monte Carlo standard errors. Validation size does not alter this truth."
+  },
+  {
+   "name": "60-month marginal causal risk difference among recorded eligible people",
+   "definition": "RD60,RE = P(Y1 = 1 | E = 1,R = 1) - P(Y0 = 1 | E = 1,R = 1). This is the natural complete-case target. Complete-case estimation bias and interval coverage are evaluated against this truth. The difference RD60,RE - RD60,E is reported separately as a target-population discrepancy.",
+   "true_value_computation": "For homogeneous effects, RD60,RE is exactly -0.060000. For heterogeneous effects, RD60,RE = -0.04 - 0.08P(C = 1 | E = 1,R = 1). Compute the conditional comorbidity proportion using weights r_m(X)expit(eta_kappa(X)) on the shared truth draw. This truth depends on m and kappa but not lambda or validation size."
+  },
+  {
+   "name": "True eligible-population prevalence",
+   "definition": "PE = P(E = 1) in each full-data law. Only methods that target membership among all people are assessed for superpopulation prevalence bias.",
+   "true_value_computation": "Compute PE from the same conditional-probability integration used for RD60,E. Report its paired numerical Monte Carlo standard error."
+  },
+  {
+   "name": "Realized eligible total",
+   "definition": "NE = sum(E) among the 4000 generated people in a replicate. Methods that estimate eligibility for all records report an estimated total and are assessed by estimated NE minus realized NE.",
+   "true_value_computation": "Use the complete simulated E vector before masking. This target is replicate specific and is distinct from the fixed superpopulation prevalence PE."
+  },
+  {
+   "name": "Recorded eligible yield",
+   "definition": "NRE = sum(RE), with NRE/n as the ascertainment yield. It is an observed descriptive quantity, not an estimator of PE or NE.",
+   "true_value_computation": "Calculate directly from observed R and E among R = 1. No prevalence bias or prevalence coverage is assigned to complete-case yield."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Oracle full-eligibility benchmark",
+   "point_estimator": "Fit e(X) = P(A = 1 | Z,S,C,H,I) by logistic regression with the exact linear formula. For a in {0,1}, define za = 1(A=a)/(a e(X) + (1-a)(1-e(X))) and solve sum[E za (Y-mua)] = 0. Report mu1-mu0, mean(E), and sum(E).",
+   "variance_estimator": "Use an empirical stacked M-estimation sandwich containing the treatment-propensity equations and both weighted risk equations. Compute the Jacobian by central finite differences with a relative step of 1e-6.",
+   "interval": "Two-sided 95% untruncated Wald interval for RD60,E.",
+   "is_status_quo": false,
+   "nonconvergence": "The treatment model fails, separates, has any absolute coefficient above 20, produces a treatment probability below 1e-8, yields an arm effective sample size below 10, or produces a singular or nonfinite covariance.",
+   "implementation": "This method is unavailable in practice. It checks numerical correctness and quantifies the efficiency cost of incomplete eligibility information."
+  },
+  {
+   "name": "Complete-case eligibility analysis",
+   "point_estimator": "Use the oracle treatment model and weighted risk equations with membership RE. Report the estimated risk difference among recorded eligible people and the observed yield NRE and NRE/n.",
+   "variance_estimator": "Use the stacked treatment-propensity and arm-risk sandwich, treating RE as the observed membership indicator.",
+   "interval": "Two-sided 95% untruncated Wald interval evaluated against RD60,RE.",
+   "is_status_quo": true,
+   "nonconvergence": "The treatment model fails, either recorded-eligible treatment arm has effective sample size below 10, or an estimate or covariance is singular or nonfinite.",
+   "implementation": "This is a no-validation method. Its estimation bias and coverage use RD60,RE. RD60,RE - RD60,E is reported as a target-population discrepancy, not as estimator bias. NRE/n is reported only as ascertainment yield."
+  },
+  {
+   "name": "Eligibility-MAR multiple imputation of the continuous laboratory value",
+   "point_estimator": "Among R = 1 records, fit G on Z,S,C,H,I by ordinary least squares. For each of M = 20 imputations, draw coefficients using the fitted sampling covariance, resample centered residuals, impute G for R = 0, derive E = 1(G >= 45), and estimate RD60,E, PE, and NE.",
+   "variance_estimator": "Within each imputation use the stacked treatment-propensity and arm-risk sandwich. Pool with Rubin total variance. Record within-imputation and between-imputation components separately.",
+   "interval": "Two-sided 95% Rubin t interval, with a normal interval if the between-imputation variance is numerically zero.",
+   "is_status_quo": false,
+   "nonconvergence": "The laboratory model is rank deficient, its coefficient covariance is not positive semidefinite, any completed arm has effective sample size below 10, fewer than 20 estimates are finite, or pooled variance is nonfinite.",
+   "implementation": "This no-validation method imposes lambda = 0. It is correctly aligned with the core DGM only in the lambda = 0 arms. Coverage is descriptive and is not used to validate the variance of the validation-anchored estimator."
+  },
+  {
+   "name": "Eligibility-MAR multiple imputation of the eligibility indicator",
+   "point_estimator": "Among R = 1 records, fit logistic regression E on Z,S,C,H,I. For each of M = 20 imputations, draw coefficients from the fitted model covariance, draw missing E values from their Bernoulli probabilities, and estimate RD60,E, PE, and NE.",
+   "variance_estimator": "Use the stacked treatment-propensity and arm-risk sandwich within imputations and Rubin total variance across imputations.",
+   "interval": "Use the same Rubin t rule as continuous-value multiple imputation.",
+   "is_status_quo": false,
+   "nonconvergence": "The eligibility model fails, separates, has an absolute coefficient above 20, yields nonfinite probabilities, produces an arm effective sample size below 10, or has fewer than 20 finite completed estimates.",
+   "implementation": "This no-validation method also imposes lambda = 0. Comparing it with continuous-value imputation evaluates whether the imputed operation matters when both target the same population under MAR."
+  },
+  {
+   "name": "Estimated eligibility-MAR inverse probability of ascertainment weighting",
+   "point_estimator": "Fit s(X) = P(R = 1 | X) using logistic regression with splines::ns(Z,4), S,C,H,I, all pairwise interactions among S,C,H,I, and interactions between ns(Z,4) and each binary covariate. Among R = 1,E = 1 records, use membership weight 1/s(X) in the common treatment-weighted risk equations. Estimate PE by mean(RE/s(X)) and NE by sum(RE/s(X)).",
+   "variance_estimator": "Use one stacked empirical sandwich containing the treatment-propensity score, ascertainment-model score, prevalence equation, and both arm-risk equations.",
+   "interval": "Two-sided 95% untruncated Wald interval for RD60,E.",
+   "is_status_quo": false,
+   "nonconvergence": "Either logistic model fails or separates, any fitted probability is below 1e-8, either arm has effective sample size below 10, or the stacked covariance is singular or nonfinite.",
+   "implementation": "This is a no-validation method representing the developed eligibility-MAR weighting approach. The recording model correctly estimates P(R = 1 | X) in every scenario, but that marginal probability does not recover E when lambda is nonzero."
+  },
+  {
+   "name": "Oracle marginal-ascertainment weighting diagnostic",
+   "point_estimator": "Use the true DGM value s(X) = P(R = 1 | X) and membership weight RE/s(X) in the common treatment-weighted risk equations.",
+   "variance_estimator": "Treat s(X) as fixed and use the stacked sandwich for the estimated treatment propensity and arm-risk equations.",
+   "interval": "Two-sided 95% untruncated Wald interval for RD60,E.",
+   "is_status_quo": false,
+   "nonconvergence": "Either arm has effective sample size below 10 or an estimate or covariance is singular or nonfinite.",
+   "implementation": "This oracle diagnostic has more information than feasible no-validation methods and is not included in method rankings. Persistence of bias shows that knowing P(R = 1 | X) is insufficient when E differs between recording patterns conditional on X."
+  },
+  {
+   "name": "No-validation pattern-mixture sensitivity analysis",
+   "point_estimator": "Fit logistic regression E on Z,S,C,H,I among R = 1. For each fixed sensitivity value lambda_star in {0, log(2), log(4)}, define q_lambda(X) = expit(fitted_eta(X) + lambda_star) for R = 0 and membership M_lambda = RE + (1-R)q_lambda(X). Estimate each arm risk as sum[M_lambda za Y]/sum[M_lambda za]. Report the complete sensitivity curve for RD60,E, PE, and NE. The arm with lambda_star equal to the generating lambda is an oracle sensitivity diagnostic, not a data-selected estimate.",
+   "variance_estimator": "For each fixed lambda_star, use a stacked empirical sandwich containing the treatment-propensity score, recorded-eligibility model score, prevalence equation, and both fractional-membership arm-risk equations. Lambda_star is treated as fixed.",
+   "interval": "Two-sided 95% untruncated Wald interval at each prespecified lambda_star. Do not combine the three intervals into a single selected estimate.",
+   "is_status_quo": false,
+   "nonconvergence": "Either logistic model fails or separates, any fractional-membership probability is nonfinite, either arm has effective sample size below 10, or a covariance is singular or nonfinite.",
+   "implementation": "This no-validation comparator makes the unidentified assumption visible. It implements the MNAR sensitivity-analysis role attributed to Tompsett et al. No lambda value is estimated or preferred from the no-validation data."
+  },
+  {
+   "name": "Validation-anchored fractional imputation of eligibility",
+   "point_estimator": "Give each Q = 1 record phase-two weight d = 1 when R = 1 and d = 1/rho when R = 0,V = 1. Fit weighted logistic regression P(E = 1 | X,R) with Z,S,C,H,I and 1-R. For Q = 0 records, predict q(X,R). Define M = QE + (1-Q)q and estimate each arm risk as sum[M za Y]/sum[M za]. Estimate PE by mean(M) and NE by sum(M).",
+   "variance_estimator": "Use one repeated-sampling stacked M-estimation sandwich containing the phase-two weighted eligibility-model score, treatment-propensity score, prevalence equation, and both fractional-membership risk equations. The person-level score includes Q, rho, and fitted q, so phase-two sampling and nuisance estimation are propagated together. No coefficient simulation or Rubin pooling is used.",
+   "interval": "Two-sided 95% untruncated Wald interval from the full stacked covariance.",
+   "is_status_quo": false,
+   "nonconvergence": "The weighted eligibility model fails, separates, has an absolute coefficient above 20, yields nonfinite q, produces an arm effective sample size below 10, or produces a singular or nonfinite covariance.",
+   "implementation": "This method is compared only with methods receiving the same Q, E when Q = 1, and known rho. A prespecified misspecification diagnostic omits C and H from q; its bias is reported separately and is not treated as primary performance."
+  },
+  {
+   "name": "Known-design two-phase inverse probability weighting",
+   "point_estimator": "Define membership weight w = QE/rho, with rho = 1 for R = 1 and the known validation probability for R = 0. Use w in the common treatment-weighted arm-risk equations. Estimate PE by mean(w) and NE by sum(w).",
+   "variance_estimator": "Use a stacked empirical sandwich containing the treatment-propensity score, prevalence equation, and both arm-risk equations. Treat rho as known.",
+   "interval": "Two-sided 95% untruncated Wald interval for RD60,E.",
+   "is_status_quo": false,
+   "nonconvergence": "No validated eligible person appears in a necessary arm, an arm has effective sample size below 10, or an estimate or covariance is singular or nonfinite.",
+   "implementation": "This method uses the same validation information as the fractional and augmented estimators. It is the design-consistent benchmark and does not require an eligibility or recording model."
+  },
+  {
+   "name": "Doubly robust augmented two-phase correction",
+   "point_estimator": "Obtain q(X,R) from the validation-anchored eligibility model. For arm a define za = 1(A=a)/P(A=a|X), Na = q za Y + Q/rho(E-q)zaY, and Da = q za + Q/rho(E-q)za. Estimate mua = sum(Na)/sum(Da) and RD60,E = mu1-mu0. Estimate PE from mean[q + Q/rho(E-q)] and NE from its corresponding total.",
+   "variance_estimator": "Use the full stacked empirical sandwich for treatment propensity, phase-two weighted eligibility-model scores, prevalence, and both augmented arm-risk equations.",
+   "interval": "Two-sided 95% untruncated Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "A nuisance model fails or separates, q is nonfinite, an augmented denominator is at most 1e-8, or the stacked covariance is singular or nonfinite.",
+   "implementation": "Run the primary version with the prespecified eligibility model. Repeat with q restricted to an intercept and R indicator. Known rho remains correct, so the misspecified-q diagnostic tests the augmentation rather than favoring the model-based method."
+  },
+  {
+   "name": "No-validation partial-identification outer bounds",
+   "point_estimator": "Ignore validation information. For arm a calculate c_a = mean[za R E Y], d_a = mean[za R E], u1_a = mean[za(1-R)Y], and u0_a = mean[za(1-R)(1-Y)]. Set risk bounds to L_a = c_a/(d_a+u0_a) and U_a = (c_a+u1_a)/(d_a+u1_a). Report the risk-difference outer bound [L_1-U_0,U_1-L_0] and prevalence bounds [mean(RE),mean(RE)+mean(1-R)].",
+   "variance_estimator": "Use the stacked treatment-propensity sandwich and delta-method covariance for the lower and upper risk-difference endpoints.",
+   "interval": "Use the Imbens-Manski interval. If the estimated risk-difference bounds are Lhat and Uhat with endpoint standard errors SE_L and SE_U, choose c satisfying Phi(c + (Uhat-Lhat)/max(SE_L,SE_U)) - Phi(-c) = 0.95, then report [Lhat-c SE_L,Uhat+c SE_U], clipped to [-1,1].",
+   "is_status_quo": false,
+   "nonconvergence": "A required denominator is zero, the lower bound exceeds the upper bound by more than 1e-10, an endpoint standard error is invalid, or the endpoint covariance is singular or nonfinite.",
+   "implementation": "This method belongs only to the no-validation information set. It is assessed by truth inclusion and width. It is not ranked against point estimators that receive validation data."
+  }
+ ],
+ "performance": {
+  "primary": "There are two primary analyses. First, the identification analysis estimates the paired truth contrast Delta_ID = RD60,E(lambda = log(4)) - RD60,E(lambda = 0) in the prespecified heterogeneous-effect, m = 0.50, kappa = 1.10 pair whose no-validation records are identical. Second, operating characteristics use signed estimation bias relative to each method's declared estimand and are reported within information set. Complete-case bias and coverage use RD60,RE; its discrepancy from RD60,E is labeled target-population discrepancy. For a point estimator, material bias means its two-sided 95% Monte Carlo interval for signed bias lies wholly above 0.010 or wholly below -0.010. Bias equivalence means its two-sided 90% Monte Carlo interval lies wholly within [-0.010,0.010]. Other results are inconclusive. Partial-identification methods are evaluated by truth inclusion and width.",
+  "secondary": [
+   "Empirical standard error and its Monte Carlo standard error",
+   "Mean model-based standard error",
+   "Relative error in model-based standard error",
+   "Mean squared error",
+   "95% interval coverage with a Wilson Monte Carlo interval",
+   "Bias-eliminated coverage",
+   "Rejection rate for RD60,E = 0 or RD60,RE = 0, according to the method's target",
+   "Convergence proportion with a Wilson Monte Carlo interval",
+   "Superpopulation prevalence bias against PE for methods targeting all eligible people",
+   "Realized-total error estimated NE minus sum(E)",
+   "Recorded eligible yield NRE and NRE/n without treating either as a prevalence estimate",
+   "Target-population discrepancy RD60,RE - RD60,E",
+   "Effective sample size and maximum analysis weight",
+   "Partial-identification set inclusion and mean width",
+   "Within-information-set differences in signed bias and MSE",
+   "For each named no-validation method, the signed-bias contrasts between lambda = log(4) and lambda = log(2), and between m = 0.50 and m = 0.20, using one no-validation result per unique observed-data cell rather than validation-size duplicates",
+   "For validation methods, differences between expected validation sizes 400 and 100 within the same full-data law",
+   "Difference between M = 20 and M = 50 imputation results on a stratified 2% replicate subset"
+  ],
+  "n_rep": 4000,
+  "n_rep_derivation": "Using the conservative replicate SD 0.12 from the expected-validation-100 design, 4000 replicates give bias MCSE 0.12/sqrt(4000) = 0.00190. A two-sided 95% interval then has half-width 0.00372, and a two-sided 90% equivalence interval has half-width 0.00312 when bias is near zero. Coverage MCSE at 0.95 is 0.00345. These values resolve the prespecified 0.010 materiality margin without combining a 0.005 point threshold with an incompatible confidence threshold. Monte Carlo intervals are constructed for signed bias, not by applying a normal interval directly to absolute bias. If the empirical MCSE of any decision-critical operating characteristic exceeds 0.0025, extend that scenario in seed-preserving batches to 8000 replicates before classification. The extension trigger depends only on precision and convergence, not the estimated direction or magnitude."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "For the limited structural claim, require bitwise identity of X, A, Y, R, and observed G and E across the paired lambda = 0 and lambda = log(4) no-validation data, together with identical outputs from every no-validation method when it is run with the same assumed sensitivity value and seed. Classify the latent-eligibility problem as material under this prespecified DGM if the two-sided 95% paired numerical Monte Carlo interval for Delta_ID lies wholly above 0.010 or wholly below -0.010.",
+  "problem_is_not_real_if": "For the same single prespecified pair and the same identity checks, classify the effect of latent eligibility as not materially different under this DGM if the two-sided 90% paired numerical Monte Carlo interval for Delta_ID lies wholly within [-0.005,0.005]. This conclusion concerns the target risk difference in the stipulated DGM and does not assert identification from observed data.",
+  "uninformative_if": "The structural result is uninformative if the observed-data identity check fails, if the paired numerical Monte Carlo standard error for Delta_ID exceeds 0.001, or if its interval lies between the equivalence and materiality regions. A method-specific result is uninformative if its signed-bias MCSE exceeds 0.0025 after the prespecified extension, if convergence is below 95%, if conclusions depend on deleting failed replicates, or if an implementation control reveals material bias in the oracle or known-design estimator. Failed estimates are reported with conditional summaries and worst-case assignments of -1 and 1.",
+  "both_branches_reachable": "One prespecified paired contrast controls the structural verdict. The positive branch requires evidence that its magnitude exceeds 0.010; the negative branch requires evidence that its magnitude is below 0.005; intermediate results are uninformative. Lambda and the effect model are fixed before truth evaluation and are not solved to force either threshold. No rule uses failure in any one of many scenarios for the positive branch while requiring success in every scenario for the negative branch."
+ },
+ "threats": [
+  {
+   "threat": "A stipulated latent mechanism could be mistaken for evidence about empirical EHR behavior.",
+   "mitigation": "The primary comparison uses observationally equivalent full-data laws and is labeled a structural identification demonstration. Lambda, kappa, and effect modification are sensitivity values. The protocol makes no claim about their empirical prevalence or magnitude."
+  },
+  {
+   "threat": "Eligibility dependence and effect modification could encode the target-effect difference.",
+   "mitigation": "Lambda is not solved from a desired effect difference. Kappa and effect modification are independently crossed, including kappa = 0 and homogeneous-effect controls. The decisive pair shares every variable visible without validation and differs only in hidden eligibility."
+  },
+  {
+   "threat": "The validation-anchored model is favored because its logistic form matches the primary DGM.",
+   "mitigation": "Compare it with model-free known-design two-phase weighting and augmented correction. Repeat the model-based and augmented analyses with prespecified misspecified q models. Conclusions about joint-model performance remain limited to the stated model class."
+  },
+  {
+   "threat": "Internal probability validation is more favorable than external or convenience validation.",
+   "mitigation": "Label all validation conclusions as applying only to internal Bernoulli validation with known probabilities and perfect measurement. Nonprobability and nontransportable validation remain declared limitations."
+  },
+  {
+   "threat": "Methods could be ranked after receiving different information.",
+   "mitigation": "Report no-validation and validation analyses separately. The pattern-mixture sensitivity analysis and outer bounds use no validation. Fractional imputation, two-phase weighting, and augmentation all receive the same Q, observed E, and rho. Oracle diagnostics are labeled and excluded from feasible-method rankings."
+  },
+  {
+   "threat": "Complete-case inference could be judged against the wrong estimand.",
+   "mitigation": "Evaluate complete-case bias and coverage against RD60,RE. Report RD60,RE - RD60,E separately as target-population discrepancy."
+  },
+  {
+   "threat": "Eligibility prevalence, realized counts, and ascertainment yield could be conflated.",
+   "mitigation": "Assess PE, realized NE, and observed NRE under separate metrics. Do not interpret NRE/n as an estimate of PE."
+  },
+  {
+   "threat": "Variance failure could be mistaken for failure of validation-anchored point estimation.",
+   "mitigation": "Use one full stacked repeated-sampling sandwich for validation-anchored fractional imputation rather than Rubin pooling from pseudo-posterior coefficient draws. Validate its standard errors and coverage in lambda = 0 and homogeneous-effect controls before interpreting coverage elsewhere."
+  },
+  {
+   "threat": "Treatment confounding or propensity misspecification could obscure eligibility effects.",
+   "mitigation": "Generate treatment from the fitted logistic formula, preserve practical support, use the same treatment estimator across methods, and include propensity estimation in every applicable covariance."
+  },
+  {
+   "threat": "Multiple-imputation Monte Carlo noise could affect the MAR comparisons.",
+   "mitigation": "Use M = 20 for production and repeat both MAR imputation methods with M = 50 on a stratified 2% subset. Report changes in scenario-level bias and coverage without silently replacing the prespecified analysis."
+  },
+  {
+   "threat": "Deleting failed replicates could make unstable methods appear accurate.",
+   "mitigation": "Record every failure, report convergence before conditional performance, and provide worst-case summaries. Results with convergence below 95% are method-specific uninformative results."
+  },
+  {
+   "threat": "Partial-identification coverage could appear useful solely because the set is wide.",
+   "mitigation": "Report truth inclusion with mean width. Label mean risk-difference width above 0.20 as practically uninformative."
+  },
+  {
+   "threat": "Simulation runtime could be materially underestimated.",
+   "mitigation": "Do not claim an overnight runtime before timing the complete slowest-cell workflow. Benchmark fitting, sandwich construction, imputation, M = 50 checks, serialization, checkpoint recovery, and failure handling."
+  }
+ ],
+ "runtime_estimate": "The production design contains 48*4000 = 192,000 replicates before any precision extension. Runtime is not claimed before a timing pilot. Run 200 replicates in each of the four slowest cells, including every method, sandwich calculation, M = 50 subset operation, serialization, and injected recoverable failures. Record successful worker-seconds, peak memory, output size, and checkpoint overhead. Extrapolate total worker-hours from the upper 90% confidence limit for mean successful worker time, add measured checkpoint and failure overhead, and divide only by workers that show near-linear scaling in a separate 1, 2, 4, and 6 worker test. If the projected wall time exceeds the available budget, reduce exploratory method variants or parallelize over additional independent workers; do not reduce the 4000 decision-critical replicates.",
+ "bears_on": [
+  {
+   "id": "ELG-01",
+   "relation": "answers-part",
+   "what": "Answers the structural no-validation identification question for one baseline threshold criterion by comparing observationally equivalent latent laws, and evaluates internal probability validation with known inclusion probabilities. It does not answer how to identify eligibility with absent, external, nonrepresentative, nonprobability, or unknown-probability validation, and it does not establish empirical materiality."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo error, paired simulation, and prespecified method evaluation."
+  },
+  {
+   "cite": "Tompsett D, et al. Target Trial Emulation and Bias Through Missing Eligibility Data: An Application to a Study of Palivizumab for the Prevention of Hospitalization Due to Infant Respiratory Illness. American Journal of Epidemiology. 2023",
+   "doi_or_url": "10.1093/aje/kwac202",
+   "used_for": "Complete-case selection and the no-validation MNAR sensitivity-analysis comparator."
+  },
+  {
+   "cite": "Benz L, et al. Adjusting for Selection Bias Due to Missing Eligibility Criteria in Emulated Target Trials. American Journal of Epidemiology. 2025",
+   "doi_or_url": "10.1093/aje/kwae471",
+   "used_for": "The eligibility-MAR inverse probability of ascertainment comparator and the distinction between recorded eligible people and all eligible people."
+  },
+  {
+   "cite": "Shen, et al. Missingness in Eligibility Criteria for Target Trial Emulation in EHR With Survival Outcomes. Statistics in Medicine. 2026",
+   "doi_or_url": "10.1002/sim.70500",
+   "used_for": "Existing complete-case and multiple-imputation strategies for eligibility-defining variables."
+  },
+  {
+   "cite": "Wang, et al. An Operational Target Trial Emulation Framework for Causal Inference Using Electronic Health Records. npj Digital Medicine. 2026",
+   "doi_or_url": "10.1038/s41746-026-02563-z",
+   "used_for": "Embedding eligibility assessment, treatment strategies, and follow-up in the target-trial estimand."
+  },
+  {
+   "cite": "Robins JM, Rotnitzky A, Zhao LP. Estimation of Regression Coefficients When Some Regressors Are Not Always Observed. Journal of the American Statistical Association. 1994",
+   "doi_or_url": "10.1080/01621459.1994.10476818",
+   "used_for": "Augmented inverse-probability correction and repeated-sampling inference under two-phase observation."
+  },
+  {
+   "cite": "Imbens GW, Manski CF. Confidence Intervals for Partially Identified Parameters. Econometrica. 2004",
+   "doi_or_url": "10.1111/j.1468-0262.2004.00531.x",
+   "used_for": "The implemented width-adaptive Imbens-Manski confidence interval for the partially identified risk difference."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "Internal probability validation converted ELG-01 into an identified two-phase problem and could not settle the full catalog entry.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "The aims and bears_on relation now state that the study answers only part of ELG-01. A no-validation identification component was added using paired full-data laws with identical observed records and different hidden eligibility. External, nonprobability, and nontransportable validation remain declared limitations."
+   },
+   {
+    "finding": "The original eligibility dependence, effect-modifier association, and effect modification constructed the expected positive result.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The decisive comparison now holds all observable data fixed and changes only latent eligibility. Lambda is fixed before truth evaluation rather than solved for a desired effect. Direct eligibility association and effect modification are independently crossed. Results are explicitly conditional on sensitivity values and do not establish empirical materiality."
+   },
+   {
+    "finding": "Complete-case analysis was assessed against the all-eligible estimand even though it naturally targets recorded eligible people.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "A separate RD60,RE estimand and scenario-specific truth were added. Complete-case bias and coverage use RD60,RE. Its difference from RD60,E is labeled target-population discrepancy."
+   },
+   {
+    "finding": "Superpopulation prevalence, realized eligible count, and recorded eligible yield were conflated.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "PE, realized NE, and observed NRE are now separate estimands or descriptive quantities with separate performance metrics. NRE/n is no longer described as an estimate of PE."
+   },
+   {
+    "finding": "Comparisons mixed methods with different information sets and omitted an MNAR sensitivity comparator.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Comparisons are now stratified into no-validation and validation information sets. A prespecified pattern-mixture sensitivity curve containing the true lambda as an oracle diagnostic was added. Validation methods all receive the same Q, E when observed, and known rho. Oracle methods are excluded from feasible-method rankings."
+   },
+   {
+    "finding": "Rubin inference based on robust-sandwich coefficient draws was not justified for validation-anchored multiple imputation.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The validation-anchored MI procedure was replaced by deterministic fractional imputation with a full repeated-sampling stacked sandwich that propagates phase-two sampling, nuisance estimation, and outcome analysis together. Rubin pooling is not used for this method."
+   },
+   {
+    "finding": "The replication count and absolute-bias thresholds could not resolve the original decision boundaries, and multiple raw control thresholds inflated simulation-error failures.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Replicates increased to 4000, giving anticipated bias MCSE 0.00190. Decisions now use Monte Carlo intervals for signed bias, separated materiality and equivalence margins, one prespecified structural contrast, and a precision-triggered extension to 8000. Raw all-cell control thresholds were removed."
+   },
+   {
+    "finding": "The monotonicity requirement did not name estimators, contrasts, duplicate handling, or uncertainty rules.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Monotonicity was removed from the decision rule. Named lambda, missingness, and validation-size contrasts are secondary analyses with signed differences and Monte Carlo uncertainty. No-validation results are computed once per unique observed-data cell."
+   },
+   {
+    "finding": "The runtime estimate omitted substantial computation and had no timing evidence.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The unsupported overnight estimate was removed. A complete slowest-cell benchmark, scaling test, and evidence-based extrapolation are required before production."
+   },
+   {
+    "finding": "The proposed partial-identification interval did not implement the cited Imbens-Manski construction, and the cited MNAR sensitivity approach was absent.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The interval now uses the width-adaptive Imbens-Manski critical value. A prespecified no-validation pattern-mixture sensitivity comparator was added."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study only partially answers ELG-01.",
+   "It does not identify latent eligibility when suitable validation information is absent beyond displaying the resulting identified set and sensitivity curve.",
+   "It does not establish validity for external, nonprobability, nontransportable, or unknown-probability validation sources.",
+   "Its lambda, kappa, missingness, and effect-modification values are sensitivity settings rather than empirically calibrated constants.",
+   "It does not establish the empirical frequency or magnitude of latent-eligibility bias in real EHR databases.",
+   "Its model-based conclusions are limited to the prespecified eligibility models and misspecification diagnostics.",
+   "It assumes perfect measurement, one baseline threshold criterion, complete outcome follow-up, no unmeasured treatment confounding, and no unrecorded effect modifier."
+  ]
+ }
+}

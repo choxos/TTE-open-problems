@@ -1,0 +1,335 @@
+{
+ "title": "Conditional benchmark of baseline healthcare-use selection: bias, target shift, and an advisory response policy",
+ "question": "Across 18 unique generated distributions and two analyst-information views, how large are bias and coverage distortions from conditioning on a prior healthcare-use variable under prespecified noncollider and collider DAGs; how much of the restricted-versus-broad contrast is target-population change; and does a complete, prespecified screen-and-response policy improve estimation of the restricted-population 60-month marginal risk difference relative to screen-free alternatives? This study answers only the conditional mechanism and policy-performance part of ELG-02. It does not determine whether an unknown real-world eligibility criterion is a collider.",
+ "aims": "Quantify scenario-specific bias, mean squared error, and interval coverage conditional on the prespecified DAGs; separate estimator bias from target-population change; recognize and decompose risk-scale effect modification across B, X, and D; compare minimal, role-based, all-measured, oracle, and criterion-removed analyses; evaluate the complete advisory policy across every audit result rather than evaluating its components separately; measure silent errors when relevant causes are absent without telling the screen that they exist; and report the external audit sample and its opportunity cost. The study does not evaluate general causal discovery, prospective certification of collider status, or domain review.",
+ "dgm": {
+  "covariates": "Each replicate contains an independent audit sample of 4000 people and an analysis sample of 4000 people. Both samples are drawn from the same superpopulation. For every person generate B ~ Bernoulli(0.5), X ~ Normal(0,1), P ~ Normal(0,1), D ~ Normal(0,1), and N_1 through N_8 ~ Normal(0,1), mutually independently. B and X are measured baseline confounders. P is a prebaseline prescribing-tendency variable that affects treatment but not outcome. D is preclinical disease severity that affects outcome but not treatment. The N variables are irrelevant measured baseline variables included to prevent the screen from being handed a two-variable search problem. The full measured view contains B, X, P, D, and N_1 through N_8. The reduced measured view contains B, X, and N_1 through N_8. The reduced view contains no indicator that P or D exists, is missing, or is causally relevant. Analyst-information view is an analysis condition applied to the same generated distribution and is not counted as a DGM scenario. Generate independent uniforms V_H, V_A, and V_Y. Define H = I[V_H < Phi(alpha + 0.30 B + 0.20 X + lambda_P P + lambda_D D)]. Alpha is found by uniroot so that 0.5 Phi(alpha/r) + 0.5 Phi((alpha + 0.30)/r) equals the designated retention probability, where r = sqrt(1 + 0.20^2 + lambda_P^2 + lambda_D^2). Clinical eligibility otherwise includes everyone. Treatment at time zero is A = I[V_A < Phi(-0.05 + 0.35 B - 0.25 X + 0.55 P)]. Expected selected sample sizes within each 4000-person sample are approximately 1200 and 2800 at retention probabilities 0.30 and 0.70.",
+  "outcome_model": "The binary outcome is occurrence by 60 months. For a in {0,1}, set p_a = Phi(-1.50 + 0.45 B + 0.35 X + 0.65 D + a(-0.35 + 0.25 B)), define Y^a = I[V_Y < p_a], and observe Y = Y^A. Coefficients are on the probit scale. There is no loss to follow-up, competing event, treatment switching, interference, or measurement error.",
+  "treatment_effect": "The strategies are initiation at time zero followed by no switching versus noninitiation followed by no switching. The conditional treatment coefficient on the probit scale is -0.35 for B = 0 and -0.10 for B = 1. Marginal effects are reported as 60-month risk differences.",
+  "effect_modification": "B is the only product-term effect modifier on the probit scale. It is not the sole effect modifier on the risk-difference scale. The conditional risk difference Phi(z + delta_B) - Phi(z), where z = -1.50 + 0.45 B + 0.35 X + 0.65 D and delta_B = -0.35 + 0.25 B, varies with B, X, and D. Because H changes their joint distribution, all three can contribute to RD_H - RD_all. The simulation truth will decompose that shift across B, X, and D. In the reduced measured view, the contribution involving D is an oracle simulation diagnostic and is not available to the analyst.",
+  "factors": [
+   {
+    "name": "Eligibility topology",
+    "levels": [
+     "Noncollider: lambda_P = 0 and lambda_D = s",
+     "Concordant collider: lambda_P = s and lambda_D = s",
+     "Discordant collider: lambda_P = s and lambda_D = -s"
+    ],
+    "rationale": "The noncollider level demonstrates that a healthcare-use variable is not automatically a collider. The collider levels instantiate A <- P -> H <- D -> Y with opposite induced associations. These levels define mechanisms to be quantified; they are not evidence that an unknown applied criterion has either topology."
+   },
+   {
+    "name": "Eligibility-edge strength",
+    "levels": [
+     "Near-null: s = 0.10",
+     "Moderate: s = 0.45",
+     "Strong: s = 1.10"
+    ],
+    "rationale": "The near-null level prevents screen success from following automatically from large generating coefficients. The moderate and strong levels retain the original mechanism range. All three are simulation anchors rather than externally calibrated healthcare-system estimates."
+   },
+   {
+    "name": "Retention under the healthcare-use criterion",
+    "levels": [
+     "Restrictive: Pr(H = 1) = 0.30",
+     "Permissive: Pr(H = 1) = 0.70"
+    ],
+    "rationale": "The levels represent a criterion excluding most of the source population and one excluding a substantial minority. They are design anchors rather than empirical prevalence claims."
+   }
+  ],
+  "n_scenarios": 18,
+  "deliberately_true": "The design is fully factorial over 3 topologies, 3 edge strengths, and 2 retention probabilities, giving 18 unique generated distributions. There are 12 unique collider cells and 6 unique noncollider cells. Full and reduced analyst-information views are applied to each cell without duplicating its DGM count. P and D are independent before eligibility selection, so their conditional association after H = 1 is attributable to selection under the specified collider topologies. The collider mechanism is deliberately true in designated cells and deliberately false in the noncollider cells. The study quantifies consequences conditional on those facts and does not use the simulation to establish that collider selection exists in practice. No coefficient, screen rule, threshold, or information view may be changed after simulation results are examined.",
+  "cannot_detect": "The study cannot discover or certify an unknown causal graph, identify an unnamed latent cause, conduct clinical domain review, or establish the prevalence of collider-inducing criteria. It does not cover indirect paths, multiple interacting criteria, graph-equivalent structures, measured common causes that mimic the screen's associations, nonlinear or nonparametric screening models, timestamp errors, noisy proxies, partial measurement, irregular visits, post-treatment criteria, time-varying treatment or confounding, competing events, dependent censoring, treatment switching, measurement error, or missing outcomes. Coefficients are not externally calibrated. The study also assumes that people excluded by H remain analyzable when H is removed."
+ },
+ "estimands": [
+  {
+   "name": "Healthcare-use-restricted 60-month marginal risk difference",
+   "definition": "RD_H = E(Y^1 - Y^0 | H = 1) for the superpopulation satisfying the candidate H = 1 protocol, comparing initiation with noninitiation at time zero.",
+   "true_value_computation": "For each unique DGM cell calculate RD_H = E[(p_1 - p_0) Pr(H = 1 | B,X,P,D)] / E[Pr(H = 1 | B,X,P,D)]. Evaluate the normal expectations with product Gauss-Hermite quadrature over X, P, and D and exact summation over B. Use 40 nodes per normal dimension; repeat with 30 and 50 nodes and require both absolute differences from the 40-node result to be below 1e-7. Increase to 60 nodes otherwise."
+  },
+  {
+   "name": "Broad clinical-population 60-month marginal risk difference",
+   "definition": "RD_all = E(Y^1 - Y^0) for the superpopulation before applying H, with the same treatment strategies and horizon.",
+   "true_value_computation": "Integrate p_1 - p_0 over B, X, and D. Use the same Gauss-Hermite calculation and convergence check as RD_H. Check the result independently with the probit-normal identity for the independent normal covariates."
+  },
+  {
+   "name": "Target-population shift caused by eligibility",
+   "definition": "Delta_target = RD_H - RD_all. This is a difference between two valid protocol-specific estimands, not statistical bias.",
+   "true_value_computation": "Subtract the quadrature truths. Decompose Delta_target across B, X, and D using an order-averaged chain-rule decomposition. On the quadrature grid, form normalized joint probability masses F_all(B,X,D) and F_H(B,X,D) after integrating over P. For each of the six permutations of B, X, and D, factor both distributions by the corresponding conditional chain rule and sequentially replace broad-population factors with selected-population factors. Attribute each change in E[p_1 - p_0] to the variable whose factor was replaced, then average each variable's contribution across the six permutations. Require the three contributions to sum to Delta_target within 1e-7. This is a descriptive order-averaged decomposition, not a unique causal attribution. Also report E(RDhat_H - RDhat_all) = Delta_target + Bias_H - Bias_all."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Minimal restricted-cohort AIPW benchmark",
+   "point_estimator": "Restrict to H = 1. Fit probit models A ~ B + X and Y ~ A + B + X + A:B. For a in {0,1}, compute psi_a = mean[m_a(W) + I(A=a){Y-m_a(W)}/g_a(W)] over H = 1 and report psi_1 - psi_0.",
+   "variance_estimator": "Use a subject-level stacked M-estimation sandwich containing the probit score equations for both nuisance models and the two AIPW mean equations. Compute the bread by centered finite differences with step 1e-6 times 1 plus the absolute parameter value, compute the empirical score outer-product meat, and extract Var(psi_1 - psi_0).",
+   "interval": "Untruncated two-sided Wald interval equal to the estimate plus or minus 1.96 times the sandwich standard error.",
+   "is_status_quo": false,
+   "nonconvergence": "Failure occurs if either glm reports nonconvergence or rank deficiency, a coefficient or estimating equation is nonfinite, a treatment arm is empty, the sandwich bread has condition number above 1e12 or cannot be inverted, or the point estimate or standard error is nonfinite. Propensity scores and confidence limits are not truncated. Extreme weights and minimum propensity are retained and reported.",
+   "implementation": "This is a deliberately minimal comparator, not a claimed representation of current standard practice. It targets RD_H. In noncollider cells its propensity model is sufficient for exchangeability. In collider cells it omits the variables needed to block the selected path."
+  },
+  {
+   "name": "Screen-free role-based measured-covariate AIPW",
+   "point_estimator": "In the full measured view, restrict to H = 1, fit A ~ B + X + P and Y ~ A + B + X + D + A:B with probit links, and use the same AIPW formula for RD_H. The models are selected from predeclared covariate roles without consulting the eligibility screen.",
+   "variance_estimator": "Use the same full stacked M-estimation sandwich, including all coefficients in the role-based nuisance models.",
+   "interval": "Untruncated two-sided 95% Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the same numerical, rank, and treatment-arm criteria as the minimal benchmark. The method is unavailable in the reduced measured view because P and D are not observed; this is recorded as method unavailability rather than nonconvergence.",
+   "implementation": "Including P in the treatment model or D in the outcome model blocks the selected path in the specified DGM. This comparator tests whether ordinary measured-covariate modeling obtains the same benefit without an audit decision."
+  },
+  {
+   "name": "Screen-free all-measured-baseline AIPW",
+   "point_estimator": "Restrict to H = 1. In each analyst-information view, include every measured baseline variable in both nuisance models. The full view fits A ~ B + X + P + D + N_1 + ... + N_8 and Y ~ A + B + X + P + D + N_1 + ... + N_8 + A:B. The reduced view uses B, X, and N_1 through N_8. Use probit links and the same AIPW formula for RD_H.",
+   "variance_estimator": "Use the same stacked M-estimation sandwich with every fitted nuisance coefficient.",
+   "interval": "Untruncated two-sided 95% Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the same numerical, rank, and treatment-arm criteria as the minimal benchmark.",
+   "implementation": "This screen-free comparator has access to exactly the variables available to the advisory policy. In the full view it can block the specified selected path without screening. In the reduced view it cannot adjust for unrecorded P and D."
+  },
+  {
+   "name": "Oracle restricted-cohort AIPW",
+   "point_estimator": "Restrict to H = 1 and fit probit models A ~ B + X + P + D and Y ~ A + B + X + P + D + A:B, using generated P and D even in the reduced measured view. Apply the same AIPW formula for RD_H.",
+   "variance_estimator": "Use the same stacked M-estimation sandwich.",
+   "interval": "Untruncated two-sided 95% Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the same fitting and sandwich criteria as the other restricted estimators.",
+   "implementation": "This is a simulation benchmark and is never described as available in the reduced measured view. Its comparison with feasible estimators quantifies the consequence of unavailable collider parents."
+  },
+  {
+   "name": "Criterion-removed broad-cohort AIPW",
+   "point_estimator": "Analyze all 4000 people in the analysis sample and fit probit models A ~ B + X and Y ~ A + B + X + A:B. Apply the same AIPW formula over the full cohort to estimate RD_all.",
+   "variance_estimator": "Use the same stacked M-estimation sandwich over all 4000 people.",
+   "interval": "Untruncated two-sided 95% Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the same numerical, rank, and treatment-arm criteria as the minimal benchmark.",
+   "implementation": "This method estimates RD_all, not RD_H. It is evaluated only against the broad truth. Removal is never described as a same-estimand repair."
+  },
+  {
+   "name": "Measured-variable temporal-association screen",
+   "point_estimator": "Use only the independent audit sample, its measured data dictionary, and pre-time-zero timestamps. The screen receives B and X as the fixed adjustment core and treats every other recorded prebaseline variable as an unlabeled candidate Z_j. It receives no DGM edge list, no P or D role labels, and no list of latent variables. Fit H ~ B + X + all Z_j, A ~ B + X + all Z_j, and Y ~ A + B + X + A:B + all Z_j with probit links. Apply Holm correction at familywise alpha 0.01 across all candidate coefficients and model roles. Return collider-candidate if there is an ordered pair of distinct candidates Z_j and Z_k such that Z_j is associated with both H and A and Z_k is associated with both H and Y. Coefficient signs do not affect the warning. Return no-observable-collider-signal when no pair qualifies. Return unresolved-audit only when timestamps are unavailable or a required audit model fails. Do not calculate or provide a marginal treatment-effect estimate to the screen.",
+   "variance_estimator": "Estimate warning probability, false-positive probability, unresolved-audit probability, and silent-error probability across replicates. Use Wilson 95% intervals for each binomial operating characteristic.",
+   "interval": "The screen returns a categorical result rather than a causal confidence interval. Its operating-characteristic intervals are 95% Wilson intervals.",
+   "is_status_quo": false,
+   "nonconvergence": "A failed audit fit returns unresolved-audit and is separately counted. It cannot be interpreted as no-observable-collider-signal.",
+   "implementation": "In the full measured view, P, D, and eight irrelevant candidates are available without causal labels. In the reduced view, only the eight irrelevant candidates are available beyond B and X. The screen is not told that P or D exists, so a missed hidden collider is counted as a silent error rather than a programmed abstention. This remains a constrained association heuristic and is not presented as causal discovery or certification."
+  },
+  {
+   "name": "Complete advisory fallback policy",
+   "point_estimator": "Generate and lock the audit result before examining the analysis sample. If the result is collider-candidate, report the screen-free all-measured-baseline AIPW estimate of RD_H. If the result is no-observable-collider-signal, report the minimal restricted-cohort AIPW estimate. If the result is unresolved-audit, report the all-measured-baseline estimate with an unresolved-audit flag. The policy therefore produces an RD_H estimate in every audit category unless the selected causal estimator fails numerically.",
+   "variance_estimator": "Use the stacked-sandwich variance belonging to the estimator selected by the policy. Screen selection is independent of the analysis sample. Evaluate policy bias, mean squared error, empirical standard error, mean estimated standard error, coverage, numerical failure, and unresolved-audit action across all replicates without conditioning on the screen category.",
+   "interval": "Use the selected estimator's untruncated 95% Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "If the selected causal estimator fails, record a policy failure and return no interval. Do not substitute an estimator after observing analysis-sample results. Audit failure is an unresolved-audit action and is distinct from causal-estimator failure.",
+   "implementation": "This is the complete replicate-level screen-and-response procedure. Its unconditional operating characteristics are compared directly with the minimal, role-based, and all-measured screen-free procedures. In the reduced view, a no-signal result can silently select the biased minimal estimator."
+  },
+  {
+   "name": "Resource-matched pooled all-measured AIPW",
+   "point_estimator": "Pool the 4000-person audit and 4000-person analysis samples and estimate RD_H using the all-measured-baseline nuisance specification for the relevant analyst-information view. This procedure does not use the audit classification.",
+   "variance_estimator": "Use the same stacked M-estimation sandwich over all 8000 people.",
+   "interval": "Untruncated two-sided 95% Wald interval.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the same numerical, rank, and treatment-arm criteria as the other causal estimators.",
+   "implementation": "This comparator quantifies the opportunity cost of reserving 4000 external records for audit and 4000 independent records for policy evaluation. The advisory policy is not described as data-efficient unless its performance is favorable relative to this resource-matched comparator."
+  }
+ ],
+ "performance": {
+  "primary": "For every unique DGM cell and each analyst-information view, the primary measure is the reduction in absolute Monte Carlo bias for RD_H from the complete advisory fallback policy relative to the minimal restricted-cohort AIPW benchmark: abs(Bias_minimal) - abs(Bias_policy). Positive values favor the policy. Calculate a paired 95% Monte Carlo interval by resampling replicate pairs. Do not condition this comparison on receiving a warning.",
+  "secondary": [
+   "Unconditional signed bias, absolute bias, mean squared error, empirical standard error, mean model-based standard error, and interval coverage for the complete advisory policy",
+   "The same estimation measures for every compatible screen-free, oracle, broad-population, and resource-matched comparator",
+   "Policy-versus-comparator differences in mean squared error and coverage",
+   "Policy failure rate, unresolved-audit action rate, warning rate, and silent-error rate",
+   "Collider-warning probability in each full-view collider cell",
+   "False-positive probability in each full-view noncollider cell",
+   "Warning and silent-error probabilities in the reduced measured view",
+   "Coverage reported separately from practical bias magnitude",
+   "Bias-eliminated coverage and rejection probability for the null risk difference of zero",
+   "Delta_target and its order-averaged decomposition across B, X, and D",
+   "The decomposition of restricted-versus-broad estimate movement into target shift and estimator bias",
+   "Bias reduction from role-based, all-measured, and oracle adjustment relative to the minimal benchmark",
+   "Convergence, numerical failure, extreme-weight, and minimum-propensity diagnostics",
+   "Induced Cor(P,D | H = 1), selected treatment prevalence, selected outcome risk, and effective sample size"
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "Coverage is Bernoulli across replicates. Targeting Monte Carlo SE 0.005 when true coverage is 0.95 requires R >= 0.95(0.05)/(0.005^2) = 1900. R is rounded upward to 2000, giving MCSE 0.00487 near 95% coverage. Continuous performance contrasts use paired replicate outputs and report empirical Monte Carlo standard errors plus paired bootstrap intervals. No policy-benefit conclusion is made when its Monte Carlo interval crosses the prespecified threshold."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "Within, and only within, the prespecified conditional mechanism benchmark, classify collider-induced eligibility bias as materially consequential when the lower 95% Monte Carlo bound for absolute bias of the minimal restricted estimator is at least 0.010 risk-difference units in at least 4 of the 12 unique collider DGM cells. Qualifying cells must include both collider orientations, both retention levels, and at least two edge-strength levels. Coverage is not part of this materiality criterion. Separately classify the complete advisory policy as conditionally beneficial within an analyst-information view when the lower paired 95% Monte Carlo bound for abs(Bias_minimal) - abs(Bias_policy) is at least 0.005 in at least 4 unique collider cells spanning both orientations, both retention levels, and at least two strengths, with no unique noncollider cell showing a lower bound for policy harm of at least 0.005.",
+  "problem_is_not_real_if": "Within the prespecified range, classify collider-induced eligibility bias as negligible when the upper 95% Monte Carlo bound for absolute minimal-estimator bias is below 0.005 in all 12 unique collider DGM cells. Separately classify the advisory policy as not beneficial in an analyst-information view when the upper paired 95% Monte Carlo bound for abs(Bias_minimal) - abs(Bias_policy) is below 0.005 in all 12 unique collider cells. Neither conclusion is generalized to unknown real-world eligibility graphs.",
+  "uninformative_if": "Call the materiality result mixed when neither material nor negligible criteria are met. Call policy performance mixed when neither beneficial nor not-beneficial criteria are met. Call the run technically uninformative if more than 10% of replicates fail for a required estimator in any cell, fewer than 1900 paired valid policy and comparator outputs remain, quadrature fails the 1e-7 convergence requirement, broad AIPW fails its truth-recovery check, or more than one of the 6 unique noncollider cells has an upper 95% Monte Carlo bound for minimal-estimator absolute bias at or above 0.005. Do not duplicate counts across information views or pool cells to rescue an inconclusive result.",
+  "both_branches_reachable": "The material and negligible branches use disjoint absolute-bias thresholds with a mixed region. A result with four qualifying material cells can trigger the first branch, while a result with all 12 collider cells below the negligible threshold can trigger the second. Coverage is reported separately and cannot force either conclusion. Policy benefit and nonbenefit likewise depend on paired performance that the simulation can produce in either direction."
+ },
+ "threats": [
+  {
+   "threat": "The DGM explicitly creates collider and noncollider structures.",
+   "mitigation": "Interpret results only as consequences conditional on those structures. Do not use them to establish that ELG-02 is generally real, estimate the prevalence of problematic criteria, or validate prospective graph discovery."
+  },
+  {
+   "threat": "The screen can remain favored by the simple parametric graph and measured-parent view.",
+   "mitigation": "Add a near-null edge level, eight irrelevant candidate variables, multiplicity correction, and a reduced view without latent-variable labels. Report every operating characteristic by cell. Declare that indirect paths, association-mimicking noncolliders, nonlinearities, proxies, and graph uncertainty remain untested."
+  },
+  {
+   "threat": "Healthcare use alone may be mistaken for proof of collider status.",
+   "mitigation": "Use the same H label and retention levels in six unique noncollider cells. Call the screen output collider-candidate or no-observable-collider-signal, never a certified collider."
+  },
+  {
+   "threat": "Evaluating screen sensitivity and repair separately can overstate the value of acting on a warning.",
+   "mitigation": "Treat the complete screen-and-response policy as a replicate-level method. Evaluate its unconditional bias, coverage, mean squared error, failure rate, and audit-result distribution against screen-free procedures."
+  },
+  {
+   "threat": "A richer nuisance model may repair the selected path without an eligibility audit.",
+   "mitigation": "Include screen-free role-based and all-measured-baseline AIPW comparators. Attribute incremental value to the audit only when the complete policy improves on these procedures."
+  },
+  {
+   "threat": "The advisory policy uses an additional independent audit sample.",
+   "mitigation": "Declare the total requirement of 8000 records per replicate, evaluate every analysis-sample method on the same 4000 analysis records, and include a screen-free pooled 8000-person comparator to quantify opportunity cost."
+  },
+  {
+   "threat": "Removing H changes the target population and may appear to repair bias merely because the estimand changed.",
+   "mitigation": "Define RD_H and RD_all separately, evaluate each estimator against its compatible truth, report Delta_target, and decompose observed movement into target shift and estimator bias."
+  },
+  {
+   "threat": "Risk-scale effect modification is broader than the explicit A by B interaction.",
+   "mitigation": "State that B, X, and D modify the risk difference through the nonlinear probit link and provide an exact order-averaged decomposition of Delta_target across all three variables."
+  },
+  {
+   "threat": "The target-shift decomposition uses D in the reduced measured view.",
+   "mitigation": "Label that decomposition an oracle simulation diagnostic. Do not claim that an applied analyst without D could identify the contribution."
+  },
+  {
+   "threat": "A baseline criterion cannot be caused by treatment or outcome events occurring after time zero.",
+   "mitigation": "Use the explicit prebaseline structure A <- P -> H <- D -> Y. Make no claim about post-treatment eligibility errors."
+  },
+  {
+   "threat": "Perfectly measured and completely absent parents are unrealistic extremes.",
+   "mitigation": "Treat the two information views as benchmark conditions. Do not generalize to noisy proxies, partial measurement, or unknown measurement error."
+  },
+  {
+   "threat": "Correctly specified parametric models favor the feasible repairs and the association screen.",
+   "mitigation": "Describe this as a mechanism benchmark under prespecified probit models. Do not claim validation under model misspecification or arbitrary learned graphs."
+  },
+  {
+   "threat": "Using outcome data to select an analysis can search over apparent treatment effects.",
+   "mitigation": "Use an independent audit sample, fixed candidate rules, Holm-adjusted alpha 0.01, and a response policy locked before the analysis sample is examined. Never provide the marginal treatment-effect estimate to the screen."
+  },
+  {
+   "threat": "Criterion removal may be impossible because H proxies data availability.",
+   "mitigation": "State that broad-cohort data availability is assumed. Treat removal only as an alternative estimand analysis."
+  },
+  {
+   "threat": "Screen performance depends on audit-sample size.",
+   "mitigation": "Fix the audit sample at 4000, report cell-specific operating characteristics with Wilson intervals, and make no transportability claim for other sample sizes."
+  },
+  {
+   "threat": "Positivity problems could be mistaken for collider bias.",
+   "mitigation": "Use moderate treatment coefficients, retain untruncated weights, report minimum propensity and effective sample size, validate broad-population truth recovery, and classify singular or nonfinite fits separately."
+  },
+  {
+   "threat": "Numerical truth error could be mistaken for estimator bias.",
+   "mitigation": "Use deterministic product Gauss-Hermite quadrature, exact summation over B, and mandatory 30-node, 40-node, and 50-node checks at tolerance 1e-7."
+  },
+  {
+   "threat": "The available citation payload does not establish a recommended status-quo AIPW specification or stacked-sandwich implementation.",
+   "mitigation": "Call every AIPW procedure an operationally defined benchmark, set is_status_quo to false, and make no claim that any nuisance specification represents current recommended practice."
+  }
+ ],
+ "runtime_estimate": "The design contains 18 unique DGM cells and 2000 replicates per cell, giving 36000 replicate pairs. Both analyst-information views reuse each generated pair. The policy reuses fitted component estimators. A conservative upper bound is approximately 792000 small probit fits across audit screens, restricted estimators, broad analyses, and pooled comparators. Stacked sandwiches add matrix calculations without model refits. Run scenario-replicate chunks through studies/_shared/R/harness.R with 6 workers and checkpoint every 25 replicates. Conduct a 100-replicate timing check that includes finite-difference sandwiches, both information views, parallel overhead, paired bootstrap preparation, and checkpoint writing. Expected wall time is approximately 10 to 24 hours, subject to that timing check.",
+ "bears_on": [
+  {
+   "id": "ELG-02",
+   "relation": "answers-part",
+   "what": "It quantifies bias and target-population change conditional on prespecified baseline collider and noncollider DAGs, compares screen-free repairs, and evaluates a complete measured-variable advisory policy with an explicit external-data cost. It does not audit an unknown real-world causal structure, identify latent causes, validate general graph learning, perform domain review, or establish that healthcare-use eligibility criteria are colliders in practice."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019;38:2074-2102.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP organization, scenario-specific performance reporting, and Monte Carlo precision planning."
+  },
+  {
+   "cite": "Hernán MA, Hernández-Díaz S, Robins JM. A structural approach to selection bias. Epidemiology. 2004;15(5):615-625.",
+   "doi_or_url": "10.1097/01.EDE.0000135174.63482.43",
+   "used_for": "The causal interpretation of conditioning on a collider as selection bias."
+  },
+  {
+   "cite": "Hernán MA, Robins JM. Using big data to emulate a target trial when a randomized trial is not available. American Journal of Epidemiology. 2016;183(8):758-764.",
+   "doi_or_url": "10.1093/aje/kwv254",
+   "used_for": "Treating eligibility and time zero as explicit components of a target-trial protocol."
+  },
+  {
+   "cite": "Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA. 2025.",
+   "doi_or_url": "10.1001/jama.2025.13350",
+   "used_for": "Establishing that eligibility criteria and their emulation should be reported. It is not used to support the validity or performance of collider assessment."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The protocol answered whether a known four-node collider produces bias rather than prospectively auditing an uncertain eligibility graph.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "The title, question, aims, interpretation, cannot-detect statement, decision rule, and bears_on entry now define the study as a conditional mechanism and policy benchmark that answers only part of ELG-02. General graph discovery, latent-cause recognition, realistic domain review, and certification are explicitly outside scope."
+   },
+   {
+    "finding": "The decision rule did not evaluate the complete advisory procedure selected by each replicate's audit result.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "A complete replicate-level advisory fallback policy is now a method. Its unconditional bias, coverage, mean squared error, numerical failure, audit-result distribution, and paired performance relative to screen-free methods are primary or secondary outcomes."
+   },
+   {
+    "finding": "Collider existence, easy edge detection, low false-positive probability, and latent-case abstention were encoded by construction.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "The protocol no longer uses simulation results to declare that collider selection exists generally. It adds a near-null edge level and eight irrelevant candidates, removes named causal roles and latent-variable identities from screen input, replaces programmed latent abstention with a measurable silent-error possibility, and limits screen conclusions to the specified parametric benchmark."
+   },
+   {
+    "finding": "B was incorrectly described as the sole effect modifier on the risk-difference scale.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The protocol now states that the probit link induces risk-scale effect modification by B, X, and D. Delta_target is decomposed across all three with an order-averaged chain-rule calculation, and the D contribution is labeled oracle-only in the reduced view."
+   },
+   {
+    "finding": "The minimal AIPW comparator omitted measured treatment and outcome predictors, so the claimed audit advantage was confounded with richer nuisance modeling.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Screen-free role-based and all-measured-baseline AIPW comparators were added. The advisory policy must be compared with both, so benefit obtainable without screening is not attributed to the audit."
+   },
+   {
+    "finding": "The advisory procedure received an extra independent sample without accounting for its data advantage.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The protocol declares an 8000-record requirement per replicate, evaluates analysis-sample procedures on the same 4000 records, and adds a pooled 8000-person screen-free comparator. Policy claims are conditional on access to the external audit sample."
+   },
+   {
+    "finding": "Visibility duplicated generated distributions and allowed scenario-count thresholds to be met by repeated DGM cells.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Analyst-information view is now an analysis condition rather than a DGM factor. The design has 18 unique distributions, including 12 unique collider cells and 6 unique noncollider cells. Decision thresholds explicitly span orientation, strength, and retention without counting information views twice."
+   },
+   {
+    "finding": "The materiality rule required both absolute bias and coverage failure, making the conclusion depend on sample-size-driven precision.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Materiality now depends only on a Monte Carlo bound for absolute bias. Coverage remains a separately reported operating characteristic and cannot force either the material or negligible conclusion."
+   },
+   {
+    "finding": "Two 2026 citations lacked verifiable metadata and quotations, while no supplied citation established the status-quo AIPW or sandwich specifications.",
+    "severity": "serious",
+    "how": "declared-limitation",
+    "what_changed": "The two unsupported 2026 citations were removed, TARGET is used only for its reporting boundary, every method has is_status_quo set to false, and the protocol makes no claim that its nuisance specifications or sandwich calculation are current recommended practice. Establishing that normative claim requires verified primary references not present in the payload."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study answers only the conditional mechanism, target-shift, comparator, and advisory-policy portion of ELG-02.",
+   "It does not discover or certify collider status for an unknown real-world eligibility graph.",
+   "It cannot identify an unnamed latent cause or reproduce clinical domain review.",
+   "Its parametric coefficients are simulation anchors and are not externally calibrated healthcare-system estimates.",
+   "Its screen operating characteristics do not transport to indirect paths, association-mimicking graphs, nonlinearities, timestamp errors, noisy proxies, partial measurement, or different audit-sample sizes.",
+   "The reduced measured view is an extreme absence condition; the full measured view is an extreme perfect-measurement condition.",
+   "The target-shift contribution involving D is unavailable to an analyst in the reduced measured view and is reported only as an oracle diagnostic.",
+   "Policy performance is conditional on access to an independent 4000-person audit dataset, with the data cost assessed by an 8000-person pooled comparator.",
+   "The protocol does not establish that any AIPW specification or finite-difference stacked sandwich represents current recommended or status-quo practice.",
+   "The unsupported substantive claims attached to the two unresolved 2026 citations are not used."
+  ]
+ }
+}

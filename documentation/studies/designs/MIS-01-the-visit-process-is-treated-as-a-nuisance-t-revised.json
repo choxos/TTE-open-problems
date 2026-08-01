@@ -1,0 +1,436 @@
+{
+ "title": "Conditional performance of visit-process methods in gridded sustained-treatment emulations",
+ "question": "Within prespecified monthly latent-state selection models, how do complete-record, last-observation-carried-forward, multiple-imputation, inverse-intensity, calibrated-weight, operational visit-process, and joint latent-state analyses estimate the 24-month sustained-treatment risk difference when latent-state-dependent observation changes while marginal observation frequency is held fixed? How does performance change when latent confounding, prognosis, effect modification, and persistence independently range from null to weak, and can observable diagnostics identify replicate-level estimation errors within and across simulated environments?",
+ "aims": "This study settles only the comparative, gridded subproblem of MIS-01. It estimates method-specific bias, confidence-interval coverage among converged replicates, convergence, and precision under the stated monthly selection models. The confirmatory analysis isolates observation informativeness from observation frequency and varies the roles of latent severity independently. Separate descriptive analyses examine the original strong-coupling mechanism, fixed-intercept observation mechanisms, and shared or structure-aware responses to model misspecification. The study does not determine which latent-state selection model is credible from observed EHR data, establish nonparametric identification, or identify a generally adequate visit-process method.",
+ "dgm": {
+  "covariates": "Generate 4000 independent individuals and 24 monthly cycles. Let B indicate age 65 years or older, with B distributed Bernoulli(0.45). Let F indicate female sex, with F distributed Bernoulli(0.52). Generate baseline comorbidity C from Bernoulli(expit(-2.00 + 0.80B + 0.30F)). Generate the true binary prognostic severity state L0 from Bernoulli(expit(-1.20 + 0.55B + 0.80C - 0.15F)). Everyone is event-free and untreated immediately before baseline, A[-1]=0. Baseline observation is required, so R0=1 and L0 is recorded. For t=1,...,23 among event-free individuals, generate Lt before observation, treatment, and outcome. In confirmatory environments, Lt is Bernoulli with logit probability kappa + beta_LL L[t-1] + 0.45B + 0.70C - 0.55A[t-1] + 0.10(t/24). The coefficient beta_LL is factorially varied between 0 and 1.05. Calibrate kappa separately for each coefficient profile to preserve a natural-course month-12 marginal severity prevalence of 0.25, preventing persistence from mechanically changing the overall amount of severity. Generate Rt from Bernoulli with logit probability alpha_s + gamma_L Lt + gamma_A A[t-1] + 0.405R[t-1] + 0.30C. In the confirmatory factorial and strong benchmark, solve alpha_s by deterministic finite-state recursion so the expected proportion of event-free person-months observed under the natural treatment process equals 0.30 or 0.08 for every gamma_L, gamma_A, and coefficient profile. Record Lt exactly when Rt=1 and as missing otherwise. Generate treatment from Bernoulli with logit probability -1.15 + 1.60A[t-1] + beta_AL Lt + 0.35C + 0.20B + 0.25Rt, where beta_AL is factorially varied between 0 and 0.45. All Bernoulli draws are conditionally independent given the stated history. Use common random-number streams within every matched observation-mechanism comparison.",
+  "outcome_model": "For each event-free individual, generate Y[t+1] from Bernoulli with logit probability -5.10 + beta_YL Lt + 0.40C + 0.25B - 0.50At + beta_YAL AtLt. Factorially vary beta_YL between 0 and 0.60 and beta_YAL between 0 and 0.15, independently of beta_AL and beta_LL. Follow-up stops after the first event. Events are completely ascertained through linkage. The original strong-coupling benchmark uses beta_AL=0.95, beta_YL=1.20, beta_YAL=0.30, and beta_LL=2.10, but those environments are descriptive and cannot determine the confirmatory conclusion. Misspecification environments independently activate three departures: a second-order transition containing 0.40L[t-2] and 0.25L[t-1]C; a complementary-log-log observation model containing 0.35LtC and 0.20 sin(pi t/24); and treatment and outcome models containing 0.30LtC, 0.20(t/24)^2, 0.25AtC, and 0.20 sin(pi t/24), respectively.",
+  "treatment_effect": "Natural treatment follows the stated treatment model. Under the target interventions, replace the natural treatment draw with At=1 at every month for sustained treatment or At=0 at every month for sustained no treatment. In the confirmatory factorial, treatment has a direct conditional log-odds effect of -0.50 and lowers the next severity-state log odds by 0.55. The mediated contribution can be null when severity has no prognostic effect. The observation process is not intervened upon. Misspecification environments that activate the treatment and outcome departure also contain an At by C outcome interaction of 0.25.",
+  "effect_modification": "In the confirmatory factorial, the At by Lt coefficient is independently set to 0 or 0.15. There are no treatment interactions with B, F, or C in those environments. The original strong benchmark uses an At by Lt coefficient of 0.30. The prespecified treatment and outcome misspecification axis adds At by C, which is analyzed separately and cannot contribute to the primary adequacy decision.",
+  "factors": [
+   {
+    "name": "Latent-severity causal and predictive roles",
+    "levels": [
+     "beta_AL=0 or 0.45 for latent severity in treatment",
+     "beta_YL=0 or 0.60 for latent severity in the event hazard",
+     "beta_YAL=0 or 0.15 for treatment by latent-severity interaction",
+     "beta_LL=0 or 1.05 for latent-state persistence"
+    ],
+    "rationale": "The 16 combinations form a complete 2 by 2 by 2 by 2 confirmatory factorial. Null and weak levels prevent informative observation from being automatically coupled to strong confounding, prognosis, effect modification, or persistence."
+   },
+   {
+    "name": "Current latent-severity dependence of observation",
+    "levels": [
+     "gamma_L=0",
+     "gamma_L=1.386294"
+    ],
+    "rationale": "These levels create matched noninformative and strongly informative observation environments. The original moderate level gamma_L=0.693147 is retained only in the descriptive strong-coupling and fixed-intercept benchmarks."
+   },
+   {
+    "name": "Marginal monthly observation frequency",
+    "levels": [
+     "0.30 among event-free person-months under the natural course",
+     "0.08 among event-free person-months under the natural course"
+    ],
+    "rationale": "A scenario-specific alpha_s is solved so each target frequency remains constant across gamma_L and gamma_A. This isolates selective dependence from the amount of recorded information."
+   },
+   {
+    "name": "Prior-treatment dependence of observation",
+    "levels": [
+     "gamma_A=0",
+     "gamma_A=0.693147"
+    ],
+    "rationale": "This distinguishes observation driven by health history from monitoring also changed by prior treatment while holding marginal observation frequency fixed."
+   },
+   {
+    "name": "Observation-intercept regime",
+    "levels": [
+     "Marginal-frequency calibrated",
+     "Fixed alpha=-0.847298 or alpha=-2.442347"
+    ],
+    "rationale": "Calibrated environments form the confirmatory design. Fixed-intercept environments retain the original comparison and are reported separately because changing gamma_L or gamma_A also changes marginal observation frequency."
+   },
+   {
+    "name": "Independent model-departure axes",
+    "levels": [
+     "First-order versus second-order latent transition",
+     "Working logistic versus complementary-log-log observation mechanism with latent interaction",
+     "Working additive versus nonlinear and interaction-augmented treatment and outcome mechanisms"
+    ],
+    "rationale": "The full 2 by 2 by 2 challenge factorial creates generators outside the standard joint likelihood along independent axes. Every challenge dataset is analyzed once with common working models and once with structure-aware terms where those terms are available to the method."
+   }
+  ],
+  "n_scenarios": 208,
+  "deliberately_true": "There are 128 confirmatory environments from 16 latent-role profiles, two gamma_L levels, two gamma_A levels, and two marginal observation frequencies. There are 12 descriptive original strong-coupling environments crossing three gamma_L levels, two gamma_A levels, and two calibrated frequencies. There are 36 fixed-intercept environments using the all-null, all-weak, and original strong profiles crossed with three gamma_L levels, two gamma_A levels, and two original alpha values. There are 32 misspecification environments crossing the three binary departure axes, gamma_L values 0 and 1.386294, and both marginal observation frequencies under the all-weak profile with gamma_A=0.693147. Confirmatory joint-likelihood compatibility is deliberately present but is not evidence of general superiority. Challenge results are excluded from the primary materiality and adequacy gates.",
+  "cannot_detect": "The study cannot determine which latent-state selection mechanism generated an observed EHR, establish nonparametric identification under latent-state-dependent observation, or validate a visit-aware method outside the simulated envelope. It cannot evaluate continuous-time point processes, irregular within-month event times, continuous or multivariate biomarkers, measurement error at observed visits, direct health effects of healthcare use, encounter-gated treatment, informative outcome ascertainment, competing risks, or loss to follow-up. The misspecification bank covers only the three prespecified departure axes."
+ },
+ "estimands": [
+  {
+   "name": "Primary 24-month marginal risk difference",
+   "definition": "The superpopulation cumulative incidence by the end of month 24 under At=1 for every t=0,...,23 minus the cumulative incidence under At=0 for every t=0,...,23. Eligibility requires an observed baseline state, but subsequent observation is not part of either treatment intervention.",
+   "true_value_computation": "Enumerate exact joint probabilities of B, F, C, and L0. Under each treatment strategy, propagate survivor probability through the relevant binary latent-state transition and event hazard for 24 months. Use augmented state pairs for second-order environments and the stated nonlinear terms for other challenge environments. Observation is omitted from intervention-risk recursion because treatment is fixed and R has no direct causal path to severity or outcome. Validate four confirmatory and four challenge corner truths against independent simulations of 2000000 individuals per strategy. Require each simulated risk to be within three Monte Carlo standard errors and 0.001 of the recursive value."
+  },
+  {
+   "name": "Secondary 24-month marginal risk ratio",
+   "definition": "The same superpopulation sustained-strategy contrast expressed as cumulative incidence under sustained treatment divided by cumulative incidence under sustained no treatment.",
+   "true_value_computation": "Use the two risks from exact recursion. Analyze the logarithm of the estimated risk ratio for inference."
+  },
+  {
+   "name": "Secondary 12-month marginal risk difference",
+   "definition": "The sustained-treatment minus sustained-no-treatment cumulative-incidence contrast through month 12 in the same superpopulation.",
+   "true_value_computation": "Stop the same exact recursion after month 12."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Oracle full-state parametric g-formula",
+   "point_estimator": "Use Lt at every month. Fit pooled models for the severity transition and event hazard, then calculate intervention risks by exact finite-state recursion standardized over the empirical baseline distribution. Confirmatory analyses include the full prespecified first-order terms even when their generating coefficients are zero. In challenge analyses, the structure-aware variant includes the true second-order, link, interaction, and time terms. A separate shared-working-model variant uses the first-order logistic additive formulas.",
+   "variance_estimator": "Stack person-level scores for all fitted regressions, empirical baseline cell probabilities, and intervention-risk equations. Use the person-clustered M-estimation sandwich and the numerical gradient of the complete recursion.",
+   "interval": "Use estimate plus or minus 1.96 standard errors for the risk difference without clipping. Use a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": false,
+   "nonconvergence": "A replicate fails if any regression does not converge, has a rank-deficient design, produces a nonfinite coefficient or covariance, has an information-matrix condition number above 1e12, or produces a nonfinite intervention risk or standard error.",
+   "implementation": "Use base R regression fits and deterministic recursion. This unavailable-data benchmark separates observation-related bias from finite-sample, outcome-model, and transition-model failure. Only scenario-specific oracle-valid results may enter a confirmatory count."
+  },
+  {
+   "name": "Complete-record parametric g-formula",
+   "point_estimator": "Fit the severity transition on adjacent rows with the required severity measurements and fit the event model on rows with current severity observed. Do not model or weight observation. Use the complete confirmatory working formulas and exact recursion. In structure-aware second-order challenges, require the necessary observed severity triplet and include L[t-2] and L[t-1]C. Include the prespecified nonlinear and interaction terms in the other structure-aware challenges. The shared-working-model challenge analysis remains first-order, logistic, and additive.",
+   "variance_estimator": "Use a person-clustered stacked estimating-equation sandwich for selected-row regression scores, empirical baseline probabilities, and the recursive risk functional.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": true,
+   "nonconvergence": "A replicate fails for regression nonconvergence, separation, rank deficiency, an information-matrix condition number above 1e12, absence of an event or transition in a required treatment-state cell, or a nonfinite risk or standard error.",
+   "implementation": "Missing person-months are excluded from nuisance-model fitting, but individuals are not required to have a complete 24-month history."
+  },
+  {
+   "name": "Last-observation-carried-forward parametric g-formula",
+   "point_estimator": "Replace every missing Lt with the most recently recorded state, which is available because R0=1. Treat the carried value as current. Fit the complete confirmatory transition and event formulas to all person-months, ignore observation, and recurse through the surrogate-state model. In structure-aware challenges, include carried first and second lags and all challenge terms that can be formed from carried and recorded variables. The shared-working-model analysis retains the first-order logistic additive formulas.",
+   "variance_estimator": "Use a person-clustered stacked estimating-equation sandwich covering the transition model, event model, empirical baseline distribution, and recursive risk functional.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": true,
+   "nonconvergence": "Use the oracle regression criteria. Also fail a replicate if carried values create a constant response or an unidentified treatment by state interaction.",
+   "implementation": "Implement directly with data.table. Do not add a missingness indicator or time-since-last-observation term because those additions define another method."
+  },
+  {
+   "name": "MAR joint-model multiple-imputation g-formula",
+   "point_estimator": "Fit an observed-data latent-state likelihood with current latent-state dependence in observation fixed at zero. Include baseline state, transition, observation, treatment, and event components. Draw parameters from the fitted large-sample distribution and missing paths by forward-filtering backward-sampling. Fit the corresponding complete-data g-formula in each completed dataset and combine estimates. In structure-aware challenges, use augmented state pairs, the true observation link among observed predictors, and the prespecified treatment and outcome terms. Current latent severity remains excluded from observation, which defines the MAR method.",
+   "variance_estimator": "Use the complete-data stacked sandwich within each imputation and Rubin combination rules for within-imputation and between-imputation uncertainty. Select the number of imputations before the main run using independent pilot data. From m in 50, 100, 200, 400, and 800, choose the smallest value for which two independent MI runs on 100 sparse-corner pilot datasets have a 95th percentile absolute point-estimate difference at most 0.001 and a 95th percentile relative standard-error difference at most 0.02. If m=800 fails either target, the main run is not authorized.",
+   "interval": "Use the standard Rubin t interval with degrees of freedom determined from the selected m and the within-imputation and between-imputation variances. Use a normal interval if between-imputation variance is numerically zero.",
+   "is_status_quo": false,
+   "nonconvergence": "Report likelihood optimization, parameter-draw, path-generation, completed-analysis, and variance-combination failures separately. A replicate-level MI estimate exists only when the fitted likelihood succeeds and all prespecified m completed analyses are valid. Failed random draws may be repeated from their original distribution up to three times, but a failed completed-data model is not silently replaced.",
+   "implementation": "Implement two-state and augmented-state forward and backward recursions in base R and use mvtnorm for parameter draws. Use fixed replicate-specific streams. Report m, the fraction of total variance due to between-imputation variation, and every stage-specific failure rate."
+  },
+  {
+   "name": "Recorded-history inverse-intensity-weighted g-formula",
+   "point_estimator": "Fit an observation model to every at-risk row using B, F, C, A[t-1], R[t-1], last recorded L, months since last observation capped at 12, t/24, and (t/24)^2. The model cannot include current unrecorded Lt. Use inverse predicted observation probability for an observed event-model row. For a required adjacent transition pair, use the inverse product of the sequential fitted observation probabilities. Estimate one normalization constant per month so normalized analytic weights have risk-set mean one. Fit weighted transition and event regressions and calculate risks by exact recursion. Structure-aware challenge variants use the true observable link and terms plus the correct transition and outcome terms where available.",
+   "variance_estimator": "Stack the observation-model score, every month-specific normalization equation, weighted transition and event scores, empirical baseline equations, and risk equations. Use a person-clustered sandwich. Recompute fitted probabilities and normalization constants when taking numerical derivatives used to validate the analytic stack.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": false,
+   "nonconvergence": "A replicate fails if the observation, transition, or event model fails; a predicted observation probability is numerically zero; a normalization equation has no finite solution; weights or sandwich terms are nonfinite; an information matrix has condition number above 1e12; or the recursive estimate is nonfinite.",
+   "implementation": "This is the discrete-time analogue of inverse-intensity weighting. Report maximum weight, 99th percentile, coefficient of variation, and effective sample-size fraction."
+  },
+  {
+   "name": "Capped recorded-history inverse-intensity-weighted g-formula",
+   "point_estimator": "Use the fitted probabilities from the shared observation model. Estimate the initial month-specific normalization constants, cap each resulting outcome or transition weight at 10, estimate separate post-cap month-specific renormalization constants, then fit weighted regressions and calculate risks independently of the raw weighted regressions.",
+   "variance_estimator": "Include the initial and post-cap normalization equations in the stacked person-clustered system. Differentiate the complete procedure with probabilities, normalization, capping, and renormalization recomputed under each perturbation. Compare analytic and numerical derivatives in the implementation checks.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": false,
+   "nonconvergence": "Only failure of the shared observation-probability model propagates from the raw method. Fit and assess capped transition models, outcome models, normalization equations, recursion, and variance independently. Failure of an uncapped weighted regression or uncapped sandwich does not make the capped estimate fail.",
+   "implementation": "The fixed cap supplies a prespecified bias-variance comparison. Report uncapped and capped weight summaries without selecting a variant after viewing performance."
+  },
+  {
+   "name": "Exponential-tilting calibrated recorded-history inverse-intensity-weighted g-formula",
+   "point_estimator": "Begin with the raw estimated observation probabilities. Apply a study-specific exponential-tilting adaptation so weighted observed rows reproduce full risk-set totals of 1, B, F, C, A[t-1], R[t-1], last recorded L, capped observation gap, t/24, (t/24)^2, and A[t-1] by last recorded L. For transition pairs, calibrate sequential pair weights to the corresponding adjacent recorded-history totals. Fit calibrated transition and event models and recurse to the intervention risks.",
+   "variance_estimator": "Include base observation scores, normalization equations, every calibration moment and multiplier, weighted analysis scores, empirical baseline equations, and risk equations in the person-clustered sandwich.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": false,
+   "nonconvergence": "A replicate fails if the base observation model fails, the calibration solver does not reach a maximum absolute balance residual below 1e-8, calibrated weights are nonfinite, or subsequent regression, recursion, or variance calculations fail.",
+   "implementation": "Solve calibration equations with analytic moment residuals. Document the exact visit-only factorization, sequential pair weights, target moments, and normalization equations. This is a prespecified adaptation motivated by calibrated-weight literature, not a reproduction of the Kalia estimator."
+  },
+  {
+   "name": "Recorded-history visit-process parametric g-formula",
+   "point_estimator": "Represent analysis history by the last recorded L and capped number of missed months. Fit observation, new-measurement, and event models from recorded history. Under each treatment strategy, sum over observation, newly recorded state, carried state, gap, survival, and event. The unobserved true state is not propagated between visits. Structure-aware challenge variants add the true link, lagged recorded-state, interaction, and time terms that are available from this method's state. The shared-working-model variant retains the first-order logistic additive specification.",
+   "variance_estimator": "Use a person-clustered stacked sandwich for visit-process, measurement, event, empirical-baseline, and recursive-risk equations.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": false,
+   "nonconvergence": "A replicate fails if a component regression or stacked sandwich fails, a required visit-gap state has no support, or recursion produces a nonfinite probability.",
+   "implementation": "Validate the finite-state recursion against an independently coded deterministic enumeration in small state spaces to absolute tolerance 1e-10. For a separately documented special-case mapping to gfoRmula 1.1.1, compare against at least 1000000 package-generated trajectories and require agreement within three package Monte Carlo standard errors and 0.002. Do not claim deterministic equivalence to gfoRmula."
+  },
+  {
+   "name": "Joint latent-state likelihood g-formula",
+   "point_estimator": "Maximize the observed-data likelihood obtained by summing over missing Lt. Jointly fit baseline state, transition, current-state-dependent observation, treatment, and event components. Anchor state labels at observed visits and standardize intervention risks over the empirical baseline distribution. The confirmatory variant uses the full first-order formulas. In the structure-aware challenge panel, use augmented state pairs, the complementary-log-log observation link with latent interaction, and the true treatment and outcome terms. The shared-working-model panel retains the first-order logistic additive likelihood.",
+   "variance_estimator": "Use the robust quasi-maximum-likelihood sandwich from individual likelihood scores and the observed Hessian. Add empirical baseline-distribution score equations and apply the numerical delta method to exact risk recursion.",
+   "interval": "Use an unbounded 95% Wald interval for the risk difference and a log-scale Wald interval for the risk ratio.",
+   "is_status_quo": false,
+   "nonconvergence": "Use L-BFGS-B from starting gamma_L values 0, 0.693147, and 1.386294 and retain the highest likelihood. A replicate fails if no start converges, the maximum absolute score exceeds 1e-4, the Hessian is singular or has condition number above 1e12, gamma_L lies within 0.01 of its bounds [-3,3], or a risk or standard error is nonfinite.",
+   "implementation": "Use vectorized log-sum-exp forward algorithms. Report performance under correctly specified confirmatory likelihoods as parametric compatibility only. Compare structure-aware and shared-working-model challenge results to separate visit handling from ordinary model misspecification."
+  }
+ ],
+ "performance": {
+  "primary": "The co-primary method-specific measures are empirical 95% confidence-interval coverage among converged replicates and the probability that the complete estimation and variance procedure converges. Do not count nonconvergence as noncoverage. Report unconditional procedural success, defined as convergence followed by coverage, only as a separately labeled composite.",
+  "secondary": [
+   "Bias and absolute bias of the 24-month risk difference",
+   "Empirical standard error among converged replicates",
+   "Mean model-based standard error among converged replicates",
+   "Relative error in model-based standard error",
+   "Mean squared error",
+   "Bias-eliminated coverage among converged replicates",
+   "Rejection rate for a zero risk difference among converged replicates",
+   "Overall and stage-specific numerical-failure rates",
+   "Bias, conditional coverage, convergence, and MSE for the 12-month risk difference and 24-month risk ratio",
+   "Matched change in signed bias between gamma_L=0 and gamma_L=1.386294",
+   "Change in absolute bias defined as the absolute mean error under gamma_L=1.386294 minus the absolute mean error under gamma_L=0",
+   "Maximum, 99th percentile, coefficient of variation, and effective sample-size fraction for raw, capped, and calibrated visit weights",
+   "Five-fold subject-level cross-fitted observation-model Brier score, calibration intercept, and calibration slope",
+   "Simulation-only calibration conditional on the true latent state, reported as explanatory rather than observable validation",
+   "Bias, interval coverage, likelihood-profile shape, and boundary-failure rate for the joint model's gamma_L estimate",
+   "Estimator-specific within-environment and across-environment diagnostic discrimination",
+   "Separate results for marginal-frequency-calibrated, fixed-intercept, original strong-coupling, structure-aware challenge, and shared-working-model challenge analyses",
+   "Elapsed time, 90th and 99th percentile replicate runtime, peak worker memory, aggregate disk output, and failure-recovery cost by method"
+  ],
+  "n_rep": 1000,
+  "n_rep_derivation": "Use 1000 independent replicates per environment. At true coverage 0.95, the Monte Carlo standard error is sqrt(0.95 times 0.05 divided by 1000)=0.00689. Binary decisions use confidence bounds and indifference regions rather than raw Monte Carlo point estimates. For a signed bias, use its replicate-level Monte Carlo standard error. For change in absolute bias, use the paired covariance and a sign-aware delta method when both biases are separated from zero by at least two Monte Carlo standard errors. Otherwise project simultaneous 97.5% confidence intervals for both signed biases through the absolute-value contrast to obtain conservative lower and upper bounds. Report harness-derived Monte Carlo uncertainty for every performance measure."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "Form 64 confirmatory pairs indexed by the 16 latent-role profiles, two marginal observation frequencies, and two gamma_A levels, with gamma_L=0 and gamma_L=1.386294 matched within each pair. A scenario is oracle-valid only when the upper one-sided 97.5% Monte Carlo bound for oracle absolute bias is at most 0.005, the two-sided 95% Monte Carlo interval for conditional coverage lies wholly within 0.925 to 0.975, and the lower one-sided 97.5% binomial bound for convergence is at least 0.99. A pair may contribute only if both members are oracle-valid. Declare a practically material gridded visit-process problem when at least 56 pairs are eligible and LOCF is materially inadequate in at least 24 informative members spanning at least 8 latent-role profiles. Material inadequacy requires either a lower one-sided 97.5% bound for absolute bias of at least 0.02 or an upper one-sided 97.5% bound for conditional coverage of at most 0.90. At least 8 qualifying members must have beta_AL=0 and at least 8 must have beta_YAL=0. Also require the lower confidence bound for the paired change in LOCF absolute bias to be at least 0.01 in at least 16 eligible pairs spanning at least 6 profiles. Complete-record results are reported by the same criteria but are not substituted for the prespecified LOCF requirement. A visit-aware method is conditionally adequate within this envelope only if its upper absolute-bias bound is at most 0.01, its coverage interval lies wholly within 0.925 to 0.975, and its lower convergence bound is at least 0.95 in at least 48 eligible informative scenarios spanning at least 12 profiles. Strong-coupling, fixed-intercept, and challenge environments cannot make this branch true.",
+  "problem_is_not_real_if": "Require at least 56 oracle-valid confirmatory pairs. Both LOCF and complete-record analyses must satisfy the conditional adequacy bounds in at least 56 informative members spanning all 16 latent-role profiles. For each method, the upper confidence bound for the paired increase in absolute bias must be below 0.005 in at least 56 eligible pairs, and neither method may meet the material-inadequacy criterion in more than 4 eligible informative members. This conclusion is restricted to the null-to-weak, two-year, monthly simulated envelope and does not establish MAR, nonparametric identification, or safety in the original strong-coupling benchmark.",
+  "uninformative_if": "The binary conclusion is uninformative if fewer than 56 confirmatory pairs are oracle-valid, neither substantive branch is met, a result depends on including descriptive or challenge environments, or fewer than 900 valid generated datasets remain in any confirmatory environment because of generator or harness failures. Method-specific challenge results remain descriptive. Observable diagnostics are called useful only for a prespecified estimator-specific ridge-logistic classifier using cross-fitted Brier score, calibration intercept, calibration slope, log weight coefficient of variation, effective sample-size fraction, and maximum observation gap. Fit separate classifiers for each estimator. First estimate within-environment discrimination by nested five-fold replicate cross-validation and macro-average environments equally. Then assess transport by leaving out all environments in one mechanism family, standardizing predictors on training data only, weighting training environments equally, and selecting a threshold that gives macro specificity 0.80 in training. A single-class held-out environment contributes only the identifiable sensitivity or specificity and no AUC. Report its exclusion from AUC explicitly. Use a hierarchical bootstrap that resamples mechanism families and then replicates for uncertainty. Diagnostic utility requires at least 30 mixed-class held-out environments and lower 95% bootstrap bounds of at least 0.80 for both macro within-environment AUC and transported macro AUC, plus transported sensitivity of at least 0.70 at specificity 0.80. Pooled discrimination across scenarios alone cannot qualify.",
+  "both_branches_reachable": "The materiality branch is reached by widespread, uncertainty-confirmed LOCF failure and paired deterioration across independently varied null and weak mechanisms. The negative branch is reached by uncertainty-confirmed adequacy of both status-quo methods with negligible paired deterioration. Their bias and coverage requirements are separated by indifference regions, so the same result cannot satisfy both. Results between the regions are classified as uninformative rather than forced into either conclusion."
+ },
+ "threats": [
+  {
+   "threat": "A generator can encode status-quo failure by making latent severity simultaneously dominate treatment, prognosis, effect modification, persistence, and observation.",
+   "mitigation": "Use a full factorial in which the four nonobservation roles are independently null or weak. Require material failure across several profiles with null treatment dependence and null effect modification. Retain the original strong mechanism only as a descriptive benchmark."
+  },
+  {
+   "threat": "Changing observation-dependence coefficients can also change the amount of observed data.",
+   "mitigation": "Recalibrate alpha separately in every confirmatory environment to hold the natural-course marginal observation frequency fixed. Label fixed-intercept comparisons as descriptive and exclude them from all confirmatory counts."
+  },
+  {
+   "threat": "A joint-likelihood generator can favor the matching joint estimator.",
+   "mitigation": "Do not use relative joint-model superiority in the materiality rule. Add independently crossed transition, observation, and treatment or outcome departures outside the standard likelihood. Report correctly specified compatibility, structure-aware challenge performance, and shared misspecification separately."
+  },
+  {
+   "threat": "Challenge scenarios can confound visit handling with ordinary model misspecification.",
+   "mitigation": "For every method, run a structure-aware variant using the true functional form wherever the method's information set permits it, plus a shared-working-model variant. Exclude all challenge cells from the primary adequacy gate."
+  },
+  {
+   "threat": "The observed data may not identify current-latent-state dependence without parametric restrictions.",
+   "mitigation": "Label joint estimates as selection-model dependent. Report gamma_L profiles, condition numbers, and boundary failures. Restrict every conclusion to the stated models."
+  },
+  {
+   "threat": "Observable visit calibration can appear satisfactory under an omitted latent predictor.",
+   "mitigation": "Calculate observable prediction diagnostics only from five-fold subject-level held-out predictions. Retain conditional-on-L calibration only as a simulation explanation and never treat either diagnostic as proof of identification."
+  },
+  {
+   "threat": "A diagnostic classifier can exploit differences between DGM environments instead of detecting replicate-level failure.",
+   "mitigation": "Require estimator-specific within-environment validation and grouped out-of-environment transport validation. Weight environments equally, cluster uncertainty by mechanism family, define single-class handling in advance, and prohibit pooled AUC alone from supporting diagnostic utility."
+  },
+  {
+   "threat": "Weight capping or calibration can hide small observation probabilities while changing finite-sample bias and variance.",
+   "mitigation": "Retain raw, fixed-cap, and calibrated variants separately. Estimate all normalization and calibration constants within the variance system, report uncapped distributions, and do not choose a variant after results are known."
+  },
+  {
+   "threat": "The capped method can be unfairly denied a numerical advantage if raw weighted regressions fail first.",
+   "mitigation": "Share only the fitted observation-probability model. Fit capped regressions, recursion, and variance independently of the raw weighted analysis."
+  },
+  {
+   "threat": "Multiple-imputation Monte Carlo error can be mistaken for estimator behavior.",
+   "mitigation": "Choose m by an independent sparse-scenario reproducibility pilot with prespecified point-estimate and standard-error tolerances. Report imputation, completed-analysis, and combination failures separately."
+  },
+  {
+   "threat": "Hard thresholds can change classification through Monte Carlo error.",
+   "mitigation": "Use one-sided or two-sided Monte Carlo confidence bounds for every bias, coverage, convergence, and paired-change threshold. Require an oracle-valid result in every scenario that contributes."
+  },
+  {
+   "threat": "Absolute-bias changes are nonregular when a signed bias is near zero.",
+   "mitigation": "Use paired, sign-aware delta inference when bias signs are stable. Near zero, project simultaneous signed-bias confidence intervals through the absolute-value contrast and use the resulting conservative bounds."
+  },
+  {
+   "threat": "The discrete monthly observation indicator is not a continuous-time visit process.",
+   "mitigation": "Restrict conclusions to gridded EHR emulations. Do not claim validation of marked point-process estimators or irregular within-month timing."
+  },
+  {
+   "threat": "A binary state observed without error understates biomarker complexity.",
+   "mitigation": "Use the binary state for exact truth and an auditable latent likelihood. Declare continuous, noisy, and multivariate states outside scope."
+  },
+  {
+   "threat": "Observation has no direct health effect in the generator.",
+   "mitigation": "Interpret R as structured measurement rather than all healthcare contact. The study does not determine effects of visit-schedule interventions or ancillary care."
+  },
+  {
+   "threat": "Treatment can change monthly even without a structured measurement.",
+   "mitigation": "Define the intervention as sustained pharmacy availability with monthly assignment and no intervention on observation. Do not generalize to encounter-gated treatment policies."
+  },
+  {
+   "threat": "Complete outcome ascertainment removes a second informative-observation problem.",
+   "mitigation": "Use linked ascertainment to isolate covariate observation. Declare visit-dependent diagnosis and loss to follow-up untested."
+  },
+  {
+   "threat": "An error in exact recursion would contaminate every performance measure.",
+   "mitigation": "Use an independently coded deterministic enumeration for small state spaces and eight two-million-person simulation checks spanning confirmatory and challenge corners."
+  },
+  {
+   "threat": "A package simulation cannot validate a custom exact recursion to deterministic tolerance.",
+   "mitigation": "Use deterministic enumeration for the strict numerical check. Treat the gfoRmula comparison as a mapped stochastic cross-check with a tolerance determined by its Monte Carlo error."
+  },
+  {
+   "threat": "The enlarged design and latent-model fits may exceed available compute.",
+   "mitigation": "Do not authorize the main run before a complete timing and memory pilot meets the runtime gate stated below."
+  }
+ ],
+ "runtime_estimate": "No full-run wall-time claim is made before measurement. Run an end-to-end pilot consisting of 10 complete replicates in each of 12 prespecified environments spanning dense and sparse observation, null and strong latent dependence, all-null and all-weak profiles, fixed-intercept comparisons, and every challenge axis. The pilot must include every optimizer start, selected MI count, Hessian, individual score, sandwich calculation, calibration solve, deterministic recursion, failure path, serialization step, and disk write. Record method-specific median, 90th percentile, and 99th percentile CPU time, peak resident memory, output volume, and worker utilization. Extrapolate the 208000-dataset main run with the observed task-time distribution and the intended worker count, including a 25 percent scheduling and rerun reserve. Authorize the run only after reporting the projected wall-time interval, aggregate CPU hours, peak concurrent memory, and disk requirement and confirming they fit the available allocation. Pilot datasets and random streams are excluded from the 1000 evaluation replicates.",
+ "bears_on": [
+  {
+   "id": "MIS-01",
+   "relation": "answers-part",
+   "what": "Answers only the comparative, practical subproblem for monthly sustained-treatment emulations under prespecified latent-state selection models. It quantifies when common and visit-aware analyses succeed or fail after separating observation informativeness from observation amount and after varying latent severity's causal roles. It does not determine the credible observation structure from observed data, solve latent-MNAR identification, evaluate continuous-time visits, or evaluate healthcare-use interventions."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine 2019",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo uncertainty planning, and prespecified performance reporting."
+  },
+  {
+   "cite": "Goldstein BA, Bhavsar NA, Phelan M, Pencina MJ. How and when informative visit processes can bias inference when using electronic health records data for clinical research. J Am Med Inform Assoc 2019",
+   "doi_or_url": "10.1093/jamia/ocz148",
+   "used_for": "The causal mechanism linking health state, observation, and record-based bias."
+  },
+  {
+   "cite": "Wang et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digital Medicine 2026",
+   "doi_or_url": "10.1038/s41746-026-02563-z",
+   "used_for": "Treating observation as a protocol-realization process rather than a preprocessing detail."
+  },
+  {
+   "cite": "Multiply robust estimation of marginal structural models in observational studies subject to covariate-driven observation times. Biometrics 2024",
+   "doi_or_url": "10.1093/biomtc/ujae065",
+   "used_for": "Establishing that observation-aware estimators already exist and that this study is a conditional comparison rather than invention of the first method."
+  },
+  {
+   "cite": "Kalia et al. Estimation of marginal structural models under irregular visits and unmeasured confounder: calibrated inverse probability weights. BMC Medical Research Methodology 2023",
+   "doi_or_url": "10.1186/s12874-022-01831-2",
+   "used_for": "Motivating calibration as a comparator. The protocol's visit-only exponential tilting, sequential pair factorization, and moments are explicitly labeled as a study-specific adaptation rather than the published estimator."
+  },
+  {
+   "cite": "Continuous-Time Causal Inference With Marked Point Process Weights. Statistics in Medicine 2025",
+   "doi_or_url": "10.1002/sim.70102",
+   "used_for": "Motivating treatment-dependent observation, sequential observation positivity, and weight-dispersion reporting without claiming that the monthly estimator reproduces the continuous-time method."
+  },
+  {
+   "cite": "gfoRmula: An R Package for Estimating the Effects of Sustained Treatment Strategies via the Parametric g-Formula. Patterns 2020",
+   "doi_or_url": "10.1016/j.patter.2020.100008",
+   "used_for": "Documenting existing random measurement or visit-process functionality and motivating a stochastic special-case cross-check. It is not used as a deterministic validation oracle for the custom recursion."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The study cannot settle which latent observation structure is credible or solve MIS-01 as a whole.",
+    "severity": "limitation",
+    "how": "declared-limitation",
+    "what_changed": "The question, aims, bears_on statement, decision language, and limitations now bind every conclusion to the comparative gridded subproblem and the prespecified selection models."
+   },
+   {
+    "finding": "The original DGM coupled informative observation to strong latent confounding, prognosis, effect modification, and persistence.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The confirmatory design now fully factorially varies the four coefficients between null and weak levels. Materiality must span profiles with null treatment dependence and null effect modification. The original strong mechanism is descriptive only."
+   },
+   {
+    "finding": "Fixed alpha made changes in gamma_L and gamma_A alter both selectivity and marginal observation frequency.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Scenario-specific alpha values now hold marginal observation frequency at 0.30 or 0.08 in confirmatory comparisons. Fixed-intercept environments are retained and reported separately without contributing to decisions."
+   },
+   {
+    "finding": "The joint latent-state likelihood reproduced all core generator components and the challenge set varied only transition order.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Three independent misspecification axes now alter transition memory, the observation link and latent interaction, and treatment or outcome functional forms. Joint-model superiority under compatible core models is explicitly nondecisive."
+   },
+   {
+    "finding": "Only the oracle received a correctly specified model in second-order scenarios.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Every challenge dataset now receives a structure-aware analysis for each method wherever the required predictors exist and a separate shared-working-model analysis. Challenge cells are excluded from the primary adequacy gate."
+   },
+   {
+    "finding": "The capped-weight method inherited failures from uncapped weighted regressions and variance calculations.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Only failure of the shared observation-probability model propagates. Capped regression, recursion, normalization, and variance calculations are fitted and assessed independently."
+   },
+   {
+    "finding": "Raw and capped sandwiches omitted uncertainty from monthly normalization and post-cap renormalization constants.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Every normalization constant is now an estimated nuisance parameter with its own equation in the stacked system. Complete-procedure numerical differentiation recomputes normalization and capping."
+   },
+   {
+    "finding": "Twenty imputations were unjustified in sparse-observation environments and all-imputation success unfairly exposed MI to avoidable Monte Carlo noise.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "An independent pilot chooses m from a prespecified grid using reproducibility tolerances for estimates and standard errors. The protocol separates likelihood, draw, path, completed-analysis, and variance-combination failures."
+   },
+   {
+    "finding": "Counting nonconvergence as noncoverage conflated confidence-interval calibration with procedural availability.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Coverage among converged replicates and convergence probability are now co-primary measures with separate thresholds. Joint procedural success is only a labeled secondary composite."
+   },
+   {
+    "finding": "Observation calibration was evaluated on the rows used to fit the observation model.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "All observable Brier and calibration diagnostics now use five-fold subject-level held-out predictions."
+   },
+   {
+    "finding": "The diagnostic classifier lacked an estimator, pooling rule, transport definition, uncertainty method, and single-class handling.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The protocol now specifies estimator-specific ridge-logistic classifiers, within-environment validation, grouped leave-one-mechanism-family-out transport, equal environment weighting, training-only standardization, threshold selection, single-class handling, minimum mixed-class support, and hierarchical cluster bootstrap uncertainty."
+   },
+   {
+    "finding": "Hard decision boundaries ignored Monte Carlo error and allowed scenarios without a valid oracle to contribute.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Every threshold now uses prespecified one-sided or two-sided Monte Carlo confidence bounds. Both members of each contributing pair must independently pass the oracle gate."
+   },
+   {
+    "finding": "Replicate-level absolute-error differences did not estimate the proposed change in absolute bias and were nonregular near zero.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The target contrast is explicitly the difference between absolute mean errors. Inference uses paired sign-aware delta calculations away from zero and conservative projection of simultaneous signed-bias intervals near zero."
+   },
+   {
+    "finding": "The stated 7 to 11 hour runtime contradicted the number of regressions, optimizer starts, imputations, scores, Hessians, and writes.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The unsupported runtime claim is removed. A complete end-to-end pilot and resource gate are mandatory before the main run, with tail runtime, aggregate CPU, memory, disk, and reserve reported."
+   },
+   {
+    "finding": "A stochastic gfoRmula run could not validate a custom exact recursion to tolerance 1e-8.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Strict validation now uses independently coded deterministic enumeration. The gfoRmula check is limited to a documented special-case mapping and uses a tolerance based on package Monte Carlo error."
+   },
+   {
+    "finding": "The protocol did not establish that its calibration moments and adjacent-pair weights reproduced the cited Kalia estimator.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The comparator is renamed and described as a study-specific exponential-tilting adaptation. Its visit-only factorization, sequential pair weights, moments, and normalization equations must be documented, and the citation is used only as motivation."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study answers only the comparative gridded subproblem of MIS-01 under prespecified selection models.",
+   "Observed data alone cannot determine which latent-state-dependent observation model is credible, so the study does not establish nonparametric identification.",
+   "Results do not generalize to continuous-time visits, within-month irregularity, continuous or multivariate biomarkers, or measurement error.",
+   "Direct effects of healthcare use, encounter-gated treatment, informative outcome ascertainment, competing risks, and loss to follow-up are outside scope.",
+   "Good joint-model performance under compatible generators establishes parametric compatibility only.",
+   "The misspecification analysis covers only the three prespecified departure axes.",
+   "Observable diagnostic performance in simulation does not validate an observation model or guarantee transport to real EHR data.",
+   "The study compares existing and adapted method families. It does not establish that observation-aware methods are absent from the literature or that one method is generally superior."
+  ]
+ }
+}

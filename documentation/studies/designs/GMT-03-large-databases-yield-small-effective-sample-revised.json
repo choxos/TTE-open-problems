@@ -1,0 +1,350 @@
+{
+ "title": "Finite-information performance of sustained-regime longitudinal weighting: endpoint-specific coverage and held-out validation of information diagnostics",
+ "question": "For the specified exact-regime sequential-IPW procedures and a stabilized clone-censor-weighted marginal structural model, when does 95% interval coverage fail for overall primary-event, competing-event, and subgroup 60-month risk differences as postrestriction sample size, cumulative treatment compatibility, and endpoint frequency vary? Does a candidate warning rule based on a minimum arm-specific risk-set Kish effective sample size below 100 or an endpoint-specific effective event count below 20 predict undercoverage in an independent 120-scenario validation set?",
+ "aims": "This study settles only this part of GMT-03: it characterizes estimator-specific interval performance after restriction for two longitudinal weighting approaches, quantifies time-varying risk-set and endpoint-specific event information, and independently evaluates one candidate reporting flag. It does not establish that GMT-03 as a whole is real or not real. It does not study the information contribution of the nominal source-database count, realistic eligibility mechanisms, reporting practice, universal effective-sample thresholds, or small-sample theory for all outcome-model and weighting estimators. Results are reported separately for the overall primary-event risk difference, competing-event risk difference, and each prespecified primary-event subgroup risk difference.",
+ "dgm": {
+  "covariates": "Each replicate begins after eligibility and active-comparator restriction with a fixed postrestriction independent-patient count n. No one-million-record source population is generated or treated as inferential information. For each retained person generate G ~ Bernoulli(0.25) in the core design, X ~ Uniform(-1,1), and L_0 ~ Bernoulli(expit(-0.2 + 0.6X + 0.8G)). For event-free people at months t=1,...,59, generate L_t ~ Bernoulli(expit(-0.7 + 1.3L_(t-1) + 0.5X + 0.6G - 0.5A_(t-1))). Visits occur monthly. Follow-up stops at the first primary event, competing event, or completion of month 60. There is no natural loss to follow-up; strategy deviation causes only the artificial censoring required by the estimators.",
+  "outcome_model": "After A_t is assigned at month t=0,...,59, draw one multinomial outcome among primary event Y_t, competing event D_t, and no event. Let eta_Y=alpha_Y + 0.35X + 0.55G + 0.80L_t - 0.287682A_t + 0.287682A_tG and eta_D=alpha_D + 0.45X + 0.80G + 0.60L_t. Set P(Y_t=1)=exp(eta_Y)/(1+exp(eta_Y)+exp(eta_D)), P(D_t=1)=exp(eta_D)/(1+exp(eta_Y)+exp(eta_D)), and assign the remaining probability to no event. Both events are absorbing. Core values alpha_Y in {-9.35,-6.95} and alpha_D in {-9.40,-7.00} produce approximately rare and common five-year events. Simulated interventional truth, rather than these labels, supplies every true value.",
+  "treatment_effect": "In the core design, A_0 ~ Bernoulli(expit(kappa(-0.75 + 0.8X + 0.6G + 0.8L_0))). For event-free people at t>=1, A_t ~ Bernoulli(expit(4.0(2A_(t-1)-1) + kappa(-0.75 + 0.7X + 0.6G + 0.9L_t))). The target strategies set every A_t to 1 or every A_t to 0. Kappa is not selected using coverage, bias, convergence, or any interval result. Before outcome simulations, use a fixed seed and 2000000 event-free regime-specific covariate histories to calculate C_g(kappa)=E[product over t of P_kappa(A_t=g given H_t under regime g)] on the candidate grid kappa=0,0.025,...,2.25. Set K0 to kappa=0. Select four distinct additional grid values whose C_min(kappa)=min(C_0,C_1) is nearest 0.12, 0.08, 0.04, and 0.02, with ties resolved toward the smaller kappa. Freeze and publish the selected kappa values, C_g values, cumulative-probability quantiles, and expected compatible counts before generating any performance result. Calibration fails if distinct levels cannot attain the four targets within 0.01. The treatment coefficient for the primary event is log(0.75) for G=0 and zero directly for G=1. Treatment can also affect later outcomes through L_t. There is no direct treatment term in the competing-event equation.",
+  "effect_modification": "G defines the prespecified subgroup. Its prevalence is 0.25 in the core design and ranges from 0.10 to 0.40 in the held-out scenarios. The interaction fixes the direct monthly primary-event treatment coefficient at zero for G=1, while treatment-mediated effects through L_t can remain. The study evaluates estimator bias, availability, and coverage within each subgroup. It does not treat the existence, direction, or magnitude of subgroup heterogeneity as a simulation finding.",
+  "factors": [
+   {
+    "name": "Postrestriction independent-patient count",
+    "levels": [
+     "n=1000",
+     "n=4000",
+     "n=16000"
+    ],
+    "rationale": "These counts directly govern the information available to the estimators. The 16000 level permits rare-event compatible counts to occur above 20 at favorable overlap levels, while the smaller levels retain low-information settings."
+   },
+   {
+    "name": "Outcome-blind cumulative treatment compatibility",
+    "levels": [
+     "K0: kappa=0",
+     "K1: frozen kappa nearest C_min=0.12",
+     "K2: frozen kappa nearest C_min=0.08",
+     "K3: frozen kappa nearest C_min=0.04",
+     "K4: frozen kappa nearest C_min=0.02"
+    ],
+    "rationale": "The levels are calibrated against cumulative 60-month regime probabilities, not acceptable-looking monthly probabilities and not observed coverage. They provide several support levels around the compatible-count ranges relevant to the retained sample sizes."
+   },
+   {
+    "name": "Primary-event frequency",
+    "levels": [
+     "alpha_Y=-9.35; intended five-year risk near 1%",
+     "alpha_Y=-6.95; intended five-year risk near 10%"
+    ],
+    "rationale": "Crossing rare and common primary events with sample size and cumulative compatibility produces endpoint-specific effective event counts on both sides of 20."
+   },
+   {
+    "name": "Competing-event frequency",
+    "levels": [
+     "alpha_D=-9.40; intended five-year risk near 1%",
+     "alpha_D=-7.00; intended five-year risk near 10%"
+    ],
+    "rationale": "Competing-event coverage is evaluated against competing-event frequency. Primary-event risk-set depletion is evaluated separately by comparing common versus rare competing events at fixed primary-event frequency."
+   },
+   {
+    "name": "Study phase",
+    "levels": [
+     "Core factorial: 60 scenarios",
+     "Held-out diagnostic validation: 120 scenarios"
+    ],
+    "rationale": "The core is the 3 by 5 by 2 by 2 factorial. The validation scenarios are generated before the main run by a fixed-seed maximin Latin hypercube over n=800 to 20000 on the log scale, alpha_Y=-9.60 to -6.70, alpha_D=-9.60 to -6.70, kappa from K0 through K4, subgroup prevalence 0.10 to 0.40, and persistence coefficient 3.5 to 4.5. Thirty scenarios are allocated to each quadrant defined by preperformance expected compatible primary-event and competing-event counts below or at least 20. No coverage result is used to construct or replace a validation scenario."
+   }
+  ],
+  "n_scenarios": 180,
+  "deliberately_true": "Sequential exchangeability, consistency, and nonzero treatment probabilities are true. Treatment models use the correct logistic form. There is no measurement error, unmeasured confounding, site clustering, or natural censoring. Core scenarios differ only in postrestriction n, outcome intercepts, and an outcome-blind cumulative-compatibility factor. Matched K0 comparisons use common random numbers. No parameter is solved for a desired bias, coverage loss, convergence rate, or diagnostic accuracy.",
+  "cannot_detect": "The study cannot establish the information contributed by a nominal source-database count, the consequences of covariate-dependent eligibility restriction, or actual reporting practice. It cannot establish a universal ESS threshold or small-sample theory. It does not evaluate irregular visits, delayed data capture, unmeasured confounding, treatment-model misspecification, machine-learning nuisance fits, natural censoring, measurement error, structural positivity failure, cross-site borrowing, Bayesian shrinkage, modified treatment policies, longitudinal TMLE, or inference under a known randomized assignment mechanism. The bootstrap comparator is limited to prespecified sentinel scenarios. Diagnostic validation is conditional on the frozen validation distribution."
+ },
+ "estimands": [
+  {
+   "name": "Primary marginal 60-month primary-event risk difference",
+   "definition": "RD_Y(60)=P(Y under sustained A=1 occurs by month 60 before D)-P(Y under sustained A=0 occurs by month 60 before D), marginal over the postrestriction superpopulation. D is a competing event rather than a censoring event.",
+   "true_value_computation": "For each of the four core alpha_Y by alpha_D combinations, simulate 2000000 postrestriction people under each sustained strategy using paired baseline draws and random-number streams. Estimate the risk difference and its Monte Carlo SE from paired potential-outcome differences. Add independent 2000000-person batches until the overall truth Monte Carlo SE is at most 0.0005. For each held-out scenario, begin with 500000 paired people and add 500000-person batches until the same tolerance is reached."
+  },
+  {
+   "name": "Prespecified subgroup primary-event risk differences",
+   "definition": "RD_Y,G=g(60)=P(Y under sustained A=1 by month 60 before D given G=g)-P(Y under sustained A=0 by month 60 before D given G=g), for g=0 and g=1. These are marginal within subgroup.",
+   "true_value_computation": "Calculate paired risk differences within G=0 and G=1 in the same truth simulations. Extend truth batches until each subgroup Monte Carlo SE is at most 0.001."
+  },
+  {
+   "name": "Secondary horizon-specific primary-event risk differences",
+   "definition": "The marginal sustained-strategy primary-event risk difference at 12 and 36 months.",
+   "true_value_computation": "Record month-12 and month-36 cumulative incidences from the same paired truth simulations."
+  },
+  {
+   "name": "Competing-event risk differences",
+   "definition": "RD_D(t)=P(D under sustained A=1 occurs by t before Y)-P(D under sustained A=0 occurs by t before Y), marginal in the postrestriction superpopulation at t=12, 36, and 60 months.",
+   "true_value_computation": "Record competing-event indicators and paired strategy differences in the same truth simulations, extending batches under the overall and subgroup Monte Carlo error tolerances."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Exact-regime sequential IPW with fixed-nuisance Wald inference",
+   "point_estimator": "Fit A_0 on 1, X, G, and L_0 and one pooled postbaseline logistic model for A_t on 1, A_(t-1), X, G, and L_t. For strategy g, let O_ig indicate compatibility through the event or horizon, let pi_ig be the product of fitted compatible-treatment probabilities, and set q_ig=O_ig/pi_ig. Estimate each endpoint risk by sum(q_ig Z_i)/sum(q_ig) and the risk difference by the arm contrast. Compute products on the log scale and do not truncate weights.",
+   "variance_estimator": "Treat fitted weights as fixed. Use the patient-cluster HC1 sandwich based on the two Hajek risk estimating functions, retaining covariance between strategy contributions. This procedure is the exact fixed-nuisance procedure under study; it is not labeled a status quo or recommended analysis.",
+   "interval": "Risk difference plus or minus 1.959964 times the estimated SE, without clipping.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure if either treatment fit does not converge, is rank deficient, or has nonfinite coefficients; any fitted probability is outside [1e-8,1-1e-8]; a cumulative weight exceeds 1e12; an arm denominator is zero or nonfinite; or the estimate or SE is nonfinite. Retain zero-event replicates whenever an interval is returned.",
+   "implementation": "Use patient-level calculations and identical code paths for primary events, competing events, horizons, and subgroups."
+  },
+  {
+   "name": "Exact-regime sequential IPW with nuisance-aware stacked sandwich inference",
+   "point_estimator": "Use the same fitted probabilities and Hajek risk-difference estimator as the fixed-nuisance method.",
+   "variance_estimator": "Stack patient-level baseline treatment scores, pooled longitudinal treatment scores summed across that patient's months, and the two endpoint-risk equations. Calculate the empirical sandwich from analytic score derivatives and obtain the risk-difference variance by contrast. Apply a finite-cluster degrees-of-freedom correction based on the number of independent patients and the number of stacked parameters.",
+   "interval": "Risk difference plus or minus 1.959964 times the stacked-sandwich SE, without clipping.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the exact-regime conditions and additionally declare failure when the bread has reciprocal condition number below 1e-12, the covariance matrix is not positive semidefinite within tolerance 1e-10, or the risk-difference variance is negative or nonfinite.",
+   "implementation": "Validate analytic derivatives against centered finite differences in 20 fixed pilot replicates, requiring maximum absolute disagreement below 1e-6 before the main run."
+  },
+  {
+   "name": "Exact-regime sequential IPW with candidate effective-cell t inference",
+   "point_estimator": "Use the same Hajek estimator and estimated weights as the nuisance-aware method.",
+   "variance_estimator": "Use the nuisance-aware stacked-sandwich variance. For each strategy and endpoint value, calculate the weighted-cell ESS. Set degrees of freedom to floor of the minimum cell ESS minus one.",
+   "interval": "When degrees of freedom are at least one, use the corresponding two-sided 0.95 t interval. This is a candidate correction without a claimed theorem or external validation.",
+   "is_status_quo": false,
+   "nonconvergence": "Apply the nuisance-aware conditions. Record this interval as unavailable if any required endpoint cell has ESS at most one.",
+   "implementation": "Calculate endpoint-specific event and non-event ESS separately for each horizon and subgroup."
+  },
+  {
+   "name": "Oracle-probability exact-regime IPW benchmark",
+   "point_estimator": "Replace fitted assignment probabilities with exact DGM probabilities while retaining the same Hajek estimator, artificial-censoring rule, horizons, and outcomes.",
+   "variance_estimator": "Use the fixed-nuisance patient-cluster HC1 formula because assignment probabilities are known.",
+   "interval": "Risk difference plus or minus 1.959964 times the oracle-weight SE, without clipping.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure only for a zero or nonfinite arm denominator, a cumulative weight above 1e12, or a nonfinite estimate or SE. Retain zero-event replicates.",
+   "implementation": "Retain exact assignment probabilities in log form during generation. Treat this method as a benchmark, not as a decomposition of estimated-weight variance."
+  },
+  {
+   "name": "Stabilized clone-censor-weighted pooled multinomial marginal structural model",
+   "point_estimator": "Clone every patient to sustained strategies g=0 and g=1 and artificially censor each clone after its first deviation. Use the full treatment models as denominator models. Use an intercept-only baseline numerator model and a pooled numerator model containing month and previous treatment. Normalize stabilized weights within strategy and month. Fit a weighted pooled multinomial outcome model for primary event, competing event, and no event with saturated month indicators, strategy-by-month interactions, X, G, L_0, and strategy-by-G interaction. Standardize predicted monthly hazards over the empirical baseline distribution and convert them to cumulative-incidence risk differences. Standardize within G for subgroup estimands.",
+   "variance_estimator": "Use a patient-cluster stacked sandwich containing denominator-treatment, numerator-treatment, multinomial-outcome, and marginalization equations. This accounts for estimated weights and the fitted outcome model.",
+   "interval": "Risk difference plus or minus 1.959964 times the stacked-sandwich SE, without clipping.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare failure for treatment-model failure, multinomial-model nonconvergence or separation, a singular stacked bread, nonfinite standardized hazards, any predicted monthly event-probability sum at least one, or a nonfinite estimate or variance.",
+   "implementation": "Run in every core and validation scenario. Validate standardized cumulative-incidence calculations against direct weighted arm-month estimates in K0 pilot cells."
+  },
+  {
+   "name": "Patient-level bootstrap interval for the stabilized marginal structural model",
+   "point_estimator": "Use the stabilized clone-censor-weighted marginal structural model without alteration.",
+   "variance_estimator": "Resample independent patients with replacement and repeat all denominator, numerator, outcome, and standardization fits in each bootstrap sample. Use 399 bootstrap resamples.",
+   "interval": "Use the 2.5th and 97.5th percentiles of successful bootstrap risk-difference estimates.",
+   "is_status_quo": false,
+   "nonconvergence": "Declare the bootstrap interval unavailable if fewer than 380 of 399 resamples produce valid estimates. Report the bootstrap success fraction.",
+   "implementation": "Run in 16 frozen sentinel core scenarios comprising n in {1000,16000}, overlap in {K0,K4}, and all four primary-event by competing-event frequency combinations. Use it to check the stacked-sandwich comparator, not to support claims outside those cells."
+  }
+ ],
+ "performance": {
+  "primary": "Endpoint-specific empirical availability and conditional coverage of nominal 95% intervals at 60 months for four co-primary estimand families: overall primary-event risk difference, overall competing-event risk difference, G=0 primary-event risk difference, and G=1 primary-event risk difference. Report these separately for the exact fixed-nuisance procedure and stabilized marginal structural model. No primary-event decision can be triggered by a competing-event diagnostic, and no overall decision can substitute for subgroup coverage.",
+  "secondary": [
+   "Bias, empirical SE, mean model SE, relative model-SE error, MSE, conditional coverage, unconditional successful coverage, bias-eliminated coverage, rejection of a zero risk difference, and method availability.",
+   "The same measures for nuisance-aware, candidate t, oracle, and bootstrap inference at applicable horizons and scenarios.",
+   "Coverage comparisons on each method's available replicates, on the common set where all three exact-regime methods succeed, and as unconditional successful coverage.",
+   "For primary-event inference, matched coverage contrasts for rare versus common primary events and, separately, common versus rare competing events as a measure of risk-set depletion.",
+   "For competing-event inference, matched coverage contrasts for rare versus common competing events.",
+   "For subgroup inference, coverage and diagnostics calculated within each subgroup. No performance result is interpreted as evidence that treatment-effect heterogeneity exists.",
+   "At every month and strategy: compatible risk-set count, cumulative endpoint counts, sum and sum of squares of weights, Kish ESS, ESS divided by postrestriction n, maximum normalized weight, and the 99th-to-50th weight percentile ratio.",
+   "At each horizon and strategy: endpoint-specific effective event and non-event counts and minimum monthly arm-specific risk-set ESS. Primary-event flags use primary-event counts; competing-event flags use competing-event counts; subgroup flags use within-subgroup counts.",
+   "Outcome-blind calibration tables showing each frozen kappa, cumulative regime-probability distribution, and expected compatible counts across n and event-frequency levels.",
+   "In each held-out scenario, reserve replicate 1 as an index study. Calculate its observed endpoint-specific warning flag without using it to estimate scenario coverage. Use replicates 2 through 4000 to classify that scenario's coverage.",
+   "Across the 120 independent index studies, estimate endpoint-specific sensitivity and specificity with Wilson intervals. Require at least 30 confirmed-failure and 30 confirmed-adequate validation scenarios for each method and endpoint family.",
+   "Across all held-out replicates, report coverage conditional on the observed study-level flag, the noncoverage risk difference between flagged and unflagged studies, and scenario-cluster bootstrap confidence intervals.",
+   "Validate the candidate threshold separately for the exact fixed-nuisance and stabilized marginal structural model procedures. Do not pool estimator families."
+  ],
+  "n_rep": 4000,
+  "n_rep_derivation": "Use 4000 replicates per scenario. At coverage 0.90, the Monte Carlo SE is 0.00474. In validation scenarios, excluding the prespecified index replicate leaves 3999 coverage replicates with essentially the same precision. Report Monte Carlo SEs for every performance measure. A cell with fewer than 3600 valid intervals cannot receive a conditional-coverage classification."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "This schema label means failure of a named method, endpoint, subgroup, horizon, and scenario; it never means that GMT-03 as a field-level claim is confirmed. Label a cell interval failure if at least 3600 intervals are available, the lower 95% Wilson bound for availability is at least 0.95, and the upper 95% Wilson bound for conditional coverage is strictly below 0.90. Label a cell operational failure if the upper 95% Wilson bound for availability is strictly below 0.90 while the matched K0 cell has an availability lower bound of at least 0.98. Rare primary-event claims require primary-event coverage failure. Rare competing-event claims require competing-event coverage failure. A primary-risk-set depletion claim requires worse primary-event coverage under common competing events than under the matched rare competing-event scenario. A subgroup claim requires failure of that subgroup's interval. Attribute a degradation to cumulative support only when the change from K0 to a higher K level is at least 0.05, its upper 95% confidence limit is below -0.02, and the same pattern occurs for fixed-nuisance, nuisance-aware, and oracle intervals on their common successful replicate set in at least two matched strata.",
+  "problem_is_not_real_if": "No field-level not-real conclusion is permitted. Label a named cell adequate within scope if the lower 95% Wilson bound for conditional coverage is at least 0.925 and the lower 95% Wilson bound for availability is at least 0.95. Validate the candidate warning rule for a particular method and endpoint family only when the held-out set contains at least 30 confirmed-failure and 30 confirmed-adequate scenarios and the lower 95% Wilson bounds for both sensitivity and specificity are at least 0.80. Reject the candidate rule when those sample-size conditions hold and the upper 95% Wilson bound for either sensitivity or specificity is below 0.80.",
+  "uninformative_if": "Classify a cell as indeterminate when it meets neither the failure nor adequacy rule, fewer than 3600 intervals are available without satisfying the operational-failure rule, or truth Monte Carlo error exceeds its tolerance. Treat a mechanistic attribution as uninformative when the three exact-regime methods do not show the prespecified common-set pattern. Treat diagnostic validation as uninformative when there are fewer than 30 confirmed failures or adequate scenarios, sensitivity or specificity intervals include 0.80, or the frozen validation manifest is altered after performance results are inspected.",
+  "both_branches_reachable": "With 4000 generated replicates and high availability, observed coverage near 0.85 can place its upper confidence bound below 0.90, while observed coverage near 0.95 can place its lower confidence bound above 0.925. A perfect or near-perfect held-out classifier can satisfy the diagnostic validation rule, while a classifier near chance can satisfy the rejection rule. No DGM parameter is chosen using either result."
+ },
+ "threats": [
+  {
+   "threat": "The study addresses only part of GMT-03.",
+   "mitigation": "State the covered part in the aims and bears_on fields. Prohibit field-level real or not-real declarations."
+  },
+  {
+   "threat": "A nominal source count could be mistaken for inferential information.",
+   "mitigation": "Begin every replicate after restriction, vary the independent-patient count directly, and make no claim about a one-million-record source database or realistic eligibility mechanisms."
+  },
+  {
+   "threat": "The treatment mechanism could encode inevitable sustained-regime support failure.",
+   "mitigation": "Select overlap levels using outcome-blind cumulative regime probabilities, publish the calibration table before performance simulation, span five compatibility levels, and never calibrate against coverage or convergence."
+  },
+  {
+   "threat": "The 20-event diagnostic could merely reproduce the rare-event factor.",
+   "mitigation": "Include retained-size and compatibility combinations that place rare and common endpoints on both sides of 20. Validate the cutoff in 120 independently frozen continuous scenarios balanced across expected primary-event and competing-event count quadrants."
+  },
+  {
+   "threat": "Rare competing events could be used incorrectly to infer primary-event failure.",
+   "mitigation": "Use endpoint-specific event counts and decisions. Analyze depletion of the primary-event risk set through the common competing-event factor, not through a low competing-event count."
+  },
+  {
+   "threat": "Predetermined subgroup effect modification could be presented as a discovery.",
+   "mitigation": "Restrict subgroup conclusions to estimator performance, availability, and coverage. Enumerate subgroup truths and make no heterogeneity-existence claim."
+  },
+  {
+   "threat": "The exact fixed-nuisance procedure is not an established universal status quo.",
+   "mitigation": "Remove the status quo label, state its exact specification, and compare it with nuisance-aware inference and a stabilized clone-censor-weighted outcome-model procedure."
+  },
+  {
+   "threat": "The oracle analysis does not isolate one variance mechanism.",
+   "mitigation": "Treat it only as a benchmark. Require concordant common-replicate contrasts across oracle, fixed-nuisance, and nuisance-aware methods before making a support-associated attribution."
+  },
+  {
+   "threat": "Method-specific convergence can create incomparable conditional-coverage samples.",
+   "mitigation": "Report each selected sample, a common all-method successful set, availability, and unconditional successful coverage."
+  },
+  {
+   "threat": "A weight-only ESS is not the information size for every estimator.",
+   "mitigation": "Report independent-patient, risk-set, endpoint-event, weight-concentration, and variance diagnostics. Restrict every threshold conclusion to the estimator and validation distribution studied."
+  },
+  {
+   "threat": "Scenario-level diagnostic sensitivity and specificity could be estimated from too few units or from replicate medians.",
+   "mitigation": "Use 120 held-out scenario units, one prespecified index study per scenario, independent coverage replicates, minimum class counts, and Wilson intervals. Also report replicate-level conditional coverage with scenario-cluster uncertainty."
+  },
+  {
+   "threat": "Correctly specified parametric treatment models favor the weighting procedures.",
+   "mitigation": "Declare this limitation. Failure under correct specification is informative; adequate performance does not establish robustness to misspecification or flexible nuisance learning."
+  },
+  {
+   "threat": "Rare events alone can produce poor Wald behavior.",
+   "mitigation": "Cross endpoint frequency with every core sample-size and compatibility level. Use matched event-frequency and compatibility contrasts and report bias-eliminated coverage."
+  },
+  {
+   "threat": "Zero-event or failed replicates could be discarded selectively.",
+   "mitigation": "Retain every zero-event replicate that returns an interval. Report method-specific availability, conditional coverage, and unconditional successful coverage."
+  },
+  {
+   "threat": "Numerical overflow could be confused with statistical failure.",
+   "mitigation": "Accumulate probabilities on the log scale and separately report overflow, treatment-fit failure, singular-bread, outcome-model, bootstrap, and insufficient-cell failures."
+  },
+  {
+   "threat": "Truth Monte Carlo error could distort coverage.",
+   "mitigation": "Use paired strategy simulation, store Monte Carlo SEs, and extend batches until the prespecified overall and subgroup tolerances are met."
+  },
+  {
+   "threat": "The diagnostic cutoffs lack an established external scientific basis.",
+   "mitigation": "Call them candidate thresholds, validate them only in the held-out distribution, report rejection and indeterminate outcomes, and make no external-validity claim."
+  },
+  {
+   "threat": "The computational workload may be infeasible.",
+   "mitigation": "Require a complete end-to-end benchmark and resource extrapolation before launch. Do not replace measured throughput with an unsupported wall-time estimate."
+  }
+ ],
+ "runtime_estimate": "No numerical wall-time estimate is asserted before benchmarking. Before launch, run 10 complete replicates in each of the 24 combinations formed by three core n levels, K0 and K4, and four event-frequency combinations. Include data generation, all nonbootstrap methods, every endpoint, subgroup and monthly diagnostic, serialization, and checkpointing. Benchmark the 399-resample bootstrap separately in one sentinel scenario at each n extreme. Benchmark paired truth generation at 100000 and 500000 people. Record cell-specific median and 90th-percentile CPU time, peak resident memory, output size, bootstrap time, and worker-scaling efficiency. Extrapolate total CPU time by scenario rather than from an overall average and calculate wall time using observed parallel efficiency. Freeze the benchmark report before the main run. If available compute, memory, or storage cannot satisfy the extrapolated requirement, declare the protocol infeasible and respecify it before generating confirmatory results.",
+ "bears_on": [
+  {
+   "id": "GMT-03",
+   "relation": "answers-part",
+   "what": "Settles only the empirical estimator-specific part concerning time-varying information diagnostics and interval performance after restriction for exact-regime sequential IPW and a stabilized clone-censor-weighted marginal structural model. It evaluates overall primary-event, competing-event, and subgroup inference separately and validates one candidate reporting flag in held-out scenarios. It does not assess nominal source-database information, realistic restriction mechanisms, reporting prevalence, universal thresholds, or the full range of estimator families."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019;38:2074-2102.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo error planning, prespecified performance measures, and separation of method failure from simulation failure."
+  },
+  {
+   "cite": "Robins JM, Hernán MA, Brumback B. Marginal structural models and causal inference in epidemiology. Epidemiology. 2000;11(5):550-560.",
+   "doi_or_url": "10.1097/00001648-200009000-00011",
+   "used_for": "General motivation for longitudinal marginal structural models and sequential weighting. It is not cited as support for the exact fixed-nuisance Hajek interval."
+  },
+  {
+   "cite": "Austin PC, Stuart EA. Moving towards best practice when using inverse probability of treatment weighting using the propensity score to estimate causal treatment effects in observational studies. Statistics in Medicine. 2015;34(28):3661-3679.",
+   "doi_or_url": "10.1002/sim.6607",
+   "used_for": "Broad motivation for inspecting overlap and weight distributions. Its point-treatment scope is not used to validate longitudinal ESS or the candidate cutoffs."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The original study could not settle GMT-03 because it examined one narrow estimator, gave the nominal million records no inferential role, and omitted reporting practice and other estimator families.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "The aims now state in explicit terms which part of GMT-03 the study settles. The source-million factor and field-level real or not-real declarations were removed. The design adds a stabilized outcome-model comparator but declares realistic restriction mechanisms, reporting practice, universal theory, and other estimator families outside scope."
+   },
+   {
+    "finding": "The confirmatory primary-event decision could be triggered by rare competing events and did not require competing-event or subgroup coverage failure.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Overall primary-event, competing-event, and subgroup coverage are co-primary endpoint families with separate diagnostics and decisions. Primary-risk-set depletion is tested through common competing events, while rare competing-event claims require competing-event coverage."
+   },
+   {
+    "finding": "Monthly adherence parameters made cumulative sustained-regime support collapse largely predetermined.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Overlap levels are now selected by a frozen outcome-blind calibration of 60-month cumulative regime probabilities. Five compatibility levels span the relevant count range, and no coverage or convergence output enters calibration."
+   },
+   {
+    "finding": "The 20-effective-event warning flag was nearly encoded by the original retained sizes and rare-event factor.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "A 16000-patient level was added so rare-event compatible counts can lie above 20. The cutoff is validated on 120 held-out continuous scenarios balanced across expected endpoint-specific count quadrants, with no coverage-based scenario replacement."
+   },
+   {
+    "finding": "Subgroup heterogeneity was predetermined by the treatment interaction.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "Subgroup aims and decisions are restricted to bias, availability, and coverage. The protocol prohibits interpreting heterogeneity itself as a simulation finding."
+   },
+   {
+    "finding": "The exact unstabilized Hajek plus fixed-nuisance HC1 procedure was labeled status quo without support and lacked a literature-faithful applied comparator.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The status quo label was removed from every method. A stabilized clone-censor-weighted pooled multinomial marginal structural model with nuisance-aware inference and a patient-level bootstrap sentinel comparator was added."
+   },
+   {
+    "finding": "The oracle comparison did not uniquely decompose weight-estimation and weight-tail effects.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The oracle is now only a benchmark. Support-associated attribution requires concordant matched contrasts across oracle, fixed-nuisance, and nuisance-aware procedures on a common successful-replicate set; otherwise no mechanistic attribution is made."
+   },
+   {
+    "finding": "The positive, negative, and inconclusive decision regions overlapped, and the Wilson bound did not match the claimed boundary.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Failure requires an upper coverage bound strictly below 0.90. Adequacy requires a lower bound at least 0.925. All other results are indeterminate. The inequalities are mutually exclusive and use confidence bounds aligned with their respective claims."
+   },
+   {
+    "finding": "Diagnostic sensitivity and specificity used only 24 scenario-level units and a replicate-median flag that did not represent one realized study.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The protocol adds 120 held-out scenarios, reserves one index study per scenario for the observed flag, estimates coverage from the other 3999 replicates, requires at least 30 failure and 30 adequate units, and reports Wilson intervals plus replicate-level conditional coverage."
+   },
+   {
+    "finding": "The six-to-twelve-hour runtime estimate lacked an end-to-end benchmark.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The unsupported estimate was removed. Launch now requires benchmarks covering every sample-size and overlap extreme, all summaries and checkpointing, bootstrap work, truth generation, memory, storage, and observed parallel scaling."
+   },
+   {
+    "finding": "The Robins, Hernán, and Brumback citation did not support calling the exact terminal Hajek and fixed-nuisance interval recommended status quo.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The characterization was removed. The citation is used only for general longitudinal weighting and marginal structural model motivation."
+   },
+   {
+    "finding": "The Zhang citation had inaccurate or abbreviated metadata and an inapplicable scope, while the 2025 Biometrical Journal citation was incomplete.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "Both citations were removed rather than guessing missing metadata or implying that either validates a longitudinal cutoff."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study settles only an estimator-specific empirical part of GMT-03 and cannot confirm or refute the catalog entry as a whole.",
+   "The nominal source-database count and realistic eligibility or comparator-selection mechanisms are not studied.",
+   "The study does not assess actual reporting practice or incentives.",
+   "The DGM uses correctly specified parametric treatment models and fixed monthly visits.",
+   "The studied sustained strategies, follow-up horizon, estimators, and validation distribution limit generalizability.",
+   "The candidate 100-risk-set-ESS and 20-effective-event cutoffs have no claimed external scientific validation.",
+   "The patient-level bootstrap is evaluated only in prespecified sentinel scenarios.",
+   "A numerical runtime is unavailable until the required benchmark is completed."
+  ]
+ }
+}

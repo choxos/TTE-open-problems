@@ -1,0 +1,344 @@
+{
+ "title": "Estimator-specific false certainty and support warnings under prespecified longitudinal support stress tests",
+ "question": "Within 236 estimand scenarios generated from 68 unique observed-data laws, does a cross-fitted flexible series AIPW workflow produce conventionally green intervals that fail to cover a prespecified compatible-truth set more often than fixed-cap longitudinal IPW or main-effects longitudinal AIPW, and how accurately does one prediction-level support map detect exact and practical support failures across linear, curved, disconnected, interaction-dependent, and longitudinally accumulated support boundaries?",
+ "aims": "This study settles only the support-diagnostic and estimator-comparison part of LRN-01. The primary aim is to estimate, within every material exact-hole cell, paired differences between the flexible series workflow and each conventional workflow in the probability of returning a conventionally green interval that fails to contain the full compatible-truth set. Secondary aims are to compare bias, interval performance, warnings, and predictive loss across all methods; quantify sensitivity to three prespecified structural-completion magnitudes and three linear support boundaries; and estimate cell-specific sensitivity and specificity of one support map against exact zero probability and practical probabilities below 0.025. The study does not determine whether applied publications present flexibility as a remedy for identification failure, diagnose unmeasured confounding, establish a universal interpolation-versus-extrapolation diagnostic, or support a binary verdict on LRN-01.",
+ "dgm": {
+  "covariates": "Generate six treatment decisions at months 0, 2, 4, 6, 8, and 10, followed by a binary outcome at month 12. Generate B1 from N(0,1), representing age with mean 60 and standard deviation 10 years; B2 from Bernoulli(0.50); B3 from Bernoulli(expit(-0.60 + 0.50*B1 + 0.40*B2)); L0 = 0.45*B1 + 0.55*B3 - 0.25*B2 + e0, where e0 is N(0,0.8^2); and M0 from Bernoulli(expit(-1.10 + 0.45*B3 + 0.50*L0)). Set A[-1]=0 and the previous mean treatment to zero. At decision t, define etaA = -0.15 + 0.80*tanh(Lt) + 0.45*Mt + 0.35*B3 + 0.25*tanh(B1) + 1.10*(A[t-1]-0.5) - 0.30*(mean(A0,...,A[t-1])-0.5) + 0.10*t/5. For t=0, omit unavailable prior-treatment terms. Under nonlinear complexity add 0.35*sin(Lt) + 0.25*B1*tanh(Lt) - 0.20*I(Lt>0.75). For t<5, generate L[t+1] = 0.55*Lt + 0.20*B1 + 0.30*B3 + 0.25*Mt - 0.40*At + 0.15*(t+1)/5 + C*(0.20*sin(Lt) + 0.15*B3*I(Lt>0.5)) + e[t+1], where each innovation is N(0,0.75^2). Generate M[t+1] from Bernoulli(expit(-1.20 + 0.60*Mt + 0.40*Lt + 0.30*B3 - 0.35*At + 0.10*(t+1)/5 + C*(0.25*I(Lt>0.5) - 0.20*Lt^2/(1+Lt^2)))). Here C is zero for the main-effects law and one for the nonlinear law. All innovations and treatment uniforms are mutually independent conditional on recorded history. Support holes use only recorded history. For curved, disconnected, and interaction geometries, construct a fixed standardized raw-history vector from B1, B2, B3, L0 through Lt, M0 through Mt, and prior A. Binary entries map to -1 and 1; B1 retains its known unit scale; L entries are divided by 1.5. Using the L'Ecuyer-CMRG generator with seed 7312026, draw two independent normalized Gaussian projection vectors for every visit and geometry. Freeze the resulting coefficients in a manifest before truth simulation or replicate generation. They are not selected using outcome coefficients, support mass, diagnostic performance, or simulated results. Let U and V be the resulting projections. For linear geometry, define S=Lt+0.40*Mt+0.30*B3 and use boundaries b in 1.00, 1.25, and 1.50. For curved geometry, action 1 is forbidden when 0.35<U^2+V^2<0.75 and action 0 is forbidden when 1.35<U^2+V^2<2.00. For disconnected geometry, action 1 is forbidden in the two same-sign corners with absolute U and V above 1, while action 0 is forbidden in the two opposite-sign corners. For interaction geometry, define W=U*V+0.40*(2*Mt-1)*tanh(Lt); action 1 is forbidden when W<-1 and action 0 is forbidden when W>1. For accumulated geometry, define W=0.45*mean(L0,...,Lt)/1.5 + 0.35*mean(2*M0-1,...,2*Mt-1) + 0.25*mean(2*A0-1,...,2*A[t-1]-1) + 0.20*B1, with the prior-treatment mean set to zero at t=0; action 1 is forbidden when W<-0.75 and action 0 is forbidden when W>0.75. Exact-hole laws set treatment probability to zero where action 1 is forbidden and to one where action 0 is forbidden. Paired practical-hole laws use 0.005 and 0.995 instead. Outside a hole, treatment probability is expit(etaA).",
+  "outcome_model": "Let meanL, meanM, and meanA be averages over the six visits. Generate Y from Bernoulli(expit(etaY)), where etaY = -2.25 + 0.30*B1 + 0.20*B2 + 0.55*B3 + 0.60*L5 + 0.35*M5 + 0.20*meanL + 0.25*meanM - 0.75*meanA + 0.45*meanA*B3 + 0.25*meanA*I(B1>0) + C*(0.55*(L5^2/(1+L5^2)-0.5) + 0.35*sin(pi*meanL/2) + 0.35*M5*I(L5>0.5) - 0.30*meanA*tanh(L5)) + delta*Zg. For an exact-hole geometry g, define Zg as I(any At=1 where action 1 is forbidden) minus I(any At=0 where action 0 is forbidden). Every observed trajectory under that exact treatment law has Zg=0. Evaluate the seven prespecified completions delta in {-log(3), -log(2), -log(1.5), 0, log(1.5), log(2), log(3)} on identical intervention paths. These values are symmetric only on the conditional logit scale; no marginal risk-difference symmetry is claimed. Set delta=0 for soft-overlap and practical-hole laws.",
+  "treatment_effect": "The conditional direct contribution of sustained treatment versus no treatment is -0.75 on the log odds scale before effect modification. Treatment also lowers subsequent L by 0.40 and the log odds of subsequent M by 0.35, creating mediated effects and treatment-confounder feedback. The target is the resulting total marginal effect rather than the coefficient -0.75.",
+  "effect_modification": "B3 increases the sustained-treatment log odds contrast by 0.45 and B1>0 increases it by 0.25. Under nonlinear complexity there is an additional -0.30*tanh(L5) modifier. These modifiers remain fixed across support laws and completion magnitudes.",
+  "factors": [
+   {
+    "name": "Sample size",
+    "levels": [
+     "n=1000",
+     "n=4000"
+    ],
+    "rationale": "The two levels distinguish ordinary finite-sample sparsity from a larger workload. Sample size does not change the superpopulation truth."
+   },
+   {
+    "name": "Observed-law complexity",
+    "levels": [
+     "C=0: main-effects treatment, covariate, and outcome laws",
+     "C=1: bounded nonlinearities and interactions in all three laws"
+    ],
+    "rationale": "The first level permits conventional modeling to work when support exists. The second gives flexible modeling a legitimate approximation-error advantage."
+   },
+   {
+    "name": "Support mechanism",
+    "levels": [
+     "Strong overlap: p=expit(0.5*etaA)",
+     "Moderate overlap: p=expit(etaA)",
+     "Severe practical nonoverlap: p=expit(2.5*etaA)",
+     "Exact linear holes with b=1.00",
+     "Practical linear holes with b=1.00 and probabilities 0.005 or 0.995",
+     "Exact linear holes with b=1.25",
+     "Practical linear holes with b=1.25 and probabilities 0.005 or 0.995",
+     "Exact linear holes with b=1.50",
+     "Practical linear holes with b=1.50 and probabilities 0.005 or 0.995",
+     "Exact curved holes",
+     "Practical curved holes with probabilities 0.005 or 0.995",
+     "Exact disconnected holes",
+     "Practical disconnected holes with probabilities 0.005 or 0.995",
+     "Exact interaction-dependent holes",
+     "Practical interaction-dependent holes with probabilities 0.005 or 0.995",
+     "Exact longitudinally accumulated holes",
+     "Practical longitudinally accumulated holes with probabilities 0.005 or 0.995"
+    ],
+    "rationale": "The soft regimes separate ordinary overlap from severe but nonzero probabilities. Each exact geometry has a paired practical version using the same boundary. The nonlinear boundaries were fixed independently of the support map and outcome model. The three linear boundaries provide prespecified boundary sensitivity without tuning to a desired unsupported mass."
+   },
+   {
+    "name": "Compatible completion magnitude for exact-hole truth evaluation",
+    "levels": [
+     "delta=-log(3)",
+     "delta=-log(2)",
+     "delta=-log(1.5)",
+     "delta=0",
+     "delta=log(1.5)",
+     "delta=log(2)",
+     "delta=log(3)"
+    ],
+    "rationale": "Completion magnitude is a nested truth evaluation, not a distinct observed dataset. The primary benchmark uses {-log(2),0,log(2)}. The other magnitudes are prespecified stress-test sensitivity analyses."
+   }
+  ],
+  "n_scenarios": 236,
+  "deliberately_true": "There are 68 unique observed-data laws from 2 sample sizes by 2 complexity levels by 17 support mechanisms. The 28 exact-hole laws each have seven observationally equivalent counterfactual completions, producing 196 exact-hole estimand scenarios. The remaining 40 observed-data laws have delta=0, yielding 236 estimand scenarios in total. Consistency, sequential exchangeability given recorded history, no interference, correct temporal ordering, complete measurement, fixed visits, and absence of censoring or competing events are true by construction. Soft and practical-hole laws satisfy theoretical positivity. Exact-hole laws violate positivity for at least one sustained strategy whenever their unsupported mass is positive. Every completion of a given exact-hole law reuses the same observed dataset, folds, fitted estimates, diagnostics, and interval.",
+  "cannot_detect": "The study cannot assess unmeasured confounding, violations of consistency, interference, measurement error, censoring, competing risks, irregular observation, continuous or multiple treatments, grace periods, transportability, or the frequency of structural ambiguity in applications. No observed-data diagnostic can distinguish the exact-hole counterfactual completions or certify sequential exchangeability. The study evaluates one series learner and one support map. It does not establish performance for neural networks, BART, every flexible estimator, or diagnostics in common applied use."
+ },
+ "estimands": [
+  {
+   "name": "12-month sustained-strategy risk difference",
+   "definition": "The superpopulation marginal risk difference E[Y under A0=...=A5=1] minus E[Y under A0=...=A5=0] among everyone eligible at month 0. This is a per-protocol contrast between sustained strategies, not a conditional regression coefficient or realized-sample estimand.",
+   "true_value_computation": "For each complexity level, generate one common set of 2000000 baseline variables and innovation paths for each sustained strategy. Evaluate all delta values, exact-hole geometries, and support-mass functions on these common paths. Average expit(etaY) rather than drawing Y. Compute batch standard errors from 100 batches of 20000 paths and extend every common path set in blocks of 1000000 until the maximum batch standard error among reported risk differences and spans is at most 0.0005. Support laws with delta=0 share exactly the same calculated causal risk difference rather than receiving separate Monte Carlo simulations."
+  },
+  {
+   "name": "Compatible-truth set and span",
+   "definition": "For exact-hole geometry g and magnitude m in {log(1.5), log(2), log(3)}, the compatible-truth set is {RDg(-m), RDg(0), RDg(m)}. Its span is the maximum minus the minimum of those three marginal risk differences. All values in a set correspond to one observed-data law.",
+   "true_value_computation": "Evaluate all three conditional outcome probabilities on the same intervention paths. The primary benchmark uses m=log(2). The other magnitudes quantify sensitivity to the fixed completion choice. Report actual marginal risk differences and do not describe them as symmetric."
+  },
+  {
+   "name": "Strategy-specific unsupported mass",
+   "definition": "For each strategy and visit, calculate the probability under that strategy's history distribution that the required action has true conditional probability zero. Separately calculate mass with required-action probability below 0.025. The scenario summary is the maximum across visits and strategies.",
+   "true_value_computation": "Evaluate the known treatment mechanism on the common intervention paths. Exact-hole materiality is zero-probability mass of at least 0.05. Practical materiality is below-0.025 mass of at least 0.05. Strong-overlap specificity is evaluated only when the below-0.025 mass is at most 0.005. These thresholds are fixed and are not used to alter a boundary or completion."
+  }
+ ],
+ "methods": [
+  {
+   "name": "Fixed-cap longitudinal IPW",
+   "point_estimator": "At each visit, fit a logistic treatment model from a prespecified candidate matrix containing an intercept, B1, B2, B3, tanh(B1), Lt, tanh(Lt), Mt, available prior treatment, and available prior means of A, L, and M. Do not include t/5 because visit is constant within a visit-specific model. Omit unavailable history at t=0. Before fitting, remove zero-variance columns and exact duplicate or aliased columns by pivoted QR with a fixed tolerance of 1e-10. For each sustained strategy, retain complete followers, form cumulative inverse probability weights, cap the final weight at the fixed value 50, and estimate risk by the Hajek weighted mean. Subtract never-treated risk from always-treated risk. No empirical quantile is estimated.",
+   "variance_estimator": "Use a person-level stacked M-estimation sandwich containing all retained treatment-model score equations and both fixed-cap Hajek mean equations. The fixed cap is not a sample-estimated parameter. Form the Jacobian from centered numerical differentiation of the full stacked equations, including the dependence of weights on treatment coefficients. Form the meat from person-level outer products. Use A inverse B A inverse transpose divided by n. Record failure if the Jacobian condition number exceeds 1e12.",
+   "interval": "Untruncated Wald interval for the risk difference using the stacked-sandwich standard error and multiplier 1.96.",
+   "is_status_quo": true,
+   "nonconvergence": "Any treatment GLM with converged=FALSE after prespecified matrix reduction; nonfinite retained coefficients or predictions; no complete followers of either strategy; a zero weighted denominator; a nonfinite estimate or standard error; or a sandwich Jacobian condition number above 1e12. Prespecified removal of constants, duplicates, or exact aliases is not nonconvergence.",
+   "implementation": "Use stats::glm and matrix operations. Record retained columns, maximum uncapped weight, number of capped weights, number of complete followers, and effective sample size for each strategy. Diagnostic-only fold-specific main-effects treatment fits use the same two folds as the flexible method."
+  },
+  {
+   "name": "Main-effects longitudinal AIPW",
+   "point_estimator": "Use the six full-sample treatment models and visit-specific matrix reduction specified for fixed-cap IPW. For each strategy a, set Q6=Y. For t from 5 to 0, fit a quasibinomial logit regression of Q[t+1] on the available main history features, At, At*B3, At*I(B1>0), and At*tanh(Lt), after removing constants and exact aliases by the same pivoted-QR policy. Predict Q[t] after setting At=a. Truncate fitted action probabilities to [0.01,0.99] only inside the estimating equation. Calculate the longitudinal AIPW influence contribution for each strategy and subtract never-treated risk from always-treated risk.",
+   "variance_estimator": "Treat the complete estimator as a stacked M-estimator. Stack all treatment score equations, all six backward Q-regression score equations, and both target-risk equations. Construct person-level contributions recursively so that the Jacobian includes dependence of earlier Q equations and target equations on every downstream nuisance coefficient. Use the empirical sandwich A inverse B A inverse transpose divided by n. This estimates sampling variation under the fitted, potentially misspecified nuisance models; bias relative to the causal truth remains a separate performance measure.",
+   "interval": "Untruncated Wald interval using 1.96 times the full stacked-M-estimation standard error.",
+   "is_status_quo": false,
+   "nonconvergence": "Any retained treatment or Q regression with converged=FALSE; nonfinite retained coefficients or predictions; a rank-reduced design that cannot produce a required prediction; a nonfinite estimating contribution, estimate, or standard error; or a stacked Jacobian condition number above 1e12. Estimates outside the logical risk range are retained and flagged.",
+   "implementation": "Use stats::glm with binomial treatment models, a binomial terminal outcome regression, and quasibinomial fractional backward regressions. Save action-probability truncation by visit and strategy. Fit diagnostic-only main-effects treatment and terminal-outcome models on the same training folds used by the flexible method."
+  },
+  {
+   "name": "Cross-fitted flexible series AIPW with conventional diagnostics",
+   "point_estimator": "Use two prespecified folds balanced on B3 and Y. At visit t, the rich history map contains every recorded B, L0 through Lt, M0 through Mt, and A0 through A[t-1]; current values and available previous means; natural cubic spline bases with 4 degrees of freedom for B1 and every recorded L; and products of the current L spline basis with B3, Mt, available A[t-1], and previous mean A. Q regressions additionally contain At interactions with B3, I(B1>0), Mt, and the current L spline basis. Determine knots, centers, scales, zero-variance columns, and pivoted-QR reductions from the training fold only. Fit fold-specific logistic treatment models and the backward AIPW recursion. Combine validation-fold influence contributions and truncate action probabilities to [0.01,0.99] only inside the estimating equation.",
+   "variance_estimator": "Use the empirical variance of the cross-fitted risk-difference influence contributions divided by n.",
+   "interval": "Untruncated Wald interval using 1.96 times the cross-fitted influence-function standard error.",
+   "is_status_quo": false,
+   "nonconvergence": "Any fold-specific GLM with converged=FALSE; a reduced model that cannot produce every required validation or strategy prediction; nonfinite retained coefficients, predictions, influence contributions, estimate, or standard error. Complete or quasi-complete separation warnings are retained as numerical warnings even when glm reports convergence.",
+   "implementation": "Use stats::glm and splines::ns. On each identical training fold, also fit the main-effects treatment models and the t=5 main-effects outcome model. For visit t and model class k, define heldout treatment log loss as the validation mean of -A*log(p)-(1-A)*log(1-p), with predictions clipped to [1e-6,1-1e-6] only for scoring. Report each visit separately and their equally weighted mean. Define terminal-outcome log loss analogously for Y predicted from the t=5 observed history and observed A5. A flexible replicate has competitive heldout loss only when its treatment loss is no more than 0.01 worse than the main-effects loss at every visit and its terminal-outcome loss is no more than 0.01 worse. Heldout loss is reported separately and is not used to give the flexible estimator a different primary green-status rule."
+  },
+  {
+   "name": "Cross-fitted flexible series AIPW with prediction-level support map",
+   "point_estimator": "Use exactly the same point estimate as cross-fitted flexible series AIPW. The support map changes reporting only.",
+   "variance_estimator": "Use exactly the same cross-fitted influence-function variance estimate.",
+   "interval": "Use the same untruncated 95 percent Wald interval, displayed with a green or red support status.",
+   "is_status_quo": false,
+   "nonconvergence": "Use the same numerical nonconvergence definition as flexible series AIPW. A red support status is a substantive warning rather than numerical nonconvergence.",
+   "implementation": "For every fold, visit, and required action, use the exact reduced rich feature matrix used by the nuisance regressions. Flag a validation prediction if the cross-fitted required-action probability is below 0.025 or its action-specific ridge leverage exceeds a training-derived cutoff. For action a, calculate ridge leverage relative to factual training rows receiving a, with lambda=1e-6*trace(Za transpose Za)/p. Calculate deleted-row ridge leverages for those training factual rows and set the cutoff to their 99.5th percentile. No heldout factual row contributes to cutoff estimation. Automatically flag an action cell with fewer than max(50,2*p) training observations. At visit t, summarize flags among validation histories adhering to the strategy through t-1, weighted by truncated inverse probability of prior adherence. Issue a red status when weighted flagged mass is at least 0.05 at any visit under either strategy. Report mass by visit, strategy, probability component, and leverage component. The map receives no structural score, forbidden-region label, true propensity, outcome coefficient, or completion value."
+  }
+ ],
+ "performance": {
+  "primary": "For each method j, exact-hole cell c, replicate r, and completion magnitude m, define common conventional green status as successful numerical convergence plus all of the following from cross-fitted treatment predictions: fewer than 1 percent of factual required-action probabilities below 0.01, effective sample size at least 25 percent of complete followers for both strategies, and maximum uncapped cumulative weight at most 50. Define compatible-set coverage as the method's one interval containing both the minimum and maximum truths in {RDc(-m), RDc(0), RDc(m)}. Define F[j,c,r,m]=1 when common status is green and compatible-set coverage fails; otherwise define it as zero, including when the method warns or fails. The primary magnitude is m=log(2). Estimate cell-specific paired excesses mean(F[flexible]-F[IPW]) and mean(F[flexible]-F[main AIPW]). No pooling across support geometry, sample size, or complexity is used for the primary decision. For the support-map policy define F[map,c,r,m]=F[flexible,c,r,m] times I(the support map is green).",
+  "secondary": [
+   "Compatible-set failure and conventional-green false-certainty rates for every method, cell, and completion magnitude",
+   "Cell-specific paired flexible-minus-IPW and flexible-minus-main-AIPW false-certainty differences",
+   "Paired reduction F[flexible]-F[map] by cell",
+   "Flexible false certainty among replicates with competitive heldout treatment and terminal-outcome loss",
+   "Bias with Monte Carlo standard error for every method and truth completion",
+   "Empirical standard error",
+   "Mean model standard error",
+   "Relative error in model standard error",
+   "Mean squared error",
+   "Pointwise 95 percent coverage for every completion",
+   "Compatible-set coverage",
+   "Bias-eliminated coverage",
+   "Two-sided rejection rate for a zero risk difference",
+   "Convergence and numerical-warning rates",
+   "Median and 90th percentile interval width",
+   "Compatible-truth span for every geometry and magnitude",
+   "Cell-specific red-warning sensitivity for exact zero-probability mass of at least 0.05",
+   "Cell-specific red-warning sensitivity for below-0.025 mass of at least 0.05 in practical-hole scenarios",
+   "Cell-specific specificity in every strong-overlap cell with below-0.025 mass at most 0.005",
+   "False red-warning rate in every strong-overlap cell",
+   "Treatment heldout log loss by visit and model class",
+   "Terminal-outcome heldout log loss by model class",
+   "Effective sample size, maximum weight, complete followers, and probability-truncation frequency",
+   "Sensitivity of every conclusion to completion magnitudes log(1.5), log(2), and log(3)",
+   "Sensitivity across linear support boundaries 1.00, 1.25, and 1.50"
+  ],
+  "n_rep": 2000,
+  "n_rep_derivation": "The primary comparisons are paired means of indicators whose replicate-level difference lies in {-1,0,1}. Its variance is at most 1, so 2000 replicates give worst-case Monte Carlo standard error at most sqrt(1/2000)=0.02236. A cell-specific Bernoulli rate has worst-case Monte Carlo standard error sqrt(0.25/2000)=0.01118. Decisions use one-sided simultaneous Monte Carlo confidence bounds rather than raw point estimates. Proportion bounds use Wilson bounds. Paired-difference bounds use the empirical standard deviation of replicate-level differences and a t critical value. Bonferroni adjustment within each named decision family provides 95 percent familywise Monte Carlo coverage."
+ },
+ "decision_rule": {
+  "problem_is_real_if": "No result produces a binary verdict on LRN-01. Define the narrower flexible-specific stress-test hypothesis as supported only if every prespecified exact-hole geometry has zero-probability mass at least 0.05 and a log(2) compatible-truth span at least 0.05, and the simultaneous lower Monte Carlo bound for the flexible false-certainty excess is at least 0.10 against both fixed-cap IPW and main-effects AIPW in every sample-size by complexity by geometry cell. Classify the support map as successful separately only if the simultaneous lower bound for red-warning sensitivity is at least 0.90 in every material exact-hole cell and every paired practical-hole cell, specificity is at least 0.90 in every strong-overlap cell, and paired false-certainty reduction is at least 0.40 in every material exact-hole cell.",
+  "problem_is_not_real_if": "No result establishes that LRN-01 is not real. Classify the narrower flexible-specific excess as not supported only if the simultaneous upper Monte Carlo bound for both flexible-minus-IPW and flexible-minus-main-AIPW excess is at most 0.05 in every material exact-hole cell. Classify the support map as unsuccessful separately if the simultaneous upper bound for its minimum cell-specific sensitivity is at most 0.80, its minimum strong-overlap specificity is at most 0.80, or its minimum paired false-certainty reduction is at most 0.20.",
+  "uninformative_if": "Classify the corresponding narrow conclusion as uninformative when neither directional bound is met; any curved, disconnected, interaction-dependent, or accumulated exact geometry has zero-probability mass below 0.05 or a primary compatible-truth span below 0.05; strong-overlap convergence at n=4000 has a simultaneous lower bound below 0.90 for any method; a required cell has fewer than 1500 completed replicate results after rerunning documented infrastructure failures; or implementation validation fails. Do not retune completion magnitudes, boundaries, projection coefficients, diagnostic thresholds, model bases, or indifference margins after truth or performance results are observed.",
+  "both_branches_reachable": "The supported branch can occur if the flexible workflow returns green incompatible intervals materially more often than both comparators in every required cell. The not-supported branch can occur if its paired false-certainty rates are equal to or lower than both comparator rates throughout those cells. The map-success and map-failure branches likewise depend on observed red and green statuses from fixed thresholds. No branch requires one adverse scenario while its opposite requires universal perfection."
+ },
+ "threats": [
+  {
+   "threat": "The compatible completions create nonidentification by construction.",
+   "mitigation": "Use them only as an internal logical benchmark for interval and warning behavior. Report all three fixed magnitudes and all resulting marginal spans. Do not infer how often comparable ambiguity occurs in applications."
+  },
+  {
+   "threat": "Completion magnitudes are symmetric on the logit scale but not on the marginal risk-difference scale.",
+   "mitigation": "Report the seven actual marginal risk differences and three actual spans. Make no claim of marginal symmetry."
+  },
+  {
+   "threat": "A selected support boundary could encode a desired compatible-truth span or unsupported mass.",
+   "mitigation": "Freeze three linear boundaries and all nonlinear projection coefficients before truth simulation. Never solve a boundary or delta for a target span, warning rate, or false-certainty rate. Treat a nonmaterial span or mass as uninformative."
+  },
+  {
+   "threat": "Simple deterministic tails may be unusually easy for a support diagnostic.",
+   "mitigation": "Include independently fixed curved, disconnected, interaction-dependent, and longitudinally accumulated holes. Pair every exact geometry with a practical 0.005 or 0.995 version."
+  },
+  {
+   "threat": "The map could appear successful because its warning threshold is more permissive than the truth definition.",
+   "mitigation": "Use the same 0.05 mass threshold for a red map status and for material true unsupported mass. Evaluate exact and practical support separately."
+  },
+  {
+   "threat": "The support diagnostic could leak evaluation data into its leverage cutoff.",
+   "mitigation": "Estimate every cutoff exclusively from deleted-row leverages in the training fold. Validation factual rows and strategy predictions never determine the cutoff."
+  },
+  {
+   "threat": "The structural witness applies to every estimator and could be misreported as a flexible-estimation-specific result.",
+   "mitigation": "Apply the identical compatible-truth criterion to all estimators. Make paired flexible-minus-conventional differences primary and report the method-specific rates side by side."
+  },
+  {
+   "threat": "Flexible series regression does not represent every flexible learner.",
+   "mitigation": "Limit conclusions to the specified feature library, fitting algorithm, and map. Do not generalize operating characteristics to neural networks, BART, or flexible estimation generally."
+  },
+  {
+   "threat": "Poor performance could be caused by numerical instability rather than support failure.",
+   "mitigation": "Separate numerical failure, conventional warnings, support warnings, bias, compatible-set failure, and predictive loss. Require adequate strong-overlap convergence before interpretation."
+  },
+  {
+   "threat": "Variance-estimator error could confound interval comparisons.",
+   "mitigation": "Use fixed rather than empirical weight caps, full stacked M-estimation for both non-cross-fitted methods, and cross-fitted influence variance for the series method. Before production, validate score equations and compare sandwich standard errors with complete-procedure nonparametric bootstrap estimates on a prespecified benchmark subset."
+  },
+  {
+   "threat": "Monte Carlo error in causal truths could be mistaken for estimator bias or compatible-set failure.",
+   "mitigation": "Use common intervention paths, conditional outcome probabilities, batch standard errors, and automatic extension until the maximum truth standard error is at most 0.0005."
+  },
+  {
+   "threat": "Reusing exact-hole datasets creates dependence among completion-specific results.",
+   "mitigation": "This reuse establishes observational equivalence. Analyze all completion comparisons as paired quantities and calculate Monte Carlo uncertainty from replicate-level paired indicators."
+  },
+  {
+   "threat": "A green support map could be interpreted as proof of identification.",
+   "mitigation": "Label green as no detected support failure under the specified feature map. Never label it identified. The protocol expressly excludes exchangeability, consistency, and interference diagnostics."
+  },
+  {
+   "threat": "The study does not measure whether applied work presents flexibility as a remedy for identification failure.",
+   "mitigation": "Prohibit field-prevalence and applied-practice conclusions. Resolving that part of LRN-01 requires a separate systematic study of applied claims and analysis choices."
+  },
+  {
+   "threat": "Fixed bimonthly visits simplify the conditioning histories.",
+   "mitigation": "Treat fixed visits as a design boundary. The study says nothing about irregular visits or informative measurement times."
+  }
+ ],
+ "runtime_estimate": "The design has 68 unique observed-data laws and 2000 replicates, requiring 136000 distinct observed datasets. Completion-specific truths reuse the same fitted result. Each dataset requires approximately 50 GLM fits: 6 full-sample main-effects treatment fits, 6 full-sample main-effects Q fits, 24 two-fold flexible nuisance fits, 12 fold-specific main-effects treatment fits for common diagnostics and loss comparison, and 2 fold-specific terminal-outcome comparator fits. This yields approximately 6.8 million GLM fits, plus stacked-sandwich Jacobians, ridge operations, counterfactual predictions, diagnostics, and serialization. No numerical hour forecast is asserted before an end-to-end benchmark. Before production, run at least 100 complete representative dataset replicates at n=1000 and 100 at n=4000, balanced across complexity and support classes, using the intended six-worker configuration and one BLAS thread per worker. Measure wall time, CPU time, peak resident memory, Jacobian cost, ridge cost, and checkpoint size. Extrapolate the complete 136000-dataset workload from measured throughput and publish that estimate before generating performance outcomes. If available resources cannot support the fixed design, amend and re-review the protocol before outcome generation rather than silently reducing scenarios, methods, diagnostics, or replicates.",
+ "bears_on": [
+  {
+   "id": "LRN-01",
+   "relation": "answers-part",
+   "what": "The study evaluates whether one flexible series workflow disguises observable support failure more often than two conventional workflows and measures one support map's operating characteristics. It does not test applied claims that flexibility repairs identification, diagnose unmeasured confounding, establish a generally applicable diagnostic, estimate field prevalence, or authorize a binary catalog verdict."
+  }
+ ],
+ "citations": [
+  {
+   "cite": "Morris TP, White IR, Crowther MJ. Using simulation studies to evaluate statistical methods. Statistics in Medicine. 2019;38:2074-2102.",
+   "doi_or_url": "10.1002/sim.8086",
+   "used_for": "ADEMP structure, Monte Carlo uncertainty, and prespecified performance measures."
+  },
+  {
+   "cite": "Feuerriegel S, Frauen D, Melnychuk V, et al. Causal machine learning for predicting treatment outcomes. Nature Medicine. 2024;30:958-968.",
+   "doi_or_url": "10.1038/s41591-024-02902-1",
+   "used_for": "The principle that flexible causal prediction retains conventional identification requirements."
+  },
+  {
+   "cite": "Hill JL, Su YS. Assessing lack of common support in causal inference using Bayesian nonparametrics: implications for evaluating the effect of breastfeeding on children's cognitive outcomes. Annals of Applied Statistics. 2013;7:1386-1420.",
+   "doi_or_url": "10.1214/13-AOAS630",
+   "used_for": "Precedent for model-linked common-support diagnostics."
+  },
+  {
+   "cite": "Evaluating bias in target trial emulation for heart failure across statistical and deep learning methods. Nature Communications. 2026.",
+   "doi_or_url": "10.1038/s41467-026-74999-6",
+   "used_for": "Motivation for a limited comparison of flexible and conventional estimators."
+  },
+  {
+   "cite": "Estimate time-varying exposure effects via ensemble learning-based marginal structural model. Biometrical Journal. 2026.",
+   "doi_or_url": "10.1002/bimj.70133",
+   "used_for": "Motivation for studying flexible nuisance estimation in a longitudinal weighting setting."
+  }
+ ],
+ "revision": {
+  "resolved": [
+   {
+    "finding": "The study cannot settle LRN-01 because it covers only recorded-history positivity and one bespoke diagnostic.",
+    "severity": "fatal",
+    "how": "declared-limitation",
+    "what_changed": "The title, question, aims, decision rule, bears_on statement, and limitations now define the study as settling only the support-diagnostic and estimator-comparison part. A binary verdict on LRN-01 is prohibited."
+   },
+   {
+    "finding": "The observational-equivalence construction is not specific to flexible estimation.",
+    "severity": "fatal",
+    "how": "design-decision",
+    "what_changed": "The identical compatible-truth criterion now applies to every estimator. Cell-specific paired flexible-minus-IPW and flexible-minus-main-AIPW differences are primary."
+   },
+   {
+    "finding": "Chosen delta values, support thresholds, and interval-width cutoff partly determine false certainty.",
+    "severity": "serious",
+    "how": "declared-limitation",
+    "what_changed": "The construction is now an internal stress-test benchmark rather than evidence about field prevalence. Three fixed completion magnitudes and three fixed linear boundaries are reported, the interval-width cutoff was removed, and no parameter is solved for a desired result."
+   },
+   {
+    "finding": "The original diagnostic test used an unusually favorable simple deterministic boundary and a lower warning threshold than the truth threshold.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The DGM now includes independently frozen curved, disconnected, interaction-dependent, and accumulated boundaries, with paired exact and practical versions. The diagnostic and truth materiality thresholds both use mass 0.05."
+   },
+   {
+    "finding": "Support-specific intervention truths were unnecessarily simulated separately.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "One common pair of intervention path sets per complexity level now supplies all causal truths, completions, geometries, and support-mass functionals."
+   },
+   {
+    "finding": "Visit-specific status quo treatment models contain exact aliases and would fail by definition.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Constant time terms and unavailable histories were removed. Every method now uses the same prespecified zero-variance, duplicate-column, and pivoted-QR alias-removal policy."
+   },
+   {
+    "finding": "The IPW sandwich omits empirical-cap uncertainty and the main-effects AIPW variance omits nuisance-estimation effects under misspecification.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "IPW now uses a fixed cap of 50 and a full stacked sandwich. Main-effects AIPW now uses a stacked M-estimation sandwich containing all treatment, Q-regression, and target equations."
+   },
+   {
+    "finding": "Heldout losses were undefined and comparator fits were missing, while heldout rows calibrated their own leverage cutoff.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Treatment and terminal-outcome losses now have explicit formulas and identical folds for both model classes. Main-effects diagnostic fits are included. Leverage cutoffs use deleted-row training leverages only."
+   },
+   {
+    "finding": "Sensitivity, specificity, and false certainty under the map lacked cell-level denominators and aggregation rules.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "Every rate uses all 2000 replicates within a named cell. Primary contrasts are unpooled, map requirements use minimum cell-specific performance, and map false certainty is explicitly the original event combined with a green support status."
+   },
+   {
+    "finding": "Raw threshold decisions ignored Monte Carlo uncertainty and included an MCSE condition that could not occur.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "Decisions now use one-sided simultaneous Monte Carlo confidence bounds and indifference margins. The impossible achieved-MCSE clause was removed, and replicate derivation now covers paired differences."
+   },
+   {
+    "finding": "The runtime forecast omitted major fitting, variance, diagnostic, and serialization costs.",
+    "severity": "serious",
+    "how": "design-decision",
+    "what_changed": "The workload now includes all comparator fits and nonfit computations. A mandatory 200-dataset end-to-end benchmark under the intended worker configuration precedes any numerical runtime claim or production run."
+   },
+   {
+    "finding": "The incomplete nonmutually exclusive assignment citation did not establish the stated poor-overlap claim.",
+    "severity": "minor",
+    "how": "design-decision",
+    "what_changed": "The unsupported claim and citation were removed. No authors, pagination, or result were invented."
+   }
+  ],
+  "disputed": [],
+  "declared_limitations": [
+   "The study settles only the support-diagnostic and estimator-comparison part of LRN-01 and cannot produce a binary verdict on the full catalog entry.",
+   "It does not determine whether applied work presents flexible estimation as a remedy for failed identification.",
+   "It cannot diagnose exchangeability violations, unmeasured confounding, consistency violations, or interference from the observed distribution.",
+   "The compatible completions demonstrate logical ambiguity under fixed stress tests but do not estimate its prevalence or magnitude in applications.",
+   "Operating characteristics apply to one flexible series learner and one support map rather than flexible estimators or diagnostics generally.",
+   "Green support status means no support failure was detected under the specified feature map; it does not certify identification.",
+   "Results do not cover irregular visits, measurement error, censoring, competing risks, continuous treatments, multiple treatments, grace periods, or transportability."
+  ]
+ }
+}
