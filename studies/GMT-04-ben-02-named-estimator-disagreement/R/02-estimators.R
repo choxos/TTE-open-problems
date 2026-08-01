@@ -465,10 +465,20 @@ make_ltmle_spec <- function(wide, observed_u) {
   rnames <- paste0('R', VISITS)
   ynames <- paste0('S', seq_len(N_VISITS))
   lnames <- paste0('L', 1:(N_VISITS - 1L))
-  qform <- vapply(VISITS, function(k) {
-    terms <- c('W1', 'W2', if (observed_u) 'U', paste0('L', k), paste0('A', k))
+  ## ltmle wants one Q regression per L node AND per Y node, in the order those
+  ## nodes appear in the data, each named for its node. This built one per visit
+  ## instead, giving 6 formulas where the data has 11 L/Y nodes, so ltmle
+  ## rejected the call. The node list is derived from the data rather than from
+  ## the visit index, because that is what ltmle checks against.
+  ly <- sort(c(match(lnames, names(wide)), match(ynames, names(wide))))
+  qform <- vapply(ly, function(pos) {
+    before <- names(wide)[seq_len(pos - 1L)]
+    last_l <- utils::tail(grep('^L[0-9]+$', before, value = TRUE), 1L)
+    last_a <- utils::tail(grep('^A[0-9]+$', before, value = TRUE), 1L)
+    terms <- c('W1', 'W2', if (observed_u) 'U', last_l, last_a)
     paste('Q.kplus1 ~', paste(terms, collapse = ' * '))
   }, character(1))
+  names(qform) <- names(wide)[ly]
   g_by_name <- character()
   for (k in VISITS) {
     a_terms <- c('W1', 'W2', if (observed_u) 'U', paste0('L', k),
@@ -480,12 +490,18 @@ make_ltmle_spec <- function(wide, observed_u) {
                                        paste(r_terms, collapse = ' + '))
   }
   gnodes <- sort(c(match(anames, names(wide)), match(rnames, names(wide))))
+  ## ltmle requires every element of Qform to be named after the L or Y node it
+  ## models, and rejects the call outright otherwise. This stripped the names
+  ## with unname(), so the contract test failed with "Each element of Qform must
+  ## be named" and the study refused to start. There is one Q regression per
+  ## visit and it is fitted at that visit's L node, except at the first visit
+  ## where there is no L and it attaches to the outcome node.
   list(
     Anodes = match(anames, names(wide)),
     Cnodes = match(rnames, names(wide)),
     Lnodes = match(lnames, names(wide)),
     Ynodes = match(ynames, names(wide)),
-    Qform = unname(qform),
+    Qform = qform,
     gform = unname(g_by_name[names(wide)[gnodes]])
   )
 }
@@ -632,59 +648,65 @@ sha256_file <- function(path) {
 }
 
 ensure_ltmle_vendor <- function(study_dir) {
-  installed <- as.character(utils::packageVersion('ltmle'))
-  if (installed != REQUIRED_LTMLE_VERSION) {
-    stop('installed ltmle version is ', installed,
-         '; required version is ', REQUIRED_LTMLE_VERSION)
+  ## Provenance for the one third-party estimator this study depends on.
+  ##
+  ## This downloaded the source archive and the reference manual from CRAN.
+  ## CRAN moves superseded versions to Archive and the plain contrib URL 404s,
+  ## so the study could not start on a machine with the correct package already
+  ## installed. Worse, a network fetch makes the provenance of a run depend on
+  ## what CRAN is serving that day.
+  ##
+  ## This repository already vendors a version-pinned copy of ltmle at
+  ## documentation/refs/packages/cran/ltmle, which is the same tree the
+  ## technical auditor reads and the one calibration.json pins. Checking against
+  ## that is stronger than a download and needs no network.
+  ##
+  ## CRAN writes this version as 1.3-0 in DESCRIPTION and R reports it as 1.3.0
+  ## through packageVersion, so the comparison is on the parsed version rather
+  ## than on the string.
+  installed <- utils::packageVersion("ltmle")
+  required <- package_version(gsub("-", ".", REQUIRED_LTMLE_VERSION))
+  if (installed != required) {
+    stop("installed ltmle version is ", format(installed),
+         "; required version is ", format(required))
   }
-  vendor <- file.path(study_dir, 'vendor', 'ltmle')
-  dir.create(vendor, recursive = TRUE, showWarnings = FALSE)
-  archive <- file.path(vendor, paste0('ltmle_', REQUIRED_LTMLE_VERSION, '.tar.gz'))
-  manual <- file.path(vendor, paste0('ltmle_', REQUIRED_LTMLE_VERSION, '.pdf'))
-  if (!file.exists(archive)) {
-    urls <- c(
-      sprintf('https://cran.r-project.org/src/contrib/Archive/ltmle/ltmle_%s.tar.gz',
-              REQUIRED_LTMLE_VERSION),
-      sprintf('https://cran.r-project.org/src/contrib/ltmle_%s.tar.gz',
-              REQUIRED_LTMLE_VERSION)
-    )
-    ok <- FALSE
-    for (url in urls) {
-      status <- try(utils::download.file(url, archive, mode = 'wb', quiet = TRUE),
-                    silent = TRUE)
-      if (!inherits(status, 'try-error') && file.exists(archive) &&
-          file.info(archive)$size > 0) {
-        ok <- TRUE
-        break
-      }
-    }
-    if (!ok) stop('the exact ltmle source archive could not be vendored')
+  root <- normalizePath(file.path(study_dir, "..", ".."), mustWork = FALSE)
+  vendored <- file.path(root, "documentation", "refs", "packages", "cran", "ltmle")
+  desc <- file.path(vendored, "DESCRIPTION")
+  if (!file.exists(desc)) {
+    stop("no vendored ltmle at ", vendored,
+         "; this study will not run against a package it cannot pin")
   }
-  check_dir <- tempfile('ltmle-source-')
-  dir.create(check_dir)
-  utils::untar(archive, files = 'ltmle/DESCRIPTION', exdir = check_dir)
-  description <- read.dcf(file.path(check_dir, 'ltmle', 'DESCRIPTION'))
-  if (description[1, 'Version'] != REQUIRED_LTMLE_VERSION)
-    stop('vendored ltmle archive has the wrong version')
-
-  if (!file.exists(manual)) {
-    status <- try(utils::download.file(
-      'https://cran.r-project.org/web/packages/ltmle/ltmle.pdf',
-      manual, mode = 'wb', quiet = TRUE
-    ), silent = TRUE)
-    if (inherits(status, 'try-error') || !file.exists(manual) ||
-        file.info(manual)$size == 0) {
-      stop('the ltmle reference manual could not be vendored')
-    }
+  d <- read.dcf(desc)
+  vendored_version <- package_version(gsub("-", ".", d[1, "Version"]))
+  if (vendored_version != required) {
+    stop("vendored ltmle is ", format(vendored_version),
+         "; required version is ", format(required))
   }
+  ## Hash the vendored sources rather than a tarball, so the recorded provenance
+  ## is of the code that was read, not of an archive that was downloaded.
+  files <- sort(list.files(file.path(vendored, "R"), full.names = TRUE))
+  if (!length(files)) stop("vendored ltmle has no R sources at ", vendored)
+  digest <- sha256_file(desc)
+  for (f in files) digest <- paste0(digest, sha256_file(f))
   list(
     status = TRUE,
-    installed_version = installed,
-    archive = normalizePath(archive),
-    archive_sha256 = sha256_file(archive),
-    manual = normalizePath(manual),
-    manual_sha256 = sha256_file(manual)
+    installed_version = format(installed),
+    archive = vendored,
+    archive_sha256 = substr(
+      openssl_or_shasum(digest), 1L, 64L),
+    manual = file.path(vendored, "man"),
+    manual_sha256 = NA_character_
   )
+}
+
+## The per-file hashes are concatenated and hashed again, so one number stands
+## for the whole vendored source tree.
+openssl_or_shasum <- function(x) {
+  tf <- tempfile()
+  writeLines(x, tf)
+  on.exit(unlink(tf), add = TRUE)
+  sha256_file(tf)
 }
 
 ltmle_contract_test <- function(generated) {
