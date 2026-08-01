@@ -1,0 +1,35 @@
+{
+ "verdict": "uninformative",
+ "what_the_numbers_say": "The study estimated all registered global quantities. The 36 generated-data cells each completed 2,000 replicates, fixed-candidate failure probability was zero, and the global naive coverage was 0.94966 overall and 0.94998 outside the boundary regime. The corresponding deficits were 0.00034 and 0.000016, with simultaneous upper bounds of 0.00188 and 0.00187. These results strongly exclude a two-percentage-point global deficit within the simulated grid. However, only 359 of 360 fixed-candidate calibration evaluations passed: coverage was 0.9285 for the K=4, n=8,000, 35-event, heterogeneous-effect, c55-h36 evaluation. The Bonferroni and sample-splitting classifications agree with their separate numerical rules, and no contradictory performance pattern is evident.",
+ "branch_check": {
+  "protocol_threshold": "Every fixed candidate in every generated-data cell must have coverage between 0.93 and 0.97, truth MCSE at most 0.00005, and failure probability below 0.05 before either substantive branch can be used. Any calibration failure requires the mixed or uninformative branch.",
+  "observed": "The run was complete, truth MCSE was at most 0.0000166, failures were zero for fixed candidates, but one of 360 coverage evaluations was 0.9285 and therefore below 0.93. D_all was 0.000340 with interval [-0.001197, 0.001878], and D_nonboundary was 0.000016 with interval [-0.001841, 0.001872].",
+  "monte_carlo_margin": "The failing calibration estimate missed 0.93 by 0.93-0.9285=0.0015, only 0.26 of its MCSE of 0.005761, so the miss is not substantive evidence of true undercoverage. Conversely, D_all was 0.019660 below the 0.02 threshold, or 28.7 MCSE, and D_nonboundary was 0.019984 below it, or 24.1 MCSE. Their simultaneous upper bounds remained 0.01812 below the threshold.",
+  "branch_supported": true
+ },
+ "findings": [
+  {
+   "severity": "fatal",
+   "axis": "fixed-candidate calibration gate",
+   "what": "The prespecified gate fails because one coverage estimate is 0.9285. This makes the registered substantive result uninformative even though both global deficit intervals fall decisively below 0.02. The gate miss itself is within one Monte Carlo standard error and cannot be presented as evidence that fixed-candidate inference truly undercovers.",
+   "fix": "Report the registered result as uninformative and do not override or round the gate. A decisive classification would require a separately prespecified replication or extension with a calibration rule that explicitly incorporates Monte Carlo uncertainty."
+  },
+  {
+   "severity": "serious",
+   "axis": "scope",
+   "what": "The numerical pattern cannot establish that data-adaptive target-trial specification is harmless generally or close PRO-02. It covers deterministic recorded searches over nested age thresholds and outcome horizons, libraries of 4 or 16 candidates, and clean correctly specified IPW settings.",
+   "fix": "Restrict the headline to marginal coverage under the simulated finite-search grid and retain the answers-part relation to PRO-02."
+  }
+ ],
+ "defensible_claim": "Within the simulated finite libraries and treatment-effect-blind selectors, naive selected intervals achieved 94.966% global coverage and 94.998% nonboundary coverage; both simultaneous deficit upper bounds were about 0.19 percentage points, far below the prespecified two-point threshold. The registered substantive classification remains uninformative because one of 360 fixed-candidate calibration evaluations fell below the 93% gate.",
+ "scope_limits": [
+  "Deterministic, fully recorded searches over age eligibility thresholds and outcome horizons only.",
+  "Libraries contained 4 or 16 highly correlated nested candidates.",
+  "Cohort sizes were 4,000 and 8,000, with expected anchor event counts of 35, 70, or 140.",
+  "Only null, homogeneous protective, and specified age-modified treatment-effect structures were studied.",
+  "Inference was marginal over selection for the selected superpopulation estimand, not conditional on a realized selection event.",
+  "The data-generating process used correct propensity modeling, perfect measurement, no censoring, no competing events, and fixed treatment.",
+  "Undocumented human iteration, unrecorded candidates, comparators, grace periods, washout rules, changing outcome definitions, and longitudinal treatment strategies were not studied."
+ ],
+ "publishable": false
+}

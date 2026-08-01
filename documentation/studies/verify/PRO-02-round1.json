@@ -1,0 +1,42 @@
+{
+ "verdict": "uninformative",
+ "what_the_numbers_say": "The run estimated the registered quantities. All 36 generated-data cells were evaluated with 2,000 replicates, and fixed-candidate failure probability was zero. Naive selected-interval coverage was 0.9496597 overall and 0.9499844 outside the boundary, giving deficits of 0.0003403 and 0.0000156. Their simultaneous intervals were [-0.0011972, 0.0018777] and [-0.0018408, 0.0018721], respectively. These estimates provide strong numerical evidence against a coverage deficit as large as 0.02 within the simulated grid. However, one of 360 fixed-candidate calibrations had coverage 0.9285, below the required 0.93, so the prespecified calibration gate failed.",
+ "branch_check": {
+  "protocol_threshold": "Every fixed candidate must have coverage from 0.93 through 0.97, truth MCSE at most 0.00005, and failure probability below 0.05. Only after that gate passes can upper bounds below 0.02 for both D_all and D_nonboundary establish the not-materially-real branch. Any calibration failure requires the mixed or uninformative branch.",
+  "observed": "The run was complete, truth MCSE was at most 0.0000166, failure probability was zero, and 359 of 360 calibrations passed. Scenario 26, with n=8000, event target 35, K=4, heterogeneous effects, and candidate c55-h36, had coverage 0.9285. The simultaneous upper bounds were 0.0018777 for D_all and 0.0018721 for D_nonboundary.",
+  "monte_carlo_margin": "The sole calibration miss was 0.0015 below 0.93, only 0.26 times its MCSE of 0.005761. By contrast, the global upper bounds were 0.018122 and 0.018128 below the 0.02 threshold, equal to about 26.4 and 21.9 global MCSEs. Thus the global result is decisive, but the registered gate still forces an uninformative classification.",
+  "branch_supported": true
+ },
+ "findings": [
+  {
+   "severity": "serious",
+   "axis": "secondary performance integrity",
+   "what": "The performance file repeatedly reports bias_eliminated_coverage as 0 with MCSE 0. For example, a displayed fixed null row has bias -0.0000308, empirical SE 0.003585, model SE 0.003538, and ordinary coverage 0.946, yet bias-eliminated coverage is recorded as zero. Those values cannot all describe the same estimator and indicate a calculation or export defect.",
+   "fix": "Recompute bias-eliminated coverage from replicate-level estimation errors and standard errors. Use a missing value if the measure is not applicable. Regenerate the results and verify that the registered calibration and global-deficit summaries do not share the faulty calculation path."
+  },
+  {
+   "severity": "serious",
+   "axis": "calibration gate",
+   "what": "One fixed-candidate result fails the literal gate, so the analysis reported the correct branch. The miss is much smaller than its Monte Carlo error and does not independently establish fixed-candidate undercoverage.",
+   "fix": "Retain the uninformative branch and report the exact failing scenario and its MCSE. Do not relax the gate after observing the result. A decisive follow-up would require a separately prespecified independent run or a prespecified increase in replication."
+  },
+  {
+   "severity": "serious",
+   "axis": "scope",
+   "what": "The near-nominal result cannot be stated as resolving PRO-02 generally. It covers recorded deterministic searches over two protocol components, with libraries of 4 or 16 highly correlated candidates whose effective library sizes were approximately 1.35 to 1.85.",
+   "fix": "Confine the headline to the declared finite libraries, selectors, sample sizes, event regimes, estimand, and clean data-generating conditions. State explicitly that undocumented human protocol development and other protocol components remain unresolved."
+  }
+ ],
+ "defensible_claim": "In this 72-scenario simulation of recorded deterministic searches over age thresholds and outcome horizons, naive 95% intervals had 94.966% coverage overall and 94.998% coverage outside the cutoff-boundary cells, with simultaneous deficit upper bounds below 0.19 percentage points. The prespecified substantive classification remains uninformative because one fixed-candidate calibration estimate fell below the 93% gate.",
+ "scope_limits": [
+  "Deterministic, fully recorded searches over age eligibility thresholds and outcome horizons only.",
+  "Nested libraries of K=4 or K=16 highly correlated candidates, not arbitrary or weakly correlated protocol searches.",
+  "Cohort sizes 4,000 and 8,000 with expected anchor event counts of 35, 70, or 140.",
+  "Three specified treatment-effect structures and two fixed prognostic scores.",
+  "Correct propensity modeling, perfect measurement, no censoring, no competing events, and fixed baseline treatment.",
+  "Marginal coverage for the selected superpopulation estimand, not exact conditional post-selection coverage.",
+  "No undocumented or sequential human search, rejected candidates outside the library, comparator changes, grace periods, washout rules, or changing outcome definitions.",
+  "The result cannot close PRO-02 as a whole."
+ ],
+ "publishable": false
+}

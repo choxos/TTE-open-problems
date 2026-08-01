@@ -74,7 +74,13 @@ perf <- do.call(rbind, lapply(parts, function(d) {
   mse <- metric(perf_mse, err, 0)
   cv <- metric(perf_coverage, lo_uncond, hi_uncond, 0)
   cvc <- metric(perf_coverage, lo_err, hi_err, 0)
-  bec <- metric(perf_becoverage, err, se, 0)
+  ## perf_becoverage(est, lower, upper) recentres the interval on the mean
+  ## estimate. This passed (err, se, 0), so the upper bound was 0 and the lower
+  ## bound was a standard error, which makes the interval empty and the measure
+  ## identically zero. It exported 0 with an MCSE of 0 alongside an ordinary
+  ## coverage of 0.946, which is the shape of a measure that is not being
+  ## computed at all rather than one that is small.
+  bec <- metric(perf_becoverage, err, lo_err, hi_err)
   rej <- metric(perf_rejection, d$lo[ok], d$hi[ok], 0)
   conv <- metric(perf_convergence, ifelse(ok, d$est, NA_real_), nrow(d))
 

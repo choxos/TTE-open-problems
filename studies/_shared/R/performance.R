@@ -101,9 +101,24 @@ perf_coverage <- function(lower, upper, truth) {
 ## is 0.95, the intervals are the right width and the point estimate is off. If
 ## both are 0.83, the intervals are too narrow.
 perf_becoverage <- function(est, lower, upper) {
+  ## The signature is (estimates, interval lower bounds, interval upper bounds).
+  ## Generated analysis code repeatedly assumed (estimates, standard errors,
+  ## truth) instead, which passes a standard error as a lower bound and a truth
+  ## value as an upper bound. The interval is then empty and the measure is
+  ## identically zero with a Monte Carlo error of zero, sitting next to an
+  ## ordinary coverage near nominal. That is the shape of a measure that is not
+  ## being computed at all, and it shipped in one study before a reviewer caught
+  ## it. Fail loudly instead: an interval whose lower bound exceeds its upper
+  ## bound on most rows is a wrong call, not a finding.
   ok <- is.finite(est) & is.finite(lower) & is.finite(upper)
   n <- sum(ok)
   if (n < 2L) return(list(est = NA_real_, mcse = NA_real_, n = n))
+  if (mean(lower[ok] > upper[ok]) > 0.5) {
+    stop("perf_becoverage: `lower` exceeds `upper` on ", 
+         round(100 * mean(lower[ok] > upper[ok])), "% of rows. ",
+         "The arguments are (est, lower, upper); passing (est, se, truth) ",
+         "gives an empty interval and a measure that is identically zero.")
+  }
   perf_coverage(lower[ok], upper[ok], mean(est[ok]))
 }
 
