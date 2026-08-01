@@ -209,6 +209,19 @@ def implement_one(pid, timeout=7200):
     for name, body in d["files"].items():
         open(os.path.join(sdir, "R", name), "w", encoding="utf8").write(
             body if body.endswith("\n") else body + "\n")
+    ## Check the cache again on the way out. An implementation pass takes ten
+    ## minutes or more, and a pass still in flight when a later invocation
+    ## implements the same problem writes anyway, leaving two study directories
+    ## for one catalog entry under different slugs. That happened to four
+    ## problems here before this check existed.
+    other = [x for x in glob.glob(os.path.join(STUDIES, f"{pid}-*", "R", "00-config.R"))
+             if os.path.dirname(os.path.dirname(x)) != sdir]
+    if other:
+        import shutil
+        shutil.rmtree(sdir, ignore_errors=True)
+        print(f"  {pid}: another run implemented it first; this one discarded",
+              flush=True)
+        return pid, None
     d["_slug"] = slug
     json.dump({k: v for k, v in d.items() if k != "files"},
               open(os.path.join(work, f"{pid}-meta.json"), "w", encoding="utf8"),
@@ -270,9 +283,16 @@ def main():
     if not a.all:
         sys.exit("pass --problem, --all, --smoke or --smoke-all")
 
-    done = {os.path.basename(os.path.dirname(os.path.dirname(f))).split("-")[0]
-            + "-" + os.path.basename(os.path.dirname(os.path.dirname(f))).split("-")[1]
-            for f in glob.glob(os.path.join(STUDIES, "*", "R", "00-config.R"))}
+    ## `_shared` holds the harness and the performance measures, not a study,
+    ## and it has an R directory like everything else here.
+    done = set()
+    for f in glob.glob(os.path.join(STUDIES, "*", "R", "00-config.R")):
+        name = os.path.basename(os.path.dirname(os.path.dirname(f)))
+        if name.startswith("_"):
+            continue
+        parts = name.split("-")
+        if len(parts) >= 2:
+            done.add(parts[0] + "-" + parts[1])
     todo = [p for p in queue if p not in done]
     if not todo:
         print("every queued problem has an implementation"); return
