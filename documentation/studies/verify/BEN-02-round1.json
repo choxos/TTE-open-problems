@@ -1,0 +1,28 @@
+{
+ "verdict": "supported",
+ "what_the_numbers_say": "All 480000 precision-specific analyses were usable: every cell retained 10000 of 10000 replicates, convergence was 1.000, structural nonconvergence was zero, truth checks passed, and the sceptical p-value source checks passed. Across the 16 structural scenarios, the mean precision range was 0.12439375 for direction matching and 0.49148125 for interval overlap, giving S=0.49148125. Interval-overlap sensitivity was concentrated in the observed-Z and hidden-U shifts, while overlap remained nearly constant under exact alignment. Estimator diagnostics were coherent: coverage ranged from 0.944 to 0.956 around the nominal 0.95, empirical and model-based standard errors closely agreed, and the maximum absolute bias was 0.000859, about 2.02 of its Monte Carlo standard errors. Nothing in the supplied results contradicts the primary finding.",
+ "branch_check": {
+  "protocol_threshold": "The problem-is-real branch requires the lower endpoint of the two-sided 95% Monte Carlo interval for S=max(Vdirection,Voverlap) to exceed 0.10.",
+  "observed": "Vdirection=0.12439375, Voverlap=0.49148125, S=0.49148125, and the 95% Monte Carlo interval is [0.4902625,0.49310625]. The lower endpoint is strictly greater than 0.10.",
+  "monte_carlo_margin": "The lower-endpoint clearance is 0.4902625-0.10=0.3902625. An approximate interval-implied Monte Carlo standard error is (0.49310625-0.4902625)/3.92=0.0007254, so the clearance is about 538 Monte Carlo standard errors.",
+  "branch_supported": true
+ },
+ "findings": [
+  {
+   "severity": "minor",
+   "axis": "headline scope",
+   "what": "Because S is the maximum of the two operator-specific averages, the decision formally supports an at-least-one-operator claim, with interval overlap supplying the decisive value. It does not establish that every binary replication label is materially precision-sensitive or settle BEN-02 as a whole.",
+   "fix": "State both component values and retain the qualifiers that the result concerns these two illustrative operators, these 16 fixed scenarios, and these three nested precision levels."
+  }
+ ],
+ "defensible_claim": "In the prespecified 16-scenario logit and probit grid, holding each scenario's estimands and mismatch mechanism fixed while changing nested sampling precision materially changed the agreement probability of at least one of the two illustrative binary operators. Aggregate sensitivity was S=0.4915 (95% Monte Carlo interval 0.4903 to 0.4931), driven by interval overlap, so the pair-level precision-conflation branch is supported for these operators and scenarios.",
+ "scope_limits": [
+  "The result concerns two explicitly illustrative operators that were not established as recommended or predominant practice.",
+  "The grid contains two outcome links, two baseline-risk levels, four mismatch mechanisms, and three nested sample-size pairs; it does not establish behavior outside those levels.",
+  "The equal weighting of 16 structural scenarios is illustrative rather than representative of real benchmark studies.",
+  "The simulation assumes independent cohorts, correct propensity specification, saturated observed-covariate outcome estimation, no censoring, no residual treatment confounding, and no high-dimensional nuisance learning.",
+  "The result does not choose a discrepancy tolerance, compare database calibration, estimate between-question heterogeneity, evaluate realistic controls, establish prediction-interval calibration, or assess prospective forecasting.",
+  "The result supports only the pair-level precision-conflation component and cannot resolve the full BEN-02 catalog entry."
+ ],
+ "publishable": true
+}

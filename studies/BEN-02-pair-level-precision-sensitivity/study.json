@@ -1,6 +1,9 @@
 {
  "problem_id": "BEN-02",
- "also_bears_on": ["BEN-01", "REG-03"],
+ "also_bears_on": [
+  "BEN-01",
+  "REG-03"
+ ],
  "slug": "BEN-02-pair-level-precision-sensitivity",
  "title": "A binary replication label changes with precision alone, and one operator carries almost all of it",
  "status": "complete",
@@ -8,16 +11,21 @@
  "question": "BEN-02 says replication is reported as a binary label that mixes estimand mismatch with random error. Holding the true trial-emulation discrepancy fixed, how much of the label is decided by precision rather than by the discrepancy, and which of the operators in use carries that sensitivity?",
  "design": "16 structural scenarios crossing the true risk-difference discrepancy with trial and emulation precision, 10,000 replicates each, 480,000 benchmark pairs. Each replicate is one trial cohort and one emulation cohort with a binary outcome, scored by four agreement operators in current use. Truth is enumerated by exact summation over the covariate strata rather than by simulation, so the discrepancy each scenario carries is known to machine precision.",
  "estimand": "The probability that a pair-level agreement operator returns agreement, as a function of precision at a fixed true discrepancy, and the sensitivity S of that probability to precision alone",
- "methods_compared": ["direction agreement", "confidence-interval overlap", "trial-standardized agreement", "joint-null agreement"],
+ "methods_compared": [
+  "direction agreement",
+  "confidence-interval overlap",
+  "trial-standardized agreement",
+  "joint-null agreement"
+ ],
  "n_sim": "10,000 per scenario, 480,000 pairs, 0 replicate errors",
  "date_completed": "2026-08-01",
- "answer": "The precision-conflation component is real and it is concentrated in one operator. Sensitivity S is 0.4915 against a threshold of 0.10 declared before the run, with a paired-bootstrap Monte Carlo interval of 0.4903 to 0.4931. Confidence-interval overlap carries essentially all of it at 0.4915; direction agreement carries 0.1244. Two benchmark pairs with the same true discrepancy can therefore be labelled agreeing and disagreeing on the strength of how precisely each was estimated, and the operator most used to produce the label is the one most exposed.",
+ "answer": "For the operators tested, yes, and it is concentrated in one of them. The sensitivity S is the larger of the two operator-specific values at 0.4915, against a threshold of 0.10 declared before the run, with a 95 percent Monte Carlo interval of 0.4903 to 0.4931; the lower endpoint clears the threshold by roughly 538 Monte Carlo standard errors. Confidence-interval overlap supplies that value; direction agreement moves by 0.1244 over the same range. Two benchmark pairs carrying the same true discrepancy can therefore be labelled agreeing and disagreeing on the strength of how precisely each was estimated, and the operator most used to produce the label is the most exposed.",
  "findings": [
   "The label moves with precision at fixed truth. Holding the true risk-difference discrepancy constant and varying only trial and emulation precision moves the probability of an agreement verdict by 0.49 on the interval-overlap operator, against a threshold of 0.10 set in the protocol before any result existed.",
   "The exposure is not shared evenly. Direction agreement moves by 0.1244 over the same range, a quarter of the interval-overlap figure. An operator choice that is usually made for convenience decides most of the conflation.",
   "It is not an estimation artifact. Coverage runs 0.944 to 0.956 against a nominal 0.95, maximum absolute bias is 0.00086, convergence is complete in every scenario, and the exact finite-cell summation used for truth agrees with itself to 2.2e-16. Nothing here is an estimator failing.",
   "The bootstrap interval is narrow enough to matter. The Monte Carlo interval on S spans 0.0028, so the distance from the 0.10 threshold is not a Monte Carlo question."
  ],
- "not_answered": "This is the pair-level component of BEN-02 and not the whole entry. It says nothing about between-pair heterogeneity across a benchmarking program, about calibration of a graded metric against a decision, or about the graded alternatives the catalog entry's own audit established already exist; the peer review named all three as scope this design does not cover, and they are declared limitations rather than results. Outcomes are binary at a single horizon, so the behavior of these operators on a time-to-event scale is untouched. The study measures how an operator behaves; it does not establish which operator a benchmarking program should adopt, because that depends on a decision the study does not model.",
- "peer_review": "Reviewed before running and returned unsound, with three fatal findings: the study answered a neighbouring question, the mechanism solved its eligibility parameter to produce the discrepancies it then measured, and the decision rule's negative branch was unreachable. All three were resolved in a revision pass, the first two by changing the design and the third by making both branches reachable from results the design can actually produce."
+ "not_answered": "S is the maximum over the operators tested, so the result is an at-least-one-operator claim: it establishes that interval overlap is materially precision-sensitive and that direction agreement is less so, not that every binary replication label is. It holds for these two illustrative operators, these 16 fixed scenarios and these three nested precision levels. This is the pair-level component of BEN-02 and not the entry as a whole: it says nothing about between-pair heterogeneity across a benchmarking program, about calibration of a graded metric against a decision, or about the graded alternatives the entry's own audit established already exist, all three of which the design review named as out of scope and which are declared limitations rather than results. Outcomes are binary at a single horizon, so the behavior of these operators on a time-to-event scale is untouched.",
+ "peer_review": "The design was reviewed before running and returned unsound with three fatal findings: it answered a neighbouring question, its mechanism solved the eligibility parameter to produce the discrepancies it then measured, and its decision rule had an unreachable negative branch. All three were resolved in a revision pass before any code was written. The results were then reviewed in a fresh context that saw the protocol and the result files but not the study's own summary, and returned supported on the first round with one minor finding about scope, folded into the wording above."
 }
