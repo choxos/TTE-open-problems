@@ -1,5 +1,19 @@
 ## Study TZO-01: nuisance fitting, CCW estimators, selector, and truth.
 
+## base::tabulate has no `weights` argument. Generated code invents it, which is
+## the failure mode this program has to assume: an invented argument on a real
+## function parses, sources, and dies only when the line is reached. This is the
+## grouped sum it was meant to be, keeping empty bins at zero.
+wtabulate <- function(bin, nbins, weights) {
+  out <- numeric(nbins)
+  if (!length(bin)) return(out)
+  s <- rowsum(as.numeric(weights), bin, reorder = FALSE)
+  idx <- as.integer(rownames(s))
+  keep <- idx >= 1L & idx <= nbins
+  out[idx[keep]] <- s[keep]
+  out
+}
+
 cloglog_parts <- function(eta) {
   q <- exp(pmin(eta, 25))
   mu <- -expm1(-q)
@@ -17,12 +31,12 @@ irls_equations <- function(d, coefficient, response = d$y) {
   weight <- parts$derivative^2 / variance
   working <- eta + (response - parts$mu) / parts$derivative
 
-  aa <- tabulate(d$period, nbins = K, weights = weight)
+  aa <- wtabulate(d$period, nbins = K, weights = weight)
   ab <- matrix(0, K, q)
   tmp <- rowsum(d$x * weight, d$period, reorder = FALSE)
   ab[as.integer(rownames(tmp)), ] <- tmp
   bb <- crossprod(d$x, d$x * weight)
-  rhs_a <- tabulate(d$period, nbins = K, weights = weight * working)
+  rhs_a <- wtabulate(d$period, nbins = K, weights = weight * working)
   rhs_b <- drop(crossprod(d$x, weight * working))
   matrix <- rbind(cbind(diag(aa), ab), cbind(t(ab), bb))
   list(matrix = matrix, rhs = c(rhs_a, rhs_b), mu = parts$mu,

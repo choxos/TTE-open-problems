@@ -358,7 +358,13 @@ make_panel <- function(proc, delta, G) {
   if (nb > 1L) {
     for (j in 2:nb) {
       weeks <- (b[j - 1L] + 1L):b[j]
-      p <- proc$p_start[, weeks + 1L, drop = FALSE]
+      ## `marker_boundary` is boundary-indexed and has N_WEEKS + 1 columns, so
+      ## it is read at `b + 1`. `p_start` is interval-indexed: column j is the
+      ## start probability for week j, and there are N_WEEKS of them bounded by
+      ## N_WEEKS + 1 boundaries. Reading it at `weeks + 1` treated it as
+      ## boundary-indexed too and ran one column past the end on the last
+      ## interval, which is why the study died before generating anything.
+      p <- proc$p_start[, weeks, drop = FALSE]
       oracle_p[, j] <- -expm1(rowSums(log1p(-p)))
     }
   }
