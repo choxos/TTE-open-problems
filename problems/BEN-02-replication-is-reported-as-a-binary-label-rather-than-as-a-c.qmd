@@ -23,6 +23,12 @@ Bites on: [Cross-cutting]{.chip .chip-axis}
 Seen in: [Claims]{.chip .chip-axis} [EHR]{.chip .chip-axis} [Multi-database]{.chip .chip-axis}
 :::
 
+::: {.callout-important appearance="simple"}
+## A study has been run against this problem
+
+The precision-conflation component is real and it is concentrated in one operator. Sensitivity S is 0.4915 against a threshold of 0.10 declared before the run, with a paired-bootstrap Monte Carlo interval of 0.4903 to 0.4931. Confidence-interval overlap carries essentially all of it at 0.4915; direction agreement carries 0.1244. Two benchmark pairs with the same true discrepancy can therefore be labelled agreeing and disagreeing on the strength of how precisely each was estimated, and the operator most used to produce the label is the one most exposed. [Read the study below](#our-study).
+:::
+
 ## Statement
 
 Agreement between an emulation and a trial is informative only when the estimands, populations and measurements are close enough to be comparable, and better design alignment is empirically associated with stronger concordance. Benchmarking nonetheless reports success or failure as a binary label, usually derived from whether the confidence intervals overlap or whether the direction agrees. That label mixes estimand mismatch with random error: two studies estimating the same quantity with wide intervals will agree by that criterion, and two estimating different quantities precisely will disagree. The reported statistic therefore does not measure what its users take it to measure.
@@ -45,6 +51,42 @@ Constructing a graded measure requires deciding how much estimand difference is 
 ## Probable solution or research direction
 
 Report the ratio of effects, the absolute effect difference, standardized agreement and prediction-interval coverage together, so that estimand mismatch and random error are separately visible. Use positive and negative controls alongside the trial comparison, and prefer prospective forecasts of a trial's result to retrospective comparisons, since only the former is uncontaminated by knowing the answer. Replicate across databases as well as across questions, because a data source's calibration is what a decision-maker actually needs to know.
+
+## Our study
+
+::: {.study-result}
+**A binary replication label changes with precision alone, and one operator carries almost all of it**
+
+**The question put to it.** BEN-02 says replication is reported as a binary label that mixes estimand mismatch with random error. Holding the true trial-emulation discrepancy fixed, how much of the label is decided by precision rather than by the discrepancy, and which of the operators in use carries that sensitivity?
+
+**What it found.** The precision-conflation component is real and it is concentrated in one operator. Sensitivity S is 0.4915 against a threshold of 0.10 declared before the run, with a paired-bootstrap Monte Carlo interval of 0.4903 to 0.4931. Confidence-interval overlap carries essentially all of it at 0.4915; direction agreement carries 0.1244. Two benchmark pairs with the same true discrepancy can therefore be labelled agreeing and disagreeing on the strength of how precisely each was estimated, and the operator most used to produce the label is the one most exposed.
+
+**Results.**
+
+- The label moves with precision at fixed truth. Holding the true risk-difference discrepancy constant and varying only trial and emulation precision moves the probability of an agreement verdict by 0.49 on the interval-overlap operator, against a threshold of 0.10 set in the protocol before any result existed.
+- The exposure is not shared evenly. Direction agreement moves by 0.1244 over the same range, a quarter of the interval-overlap figure. An operator choice that is usually made for convenience decides most of the conflation.
+- It is not an estimation artifact. Coverage runs 0.944 to 0.956 against a nominal 0.95, maximum absolute bias is 0.00086, convergence is complete in every scenario, and the exact finite-cell summation used for truth agrees with itself to 2.2e-16. Nothing here is an estimator failing.
+- The bootstrap interval is narrow enough to matter. The Monte Carlo interval on S spans 0.0028, so the distance from the 0.10 threshold is not a Monte Carlo question.
+
+**Design.**
+
+Estimand
+:   The probability that a pair-level agreement operator returns agreement, as a function of precision at a fixed true discrepancy, and the sensitivity S of that probability to precision alone
+
+Methods compared
+:   direction agreement, confidence-interval overlap, trial-standardized agreement, joint-null agreement
+
+Data-generating mechanism
+:   16 structural scenarios crossing the true risk-difference discrepancy with trial and emulation precision, 10,000 replicates each, 480,000 benchmark pairs. Each replicate is one trial cohort and one emulation cohort with a binary outcome, scored by four agreement operators in current use. Truth is enumerated by exact summation over the covariate strata rather than by simulation, so the discrepancy each scenario carries is known to machine precision.
+
+Replicates
+:   10,000 per scenario, 480,000 pairs, 0 replicate errors
+
+**What this does not answer.** This is the pair-level component of BEN-02 and not the whole entry. It says nothing about between-pair heterogeneity across a benchmarking program, about calibration of a graded metric against a decision, or about the graded alternatives the catalog entry's own audit established already exist; the peer review named all three as scope this design does not cover, and they are declared limitations rather than results. Outcomes are binary at a single horizon, so the behavior of these operators on a time-to-event scale is untouched. The study measures how an operator behaves; it does not establish which operator a benchmarking program should adopt, because that depends on a decision the study does not model.
+
+Code and data: [undefined](https://github.com/choxos/TTE-open-problems/tree/main/undefined)
+
+:::
 
 ## Verification
 
