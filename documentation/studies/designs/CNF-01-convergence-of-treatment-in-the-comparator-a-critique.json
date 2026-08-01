@@ -1,0 +1,97 @@
+{
+ "verdict": "unsound",
+ "summary": "The marginal estimands and superpopulation truth calculations are largely coherent, and 2,000 replicates are adequate for the stated cellwise coverage MCSE. The study nevertheless cannot settle CNF-01 because it evaluates an oracle sustained-strategy truth that the proposed applied analysis cannot identify, while the unresolved problem concerns interpreting real null results from observed treatment trajectories and choosing context-dependent horizons. Its principal materiality conclusion is structurally favored because six of nine comparisons impose persistent benefit and earlier permanent initiation, while only five qualifying comparisons are required. The AIPW variance calculation, ratio-based decision rules, universal-threshold claim, and runtime estimate also require revision before the simulation is run.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "The protocol explicitly says that it only \"answers-part\" of CNF-01. It quantifies a DGM-specific difference between treatment-policy and sustained-strategy truths, but CNF-01's unresolved applied issue is whether observed treatment trajectories make a long-horizon null interpretable and whether a meaningful horizon convention can be established. RD_S and r are unavailable from the proposed baseline-assignment analysis, so the simulation cannot show that reporting S_cum distinguishes ineffective treatment from convergence in an applied emulation. It also contains no investigation of how often trajectories are reported or how local prescribing data should determine a horizon.",
+   "fix": "Register this as a mechanistic stress test that does not settle CNF-01. Settling the broader problem would require an empirical reporting study plus an identifiable sensitivity-analysis framework or externally anchored validation showing what trajectory reporting adds to interpretation."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "For P1 and P2, treatment is permanently beneficial at every treated month because eta_t is always negative once treatment begins. Increasing p60 from 0.10 to 0.70 makes comparator initiation stochastically earlier while leaving the treated arm unchanged, so comparator risk necessarily moves toward treated-arm risk and r_high cannot exceed r_low. These profiles supply six of the nine matched comparisons, but the materiality rule requires only five. The simulation therefore establishes only whether the deliberately strong odds ratio, event rate, and switching levels cross the chosen magnitude cutoffs; the directional majority is built in.",
+   "fix": "Do not use a majority vote across deliberately constructed profiles to declare the phenomenon real. Treat monotone P1 and P2 results as quantitative calibration, report every profile separately, and base any nontrivial conclusion on prespecified nonmonotone or externally anchored mechanisms."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The rule declaring a convergence rate alone inadequate takes the range of r across switching mechanisms and different causal effect profiles. Because the protocol deliberately changes effect modification and initiation toxicity within that range, variation in r is expected even if convergence were held fixed perfectly. This demonstrates that different treatment-effect mechanisms produce different effects, not that an initiation percentage is an inadequate summary of convergence.",
+   "fix": "Evaluate adequacy of the convergence summary within each fixed causal effect profile. Compare switching timing and selection while holding the treatment-effect mechanism and sustained-strategy effect fixed."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "G and r are called estimated quantities, but the methods specify no estimator for RD_S. The reported operational r is the estimated treatment-policy effect divided by oracle RD_S truth. That is legitimate as a simulation validation target, but it is not an observable quantity in the applied analysis for which the trajectory rule is proposed.",
+   "fix": "Label G, r, and the retention classification as oracle validation targets. Do not claim that the standardized trajectory report estimates retention or separates biological inefficacy from convergence without an additional sustained-strategy identification analysis."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The status quo arm uses IPTW, while the proposed reporting package uses AIPW with a richer outcome model. Any difference in bias, precision, coverage, or failure rate therefore combines augmentation with trajectory reporting. Reporting a trajectory cannot itself change the treatment-policy point estimate or interval.",
+   "fix": "Separate estimator performance from diagnostic performance. Use the same effect estimator with and without trajectory reporting, or include both IPTW and AIPW versions of the reporting package and avoid attributing estimator differences to the report."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The proposed empirical influence-function SE is generally invalid under the specified DGM. The cumulative outcome regression is misspecified because cumulative event risk integrates nonlinear discrete hazards, longitudinal L, and selective switching. With the propensity model correct but the outcome model misspecified, estimating the propensity contributes an additional first-order term that the plug-in influence-function variance omits. The IPTW method receives a full stacked sandwich, while the AIPW method does not receive the corresponding nuisance-estimation correction.",
+   "fix": "Use a stacked estimating-equation sandwich including the propensity and outcome score equations, or bootstrap the complete fitting procedure. Another option is a demonstrably consistent cross-fitted outcome estimator with variance theory matching the implementation."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The rules require r for all non-null scenario-horizon cells and nine matched pairs, but the estimand definition suppresses r whenever abs(RD_S) is below 0.005. P3 can place RD_S near zero as initiation toxicity gives way to benefit. The protocol does not say whether such cells are excluded, counted as failures, or change the five-of-nine denominator.",
+   "fix": "Prespecify handling of every undefined-r cell and adjust all denominators explicitly. Prefer additive G for decisions that must remain defined when RD_S is near zero."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "Requiring each risk-difference truth to have MCSE at most 0.0005 does not adequately resolve ratio thresholds. At the permitted denominator abs(RD_S)=0.005, a 0.0005 component MCSE is already 10% relative uncertainty, so the MCSE of r can be around 0.1 or larger despite common random numbers. Labels at r=0.75 and differences of 0.20 can therefore be decided by truth-simulation noise.",
+   "fix": "Set precision requirements directly for r, r_low-r_high, and threshold distances. Continue truth simulation whenever a confidence interval intersects 0.75, 0.20, or another decision boundary."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "Sensitivity and specificity are calculated over a hand-selected factorial grid, not a target distribution of clinical settings. The 162 non-null cells contain at most 36 distinct S_cum values because S_cum depends only on p60, k, and horizon, with values repeatedly weighted across profiles and mechanisms. Passing 0.80 on this grid cannot justify accepting a general horizon convention, particularly when the protocol separately concedes that it cannot establish a universal clinical horizon.",
+   "fix": "Describe the result as in-grid discrimination. Prespecify a target distribution and weighting of mechanisms, then validate the cutoff on separate externally anchored scenarios before proposing a general convention."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "minor",
+   "what": "The replicate calculation is correct for one coverage or rejection proportion, but the reported minimum across 216 estimator-horizon cells is downward-selected. With cellwise MCSE about 0.00487, an apparently low minimum can arise from Monte Carlo variation even when every true coverage probability is identical.",
+   "fix": "Provide Monte Carlo intervals for every cell and use a simultaneous or multiplicity-aware interpretation for the minimum. Do not use the raw minimum as an unstated pass or fail criterion."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "serious",
+   "what": "The runtime justification emphasizes 504,000 GLM fits but omits the dominant longitudinal workload. Replicate generation alone entails 34.56 billion person-month updates. The 36 two-million-person truth runs add 8.64 billion longitudinal person-months plus outcome recursions under several intervention worlds. A six-to-ten-hour claim is not credible from the fit count alone, especially with stacked sandwiches, serialization, summaries, and possible truth extensions.",
+   "fix": "Run and report an end-to-end pilot containing data generation, all models, sandwiches, truth worlds, and serialization. Extrapolate separately for worker scaling and truth extensions, with measured memory and output sizes."
+  },
+  {
+   "axis": "citation",
+   "severity": "minor",
+   "what": "The four established methodological references have plausible bibliographic identities and uses. The 2025 scoping-review citation omits every author and its final publication metadata. The Cain citation establishes how to define and estimate dynamic switching strategies, but it does not by itself establish the broader normative claim that such strategies should not be viewed as corrections to a treatment-policy estimand.",
+   "fix": "Complete the scoping-review citation from the publisher record. Attribute the estimand distinction to an explicit estimand source or present it as the protocol's causal interpretation rather than as a result of Cain et al."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "Statistical methods to adjust for treatment switching in real-world clinical studies: a scoping review and decision framework. Clinical Pharmacology and Therapeutics. 2025. DOI 10.1002/cpt.70013.",
+   "problem": "All authors and final volume, issue, pages, or article number are absent, so author attribution cannot be checked from the protocol as written."
+  },
+  {
+   "cite": "Cain LE, Robins JM, Lanoy E, Logan R, Costagliola D, Hernan MA. Using observational data to emulate a randomized trial of dynamic treatment-switching strategies.",
+   "problem": "The work supports explicit dynamic strategies. The additional claim that they should not be treated as a correction to the treatment-policy effect is an estimand interpretation that needs separate support or clearer attribution."
+  }
+ ],
+ "what_is_sound": [
+  "RD_TP and RD_S are correctly distinguished as separate marginal estimands in the same DGM superpopulation.",
+  "The large-sample truths target the same superpopulation as the repeated-sampling IPTW and AIPW estimators; there is no conditional-versus-marginal or realized-sample mismatch.",
+  "Not adjusting for later treatment is correct for the baseline treatment-policy estimand.",
+  "The construction of U is marginally uniform, M1 and M2 preserve the marginal initiation curve, and the stated 120-month initiation probabilities are correct.",
+  "The IPTW stacked sandwich appropriately includes propensity-score estimation, and the crude binomial variance is appropriate for its stated descriptive contrast.",
+  "The 2,000-replicate calculation correctly gives MCSE 0.00487 for a single performance proportion near 0.95 or 0.05.",
+  "The null profile, signed ratio, additive movement, and explicit scope restrictions appropriately prevent every result from being described as universal attenuation."
+ ]
+}

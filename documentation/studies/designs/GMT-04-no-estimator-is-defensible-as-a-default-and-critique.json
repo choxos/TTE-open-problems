@@ -1,0 +1,129 @@
+{
+ "verdict": "unsound",
+ "summary": "The protocol is unsound as a study claimed to settle GMT-04. It could provide a useful benchmark of three fixed parametric implementations, but it cannot establish a universal estimator default or a reporting requirement, and its main estimator-ranking reversal is encouraged by construction. The marginal estimand and superpopulation truth strategy are conceptually correct, and the primary Bernoulli Monte Carlo calculation is arithmetically sound. The scope, confirmatory DGM, comparison rules, decision criteria, fallback design, and citation support must be revised before running.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "GMT-04 concerns whether any estimator is defensible as a general default and whether studies should be required to compare estimator families. A simulation of IPTW, one parametric g-formula, and one formula-based LTMLE implementation under static binary strategies cannot answer either normative question. It excludes matching, baseline regression and propensity approaches, g-estimation, structural nested models, data-adaptive targeted learning, irregular treatment, and most data structures named or implied by the problem. The protocol itself concedes that it answers only part of GMT-04, which contradicts the proposed real versus not-real declaration.",
+   "fix": "Reframe the study as a bounded benchmark of three prespecified implementations and remove claims that it settles GMT-04. Settling the broader problem would require a synthesis of existing simulations, multiple independently motivated DGMs and interventions, additional estimator families, and a separate basis for any reporting requirement."
+  },
+  {
+   "axis": "answers-problem",
+   "severity": "serious",
+   "what": "The design attributes differences to estimator family even though family, nuisance-model specification, software implementation, truncation, and numerical failure rules all change together. It therefore answers whether these three implementations disagree under these formulas, not whether choosing IPTW, g-formula, or LTMLE generally matters.",
+   "fix": "Either restrict every conclusion to the named implementations or cross estimator family with common nuisance-learning strategies and implementation choices. Do not report a family ranking from a design that changes the estimator and its nuisance fitting simultaneously."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "fatal",
+   "what": "The confirmatory family-reversal condition is loaded into the nuisance quadrants. Under G1Q0, the treatment and censoring models omit the delta_g terms with coefficients 1.00, -0.80, 0.80, and -0.50 while the outcome side is correct. Under G0Q1, the transition and event models omit the delta_Q terms with coefficients 0.65, -0.45, 0.70, and -0.50 while the weighting side is correct. The rule then requires the lowest-MSE family to reverse between exactly those two quadrants. This is a positive-control demonstration of known robustness properties, not independent evidence that estimator choice is consequential in practice. The exact MSE ratio is not guaranteed, but the validity contrast is true by construction.",
+   "fix": "Keep these quadrants as labeled positive controls, but exclude them from any declaration that GMT-04 is real. Base the confirmatory conclusion on externally calibrated DGMs whose misspecification was not assigned according to the dependencies of the competing estimators."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "Removing U creates more than treatment-outcome confounding. U also affects L0 by 0.80, later L by 0.55, censoring by 0.25, treatment by 0.70 before scaling, and the event hazard by 0.75. Hidden-U results therefore combine treatment confounding, dependent censoring, and misspecified covariate evolution. The claim that there are six benign G0Q0 scenarios is also false: three of those six hide U and are deliberately nonidentifiable.",
+   "fix": "Describe hidden U as a composite identification failure, or separate treatment confounding and dependent censoring into distinct factors. Correct the benign-scenario count and do not attribute the resulting bias to one pathway."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "The estimand definition and recursion target are coherent, but the protocol withholds the two exact numerical truths even though they can already be computed. Consequently, the placement of the sign boundary, the benefit threshold of -0.03, and the absolute-error thresholds of 0.02 and 0.03 cannot be audited. If the true risks are far from -0.03, threshold crossing will be nearly impossible; if a truth lies close to -0.03, that endpoint is partly determined by the chosen coefficients.",
+   "fix": "Compute and freeze the exact regime risks and RD for delta_Q equal to 0 and 1 before simulation. Report their distances from zero and -0.03, and justify the practical thresholds without reference to simulated estimator performance."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The nuisance-model flexibility is unequal. LTMLE receives separate time-specific regressions saturated in W1, W2, U, L_k, and A_k, while the g-formula receives pooled main-effect models plus only A_k by W1. Under omitted-lag scenarios, the saturated current-state interactions can absorb projections of omitted history that the g-formula specification cannot. Conversely, prohibiting SuperLearner removes the data-adaptive fitting commonly used to realize targeted learning's advertised robustness.",
+   "fix": "Use a common prespecified learner library and comparable time structure where possible, preferably with cross-fitting, or treat nuisance specification as a separate factorial variable. Otherwise label the methods as specific parametric implementations rather than estimator families."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The interval comparison is not prespecified fairly. G-formula receives a full nuisance-adjusted M-estimation sandwich and LTMLE receives influence-curve inference, while the method labeled current-practice IPTW treats estimated and clipped weights as fixed. A nuisance-adjusted IPTW interval is included, but the decision rule does not say which IPTW coverage represents the family. This permits the worse IPTW interval to determine the desired conclusion.",
+   "fix": "Make the nuisance-adjusted IPTW interval the primary family interval, validate it against a subject-level bootstrap in a subset, and retain the fixed-weight interval only as a separately labeled historical comparator. Specify which interval enters every decision criterion."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The primary Z endpoint treats method-specific numerical rules as estimator failure. Absolute coefficient limits, condition-number cutoffs, rank checks, and the number of fitted submodels differ substantially across methods. LTMLE has many more opportunities to cross a coefficient or rank threshold, so Z can be driven by arbitrary implementation guards rather than failure to estimate the causal contrast.",
+   "fix": "Separate software or guard-trigger failures from statistical nonidentification and estimand failures. Use common output-level validity criteria for the primary endpoint, report method-specific diagnostics separately, and perform sensitivity analyses over numerical cutoffs."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The positive and negative declarations are asymmetric. The positive rule needs lower bounds above 0.20 in only two of eight scenarios, while the negative rule requires upper bounds below 0.10 and near-equivalence on every metric in all eight scenarios, including G1Q1 scenarios deliberately constructed without a robustness guarantee. The realistic outcomes are therefore positive or uninformative; a negative declaration has been made implausible by design.",
+   "fix": "Calibrate both declarations under explicit null and alternative DGMs and report their operating characteristics. Use symmetric evidence thresholds, define precedence when an uninformative condition overlaps another declaration, and avoid treating failure under deliberate misspecification as evidence for a field-wide problem."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The hidden-U declaration uses a spread of scenario mean estimates below 0.01. Similar means do not establish that methods agree within individual datasets; large within-replicate disagreements can average away. It therefore does not test the stated concern that a real analysis can show reassuring three-method agreement while all three estimates are wrong.",
+   "fix": "Base the declaration on a prespecified probability of the joint within-replicate event: three-family range below 0.01 and every estimate more than 0.02 from truth. Report its Monte Carlo interval and the corresponding conditional error distribution."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "Eight hundred replicates were justified only for an unconditional Bernoulli probability. The decision also depends on heavy-tailed MSE estimates, selected minimum-MSE families, correlated MSE ratios, coverage, bias, sensitivity among gross failures, and false-positive rates among nonfailures. Those conditional denominators can be much smaller than 800. The protocol also leaves the Monte Carlo interval method, paired MSE comparison, and multiplicity across scenarios unspecified.",
+   "fix": "Derive replicate requirements for every quantity that can determine the verdict. Prespecify paired replicate-level MSE contrasts, interval methods, minimum diagnostic denominators, and multiplicity handling. Increase the replicate count if a blinded pilot shows inadequate MSE or conditional-rate precision."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "serious",
+   "what": "The runtime fallback is not compatible with the decision rule. Removing s equal to 1.70 leaves eight hidden-U scenarios, but the agreement rule still requires six of twelve hidden-U scenarios, and several other statements still refer to 24 scenarios. The fallback is therefore a different protocol without a valid declared decision rule.",
+   "fix": "Choose and freeze one design after an end-to-end timing pilot, or preregister a complete alternative analysis and decision rule for the 16-scenario design, including revised denominators."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "minor",
+   "what": "The fit-count arithmetic is correct, but five seconds per ltmle call and near-ideal six-worker scaling are assumptions rather than measurements. The estimate also gives little allowance for stacked derivatives, diagnostics, repeated data construction, serialization, memory contention, and the 5,000,000-person validation runs.",
+   "fix": "Run a stratified timing pilot covering benign, misspecified, hidden-U, and severe-overlap cases using the entire pipeline and six workers. Base the final wall-time and storage estimates on observed throughput and peak memory."
+  },
+  {
+   "axis": "citation",
+   "severity": "minor",
+   "what": "The gfoRmula citation gives an incorrect author presentation. The DOI corresponds to work by McGrath, Lin, Zhang, Petito, Logan, Hernán, and Young; listing only McGrath, Young, and Hernán without et al. misstates the authorship.",
+   "fix": "Use the complete author list or a valid first-author et al. form."
+  },
+  {
+   "axis": "citation",
+   "severity": "serious",
+   "what": "No cited source supports the exact fixed-weight sandwich as the recommended current-practice comparator for this clone-censor estimator. The Robins and Cole-Hernán references support MSMs and weight construction, but they do not by themselves validate this particular covariance calculation, its clipping treatment, or its status-quo label. The generic Bang-Robins citation also does not establish the exact longitudinal TMLE implementation and influence-curve conditions used here.",
+   "fix": "Add method-specific sources for clone-censor inference, estimated-weight variance, and longitudinal TMLE. Tie each implementation claim to a versioned source or manual and remove the current-practice label unless it is directly documented."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "McGrath S, Young JG, Hernán MA. gfoRmula: An R package for estimating the effects of sustained treatment strategies via the parametric g-formula",
+   "problem": "The author list is not a valid rendering of the DOI's authorship. The work includes Lin, Zhang, Petito, and Logan, and Young follows Hernán in the full list."
+  },
+  {
+   "cite": "Robins JM, Hernán MA, Brumback B; Cole SR, Hernán MA",
+   "problem": "These works support MSMs and inverse-probability weighting, but the protocol overextends them to an uncited claim that its exact fixed-weight clone-censor sandwich is the current-practice variance estimator."
+  },
+  {
+   "cite": "Bang H, Robins JM. Doubly robust estimation in missing data and causal inference models",
+   "problem": "This supports the general double-robustness concept. It is not sufficient documentation for the longitudinal sequential conditions, survival implementation, or influence-curve extraction used by ltmle here."
+  },
+  {
+   "cite": "ltmle: Longitudinal Targeted Maximum Likelihood Estimation. CRAN",
+   "problem": "A rolling CRAN page does not pin the claimed package version or establish the exact behavior of Qform, gform, survivalOutcome, internal convergence checks, and returned influence curves. A versioned manual, source archive, and methodological paper are needed."
+  },
+  {
+   "cite": "10.1093/jamia/ocaf204; 10.1038/s41467-026-74999-6; the 16 DOI-only reading-update references",
+   "problem": "The payload supplies no verbatim quotations for the two resolving-work citations and no claim-specific locators for the DOI-only reading update. Their asserted coverage of GMT-04 cannot be checked from the supplied evidence."
+  }
+ ],
+ "what_is_sound": [
+  "The primary causal contrast is explicitly marginal, uses one population, one horizon, one risk scale, and the same two sustained strategies for all methods.",
+  "Using the fixed superpopulation truth for repeated-sample bias and coverage is correct. Empirical baseline standardization does not change that target, and the g-formula influence function explicitly includes baseline-distribution sampling.",
+  "Exact forward recursion over baseline strata and the required Markov state is an appropriate way to remove Monte Carlo error from the true regime risks.",
+  "The truth correctly does not depend on s, delta_g, or whether U is shown to the estimator, because treatment and censoring are intervened on and hiding U changes analysis rather than the generated causal effect.",
+  "Keeping the two IPTW variance estimators as one point estimate, retaining cross-regime covariance for the RD, and reporting unconditional failure rates are sound choices.",
+  "The paired observed-U and hidden-U analyses are useful positive controls if interpreted only as demonstrations of performance under the specified identification failure.",
+  "The calculation that 800 replicates gives a worst-case Bernoulli MCSE of about 0.0177 is correct. The probability gates can technically fire for strong signals, although this calculation does not justify the other decision metrics.",
+  "The arithmetic converting 38,400 five-second ltmle fits to 53.3 core-hours and 8.9 ideal hours on six workers is correct.",
+  "The Morris, Robins-Hernán-Brumback, Cole-Hernán, Bang-Robins, and TrialEmulation references are consistent with their limited background uses, subject to the implementation-specific gaps identified above."
+ ]
+}

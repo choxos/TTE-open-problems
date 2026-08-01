@@ -1,0 +1,113 @@
+{
+ "verdict": "unsound",
+ "summary": "The protocol cannot settle PRO-04 as stated. It assumes that both targets are already coherent and named, then measures a numerical gap in three hand-built component mappings; the open problem concerns recognizing and naming the target when that work has not already been done. The severe strategy cells guarantee a material gap, MCAR validation guarantees asymptotic recovery, and the negative decision branch is impossible. The marginal estimands, paired truth computation, and influence-function variance logic are otherwise largely sound for this restricted simulation, but the implementation index, diagnostic power, and decision logic require revision before any run.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "PRO-04 concerns detecting, naming, and reporting an operational substitution when the realized target may be only partially specified or lack a coherent intervention. This study supplies the intended and operational interventions, their measurement mechanisms, and both estimands before simulation. It therefore assumes away the central difficulty and answers the neighboring question of how large selected numerical gaps are after an expert has already solved the mapping problem. It also covers only three of seven components and does not test a reporting requirement, a language for partial interventions, or historical agreement with corresponding trials.",
+   "fix": "Do not present this study as settling PRO-04. Recast it as a conditional benchmark for three already formalized substitutions, or redesign the research around real conceptual-to-operational mappings with independent adjudication, all relevant protocol components, and explicit evaluation of whether the realized target can actually be named from available artifacts."
+  },
+  {
+   "axis": "answers-problem",
+   "severity": "serious",
+   "what": "A different estimand can have exactly the same numerical value as the intended estimand. The protocol acknowledges this, but its problem-is-not-real branch is based on small absolute Delta and intended-effect coverage. Coverage of the wrong target also depends on sample size and standard error: any fixed nonzero Delta eventually produces zero coverage as sample size grows, while a very imprecise interval can cover both targets. These quantities measure numerical consequences at n = 4000, not whether substitution occurred.",
+   "fix": "Separate estimand identity from numerical discrepancy. Rename the negative conclusion to no important numerical discrepancy in this DGM at this sample size, treat wrong-target coverage as an illustration, and never use it to adjudicate whether PRO-04 is real."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "fatal",
+   "what": "The strategy result is guaranteed by construction. Among E = 1 under present effect modification, d1 minus d2 equals 0.08 minus 0.02 X1. With severe nondifferential coarsening, q = 0.55, so Delta equals 0.45 times the conditional mean of that quantity and must lie between 0.027 and 0.036. With severe differential coarsening, the X1-specific gaps are 0.024 and 0.036. Therefore at least one material strategy gap is certain and the rule requiring all 24 scenarios to have absolute Delta no greater than 0.01 can never fire. Negative-control cells verify algebra but do not make an existence claim noncircular.",
+   "fix": "Treat these cells as demonstrations rather than evidence that the problem is real. If a decision study is intended, derive the parameter grid independently of the desired threshold crossings and use a response-surface or parameter-distribution target rather than asking whether any hand-selected cell crosses 0.02."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "Validation recovery is also largely built in. V is MCAR with known probability, the validated component is error-free, assignment probabilities are known, positivity holds, and complete follow-up is guaranteed. Under these assumptions the validation-only Hájek estimator is consistent for psi_I by construction. The simulation can study finite-sample Wald calibration, but it cannot discover whether validation recovers the intended target in the broader problem.",
+   "fix": "Describe this as finite-sample calibration under ideal two-phase sampling. Any broader recovery claim requires nonrandom validation, imperfect gold standards, unknown sampling probabilities, or bridge-model misspecification."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The accuracy and dependence factors are not factorially separated. The differential sensitivity, specificity, and strategy-mixture probabilities are not calibrated to have the same marginal accuracy as their nondifferential counterparts in the relevant target population. Consequently, a differential versus nondifferential comparison changes both dependence and average accuracy.",
+   "fix": "Calibrate the conditional differential parameters so their population-weighted sensitivity, specificity, or mixture fraction matches the corresponding nondifferential level. Otherwise abandon factorial main-effect language and interpret every cell only as a separate compound mechanism."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "The silent and explicitly labeled methods say to report mu_1 minus mu_0 and use IF_1 minus IF_0, but eligibility and outcome scenarios define T as Z in the set containing 2 and 0 and specify pi_2, not pi_1. Implemented literally, these methods estimate or attempt to estimate the low-intensity contrast rather than the intended high-intensity contrast, or they fail because pi_1 is unspecified.",
+   "fix": "Use mu_2 minus mu_0 and IF_2 minus IF_0 for eligibility and outcome scenarios. Alternatively, explicitly recode Z = 2 to a generic active-arm indicator and use that recoding consistently in every formula and implementation."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The paired diagnostic uses only V = 1 observations for both psi_O and psi_I even though operational variables are available for the full sample. This discards 80 percent of the information about psi_O and can manufacture indeterminacy. A failure would establish that this complete-case diagnostic is inefficient, not that a 20 percent validation design cannot distinguish the targets.",
+   "fix": "Benchmark the complete-case diagnostic against a standard two-phase or augmented estimator that combines the full operational sample with the validation correction and retains the relevant covariance."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The diagnostic thresholds have no supporting power calculation. At true absolute Delta = 0.02, the requirement that the point estimate itself be at least 0.02 limits changed classification probability to at most about 0.50 before applying the confidence-interval requirement. At true absolute Delta = 0.01, a calibrated 90 percent equivalence interval can lie wholly inside the margin with probability at most about 0.05. Moreover, even at Delta = 0, equivalence requires SE_Delta below approximately 0.0061, which is unlikely with roughly 800 validation records followed by eligibility and arm restrictions. The 2,500 replicates estimate this lack of power precisely but do not cure it.",
+   "fix": "Run a pre-study power calculation using scenario-specific SE_Delta values. Increase the sample or validation fraction, and define evaluation classes safely inside the decision boundaries, such as preserving at no more than 0.005 and changed at no less than 0.03."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The decision branches are not exhaustive. For example, calibration may pass while only the strategy family contains a material gap, silent coverage is 0.81, and fewer than half the scenarios are gray. That result satisfies neither the real, not-real, nor uninformative rule. The phrase binomial Monte Carlo intervals around scenario-count criteria is also undefined because the 24 scenarios are fixed design points, not a random sample of mechanisms.",
+   "fix": "Specify an ordered, exhaustive decision table covering every combination of calibration, material-gap distribution, coverage, and diagnostic performance. Define exactly how per-scenario Monte Carlo intervals propagate into each count."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "Validation recovery can be declared successful using only bias and coverage. A nearly unbiased estimator with extremely wide intervals can meet both conditions while conveying little useful information, particularly because coverage often improves as intervals become less precise.",
+   "fix": "Add a precision requirement based on mean interval width, RMSE, or probability of resolving a prespecified clinically relevant difference."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "minor",
+   "what": "The claim that the 0.01 and 0.02 margins are at least 14 times the truth MCSE does not establish reliable classification. Resolution depends on the distance between absolute Delta and the nearest boundary, not the distance between the boundary and zero.",
+   "fix": "Require a Monte Carlo confidence interval for each truth to lie wholly within its assigned class, or reduce truth MCSE until boundary classification is negligible."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "minor",
+   "what": "An overnight run is plausible because the methods require only weighted reductions, but the claimed established machine benchmark is not supplied. The estimate covers 240 million simulated person-records plus truth generation, parallel allocation, checkpointing, and summaries, so the stated one-to-two-hour replicate phase is not auditable from the protocol.",
+   "fix": "Record the hardware, software versions, benchmark code, rows per second, peak memory, and checkpoint cost from a representative pilot before accepting the three-to-five-hour estimate."
+  },
+  {
+   "axis": "citation",
+   "severity": "serious",
+   "what": "No citation establishes that knowingly reporting psi_O as psi_I is the status quo analysis or how frequently this occurs. The supplied target-trial and estimand papers support explicit protocol specification; they do not establish the prevalence of the stipulated silent-labeling behavior.",
+   "fix": "Cite an empirical audit of reporting behavior or rename this arm a stipulated silent-labeling analysis rather than the status quo comparator."
+  },
+  {
+   "axis": "citation",
+   "severity": "minor",
+   "what": "The Wang citation gives only an uninitialed first-author surname, and the Frontiers case-study citation gives no authors. Their DOIs identify works, but author attribution cannot be audited as written.",
+   "fix": "Supply the verified author lists and limit each claim to what the cited work directly demonstrates."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "Silent operational analysis is the status quo comparator",
+   "problem": "This central characterization is uncited. None of the listed references establishes the frequency of silent estimand substitution in published target trial emulations."
+  },
+  {
+   "cite": "Wang, et al. An operational target trial emulation framework for causal inference using electronic health records. npj Digital Medicine. 2026. 10.1038/s41746-026-02563-z",
+   "problem": "The author attribution is incomplete. The work can support operational component mapping, but it does not validate the proposed numerical accuracy bands or establish that these three simulated mechanisms are representative."
+  },
+  {
+   "cite": "Applying the estimand and target trial frameworks to external control analyses using observational data: a case study. Frontiers in Pharmacology. 2024. 10.3389/fphar.2024.1223858",
+   "problem": "No authors are supplied. The case study supports one applied use of both frameworks, not a general reporting convention or evidence about the prevalence of silent substitution."
+  }
+ ],
+ "what_is_sound": [
+  "The intended and operational effects are explicitly defined as marginal superpopulation risk differences. The truth calculations integrate conditional mechanisms over the correct populations and use common baseline draws, so they do not confuse conditional effects, realized samples, and superpopulation targets.",
+  "Apart from the active-arm indexing inconsistency, the Hájek influence functions and sandwich standard errors are appropriate for the stated known randomization and MCAR validation mechanisms.",
+  "The silent and explicitly labeled operational analyses receive the same observations, estimator, and variance estimator. Their numerical comparison is therefore not rigged through unequal variance treatment.",
+  "The absent-effect-modification eligibility and strategy cells are valid exact numerical-preservation controls, and the full-data oracle is an appropriate implementation check.",
+  "With 2,500 replicates, Monte Carlo error for per-scenario coverage is adequately controlled; the stated 0.00436 standard error at nominal 0.95 coverage is correct.",
+  "The protocol clearly states that coherent operational interventions, single-component compromise, random validation, complete follow-up, and fixed risk-difference estimands limit generalization.",
+  "The Morris, Hernán and Robins, and Moreno-Betancur citations are consistent with their stated uses, and no clear incorrect author attribution is apparent for those entries."
+ ]
+}

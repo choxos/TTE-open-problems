@@ -1,0 +1,93 @@
+{
+ "verdict": "unsound",
+ "summary": "The protocol cannot settle LRN-01 as stated. It evaluates one series AIPW estimator and one support warning for observable positivity violations; it neither tests the applied claim that flexibility substitutes for identification nor addresses identification failures invisible in the observed law. The marginal estimand and observational-equivalence construction are largely coherent, but the principal finding is partly determined by the chosen structural completion and an especially favorable diagnostic test. Comparator aliasing, invalid or incomplete variance procedures, ambiguous decision metrics, and an undercounted runtime require correction before execution.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "LRN-01 concerns flexible estimation being offered as a remedy for failed identification from confounding or positivity, plus the absence of a generally used interpolation versus extrapolation diagnostic. This study examines only positivity violations that are functions of recorded history and only one bespoke diagnostic for one series learner. It cannot study unmeasured confounding, cannot determine whether applied work presents flexibility as an identification remedy, and cannot establish a diagnostic applicable to flexible learners generally. The protocol itself concedes this by labeling the relation as answers-part.",
+   "fix": "Treat the study as resolving only a narrower support-diagnostic subproblem and prohibit a binary verdict on LRN-01. Settling the broader entry requires separate evidence about applied claims and must retain the impossibility of diagnosing exchangeability violations from the observed distribution."
+  },
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "The structural construction is not specific to flexible estimation. Every estimator sees the same observed law under all three completions, yet the primary false-certainty outcome is defined only for the flexible series estimator. The experiment can show that an ordinary point interval is not an identified-set interval, but it cannot show that flexibility especially disguises or worsens the problem.",
+   "fix": "Apply the identical compatible-truth coverage criterion to every estimator and make the prespecified contrast between flexible and conventional workflows primary. Otherwise remove all flexible-estimation-specific conclusions."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The term delta*Z, together with Z=0 for every observed structural trajectory, creates observational equivalence and different counterfactual truths by construction. The choices delta=-log(2), 0, and log(2), the R thresholds of -1.25 and 1.25, and the interval-width cutoff determine whether one interval can cover the compatible truths. This is a valid witness of nonidentification, but a high false-certainty rate under these choices is not evidence about how often flexible estimation creates the problem. The delta values are symmetric on the conditional logit scale, not on the marginal risk-difference scale.",
+   "fix": "Use the construction as a design check or identified-set benchmark, not as evidence that the field-level problem is real. Report sensitivity to several prespecified completion magnitudes and support boundaries, and limit conclusions to those stress tests."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The proposed map is tested against an unusually favorable support violation. The deterministic boundary R=L+0.40*M+0.30*B3 is a simple function of variables supplied directly to the diagnostic, while exact zero probabilities create action-specific empty regions. The truth label requires 0.05 unsupported mass, but the map turns red at 0.02. These choices do not mathematically guarantee success, but they strongly favor the desired sensitivity result.",
+   "fix": "Add independently generated support holes with curved, disconnected, interaction-dependent, and longitudinally accumulated boundaries, while retaining the same recorded conditioning variables. Evaluate practical near-zero support separately from exact deterministic holes."
+  },
+  {
+   "axis": "estimand",
+   "severity": "minor",
+   "what": "Under a sustained intervention, the observational treatment-probability mechanism is overridden. Therefore, with C and delta fixed, the superpopulation risk difference is identical across strong, moderate, severe, and structural treatment-assignment mechanisms. The claim that eight distinct intervention trajectory simulations are needed obscures this equality and could produce support-specific truths that differ only through Monte Carlo noise.",
+   "fix": "Generate one common pair of intervention path sets per complexity level, evaluate every delta completion on those paths, and calculate the different support-mass functionals from the same paths."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The status quo treatment models contain exact aliases. Each visit-specific model includes both an intercept and t/5, although t is constant within that model. At t=0 several previous-history variables are also constants, and at t=1 previous mean A equals A[t-1]. stats::glm will return aliased coefficients, while the protocol declares nonfinite coefficients to be nonconvergence. The IPW estimator and the main-effects AIPW estimator that reuses these models will consequently fail by definition.",
+   "fix": "Construct visit-specific design matrices that omit constants and exact duplicates, using the same prespecified alias-removal policy applied to the flexible models."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The IPW sandwich does not fully account for estimating the sample 99th-percentile weight cap. Recomputing the cap while perturbing treatment coefficients captures its dependence on coefficients conditional on the realized sample, but treating capped contributions as independent person-level scores omits the empirical quantile's sampling influence. The main-effects AIPW also uses an efficient-influence-function variance without accounting for nuisance estimation in C=1, where both nuisance families may be misspecified.",
+   "fix": "For IPW, include the cap as a parameter with a quantile estimating equation or bootstrap the entire capped estimator. For the non-cross-fitted AIPW comparator, derive the influence function under its fitted nuisance models or bootstrap its complete fitting procedure."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The heldout-loss comparison used to classify the flexible workflow as green is not implementable as written. The main-effects treatment and Q models are described as full-sample fits, no fold-specific comparator fits are specified or counted, and terminal-outcome log loss does not identify which regression, strategy, or aggregation is used. In addition, the leverage cutoff is estimated from heldout factual rows that contribute to the same diagnostic evaluation, which mechanically favors specificity.",
+   "fix": "Define every loss mathematically, fit both model classes on identical training folds, and evaluate them on identical validation folds. Estimate leverage cutoffs from training data or a separate calibration sample."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "Structural sensitivity and strong-overlap specificity are singular quantities in the decision rule, but the protocol does not say whether they are pooled, averaged, or required in every sample-size and complexity cell. Pooling would allow favorable cells to hide diagnostic failure in another cell. False certainty after adding the map is also not explicitly defined, although the claimed paired reduction depends on that definition.",
+   "fix": "Specify cell-level denominators and aggregation before simulation. Prefer a minimum-across-cells requirement, and define false certainty under the map as the original event plus a green support status."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "minor",
+   "what": "One thousand replicates can resolve the broad 0.10 versus 0.50 alternatives, and the stated worst-case MCSE calculation is correct. However, decisions use raw point estimates at 0.50 and 0.90, so estimates separated from a threshold by much less than their Monte Carlo uncertainty receive opposite verdicts. The achieved-primary-MCSE-above-0.02 clause cannot fire for an unconditional Bernoulli rate based on all 1000 replicates, whose MCSE is at most 0.01581.",
+   "fix": "Base threshold decisions on prespecified one-sided Monte Carlo confidence bounds or add indifference margins. Remove the impossible MCSE clause or define a smaller effective denominator that could make it relevant."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "serious",
+   "what": "The arithmetic of 16000 distinct observed datasets and 864000 listed GLM fits is correct, but it is not a complete workload estimate. It excludes the fold-specific main-effects fits needed for the heldout comparisons, repeated full-data evaluations for the numerically differentiated IPW sandwich, empirical-cap calculations, ridge matrix operations, counterfactual predictions, diagnostics, and checkpoint serialization. A 6 to 12 hour forecast based only on fit counts and a truth-simulation benchmark is not substantiated.",
+   "fix": "Implement one complete replicate at each sample size, including every variance estimator and diagnostic, benchmark at least 100 representative replicates, and extrapolate from observed wall time and memory use with the intended six-worker configuration."
+  },
+  {
+   "axis": "citation",
+   "severity": "minor",
+   "what": "The citation to Target trial emulation under nonmutually exclusive assignment is incomplete and is used for a stronger claim than the supplied record establishes. Its title concerns nonmutually exclusive assignment; neither the title nor the payload's citation record demonstrates that poor overlap defeats advanced adjustment. No authors, page range, quotation, or specific result are supplied.",
+   "fix": "Verify the full text, provide the complete attribution and exact result supporting the overlap claim, or narrow the statement to what the work actually evaluates."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "Target trial emulation under nonmutually exclusive assignment. American Journal of Epidemiology. 2026;195(4):1045. doi:10.1093/aje/kwaf018",
+   "problem": "The authors and full pagination are absent, and the stated poor-overlap claim is not established by the citation information supplied."
+  }
+ ],
+ "what_is_sound": [
+  "The primary causal estimand is correctly defined as a superpopulation marginal sustained-strategy risk difference rather than a conditional log-odds coefficient or a realized-sample effect.",
+  "Averaging conditional outcome probabilities under interventions, using common random numbers, and monitoring truth-simulation Monte Carlo error are appropriate.",
+  "Because Z is always zero observationally, the three delta completions genuinely share the same observed-data law while assigning different counterfactual outcomes.",
+  "Using identical datasets and fitted estimates across structural completions is the correct way to demonstrate observational equivalence.",
+  "The diagnostic and nondiagnostic flexible methods use the same point estimate and interval, which cleanly isolates the effect of reporting a support warning.",
+  "The replicate-count calculation for a single Bernoulli performance measure is correct, and the main directional thresholds can in principle be triggered.",
+  "The Morris, Feuerriegel, and Hill and Su citations match their stated methodological uses. The two 2026 flexible-method citations are used only as motivation, and their supplied titles are consistent with those limited uses."
+ ]
+}

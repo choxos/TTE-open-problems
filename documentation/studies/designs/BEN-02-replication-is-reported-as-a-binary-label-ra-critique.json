@@ -1,0 +1,92 @@
+{
+ "verdict": "unsound",
+ "summary": "The protocol is unsound as a study intended to settle BEN-02. It studies a narrower pair-level equivalence-testing problem, while the surviving open problem concerns estimand alignment, joint uncertainty, and calibration across benchmark portfolios after graded metrics already exist. The main verdict and the apparent success of the tolerance rule are largely predetermined by the chosen discrepancies, precision span, ideal model specification, and nominal Wald procedures. The marginal estimand calculations, independence-based variance formulas, Monte Carlo standard-error arithmetic, and workload count are otherwise mostly sound.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "The study answers the operating-characteristic question for selected pair-level rules under a known absolute-risk tolerance. BEN-02 asks how to compare sufficiently aligned estimands without conflating estimand mismatch and random error; its adjudication also establishes that continuous and graded metrics already exist. The design omits those existing graded methods, between-pair heterogeneity, prediction calibration, measurement mismatch, database calibration, and prospective forecasting. Its own bears_on statement correctly concedes that it answers only part of the problem.",
+   "fix": "Either relabel the study as a narrow demonstration that cannot settle BEN-02, or add a portfolio-level design comparing existing graded methods under multiple alignment and mismatch mechanisms, with joint uncertainty, heterogeneity, and externally specified decision losses."
+  },
+  {
+   "axis": "answers-problem",
+   "severity": "serious",
+   "what": "The simulated positive and negative controls are DGM checks, not the positive and negative controls requested by the open problem. Removing effect modification or setting a large known discrepancy verifies code behavior; it does not calibrate residual bias or data-source performance alongside a trial comparison.",
+   "fix": "Do not claim that these scenarios implement the proposed control strategy. A study of that strategy needs realistic control questions whose known effects can reveal bias across databases and clinical questions."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "fatal",
+   "what": "Nearly every headline result is encoded. The A by Z coefficient of 0.16, or the logistic interaction of 1.00, is combined with qE values solved specifically to produce the requested risk-difference discrepancies. Sample size then increases fiftyfold at fixed nonzero discrepancy, which necessarily changes overlap and point-null decisions as their standard errors shrink. The exact-null stratum makes independent estimated signs disagree about half the time asymptotically; psiT equal to zero or approximately 0.00013 guarantees ratio instability. Known Z, shared outcome models, correct nuisance models, and known population weights guarantee that transport removes the discrepancy. Finally, the 90% tolerance interval gives approximately 5% one-sided boundary errors by construction, while the correctly specified estimators are designed to attain the required 95% coverage.",
+   "fix": "Treat these scenarios as implementation checks and derive their expected behavior analytically. Evidence about competing methods requires DGMs not calibrated on the proposed method's preferred scale, varied baseline risks and mismatch mechanisms, imperfect alignment information, and sample-size choices made independently of the desired decision thresholds."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "The causal estimands and their algebraic superpopulation truths are correctly defined, but the performance truth assigned to the comparator rules is not generally their estimand. Direction agreement answers whether estimated signs match, not whether two marginal risk differences differ by less than 0.02. At delta equal to 0 with both effects null, there is no true positive or negative direction, yet opposite random signs are labeled a false conclusion. Conversely, two effects can have the same true direction and differ by 0.04; the protocol then calls a correct directional statement false reassurance. Failure to reject delta equal to zero also is not an affirmative statement that the tolerance criterion holds.",
+   "fix": "Define the common decision each method is alleged to answer and evaluate false conclusions only for methods that claim to answer it. Otherwise report each rule's operating characteristic without converting it into error against an unrelated tolerance truth."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The proposed method may return indeterminate, whereas every comparator is forced into agreement or disagreement. Its false-definitive error will therefore be lower partly because it can abstain. Reporting decisiveness only for delta equal to zero and 0.04 at the highest precision does not establish a fair risk comparison across the remaining scenarios. The design also omits the cited sceptical p-value and other existing graded procedures, so it compares the proposal mainly with the practices already selected for failure.",
+   "fix": "Compare methods under a common loss function that prices indeterminate decisions, or report error versus decision-rate curves throughout the grid. Include the actual graded alternatives identified in the literature and apply their published interpretations."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "fatal",
+   "what": "The real and not-real criteria are structurally asymmetric. A real verdict needs poor behavior from two rules in any selected scenarios, while a not-real verdict requires every rule to perform well in every scenario. The exact-null, near-null direction scenario alone makes the universal not-real condition effectively impossible, and the low-precision delta equal to 0.04 scenarios make high agreement likely for overlap or point-null rules. The fiftyfold precision increase then supplies the required probability change. The verdict is therefore selected by the scenario grid rather than discovered by the simulation.",
+   "fix": "Remove the binary verdict or define symmetric criteria over a prespecified distribution of scientifically relevant scenarios. Require uncertainty-adjusted evidence for the same aggregate performance contrast in both directions."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The Monte Carlo calculations are correct, but the decision logic does not use them correctly. At a true boundary error of 0.05, the MCSE is 0.00436, so the cutoff of 0.06 is only about 2.3 MCSEs away; requiring every one of 24 boundary scenarios to remain below it creates a material chance of failure from simulation noise alone. The uninformative criterion requires an interval to overlap both 0.10 and 0.30. With 2500 replicates, even the widest pointwise interval is far too narrow to do that, so the clause does not protect decisions near either threshold.",
+   "fix": "Base each conclusion on threshold-specific Monte Carlo confidence limits, account for the maximum across scenarios, and increase replicates where simultaneous boundary control is required. Classify any interval crossing its relevant threshold as inconclusive."
+  },
+  {
+   "axis": "citation",
+   "severity": "serious",
+   "what": "No citation maps the four status quo rules to their exact published definitions and recommended interpretations. The Wang citation supports the claim that multiple metrics were reported, but it does not by itself establish that pure direction agreement, confidence-interval overlap, trial-only standardization, and combined-SE null testing are all author-recommended replication decisions. Without that mapping, the fairness of the implementations cannot be audited.",
+   "fix": "Cite the exact source and equation for every comparator. If a rule represents downstream misuse rather than a recommended method, label it as such and provide evidence that it is actually used to make the claimed binary conclusion."
+  },
+  {
+   "axis": "citation",
+   "severity": "minor",
+   "what": "The BMJ record is incomplete and internally inconsistent: the protocol omits authors and publication year, while the payload elsewhere labels the same DOI as both 2025 and 2026. The BMC citation spells Köppe as Koppe. The Fieller procedure is uncited, and calling the set exact can be misread as exact finite-sample coverage even though the component estimates and standard errors use Wald approximations.",
+   "fix": "Resolve the BMJ metadata from the DOI, use the authors' published spelling, add the complete Fieller reference, and describe the interval as exact inversion of the stated quadratic but approximate in coverage."
+  },
+  {
+   "axis": "answers-problem",
+   "severity": "limitation",
+   "what": "A replicate containing one independent benchmark pair cannot estimate prediction-interval calibration, between-question heterogeneity, between-database calibration, or behavioral contamination from retrospective knowledge of the trial result. The protocol acknowledges these exclusions, and they cannot be repaired within the current pair-level DGM.",
+   "fix": "Keep these as explicit scope limits if the study is reframed. Settling those parts of BEN-02 requires a separate portfolio or prospective multi-database design."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "Concordance between target trial emulation and randomised controlled trials: systematic review and meta-analysis. BMJ. DOI 10.1136/bmj-2025-086810",
+   "problem": "Authors and publication year are missing, and the payload gives conflicting 2025 and 2026 years for the same work."
+  },
+  {
+   "cite": "Koppe and colleagues. Assessing the replicability of RCTs in RWE emulations. BMC Medical Research Methodology. 2025. DOI 10.1186/s12874-025-02589-z",
+   "problem": "The surname is Köppe, not Koppe; the abbreviated attribution should be replaced with verified bibliographic metadata."
+  },
+  {
+   "cite": "Wang SV, Schneeweiss S, RCT-DUPLICATE Initiative. Emulation of randomized clinical trials with nonrandomized database analyses: results of 32 clinical trials",
+   "problem": "The cited work supports use of multiple agreement metrics, but the protocol does not show that all four exact binary rules are definitions or recommendations from this source."
+  },
+  {
+   "cite": "Fieller confidence set",
+   "problem": "No source is supplied. The quadratic inversion is exact algebraically, but coverage is not exact finite-sample coverage for these Wald-based estimators."
+  }
+ ],
+ "what_is_sound": [
+  "The additive marginal truths, qE calibration, logistic finite-cell truth calculation, and transported truth are coherent for the stated superpopulations.",
+  "The protocol explicitly distinguishes target superpopulations from realized samples; it does not commit the usual realized-sample truth error.",
+  "Adding trial and emulation variances is appropriate under the deliberately independent cohorts, and the status quo rules are not simply assigned an inferior variance estimator.",
+  "The 2500-replicate Bernoulli MCSE calculation and the independent-scenario difference MCSE calculation are correct.",
+  "The count of 240000 benchmark pairs and 480000 small nuisance-model fits is internally consistent. Exact cell aggregation makes the stated runtime plausible, although a pilot benchmark would be needed to validate the 3 to 8 hour range.",
+  "The Morris citation is appropriate for ADEMP and Monte Carlo planning. The Wang citation supports the narrower claim that RCT-DUPLICATE reported multiple agreement metrics."
+ ]
+}

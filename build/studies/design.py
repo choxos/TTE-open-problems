@@ -368,6 +368,106 @@ def design_all(parallel):
     print(f"\n{len(got)} of {len(todo)} designs written to {OUT}")
 
 
+def critique_one(pid, entry, slug):
+    """One adversarial review of one design."""
+    try:
+        design = json.load(open(os.path.join(OUT, f"{slug}-design.json"),
+                                encoding="utf8"))
+        d = call(CRITIQUE_PROMPT, {"problems": [entry], "proposed_design": design},
+                 "critique", slug)
+    except Exception as e:
+        print(f"  {pid}: FAILED ({type(e).__name__})", flush=True)
+        return pid, None
+    sev = [f.get("severity", "?") for f in (d.get("findings") or [])]
+    print(f"  {pid}: {d.get('verdict')}, {len(sev)} findings "
+          f"({sev.count('critical')} critical, {sev.count('major')} major)", flush=True)
+    return pid, d
+
+
+def critique_all(parallel):
+    """Review every design that has one and has not been reviewed.
+
+    The design and the critique come from the same model in separate contexts.
+    That is weaker than two models and much stronger than none: the critique is
+    told the design was written by someone competent who wants a particular
+    conclusion, which is the situation, and it is asked to find what is wrong
+    rather than to improve the presentation.
+    """
+    P = {p["id"]: p for p in json.load(open(REGISTRY, encoding="utf8"))}
+    done = {os.path.basename(f).split("-")[0] + "-" + os.path.basename(f).split("-")[1]
+            for f in glob.glob(os.path.join(OUT, "*-critique.json"))}
+    todo = []
+    for f in sorted(glob.glob(os.path.join(OUT, "*-design.json"))):
+        slug = os.path.basename(f).rsplit("-design.json", 1)[0]
+        pid = slug.split("-")[0] + "-" + slug.split("-")[1]
+        if pid in done:
+            print(f"  {pid}: cached"); continue
+        if pid in P:
+            todo.append((pid, P[pid], slug))
+    if not todo:
+        print("every design has been reviewed"); return
+    print(f"{len(todo)} designs to review with {MODEL} at {EFFORT} effort, "
+          f"{parallel} at a time", flush=True)
+    with ThreadPoolExecutor(max_workers=parallel) as pool:
+        futs = [pool.submit(critique_one, pid, ent, slug) for pid, ent, slug in todo]
+        n = sum(1 for f in as_completed(futs) if f.result()[1] is not None)
+    print(f"\n{n} of {len(todo)} reviews written")
+
+
+def critique_report():
+    """Every review in one table, ordered by how much trouble it found."""
+    rows = []
+    for f in sorted(glob.glob(os.path.join(OUT, "*-critique.json"))):
+        b = os.path.basename(f)
+        pid = b.split("-")[0] + "-" + b.split("-")[1]
+        rows.append((pid, json.load(open(f, encoding="utf8"))))
+    if not rows:
+        sys.exit("no critiques yet; run --critique-all")
+    order = {"reject": 0, "major-revision": 1, "revise": 1, "minor-revision": 2,
+             "accept-with-changes": 3, "accept": 4}
+    rows.sort(key=lambda r: (order.get(str(r[1].get("verdict", "")).lower(), 9), r[0]))
+
+    L = ["# Peer review of the study designs", "",
+         f"{len(rows)} designs reviewed by {MODEL} at {EFFORT} reasoning effort, "
+         f"each in a fresh context that saw the catalog entry and the proposed "
+         f"design and nothing else.", "",
+         "The reviewer is told the design was written by someone competent who "
+         "wants a particular conclusion, because that is the situation, and it "
+         "is asked to find what is wrong rather than to improve the "
+         "presentation. Design and review come from the same model, which is "
+         "weaker than two models and much stronger than none.", "",
+         "A finding is not advisory. It goes into the protocol as a design "
+         "decision or as a declared limitation, and the protocol names which.",
+         "",
+         "| # | problem | verdict | critical | major | minor | citation problems |",
+         "|---|---|---|---:|---:|---:|---:|"]
+    for i, (pid, d) in enumerate(rows, 1):
+        sev = [str(x.get("severity", "")).lower() for x in (d.get("findings") or [])]
+        L.append(f"| {i} | {pid} | {d.get('verdict', '?')} | "
+                 f"{sev.count('critical')} | {sev.count('major')} | "
+                 f"{sev.count('minor')} | {len(d.get('citation_problems') or [])} |")
+    for i, (pid, d) in enumerate(rows, 1):
+        L += ["", "---", "", f"## {i}. {pid}", "",
+              f"**Verdict.** {d.get('verdict', '')}", "",
+              f"{d.get('summary', '')}", ""]
+        for fnd in d.get("findings") or []:
+            L += [f"**[{str(fnd.get('severity', '?')).upper()}] {fnd.get('axis', '')}**", "",
+                  f"{fnd.get('what', '')}", "",
+                  f"*Fix:* {fnd.get('fix', '')}", ""]
+        for c in d.get("citation_problems") or []:
+            L += [f"**[CITATION]** {c.get('cite', '')}: {c.get('problem', '')}", ""]
+    path = os.path.join(ROOT, "documentation", "studies", "REVIEWS.md")
+    open(path, "w", encoding="utf8").write("\n".join(L) + "\n")
+    import collections
+    print(f"{len(rows)} reviews -> {path}")
+    print("  verdicts:", dict(collections.Counter(d.get("verdict") for _, d in rows)))
+    tot = collections.Counter()
+    for _, d in rows:
+        for x in d.get("findings") or []:
+            tot[str(x.get("severity", "?")).lower()] += 1
+    print("  findings:", dict(tot))
+
+
 def report():
     """One table over every design, plus each design written out in full.
 
@@ -506,10 +606,16 @@ def main():
     ap.add_argument("--all", action="store_true")
     ap.add_argument("--parallel", type=int, default=4)
     ap.add_argument("--report", action="store_true")
+    ap.add_argument("--critique-all", action="store_true")
+    ap.add_argument("--critique-report", action="store_true")
     a = ap.parse_args()
 
     if a.all:
         return design_all(a.parallel)
+    if getattr(a, 'critique_all', False):
+        return critique_all(a.parallel)
+    if getattr(a, 'critique_report', False):
+        return critique_report()
     if a.report:
         return report()
     if not a.slug:

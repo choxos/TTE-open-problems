@@ -1,0 +1,91 @@
+{
+ "verdict": "unsound",
+ "summary": "The protocol is unsound as a study meant to settle OUT-01 because it answers only a narrow, favorable mechanism experiment and cannot address the silent protocol decision, its prevalence, or the sustained recurrent-terminal method gap. Its key contrast is largely constructed by the no-death intervention and selected hazards and treatment effects. The marginal truth calculations and own-target estimators are otherwise coherent, and the variance comparison is fair. Before running, the claim, factor grid, decision rule, implementation syntax, runtime basis, and citation metadata require revision.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "OUT-01 concerns an estimand choice being made silently during data preparation, failure to match estimators to causal questions, and unresolved recurrent-terminal estimation under sustained strategies. This study prespecifies both estimands and studies one baseline-assigned, first-event setting under favorable identification assumptions. It cannot determine whether applied emulations are silent, how often estimands are mismatched, whether death elimination is meaningful, or whether the broader estimator and reporting gaps remain. The bears_on field itself concedes that the design only answers part of the entry.",
+   "fix": "Either redefine the study explicitly as a mechanism experiment that quantifies one special-case estimand displacement without claiming to settle OUT-01, or add separate work capable of answering the practice, reporting, and recurrent-terminal parts. A simulation alone cannot establish the prevalence of silent censoring."
+  },
+  {
+   "axis": "answers-problem",
+   "severity": "serious",
+   "what": "The simulated status quo is only one neighboring interpretation of censoring at death. It fits a correctly specified cause-specific Cox model and converts it to a standardized net risk. Applied analyses may instead report a cause-specific hazard ratio, a Kaplan-Meier risk, or another quantity. Results for this sophisticated net-risk implementation do not establish the consequences of the broader applied behavior described in OUT-01.",
+   "fix": "Name the target narrowly as standardized Cox net-risk interpretation error, or include the actual estimators and reported contrasts whose applied use motivates the entry."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The DGM forces the qualitative result. Conditional independence of the latent clocks, complete measurement, and the intervention that sets the death hazard to zero while leaving the primary-event hazard unchanged make the death-censored estimator correct for the no-death risk by construction. More importantly, when beta_YA and beta_YAC are zero but beta_DA is -0.510826, the no-death risk difference is exactly zero while treatment strictly increases the total primary-event cumulative incidence by preventing death whenever the death hazard is positive. The six exact-null controls cannot falsify this mechanism because they are excluded from the 18 active scenarios. The high death hazards and hazard ratios of 0.60 then tune the magnitude toward the desired thresholds.",
+   "fix": "Treat own-target calibration as an implementation check, not a finding. Precompute the entire displacement surface before running estimator replicates, justify factor values from an external scenario distribution, and report the resulting surface descriptively instead of treating a selected grid as evidence that the general problem is real."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The shared-prognosis factor is mislabeled. At gamma equal to zero, Z, M, C, and S remain common causes of both event hazards, so latent event and death times remain marginally dependent. The factor contrasts no additional Q effect with a strong additional Q effect; it does not contrast no shared prognosis with strong shared prognosis.",
+   "fix": "Rename the factor to additional shared Q prognosis, or set every shared covariate loading to zero at the intended none level."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "Coverage of the death-censored interval against the total-effect truth is not coverage of that method's estimand. It is the probability that an interval for the no-death estimand happens to contain a different estimand. For every nonzero displacement this probability depends strongly on sample size and tends to zero as sample size increases, even with a perfect point and variance estimator.",
+   "fix": "Call this wrong-target interval inclusion rather than coverage. Make estimand displacement the primary result, keep own-target coverage as the calibration result, and report displacement relative to standard error or across several sample sizes if interval inclusion remains of interest."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The real-problem rule counts the same constructed fact multiple times. After own-target calibration, death-censored bias against the total effect is asymptotically identical to the defined estimand displacement. Wrong-target interval inclusion is then largely determined by that displacement and the fixed sample size. Requiring all three does not provide three independent pieces of evidence. The unweighted count across 18 designer-selected cells also has no interpretation as how often the problem occurs in practice.",
+   "fix": "Base any scenario-level classification on one estimand-displacement criterion. Analyze estimator calibration separately. Remove frequency language unless scenarios are sampled or weighted using an externally justified distribution of applied settings."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The rule can fire when coverage is far below 0.90, but 4000 replicates do not resolve the 0.90 boundary as claimed. The stated 0.00474 is a standard error, not a 95% precision bound; the approximate 95% Monte Carlo half-width at coverage 0.90 is 0.0093. An empirical result just above or below 0.90 could therefore change the verdict through Monte Carlo noise.",
+   "fix": "Require a binomial Monte Carlo confidence bound to lie entirely on the relevant side of 0.90, with a prespecified indeterminate zone. If a 95% half-width of 0.005 is required at 0.90, use at least about 13830 replicates per scenario."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "minor",
+   "what": "Sign reversal and wrong-sign rates are undefined in the six active scenarios with a null primary-event effect and protective death effect because the no-death risk difference is exactly zero. A positive total-effect difference versus a zero no-death difference is not a sign reversal.",
+   "fix": "Define sign using a nonzero tolerance and classify zero-versus-nonzero contrasts separately from genuine reversals."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "serious",
+   "what": "The stated R call Surv(time, status = 1) does not create an indicator for the primary event and is not a valid literal specification of the intended model. The comparison operator is missing.",
+   "fix": "Specify Surv(time, event = (status == 1)) for the primary-event Cox model and the corresponding status == 2 indicator for death."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "minor",
+   "what": "The overnight runtime estimate is unsupported by a timed pilot and omits hardware specifications. Ninety-six thousand datasets require two Cox fits plus influence-function standardization and retained contributions; this prediction and storage work may dominate the Cox fitting. The three thousand bootstrap resamples are also not demonstrated to fit within one hour.",
+   "fix": "Benchmark at least 100 production-equivalent replicates and a representative bootstrap batch on the intended hardware. Report median and upper-tail wall time, peak memory, output size, worker count, and an extrapolation that includes checkpointing and serialization."
+  },
+  {
+   "axis": "citation",
+   "severity": "minor",
+   "what": "The gfoRmula paper has its first two authors reversed. The lmtp package citation supports the software capability but cannot substantiate the comparative claim that it is one of only a few such implementations.",
+   "fix": "Correct the gfoRmula citation to begin McGrath S, Lin V, Zhang Z, et al. Support the rarity claim with a documented literature or software search, or remove that claim."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "Lin V, McGrath S, Zhang Z, et al. gfoRmula: An R Package for Estimating the Effects of Sustained Treatment Strategies via the Parametric g-formula",
+   "problem": "The author order is wrong. The citation begins McGrath S, Lin V, Zhang Z, et al. The DOI and substantive use are otherwise consistent with the work."
+  },
+  {
+   "cite": "lmtp: Non-Parametric Causal Effects of Feasible Interventions Based on Modified Treatment Policies. CRAN",
+   "problem": "The package documentation supports competing-risk functionality, but it does not establish the comparative claim that lmtp is one of only a few implementations."
+  }
+ ],
+ "what_is_sound": [
+  "The total cumulative-incidence and no-death truth formulas are correct for the stated piecewise-exponential DGM.",
+  "The estimands are explicitly marginal and use the same target superpopulation. Common covariate profiles and paired batch Monte Carlo errors are appropriate.",
+  "Standardizing over realized baseline profiles can target the superpopulation contrast across repeated samples because the specified influence function includes variation from the empirical covariate distribution.",
+  "The variance comparison is fair as written: the death-censored method receives a correctly specified model and a full influence-function variance estimator, while the multistate method retains covariance between its two cause-specific models.",
+  "Own-target calibration and bootstrap validation are appropriate safeguards against confusing implementation error with estimand displacement.",
+  "The arithmetic giving 24 scenarios, six exact-null scenarios, and the stated binomial Monte Carlo standard errors is correct.",
+  "The Morris, Young, and ICH citations are attributed consistently with their stated uses."
+ ]
+}

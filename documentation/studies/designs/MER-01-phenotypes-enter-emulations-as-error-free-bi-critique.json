@@ -1,0 +1,75 @@
+{
+ "verdict": "unsound",
+ "summary": "The protocol is unsound as a study intended to settle MER-01, although it could support a narrower simulation claim. Its static strategy omits the stated mechanism through which confounder misclassification changes artificial censoring. The primary decision is also largely predetermined by symmetric outcome misclassification, while the correction receives its own correctly specified latent model and the thresholded comparator receives a misspecified proxy treatment model. The marginal estimand and superpopulation truth are otherwise specified correctly.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "The central confounder-error and censoring mechanism in MER-01 is absent. Clones are censored only when Astar differs from the static regime. Lstar never determines strategy membership, eligibility, or censoring, so L error can distort fitted weights but cannot change which patients are censored. The proposed B_AL contrast therefore studies treatment misclassification combined with covariate measurement error in a propensity model, not the stated interaction between confounder misclassification and artificial censoring.",
+   "fix": "Add dynamic strategies, eligibility rules, or censoring rules that depend on latent L but are implemented using Lstar. Otherwise rename the question and restrict the conclusion to weight-model distortion under static sustained strategies."
+  },
+  {
+   "axis": "answers-problem",
+   "severity": "limitation",
+   "what": "The design explicitly excludes convenience validation, external validation transport, imperfect gold standards, irregular observation, and eligibility error. These are substantive reasons MER-01 remains open, not peripheral details. The study can answer only the internal random-validation subproblem and cannot support changing the catalog entry to resolved.",
+   "fix": "Retain an answers-part classification. Resolving the broader problem requires separate scenarios with selected or externally transported validation data and imperfect reference measurements."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "fatal",
+   "what": "The primary problem-real rule is driven by all-node cells that include terminal outcome error. Under the odds-ratio-1 mechanism, Ystar equals Y XOR E with E independent and probability e, so RD using Ystar equals (1 minus 2e) times the corresponding RD using Y. The e values 0.30 and 0.15 therefore impose attenuation factors of 0.40 and 0.70 by construction. Given the deliberately substantial treatment effect, large bias and undercoverage are expected even if longitudinal A and L error have no important interaction. The separate nonadditivity condition does not prevent this because it can be satisfied by a small A-L interaction while the required 0.02 bias comes from textbook outcome attenuation.",
+   "fix": "Base the primary real versus not-real decision on the A-and-L cells without Y error. Treat B_ALY minus B_AL as a separate component result and compare it with the analytic attenuation implied by the bit-flip model."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "Favorable correction performance is asymptotically built into the core scenarios. The correction uses exactly the latent transition and outcome formulas that generated the data, exactly the Markov error structure that generated the proxies, a simple random validation sample, and perfect longitudinal gold standards. The four stress cells misspecify only one outcome interaction and do not evaluate validation-size thresholds under misspecification.",
+   "fix": "Cross validation size with misspecification of the treatment, confounder, outcome, and error-transition models. Make any worth-it conclusion conditional on performance outside the congruent core model."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "X2 is deliberately used both to strengthen the treatment effect, from log odds coefficients of minus 0.60 to minus 1.00, and to increase the odds of phenotype error fourfold. This aligns the largest errors with the subgroup having the largest effect. Without neutral and reversed alignments, the study cannot distinguish a general consequence of differential error from the chosen correlation between effect magnitude and measurement quality.",
+   "fix": "Cross effect modification with error heterogeneity. Include no effect modification, differential error through an unrelated covariate, and reversed alignment in which the larger error occurs in the weaker-effect stratum."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "Serial proxy error makes the observed Astar process a hidden-state mixture. Consequently, Pr(Astar_t given Astar_(t-1), Lstar_t, X1, X2, and t) is generally neither first-order Markov nor logistic linear; it depends on more of the observed proxy history. The thresholded propensity model is therefore knowingly misspecified, while the oracle and corrected analyses receive correctly specified latent treatment models. Bias attributed to thresholding will partly be ordinary nuisance-model misspecification.",
+   "fix": "Add a best-case thresholded comparator using the exact observed-history propensity obtained by filtering the known DGM, and add a practical flexible comparator using sufficiently rich proxy histories. Attribute residual differences only after these comparisons."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "minor",
+   "what": "The statement that M equals 20 gives at least 95.2 percent relative efficiency is mathematically correct for point-estimate efficiency, but it does not establish stable between-imputation variance or interval coverage. Almost every nonvalidated participant has many latent nodes, so conclusions about correction MSE and coverage may depend materially on the arbitrary imputation count.",
+   "fix": "Choose M using the Monte Carlo error of the MI estimate and SE, then repeat representative cells with substantially larger M. Report whether worth-it classifications change."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The rules are numerically reachable, but 500 replicates do not resolve their coverage boundaries reliably. At true coverage 0.90, the probability that empirical coverage is at most 0.90 is only about one half; the same boundary instability occurs at 0.925. The claimed 0.025 separation is only about two Monte Carlo standard errors. Nonadditivity and MSE thresholds also lack Monte Carlo confidence requirements, and selecting the smallest qualifying validation size amplifies boundary noise.",
+   "fix": "Use one-sided or equivalence Monte Carlo confidence limits for every decision component, including paired nonadditivity and MSE contrasts. Increase or sequentially extend replicates until the relevant confidence limits fall wholly on one side of a threshold; otherwise return uninformative."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "minor",
+   "what": "The prior-sensitivity threat refers to validation n equal to 100 combined with accuracy 0.99, but that cell does not exist. Accuracy 0.99 is evaluated only at validation n equal to 500.",
+   "fix": "Either add the stated n equal to 100, accuracy 0.99 boundary cells or rewrite the prior-sensitivity plan to name the cells that are actually simulated."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "minor",
+   "what": "The claimed wall time of 7 to 11 hours is not supported by timing evidence in the protocol. The workload includes roughly 420000 completed-data analyses, 840000 treatment GLM fits, about 105000 penalized latent-model fits, and on the order of 18 billion participant-month imputation updates. The finite-state recursion and repeated base-R optimization may dominate the simple fit count.",
+   "fix": "Treat the planned timing run as a binding feasibility gate. Benchmark the complete workload, including imputation, Hessians, sandwich derivatives, serialization, and six-worker scaling, before stating a wall-time estimate."
+  }
+ ],
+ "citation_problems": [],
+ "what_is_sound": [
+  "The primary estimand is explicitly a marginal superpopulation risk difference under latent sustained-treatment interventions. It is not confused with a conditional odds ratio or a realized-sample estimand.",
+  "The intervention truth is computed in the same superpopulation targeted by the estimators, and it correctly remains invariant across measurement-accuracy and validation-size scenarios.",
+  "The paired factorial contrast B_AL minus B_A minus B_L plus B_0 is a valid descriptive interaction contrast for the chosen DGM, provided the scenarios truly share latent cohorts and random numbers as specified.",
+  "The oracle and no-error controls, failure-as-noncoverage sensitivity analysis, effective-sample-size gates, and participant-clustered treatment-model sandwich are useful safeguards.",
+  "The cited works are used within appropriate scope: the phenotype, eligibility, confounder, and outcome papers are described as component work rather than as end-to-end solutions. No author-work mismatch is apparent in the supplied citations.",
+  "The protocol candidly states that a deterministic estimator can be wrapped by multiple imputation and does not falsely claim that native probabilistic-input software is necessary."
+ ]
+}

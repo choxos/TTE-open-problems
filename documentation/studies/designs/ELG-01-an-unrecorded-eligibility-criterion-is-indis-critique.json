@@ -1,0 +1,86 @@
+{
+ "verdict": "unsound",
+ "summary": "The protocol cannot settle ELG-01 because internal probability validation makes latent eligibility point identified; the study evaluates an ideal two-phase sampling problem rather than the open nonidentification problem. Its expected qualitative result is largely constructed through eligibility-dependent recording, comorbidity-dependent eligibility, effect modification by comorbidity, correctly specified validation models, and known validation probabilities. The primary estimand and its true-value calculation are sound, but several comparisons mix estimands or information sets, and the decision rule is not adequately resolved by the planned Monte Carlo precision. The protocol should not run under its current claims and decision rule.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "ELG-01 concerns indistinguishable latent states when eligibility recording is nonignorable and suitable validation data may be absent or nonrepresentative. The protocol reveals eligibility in an internal Bernoulli validation sample with known inclusion probabilities and perfect transportability. That converts the central problem into an identified two-phase missing-data problem. A simulation of one identified DGM cannot settle the underlying nonidentification question or establish that the problem is empirically material.",
+   "fix": "Either relabel the study as an operating-characteristics study for internal probability validation and state that it only partially answers ELG-01, or add an identification component. The latter should exhibit observationally equivalent DGMs with different eligible-population effects, establish which validation assumptions distinguish them, and study violations such as unknown inclusion probabilities, nontransportability, and outcome-dependent recording."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The positive qualitative result is constructed. Setting gamma to log(2) or log(4) makes recording depend on latent E; the -1.10 coefficient of C in the eligibility model associates eligibility with the only effect modifier; and delta changes by 0.08 across C. With correct treatment adjustment, heterogeneous-effect bias is exactly -0.08 times the error in the recovered P(C=1 | E=1). Conversely, known rho makes two-phase weighting and the augmented estimator consistent, while the exactly logistic pE and pR models favor joint-model imputation. OR 1 and homogeneous effects merely switch these pathways off; they do not make the positive cells non-tautological.",
+   "fix": "Treat the results as consequences of stipulated mechanisms rather than evidence that the problem is real. Add independently varied eligibility-effect-modifier association, recording mechanisms, effect-modification strength, continuous latent-value dependence, nuisance-model misspecification, and empirically calibrated parameter values."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "The complete-case estimator naturally targets RD60 conditional on E=1 and R=1, while performance is assessed against RD60 conditional only on E=1. The resulting difference is an estimand shift, not estimation bias for the complete-case estimand. Calling it bias and evaluating its interval against the all-eligible truth will make valid inference for the selected population appear statistically defective.",
+   "fix": "Compute the true recorded-eligible effect for every recording scenario. Report estimation bias and coverage for that estimand separately from the transport or target-population discrepancy relative to the all-eligible effect."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "The eligible-population outcome mixes three quantities: superpopulation prevalence PE, the realized count sum(E), and ascertainment yield sum(RE). Mean(RE) is not an implied estimate of PE from complete-case analysis, and mean absolute error in an implied count out of 4000 is undefined until the comparison target is specified.",
+   "fix": "Report superpopulation prevalence bias against PE, realized-sample total error against sum(E), and recorded-eligible yield mean(RE) as separate quantities. Do not describe ascertainment yield as an estimate of true eligibility prevalence."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The main contrast changes both method and information. Validation methods receive E for a probability sample and known rho; MAR methods receive neither. The partial-identification method then discards the available validation data entirely. This can quantify the value of additional information, but it cannot support a ranking of methods on equal data. The design also cites Tompsett et al. for MNAR sensitivity analysis while omitting that comparator.",
+   "fix": "Separate comparisons by information set. Within the no-validation set, include prespecified pattern-mixture or selection-model sensitivity analyses over a gamma grid, including the true gamma as an oracle diagnostic. Within the validation set, compare joint MI, two-phase weighting, augmentation, and any validation-informed bounds using the same observations."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "Rubin inference for the validation-anchored MI estimator is not justified by drawing coefficients from a robust sandwich covariance. Phase-two weighted pseudo-score estimates are not automatically proper posterior draws, and Rubin rules do not automatically incorporate their dependence on the completed-data analysis. Coverage differences could therefore reflect an invalid variance construction rather than the eligibility method.",
+   "fix": "Derive the repeated-sampling variance for the complete procedure or use a bootstrap that repeats validation sampling, nuisance fitting, imputation, and outcome analysis. Validate the chosen variance estimator under the OR-1 and homogeneous controls before making coverage decision-critical."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The replicate derivation targets a bias MCSE of 0.003, but the decision boundaries require finer resolution. At MCSE 0.003, an observed absolute bias of 0.005 has a normal upper limit of 0.01088, and an observed bias of 0.015 has a lower limit of 0.00912; neither passes its paired confidence-bound condition. The rule also requires every homogeneous control to have absolute bias below 0.005. When true bias is zero and MCSE is 0.003, one such check fails by simulation noise about 9.6% of the time, before accounting for the many control cells.",
+   "fix": "Base replication counts on the joint numerical rule, with decision-critical bias MCSE below 0.0025 or a larger prespecified separation zone. Define the confidence construction for absolute bias, account for the collection of control checks, and replace raw all-cell thresholds with Monte Carlo intervals around signed bias."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The monotonicity requirement is not operationally defined. It does not state which estimator must be monotone, whether every pairwise contrast must satisfy the ordering, how validation-size duplicates are handled, or how Monte Carlo uncertainty in differences is treated. Different reasonable implementations can therefore produce different verdicts from the same results.",
+   "fix": "Write explicit contrasts for named methods and scenario pairs, including the direction of each expected contrast and a confidence rule for each difference."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "minor",
+   "what": "The 6 to 12 hour estimate is not yet supported and omits material work. Repeating three MI methods with 50 imputations on 10% of 48,000 replicates adds up to 720,000 completed-data analyses if implemented literally. The estimate also treats millions of stacked-sandwich and finite-difference calculations as inexpensive without timing them.",
+   "fix": "Benchmark all methods in the slowest scenario, including sandwich construction, the M=50 subset, serialization, and failure handling. Extrapolate from successful wall-clock worker time before committing to the overnight budget."
+  },
+  {
+   "axis": "citation",
+   "severity": "minor",
+   "what": "The interval attributed to Imbens and Manski is not their specific confidence-interval construction; it is a generic Bonferroni expansion of estimated endpoints. Tompsett et al. are accurately invoked for MNAR sensitivity analysis, but that cited method is absent from the proposed comparator set. No clear author or title mismatch is apparent in the remaining citations.",
+   "fix": "Cite a source that directly justifies the proposed Bonferroni endpoint region or implement the Imbens-Manski construction. Either add the Tompsett-style sensitivity comparator or remove the claim that it serves as a comparator."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "Imbens GW, Manski CF. Confidence Intervals for Partially Identified Parameters. Econometrica. 2004",
+   "problem": "The proposed endpoint-wise Bonferroni region is not the specific Imbens-Manski interval construction. The citation is too imprecise for the method actually implemented."
+  },
+  {
+   "cite": "Tompsett D, et al. Target Trial Emulation and Bias Through Missing Eligibility Data. American Journal of Epidemiology. 2023",
+   "problem": "The attribution to MNAR sensitivity analysis is consistent with the work, but the protocol does not include that cited approach despite calling it an existing comparator."
+  }
+ ],
+ "what_is_sound": [
+  "The primary causal estimand is explicitly marginal over the truly eligible superpopulation rather than conditional on covariates or restricted to observed eligibility.",
+  "The true values are correct: -0.060000 under homogeneous effects and -0.04 - 0.08P(C=1 | E=1) under heterogeneous effects.",
+  "Reusing the same superpopulation truths across recording and validation scenarios is correct because R and V do not alter E or the potential outcomes.",
+  "The known-design two-phase weight Q E/rho is unbiased under the stated validation design, and the augmented formula is unbiased when rho is correct.",
+  "The algebra of the no-assumption risk and risk-difference outer bounds is valid as a conservative construction when validation information is deliberately excluded.",
+  "The complete-case method receives the same treatment-propensity specification and a full stacked sandwich, so it is not disadvantaged by an obviously inferior variance estimator.",
+  "The OR-1 and homogeneous-effect scenarios are useful implementation controls, although they cannot establish that the positive finding was not constructed.",
+  "The Morris, Benz, Shen, Wang, and Robins citations have no apparent bibliographic or substantive mismatch with their stated general uses."
+ ]
+}

@@ -1,0 +1,91 @@
+{
+ "verdict": "unsound",
+ "summary": "The protocol cannot settle GMT-01 because it evaluates a hand-built rank score over a finite GLM library and explicitly substitutes split stability for the influence-function remainder named in the problem. Most scenarios construct the familiar treatment-only-predictor conflict, so favorable results could demonstrate a known propensity-score variable-selection phenomenon rather than the stated longitudinal machine-learning problem. The marginal estimand and superpopulation truth calculation are sound, but the nonlinear sequential outcome library is misspecified and the written model matrices contain structural constants that trigger the protocol's own failure rule. The published-calibration comparison, IPW inference, and decision thresholds also require revision before simulation.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "GMT-01 concerns genuinely machine-learned longitudinal nuisance functions, a criterion containing an estimate of the influence-function remainder, and applicability across several longitudinal estimators. The protocol studies a prespecified 4 by 3 by 3 GLM menu, only IPW and a longitudinal one-step estimator, and a D component explicitly defined as split-to-split stability rather than a remainder estimate. A favorable result would show that one heuristic ranks one finite library well; it would not settle GMT-01.",
+   "fix": "Either relabel the study as a finite-library proof of concept that answers only part of GMT-01, or add actual ensemble and highly adaptive learners, estimator-specific implementations, and a defensible connection between the observable score and causal remainder or risk."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The desired prediction-versus-weight-dispersion conflict is constructed in 16 of 24 scenarios. With gamma_Z equal to 0.75 or 1.50, Z predicts treatment, has no prognostic role except through treatment, is available only in the larger G candidates, and is therefore rewarded by predictive deviance while worsening propensity tails. The positive rule requires only two gamma_Z equals zero successes, so the scenario count and median can still be dominated by the constructed instrument cells.",
+   "fix": "Make conclusions gamma_Z-stratified and require convincing performance across several gamma_Z equals zero cells. Add other mechanisms for predictive and causal ranking disagreement, and provide a correctly specified reduced-history propensity candidate when Z is excluded."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The stated odds ratios for Z are wrong because the equation multiplies gamma_Z by s. The actual per-SD odds ratios are approximately 1.63 and 2.65 under s equals 0.65, and 2.55 and 6.52 under s equals 1.25, rather than 2.12 and 4.48 in both overlap conditions. Consequently, the overlap factor also changes instrument and confounding strength, amplifying the constructed conflict in poor-overlap cells.",
+   "fix": "Correct the reported odds ratios and separate the overlap manipulation from the treatment-predictor coefficient if their effects are meant to be interpreted independently."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "The claim that every scenario contains a correctly specified sequential outcome model is false in the nonlinear-outcome cells. Backward integration of L2 squared generates terms including W1 squared, L1:W3, and W1:W3 in the Q1 regression, with further corresponding terms at Q0. The stated Q2 candidate family includes L squares, W1:L terms, and L:L terms, but not these required terms. Apparent selector differences in those cells would therefore mix selection performance with universal Q misspecification.",
+   "fix": "Derive each sequential conditional mean algebraically and add every induced term, or explicitly designate the nonlinear-outcome cells as all-candidate-misspecified scenarios and prevent them from supporting claims about selection among correctly specified candidates."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "The marginal estimand itself and its superpopulation truth are correctly aligned, but the material-effect scale is not. Setting the residual SD to one does not make the marginal outcome SD one because the systematic outcome component has nonzero variance. Thus coefficients and thresholds described as outcome standard deviations are actually residual-SD units, and regime-specific marginal SDs need not equal one.",
+   "fix": "Either call the units residual standard deviations or rescale Y using a prespecified marginal SD from a named reference population and regime before applying the 0.01 and 0.02 thresholds."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "fatal",
+   "what": "The balance comparator is not the calibrated-weight method cited as the published alternative. It is a new maximum-plus-RMS balance score, and the protocol expressly disclaims reproducing a published implementation. Its censoring component is also underdefined because it compares retained and dropped people using cumulative retention weights without defining the dropped-person weight or calibration target. Beating this comparator cannot establish improvement beyond published calibrated weighting.",
+   "fix": "Implement the cited calibrated-weight procedure according to its published objective, risk-set definitions, normalization, and recommended inference. Otherwise restrict the claim to comparison with a bespoke balance heuristic."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The IPW intervals knowingly treat estimated, selected weights as fixed. Cross-fitting does not remove the first-order contribution of propensity and censoring estimation for a nonorthogonal IPW estimator. These intervals therefore do not provide valid 95% coverage and give the one-step family a better-supported variance procedure, although point-estimator comparisons within the IPW family remain fair.",
+   "fix": "Use a valid influence function accounting for weight estimation or an outer bootstrap that repeats selection and fitting. Retain fixed-weight intervals only as a labeled sensitivity analysis."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The positive and negative rules are arranged so that the most plausible intended result is uninformative. In gamma_Z equals zero cells, predictive CV chooses among nested models containing the truth and has little reason to lose by 0.02 bias units or 0.05 coverage points. In the 16 nonzero-gamma_Z cells, the protocol deliberately creates the conflict, but improvements confined there cannot satisfy the positive rule, while enough such improvements prevent the 20-of-24 negative rule from firing.",
+   "fix": "Define separate decisions for the no-instrument and instrument mechanisms. Treat instrument-cell results as evidence about that known mechanism rather than requiring one global verdict about GMT-01."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The replicate calculation is based on the MCSE of one Bernoulli coverage proportion, whereas the primary statistic is a paired coverage difference whose variance depends on discordant coverage indicators. The 0.05 threshold is probably resolvable with 1000 replicates, but the 0.03 rules, scenario median, and exact 0.95 convergence cutoff have no precision-based acceptance rule. A method truly near 95% convergence has MCSE about 0.0069 and can pass or fail mainly by simulation noise.",
+   "fix": "Base replicate count on paired discordance, and apply Monte Carlo confidence bounds or prespecified indifference bands to coverage differences, convergence, and scenario medians."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "fatal",
+   "what": "As written, the model matrices are rank deficient and violate the nonconvergence rule. Every t equals zero treatment model includes A(-1), which is identically zero. Regime-specific backward Q regressions also include treatment indicators and treatment-by-W3 terms that are fixed after conditioning on A_t equals a. stats::glm.fit or ordinary least squares will produce aliased coefficients, and the rule declaring any nonfinite coefficient a failure can therefore reject every replicate.",
+   "fix": "Specify full-rank time-specific model matrices that omit structurally constant and aliased columns. Define alias handling explicitly and test every candidate in a small dry run before timing the simulation."
+  },
+  {
+   "axis": "citation",
+   "severity": "serious",
+   "what": "The 2022 calibrated-weights citation supports the existence of a particular calibrated longitudinal weighting approach, but it does not validate the protocol's bespoke B selector as that published method. Brookhart et al. supports the precision cost of treatment-only variables in point-treatment propensity-score models; it does not establish the longitudinal composite-selection result being tested. No apparent wrong-author or DOI mismatch is present in the other listed citations.",
+   "fix": "Use the 2022 work only after implementing its actual method, and cite Brookhart only as motivation for the treatment-only-predictor mechanism. Do not use either citation to generalize results to the full GMT-01 claim."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "Marginal structural models using calibrated weights with SuperLearner: application to type II diabetes cohort. IEEE Journal of Biomedical and Health Informatics. 2022. DOI 10.1109/JBHI.2022.3175862",
+   "problem": "The work supports calibrated longitudinal weighting, but the protocol does not reproduce that method. The bespoke balance selector therefore cannot stand in for the cited published comparator."
+  },
+  {
+   "cite": "Brookhart MA, Schneeweiss S, Rothman KJ, Glynn RJ, Avorn J, Sturmer T. Variable selection for propensity score models. American Journal of Epidemiology. 2006. DOI 10.1093/aje/kwj149",
+   "problem": "This is point-treatment propensity-score variable-selection evidence. It supports the treatment-only-predictor mechanism but not the longitudinal four-component selection criterion or its generality."
+  }
+ ],
+ "what_is_sound": [
+  "The primary target is explicitly marginal over the eligible superpopulation rather than conditional on the realized sample.",
+  "Paired complete-trajectory truth simulation under the exact sustained strategies, shared innovations, and evaluation of mu_Y without residual noise correctly targets the stated marginal contrast.",
+  "The DGM contains genuine treatment-confounder feedback, measured censoring predictors, sequential exchangeability, and mathematical positivity.",
+  "Patient-level nested sample splitting prevents direct leakage from nuisance selection into outer-fold performance evaluation.",
+  "Within the one-step family, predictive, balance, and combined selectors receive the same point-estimator formula and empirical influence-function variance.",
+  "The Morris, Robins-Hernan-Brumback, 2017 Super Learner weighting, and Feuerriegel citations are consistent with their limited stated uses.",
+  "The fit-count arithmetic, caching plan, resumability, and proposed timing pilot make the 6-to-12-hour runtime forecast plausible once the rank-deficient model definitions are corrected."
+ ]
+}

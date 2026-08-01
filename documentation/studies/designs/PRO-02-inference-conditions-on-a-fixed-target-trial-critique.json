@@ -1,0 +1,98 @@
+{
+ "verdict": "unsound",
+ "summary": "The protocol cannot settle PRO-02 because it replaces undocumented, sequential human protocol development with a frozen finite algorithmic search, which is the neighboring problem that existing simultaneous-inference theory already addresses. The selected superpopulation risk-difference estimand and its truth calculation are otherwise coherent, and the treatment-effect parameters do not mechanically create naive undercoverage. However, the primary coverage-loss comparator is undefined, failure handling can change coverage by the full decision threshold, and the rule incorrectly makes existence of the problem depend on a correction succeeding. The design could support a narrower study after those defects and the claimed scope are corrected.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "PRO-02 concerns the undocumented sequence of human revisions across eligibility, comparators, grace periods, washouts, and outcome definitions. The simulation instead freezes two deterministic selectors over 4 or 16 combinations of age threshold and horizon. It assumes a known candidate family, selection rule, and tie rule, which removes the feature that makes the stated problem open. It can answer a recorded-algorithm subproblem but cannot settle PRO-02.",
+   "fix": "Describe the simulation as partial evidence about known finite searches and prohibit using it to close PRO-02. Addressing the stated problem requires a prospective or empirical component that records actual protocol-development paths, rejected specifications, and information viewed during each decision."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "Success of both corrections is largely true by construction. Sample splitting makes the selected protocol independent of the analysis sample, so its marginal coverage is a mixture of fixed-candidate coverages. Bonferroni intervals are constructed so simultaneous coverage protects any selection from the declared family when the candidate pivots are valid. The simulation can reveal finite-sample failures and precision costs, but it cannot establish these principles as new findings.",
+   "fix": "Treat correction coverage as a calibration check. Make finite-sample tail behavior, failure rates, and precision loss the correction outcomes, and do not require correction success as evidence that naive post-selection inference has a problem."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The prognostic score is an oracle copy of the outcome linear predictor: R uses exactly the coefficients 0.35, 0.25, 0.50, and 0.30 appearing in eta. Results from maximizing its observed correlation with Y therefore concern perfect score-DGM alignment, not generic inspection of covariate-outcome associations. The n, lambda0, eligibility, horizon, and 70-event choices also make selection behavior depend heavily on whether expected counts lie near the cutoff. No factor varies score misspecification or distance from that boundary. The theta choices themselves do not force undercoverage because null and homogeneous scenarios are included.",
+   "fix": "Factorially vary prognostic-score alignment and expected event-count distance from the workability cutoff. Report the population selection probabilities or expected counts before running so conclusions cannot be driven only by tuned boundary cells."
+  },
+  {
+   "axis": "estimand",
+   "severity": "fatal",
+   "what": "The primary quantity called a paired coverage loss relative to candidatewise prespecified calibration has no operational definition. On replicate r, the interval for the selected k is exactly the same interval that would be labeled the fixed-k interval; using both on that replicate produces identical coverage indicators. Fixed-k coverage is instead an across-replicate quantity, so it is not a second paired outcome with the stated empirical covariance. The central five-percentage-point decision threshold therefore cannot be calculated as written.",
+   "fix": "Define loss as 0.95 minus selected coverage after demonstrating fixed-candidate calibration, or define an independently estimated benchmark such as the selection-frequency-weighted fixed-candidate coverage. Specify its estimator and Monte Carlo variance explicitly."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "Calibration of candidate Wald intervals only at the 1.96 critical value does not validate Bonferroni intervals in the relevant tails. The critical values are approximately 2.50 for K=4 and 2.96 for K=16. Sparse-event Wald pivots can appear calibrated at 95% while being badly calibrated at those tail probabilities, so Bonferroni success or failure could reflect tail approximation rather than selection adjustment.",
+   "fix": "Add fixed-family simultaneous calibration using the same Bonferroni critical values before evaluating selected coverage. Alternatively, use a simultaneously calibrated resampling procedure."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "Coverage denominators after nonconvergence are unspecified. Dropping failed replicates can alter reported coverage by nearly five percentage points, which equals the substantive decision threshold. Conditioning also differs across methods because naive inference fails only for the selected candidate, Bonferroni fails if any family member is nonestimable, and splitting can fail during either selection or analysis.",
+   "fix": "Predefine unconditional and conditional-on-success results. For the decision rule, use a composite success criterion that counts failure to produce an interval as failure, or otherwise prove that the chosen conditioning is common across methods."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The split-sample procedure applies the same absolute event and sample-size thresholds to half the cohort. It consequently selects from a different protocol distribution than the full-data selector and often targets a different random estimand. Its interval width and coverage are therefore not direct correction-versus-status-quo comparisons for the same selection policy.",
+   "fix": "Present splitting as a different design-and-analysis policy, not merely a variance correction. Compare methods conditional on selected candidate and report policy-level target movement; do not interpret raw width or coverage differences as holding selection fixed."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The rule declares the problem materially real only if at least one correction succeeds in the same cells. Naive post-selection undercoverage remains evidence that the problem exists even if both proposed corrections fail because of sparse data, poor tail calibration, or nonconvergence. The rule therefore tests the conjunction of problem existence and remedy success rather than the stated problem.",
+   "fix": "Decide whether naive selection damages coverage using naive and fixed-candidate calibration alone. Evaluate each correction under a separate decision rule."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "Calibration is required only for candidates selected in at least 5% of replicates. A candidate selected 4.9% of the time can have arbitrarily poor fixed-candidate coverage and still contribute directly to selected coverage. With 16 candidates, the omitted selection mass can be substantial.",
+   "fix": "Require fixed-candidate calibration for every estimable candidate in the declared library, or calibrate the complete selection-frequency-weighted benchmark with no per-candidate frequency exemption."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The global verdict uses pointwise 95% Monte Carlo limits across 48 cells without controlling the probability of a chance qualifying pattern. Requiring four cells is not a defined multiplicity correction, especially when cells and selectors are strongly correlated.",
+   "fix": "Use simultaneous Monte Carlo bounds, a prespecified global statistic with a simulation-based null distribution, or an independent confirmation run for cells that satisfy the screening thresholds."
+  },
+  {
+   "axis": "citation",
+   "severity": "minor",
+   "what": "Peduzzi et al. studied events per variable for maximum-likelihood logistic regression. That result does not validate 70 pooled events as an adequacy threshold for a Hajek IPW risk difference with sandwich inference. The stated seven terms also require counting an intercept or an outcome model that is never fitted.",
+   "fix": "Describe 70 events solely as an arbitrary, prespecified example of investigator behavior. Do not present Peduzzi et al. as methodological support for adequacy of the proposed estimator."
+  },
+  {
+   "axis": "citation",
+   "severity": "limitation",
+   "what": "Berk et al. support the general simultaneous-coverage principle in a linear-model and model-selection setting. They do not establish finite-sample validity of normal-theory Bonferroni intervals for marginal IPW risk differences with an estimated propensity score.",
+   "fix": "Restrict the attribution to the generic simultaneous-inference principle and provide separate calibration or theory for the proposed IPW construction."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "Peduzzi P, Concato J, Kemper E, Holford TR, Feinstein AR. A simulation study of the number of events per variable in logistic regression analysis. Journal of Clinical Epidemiology. 1996",
+   "problem": "The ten-events-per-variable result concerns logistic-regression maximum likelihood, not adequacy of Hajek IPW and sandwich inference. It cannot justify the 70-event threshold for the method being evaluated."
+  },
+  {
+   "cite": "Berk R, Brown L, Buja A, Zhang K, Zhao L. Valid post-selection inference. Annals of Statistics. 2013",
+   "problem": "The citation supports the generic logic of simultaneous post-selection coverage, but not finite-sample validity of the specified IPW Wald-Bonferroni intervals."
+  }
+ ],
+ "what_is_sound": [
+  "The primary estimand is explicitly a marginal, randomly indexed superpopulation risk difference. Each replicate is correctly scored against the truth for its selected protocol rather than against the reference protocol or the realized eligible sample.",
+  "The conditional-risk integration matches the exponential event-time DGM, averages over the correct eligibility-defined superpopulation, and uses independent truth draws with a stringent Monte Carlo error target.",
+  "Null, homogeneous, and heterogeneous treatment-effect structures prevent effect heterogeneity from being the sole source of a finding. The explicit effect-seeking selector is properly confined to a positive control.",
+  "The status quo interval receives a joint M-estimation sandwich that accounts for propensity-score estimation. It is not deliberately assigned an inferior variance estimator.",
+  "With 2000 replicates, pointwise Monte Carlo standard errors of approximately 0.0049 at 95% coverage and 0.0067 at 90% coverage can resolve the proposed five-percentage-point deficits once the comparison quantity is defined.",
+  "The runtime estimate is plausible for 48000 replicates with low-dimensional logistic models and algebraic candidate calculations on six workers. The planned corner pilot is an appropriate feasibility check.",
+  "The multiverse analysis is correctly treated as a descriptive diagnostic rather than mislabeled as a selection-adjusted confidence interval.",
+  "No apparent wrong-author attribution occurs in the listed established citations; the identified citation problems concern transfer of results beyond their original methodological settings."
+ ]
+}

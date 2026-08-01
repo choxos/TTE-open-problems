@@ -1,0 +1,106 @@
+{
+ "verdict": "unsound",
+ "summary": "The marginal estimands and superpopulation truth calculations are largely correct, and undercoverage is not algebraically guaranteed. The protocol nevertheless cannot settle GMT-03 because it studies one exact-regime IPW implementation, while the nominal million records have no inferential role and the confirmatory decision ignores subgroup and competing-event coverage. The diagnostic result is heavily encoded by the rare-event and cumulative-adherence parameters, then evaluated using only 24 scenario-level observations. The target claim, status quo comparator, endpoint-specific decisions, and diagnostic validation must be repaired before running.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "GMT-03 concerns estimator-specific and time-varying information, inference accounting for estimated weights and outcome models, reporting practice, and failures for rare competing events and subgroups. This study evaluates one correctly specified, unstabilized, exact-regime sequential-IPW estimator with no fitted outcome model. Independent binomial retention means that the one-million-record source count is merely a label: directly drawing the retained sample would produce the same experiment. Consequently, the study can characterize one narrow coverage problem but cannot declare GMT-03 real or not real.",
+   "fix": "Frame the result strictly as coverage of the specified estimator within this DGM family and remove the field-level real or not-real declarations. Settling GMT-03 would require multiple estimator families, realistic restriction mechanisms, outcome-model methods, and a separate empirical assessment of reporting practice."
+  },
+  {
+   "axis": "answers-problem",
+   "severity": "serious",
+   "what": "The confirmatory endpoint is coverage of the overall primary-event risk difference at 60 months. Nevertheless, a scenario qualifies through either a rare primary event or a rare competing event. A low competing-event count does not establish failure of primary-event inference; common competing events, not rare ones, are what substantially deplete the primary-event risk set. Coverage failure for competing-event and subgroup estimands remains secondary and is never required.",
+   "fix": "Define endpoint-specific decisions. Primary-event rarity must be judged against primary-event coverage, competing-event rarity against competing-event coverage, and subgroup claims against subgroup coverage. Analyze depletion of the primary-event risk set using the frequency of competing events separately."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The longitudinal support collapse is largely determined by the treatment parameters. At kappa=2.25, the stated minimum monthly adherence probability is about 0.676; repeating it for 59 decisions gives a cumulative probability near 1e-10 before the baseline probability is included. At kappa=1.25, a worst-history monthly probability near 0.899 still yields about 0.0019 over 59 decisions. With at most 4000 retained people, important histories therefore have essentially no sustained-regime support by construction. Matched kappa comparisons prevent small ESS alone from being called a finding, but they do not turn this extreme grid into an empirical boundary study.",
+   "fix": "Calibrate overlap levels using the distribution of cumulative regime probabilities and expected compatible counts over 60 months. Include several levels on both sides of the anticipated failure boundary rather than relying on acceptable-looking one-month probabilities."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The 20-effective-event component of the warning rule is nearly encoded by the factor levels. A 1% risk produces about 10 or 40 total events at retained n of 1000 or 4000 before division between strategies and loss through exact-strategy incompatibility. Kish event ESS cannot exceed the number of compatible events, so the median minimum event ESS will almost inevitably be below 20 in the rare-event cells. The resulting diagnostic evaluation will largely compare the prespecified rare-event indicator with coverage rather than discover whether 20 is a useful threshold.",
+   "fix": "Choose retained sizes and risks that produce effective event counts both below and above 20 after accounting for expected strategy compatibility. Validate the fixed cutoff on an independent and more densely sampled set of scenarios."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "minor",
+   "what": "Any substantive finding that G modifies treatment effects is predetermined. The coefficient 0.287682 exactly cancels the direct treatment coefficient for G=1, while treatment-mediated changes in L create additional subgroup differences.",
+   "fix": "Restrict subgroup conclusions to estimator performance and coverage. Do not present the existence or direction of subgroup heterogeneity as a simulation result."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The primary method is labeled status quo although it combines unstabilized exact-regime weights, a terminal Hajek estimator, and an HC1 variance that ignores propensity-score estimation. The cited MSM literature does not establish this exact combination as the recommended longitudinal analysis. Common implementations use stabilized weights and may use joint estimating equations, robust weighted outcome-model inference, or patient-level bootstrap inference. Failure of the selected method therefore cannot be generalized to conventional asymptotic inference.",
+   "fix": "Name the method as the exact fixed-nuisance procedure under study. Add at least one literature-faithful stabilized MSM or clone-censor-weight implementation with its recommended variance procedure and bootstrap comparator."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The oracle comparison does not uniquely separate weight-estimation instability from weight-tail behavior. Estimated propensity scores can improve calibration and reduce variance relative to known probabilities, while kappa simultaneously changes cumulative compatibility, weight dispersion, propensity-model information, and treatment-confounding strength. The formal weight-tail attribution rule does not require any supporting pattern from the oracle or nuisance-aware analyses. Method-specific conditional coverage also compares different selected sets when convergence differs.",
+   "fix": "Treat the oracle analysis as a benchmark rather than a decomposition. Require prespecified agreement across oracle, fixed-nuisance, and nuisance-aware contrasts before making mechanistic attributions, and report comparisons on a common converged-replicate set alongside unconditional successful coverage."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The decision regions overlap. Coverage equal to 0.90 is both positive under the <=0.90 rule and inconclusive under the stated 0.90 through 0.93 interval; 0.93 can likewise overlap the inconclusive and no-failure regions. The Wilson requirement adds essentially no protection: with at least 3600 replicates, any observed coverage at or below 0.90 already has a 95% upper limit far below 0.925.",
+   "fix": "Use mutually exclusive inequalities and align the confidence bound with the inferential claim. If the claim is true coverage below 0.90, require the upper confidence limit below 0.90; otherwise define a distinct material boundary such as 0.925 and use it consistently."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "Four thousand replicates estimate coverage adequately, but they do not provide 4000 observations for diagnostic sensitivity and specificity. Those quantities use only 24 scenario-level units, with an unknown and potentially very small number of failing or nonfailing scenarios. Their attainable values are coarse, their uncertainty is large, and sensitivity or specificity is undefined if every scenario receives the same coverage label. Using the replicate-median diagnostic also does not represent applying the warning rule to one realized study.",
+   "fix": "Use a substantially larger held-out set of independently specified DGM scenarios, require minimum numbers of failing and nonfailing scenarios, and report confidence intervals. Also evaluate the observed study-level flag across replicates or estimate coverage conditional on observed diagnostic values."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "serious",
+   "what": "The six-to-twelve-hour estimate is unsupported by a benchmark. The main experiment contains up to 14.4 billion person-months before event stopping, 192000 glm fits with repeated IRLS passes, and repeated sandwich, horizon, endpoint, subgroup, and monthly diagnostic calculations. The truth runs add up to roughly 960 million person-strategy months. Base R glm and data.table do not make the stated wall time credible without measured throughput.",
+   "fix": "Benchmark complete replicates from every retention and overlap extreme, including all summaries and checkpointing, then extrapolate from observed CPU time and memory. Benchmark the paired truth calculation separately."
+  },
+  {
+   "axis": "citation",
+   "severity": "serious",
+   "what": "Robins, Hernan, and Brumback support marginal structural models and sequential weighting, but that citation does not establish the protocol's exact terminal Hajek estimator and fixed-nuisance HC1 interval as the recommended status quo. No method-specific citation supports that pivotal characterization.",
+   "fix": "Cite the source that defines and recommends the exact estimator and variance procedure, or remove the status quo label and add a literature-faithful comparator."
+  },
+  {
+   "axis": "citation",
+   "severity": "minor",
+   "what": "The Zhang, Bujkiewicz, and Jackson title is given as a generic weighted-analysis title rather than its population-adjusted indirect-comparison title. That work does not validate a longitudinal risk-set ESS or the 100-or-20 rule. The 2025 Biometrical Journal citation also omits its authors and full bibliographic details.",
+   "fix": "Use the exact DOI-resolved metadata and state the population-adjustment scope of the Zhang work. Complete the Biometrical Journal citation and do not imply that either source validates the proposed cutoff."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "Robins JM, Hernan MA, Brumback B. Marginal structural models and causal inference in epidemiology.",
+   "problem": "Correctly attributed and relevant to MSM weighting, but it does not support labeling this exact Hajek plus fixed-nuisance HC1 procedure as the recommended status quo."
+  },
+  {
+   "cite": "Impact of near-positivity violations on IPTW-estimated marginal structural survival models with time-dependent covariates. Biometrical Journal. 2025.",
+   "problem": "The citation omits authors and complete publication metadata. Its motivational use is plausible, but it does not establish the proposed diagnostic threshold."
+  },
+  {
+   "cite": "Zhang, Bujkiewicz and Jackson. Effective sample size estimators for weighted analyses.",
+   "problem": "The title is inaccurate or abbreviated relative to the DOI-resolved population-adjusted indirect-comparison work. Its setting does not validate longitudinal cumulative-weight ESS or the 100-or-20 cutoff."
+  },
+  {
+   "cite": "No citation supplied for the 100-patient or 20-effective-event cutoff.",
+   "problem": "Prespecification prevents post hoc threshold selection, but it does not provide a scientific basis for these cutoff values."
+  }
+ ],
+ "what_is_sound": [
+  "The primary and subgroup estimands are explicitly marginal cumulative-incidence differences rather than conditional logit coefficients.",
+  "The postrestriction superpopulation is the correct truth target for the stated estimator; retention is independent, so truth is correctly shared across retention and kappa levels.",
+  "Competing events are treated as competing events rather than censoring, and subgroup truths are enumerated rather than inferred from the direct interaction coefficient.",
+  "The treatment models match the DGM, sequential exchangeability and positivity hold mathematically, and kappa changes assignment without changing the interventional truth.",
+  "Paired large-sample truth simulation is appropriate, and the proposed initial truth sample should usually be much more precise than its stopping tolerances.",
+  "Four thousand replicates provide approximately the stated Monte Carlo precision for individual scenario coverage, and coverage differences of 0.05 are resolvable.",
+  "The kappa=0 matched comparison and reporting of unconditional successful coverage are useful safeguards. They do not, however, cure the scope and classification problems.",
+  "The Morris, White, and Crowther citation and its use for ADEMP and Monte Carlo error planning are sound. Austin and Stuart correctly support the broad importance of overlap and weight diagnostics, provided their point-treatment scope is not extended to validate the longitudinal rule."
+ ]
+}

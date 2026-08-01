@@ -1,0 +1,88 @@
+{
+ "verdict": "unsound",
+ "summary": "The protocol addresses a relevant, explicitly scoped part of DTA-02, and its main marginal superpopulation estimand is coherent. However, the DGM deliberately links each important mapping error to effect modifiers or treatments with different effects, so the proposed conclusion that the problem is consequential is largely constructed. The diagnostic decision is also invalid because the aggregate gate tests homogeneity that the compatible DGM expressly violates. Major revision is required before running the study.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "limitation",
+   "what": "The simulation answers what happens under five known record-level mapping errors when canonical reference labels are available locally. DTA-02 also concerns how sites establish that their coding systems and clinical constructs implement the same trial when no unquestioned reference mapping exists. The proposed validation analysis begins after that hardest semantic problem has been solved.",
+   "fix": "Retain the explicit answers-part claim and describe the study as a conditional stress test. Resolving the broader problem would require empirical multisite work on constructing and validating reference definitions; this DGM cannot supply that evidence."
+  },
+  {
+   "axis": "answers-problem",
+   "severity": "minor",
+   "what": "The within-cell outcome permutation changes individual labels but preserves every treatment and covariate conditional outcome distribution. It therefore does not create a different marginal causal estimand, even though the records are semantically discordant. It is an identifiability control, not an example of averaging estimates of different questions.",
+   "fix": "Keep it explicitly separate from the trial-incompatibility scenarios and do not use it to support claims about different estimands."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "fatal",
+   "what": "Every applied mismatch is connected by construction to a causal consequence. G contains -10U while tau_1 contains +0.30U, and the stealth mapping explicitly selects on U. Broad exposure mixes D = 1 with 25 percent D = 2 even though tau_1 is centered at -0.65 and tau_2 at -0.10. The composite adds W, whose D = 1 coefficient is only -0.05. These choices predetermine the direction of the mapping effects; freezing them before simulation does not remove that construction.",
+   "fix": "Replace the real versus not-real claim with scenario-conditional operating characteristics, or cross each mapping mechanism with null, weak, and strong relationships between the mapping discrepancy and potential outcomes. Any claim about practical consequentiality also requires externally calibrated parameter ranges."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "The local fixed-effect estimator defines p_jx using the locally mapped analysis cohort after D = 2 and D = 3 are excluded. Its influence function therefore targets the X distribution among records whose observed treatment falls in D = 0 or D = 1. The declared intended truth conditions on G >= 45 but not on realized treatment category. Those are different populations whenever treatment-category probabilities vary with X.",
+   "fix": "Estimate p_jx from every locally eligible record before arm restriction, or redefine the local estimand and its truth as conditional on observed D being in {0,1}. State exactly which records contribute to p_jx and use the corresponding influence function."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "Inverse-variance fixed-effect and random-effects pooling do not target the declared equal-site common-q estimand under heterogeneous site effects. Their probability limits use variance-dependent weights, while Psi weights sites equally and imposes q_x in every site. Calling their error relative to Psi bias conflates semantic incompatibility with a different aggregation estimand.",
+   "fix": "Report each pooling estimator against its own probability-limit estimand, and separately report its discrepancy from the scientific target. Add an equal-site pooling comparator using the same correctly mapped q-standardized site estimates so semantic and weighting effects can be isolated."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The proposed standardization method receives the exact superpopulation q_x without uncertainty, while the conventional methods estimate local target distributions and use estimated inverse-variance weights. In addition, the DerSimonian-Laird comparator uses a normal interval with six sites and ignores uncertainty in tau-squared, a combination known to produce poor interval coverage. This makes interval and target-error comparisons favor the proposed method for reasons unrelated to semantic validation.",
+   "fix": "Give matched comparators the same target information where scientifically applicable. Include a currently recommended small-k random-effects analysis, such as REML or Paule-Mandel with Hartung-Knapp-style uncertainty, and distinguish it from the historical DerSimonian-Laird analysis."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "fatal",
+   "what": "The aggregate gate tests raw homogeneity even though compatible sites are deliberately heterogeneous. Exposure probabilities differ by site through 0.35 s_j in Q, and outcome risks differ through 0.10 s_j and, when gamma = 0.16, through the treatment interaction. Because all three adjusted tests must pass, compatible-network release will be low by construction. The real-problem rule then treats that manufactured false-abstention as supporting evidence, so the diagnostic conclusion is circular.",
+   "fix": "Do not use raw cross-site homogeneity as a semantic-validity test. Test mapping-specific audit quantities or deviations from prespecified site-specific expected distributions. Remove diagnostic failure from the definition of whether mapping incompatibility is consequential; evaluate harm and diagnostic performance as separate questions."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The protocol does not show that at least two mappings can cross the 0.02 bias or 0.20 unsafe-release thresholds after only two of six sites are affected. For broad exposure, the largest logit-effect separation is 0.75, so the maximum affected-site risk difference change from its 25 percent D = 2 mixture is about 0.046; averaging two affected sites among six caps network bias near 0.0155. Exact probability-limit values are already available and should have been checked before committing to the rule. The rule may therefore default to uninformative even though the directions of all effects were constructed.",
+   "fix": "Calculate and disclose every scenario probability limit before simulation. Revise the DGM, affected-site fraction, or decision thresholds if the prespecified classifications cannot occur without Monte Carlo error."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The replicate calculation targets a worst-case Monte Carlo standard error of 0.01, but the decisions compare raw estimates with 0.90 and 0.05 boundaries across many scenarios. At 2500 replicates, the approximate 95 percent Monte Carlo half-width is 0.012 near 0.90 and 0.009 near 0.05. A true performance value near either boundary can therefore change classification across runs.",
+   "fix": "Use prespecified Monte Carlo confidence bounds or indifference regions for every adequacy criterion. Increase replicates adaptively or in a prespecified second stage when a bound intersects a decision threshold."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "serious",
+   "what": "The three-to-eight-hour estimate is unsupported by a benchmark. The run creates 1.08 billion row instances, requires several random variables and mappings per row, performs 360000 site analyses, and repeatedly samples validation records. R-level allocation, grouping, parallel serialization, and batch checkpointing can dominate the simple count of model fits.",
+   "fix": "Benchmark complete batches that include generation, all mappings, validation sampling, aggregation, serialization, and checkpointing. Scale measured wall time and peak memory to 60000 replicates and include restart overhead before asserting an overnight budget."
+  },
+  {
+   "axis": "citation",
+   "severity": "minor",
+   "what": "The five supplied citations have no evident author or title mismatch, and their stated uses are appropriately limited to simulation design, federated feasibility, transport motivation, and governance. However, the exact fixed-effect, DerSimonian-Laird, Q, I-squared, Wilson, and Holm implementations are uncited, despite the protocol calling some of them conventional status quo.",
+   "fix": "Cite the original methods and current methodological guidance, especially guidance on random-effects inference with few sites. Explain whether the selected implementations represent historical practice or current recommendations."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "Uncited meta-analysis and decision procedures",
+   "problem": "No references support the exact DerSimonian-Laird normal interval, the combined Q and I-squared gate, or the claim that these implementations represent current status quo practice."
+  }
+ ],
+ "what_is_sound": [
+  "The applied mapping scenarios directly represent eligibility, exposure, and outcome incompatibilities of the kind described in DTA-02.",
+  "Psi is explicitly a marginal five-year risk difference rather than the conditional odds-ratio parameter used in the outcome model.",
+  "The target is clearly a superpopulation estimand with a fixed six-site roster and an externally supplied q_x, not the realized target sample.",
+  "Exact enumeration over site, X, and U is an appropriate way to compute the intended superpopulation truth.",
+  "The claim that U is an effect modifier but not an unmeasured confounder is correct because treatment is independent of U conditional on site and measured X.",
+  "Unsafe release is paired with compatible-network release, which prevents an always-abstain gate from being declared adequate.",
+  "The site-exclusion analysis correctly names a passing-site estimand and does not silently call it the original six-site target.",
+  "Common random numbers, nested validation samples, and reporting Monte Carlo standard errors are appropriate simulation practices."
+ ]
+}

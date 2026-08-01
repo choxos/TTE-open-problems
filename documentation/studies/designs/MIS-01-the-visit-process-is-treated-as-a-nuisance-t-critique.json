@@ -1,0 +1,115 @@
+{
+ "verdict": "needs-revision",
+ "summary": "The narrow question and marginal estimand are coherent, but the protocol is not ready to run. It addresses the comparative, gridded component of MIS-01; it cannot settle the identification problem, which the protocol appropriately acknowledges. The main defects are a DGM favoring the desired failures, unequal misspecification in challenge scenarios, invalid diagnostic validation, and a decision rule that conflates convergence with coverage. The runtime estimate also contradicts the stated computational workload.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "limitation",
+   "what": "The study answers how selected estimators behave under a known monthly latent-state selection model. It cannot answer the central open question of which structure is credible when latent-state-dependent visiting is not identified from observed data. It also excludes direct effects of healthcare use, encounter-gated treatment, and informative outcome ascertainment. The payload acknowledges this, so the study is relevant rather than neighboring, but it cannot settle MIS-01 as a whole.",
+   "fix": "Bind all conclusions and any catalog update to the comparative gridded subproblem. Describe results as conditional on the specified selection models, not as showing that MIS-01 is solved or that one visit-aware method is generally adequate."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The DGM strongly favors status-quo failure. Positive gamma_L makes recording depend on unobserved current L; L then has coefficient 0.95 in treatment, 1.20 in the event hazard, and 0.30 in the treatment interaction, while the first-order persistence coefficient is 2.10. These choices make current L important for confounding, prognosis, effect modification, and prediction while LOCF substitutes a stale value. The simulation primarily measures the magnitude of a deliberately installed failure.",
+   "fix": "Factorially vary the treatment, outcome, interaction, and persistence coefficients, including null and weak settings. A conclusion about practical materiality should require failure across settings where informative observation is not automatically coupled to strong latent confounding and effect modification."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "Holding alpha fixed while increasing gamma_L changes both selective dependence and the marginal amount of observation. Increasing gamma_A likewise changes observation frequency differently by treatment history. The matched gamma_L comparisons therefore do not isolate informativeness; they mix selection with increased data availability.",
+   "fix": "Add scenarios in which alpha is recalibrated to hold marginal observation frequency constant across gamma_L and gamma_A levels. Report the current fixed-intercept comparisons separately."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The joint latent-state likelihood exactly reproduces every core generator component. A core-scenario victory therefore demonstrates correct parametric specification. The four challenge cells alter only the state-transition order and do not probe wrong observation links, additional latent states, heterogeneous measurement effects, or treatment and outcome misspecification.",
+   "fix": "Add generators not nested in the joint likelihood and vary misspecification along independent axes. Do not interpret performance under the 12 core cells as evidence beyond correct-model compatibility."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "In the second-order scenarios, the oracle alone receives the correct second-order transition model. Complete-record, LOCF, MI, inverse-intensity, and joint methods retain first-order working models. Requiring a visit-aware method to pass both informative second-order cells therefore mixes visit handling with ordinary transition-model misspecification.",
+   "fix": "Give each method a correctly specified second-order analysis variant when technically possible, then evaluate a separate shared-misspecification analysis. Do not use the latter cells in the primary adequacy gate."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The capped-weight method is declared failed whenever the raw weighted fit fails. Capping is specifically intended to prevent failures caused by extreme weights, so inheriting failures from the uncapped outcome, transition, or sandwich calculation removes one of its legitimate advantages.",
+   "fix": "Propagate only failures of the shared observation-probability model. Fit and assess the capped weighted regressions and variance calculation independently of the uncapped versions."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The raw and capped weight sandwiches mention visit-model uncertainty but omit estimating equations for the data-dependent monthly normalization constants and post-cap renormalization constants. Month-specific scaling changes the relative contribution of months to pooled regressions, so treating those constants as fixed can understate uncertainty.",
+   "fix": "Include every normalization constant in the stacked system, or differentiate the complete estimating procedure numerically with normalization and capping recomputed during perturbation."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "Twenty imputations are not justified for scenarios with roughly 92 percent reference-month nonobservation and potentially very high fractions of missing information. This gives MI avoidable Monte Carlo noise while the other methods are essentially deterministic conditional on a dataset. Requiring all 20 completed-data fits to succeed further penalizes MI as an implementation rather than as a method.",
+   "fix": "Choose the number of imputations from a pilot targeting prespecified Monte Carlo reproducibility of estimates and standard errors. Use enough imputations for the sparse scenarios and distinguish imputation-generation failure from analysis-model failure."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "Counting every nonconverged replicate as noncoverage makes the primary measure joint convergence-and-coverage, not confidence-interval coverage. A method with 0.95 convergence and nominal 0.95 conditional coverage has only 0.9025 joint success, so it cannot satisfy the stated 0.925 coverage threshold despite meeting the explicit 0.95 convergence requirement. The effective convergence requirement is approximately 0.974.",
+   "fix": "Use coverage among converged replicates as the coverage criterion and convergence as a separate criterion. Alternatively, call the endpoint joint procedural success and set internally consistent thresholds."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "Observable calibration intercept and slope appear to be calculated on the same rows used to fit the logistic observation model. With an intercept, those values are approximately 0 and 1 by construction from the score equations, even under important misspecification. They cannot diagnose the omitted current latent state.",
+   "fix": "Calculate all observable prediction diagnostics from cross-fitted or genuinely held-out predictions. Preserve the simulation-only conditional-on-L diagnostics as explanatory quantities rather than observable validation."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The diagnostic classifier is not defined by estimator, training model, pooling rule, or handling of single-class held-out scenarios. Replicates within a scenario do not provide 1000 independent tests of transport across mechanisms; there are only 16 DGM environments, and a held-out environment may contain almost all errors or almost no errors above 0.02. A pooled AUC could mostly distinguish scenarios rather than detect replicate-level failure.",
+   "fix": "Specify the estimator-specific classifier and validation calculation. Add many more independently varied DGM settings, use scenario-clustered uncertainty, prespecify handling of single-class folds, and distinguish within-scenario discrimination from across-scenario transport."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "Binary conclusions use raw Monte Carlo point estimates at hard boundaries. With 1000 replicates, coverage MCSE is 0.00689 at 0.95 and about 0.0083 at 0.925, so a scenario can cross a threshold through simulation noise and thereby change a count-based verdict. In addition, the oracle may fail one scenario while that scenario still contributes to the substantive decision.",
+   "fix": "Use Monte Carlo confidence bounds or prespecified indifference zones for every threshold. Require the oracle gate separately in every scenario allowed to contribute to a materiality or adequacy count."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "Common-random-number differences directly estimate changes in signed bias, not changes in absolute bias. The target quantity is |mean error at gamma_L=1.386294| minus |mean error at gamma_L=0|; its Monte Carlo error is not generally the standard error of replicate-level absolute-error differences and is nonregular when either bias is near zero.",
+   "fix": "Define the estimator explicitly and use a paired bootstrap or the appropriate delta method with bias signs. Alternatively, base the rule on paired change in signed bias."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "serious",
+   "what": "The 7 to 11 hour estimate is inconsistent with the workload. Six workers over that interval allow only about 9.5 to 14.9 CPU seconds per replicate. Fifty-six GLMs alone would receive only 0.17 to 0.27 seconds each, leaving no time for path imputation, recursions, individual scores, Hessians, sandwiches, calibration, or input and output. The claimed two likelihood optimizations also undercount one MAR optimization plus three joint-model starts, which is at least four optimizer runs per replicate.",
+   "fix": "Do not authorize the full run until an end-to-end timing pilot includes all starts, Hessians, scores, imputations, variance calculations, failure handling, and disk writes. Extrapolate wall time from complete batches and report tail runtime and aggregate memory."
+  },
+  {
+   "axis": "citation",
+   "severity": "serious",
+   "what": "The gfoRmula citation supports the existence of random visit-process functionality, but it does not establish numerical equivalence between that implementation and the proposed last-recorded-state recursion. A stochastic gfoRmula calculation cannot agree with an exact recursion to 1e-8 unless its Monte Carlo component is removed.",
+   "fix": "Validate the recursion against a separate deterministic enumeration, or compare with gfoRmula using a tolerance derived from its Monte Carlo error. Document the exact mapping between the package model and the proposed state representation."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "gfoRmula: An R Package for Estimating the Effects of Sustained Treatment Strategies via the Parametric g-Formula. Patterns 2020; 10.1016/j.patter.2020.100008",
+   "problem": "The work documents random measurement or visit-process support, but it does not make the custom finite-state recursion algorithmically equivalent or provide a deterministic 1e-8 validation oracle."
+  },
+  {
+   "cite": "Kalia et al. Estimation of marginal structural models under irregular visits and unmeasured confounder: calibrated inverse probability weights. BMC Medical Research Methodology 2023; 10.1186/s12874-022-01831-2",
+   "problem": "The citation is relevant, but the protocol does not map the paper's calibration equations and weight factorization to its own visit-only exponential tilting moments and adjacent-pair weights. Unless those equations match, the proposed method should be described as an adaptation rather than the literature estimator itself."
+  }
+ ],
+ "what_is_sound": [
+  "The primary question directly addresses the comparative and practical subproblem identified in MIS-01, and the protocol explicitly disclaims nonparametric identification and continuous-time generalization.",
+  "The primary estimand is a marginal superpopulation sustained-strategy risk difference. It is not confused with the conditional monthly odds ratios used in the DGM.",
+  "The recursive truth targets the same superpopulation as the repeated-sampling analysis. Empirical baseline standardization is compatible with that target because baseline-distribution uncertainty is included and coverage is evaluated unconditionally.",
+  "Observation need not be propagated in the true-risk recursion because treatment is fixed by intervention and R has no remaining causal path to severity or outcome.",
+  "The 1000-replicate calculation for coverage MCSE at 0.95 is arithmetically correct, and the broad materiality thresholds are capable of firing.",
+  "The complete-record and LOCF comparators receive clustered estimating-equation variances rather than deliberately inferior naive standard errors.",
+  "No clear wrong-author attribution or fabricated DOI is apparent among the Morris, Goldstein, Wang, Biometrics, Kalia, marked-point-process, and gfoRmula references."
+ ]
+}

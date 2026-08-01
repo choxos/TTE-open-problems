@@ -1,0 +1,92 @@
+{
+ "verdict": "unsound",
+ "summary": "The protocol is unsound as a study intended to settle ELG-02, although several internal simulation components are technically careful. It replaces the open problem of auditing an unknown eligibility graph with regression tests in a DAG whose variables, temporal ordering, functional form, and missing causes are supplied to the screen. Collider bias, target shift, screen sensitivity, specificity, and latent-case abstention are consequently favored or guaranteed by construction. The design could support a narrow mechanism benchmark after revision, but it cannot resolve the catalog problem.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "ELG-02 concerns prospective auditing when collider status depends on an uncertain causal structure that observational data cannot generally identify. The proposed screen is handed the exact relevant variables P and D, their temporal order, the four associations to test, correctly specified parametric models, and even knowledge that named causal parents are unavailable in latent scenarios. It never learns an unknown graph, recognizes an unknown latent cause, evaluates realistic healthcare-use processes, or performs domain review. It answers whether a known four-node collider produces bias and whether direct edges can be detected, which is a neighboring and largely settled question.",
+   "fix": "Either relabel the study as a narrow mechanism benchmark that answers only part of ELG-02, or evaluate a genuinely blinded auditor across diverse hidden graphs, indirect paths, common causes, proxies, nonlinearities, timestamp errors, and healthcare-use mechanisms. The auditor must receive only information that would exist at protocol review."
+  },
+  {
+   "axis": "answers-problem",
+   "severity": "serious",
+   "what": "The proposed direction identifies reduction in bias after acting on warnings as the most important endpoint. The protocol separately evaluates screen sensitivity and an always-applied observed-parent repair, but its decision rule never evaluates the complete advisory procedure selected by the audit result. Successful edge detection plus successful oracle repair does not establish that the actual screen-and-response policy improves bias, coverage, or mean squared error.",
+   "fix": "Make the replicate-level advisory response a prespecified method. Evaluate its unconditional bias, coverage, mean squared error, failure rate, and abstention rate against routine analysis using the independent audit decision generated in that replicate."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "fatal",
+   "what": "The central qualitative finding is true by construction. In collider scenarios, lambda_P equals s and lambda_D equals plus or minus s, P affects treatment with coefficient 0.55, and D affects outcome with coefficient 0.65. Conditioning on H therefore opens A <- P -> H <- D -> Y. The screen then tests exactly those generating coefficients; its smallest H-edge coefficient is 0.45 with an audit sample of 4000, while the other tested coefficients are 0.55 and 0.65. Its noncollider false-positive probability is essentially the nominal 0.01 test size, already below the 0.05 success threshold. Latent-case abstention and zero silent-error probability are also programmed by explicitly telling the screen that P or D is unavailable.",
+   "fix": "Do not use these simulations to declare that the problem is real. Use them only to quantify consequences conditional on specified DAGs. For method validation, include near-null edges, externally calibrated effect sizes, indirect relations, misspecified models, and noncollider graphs that produce the same observed associations through confounding. Hide the graph and latent-variable identities from the screen."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "B is not the sole effect modifier on the reported risk-difference scale. With z = -1.50 + 0.45B + 0.35X + 0.65D and delta_B = -0.35 + 0.25B, the conditional risk difference is Phi(z + delta_B) - Phi(z), which varies with X and D even without product terms. Because H depends on X and D, the target-population shift is partly caused by changes in their distributions. In latent-parent scenarios, part of that mechanism is not observed, contrary to the claim that the source of the target shift is observed and exactly specified.",
+   "fix": "Either use an outcome DGM with treatment effects additive on the risk scale and bounded valid probabilities, or explicitly recognize scale-induced effect modification and decompose Delta_target across B, X, and D rather than attributing it to B."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "When P and D are observed, routine AIPW is deliberately denied a strong treatment predictor and a strong outcome predictor. Conventional nuisance modeling could include P in the propensity model and D in the outcome model, or include all measured baseline variables in both. Either approach can block the selected path without a collider screen. The proposed observed-parent repair is therefore also a conventional richer-nuisance comparator, but the design attributes its advantage to auditing.",
+   "fix": "Add a prespecified conventional comparator that includes measured treatment predictors in the propensity model and prognostic variables in the outcome model without consulting the screen. Also compare with an all-measured-baseline model."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The advisory procedure receives an additional independent sample of 4000 people, while routine analysis is evaluated using only the analysis sample of 4000. This gives the proposed procedure twice the data resources for deciding what analysis to report. The extra sample may be a legitimate design requirement, but it cannot be ignored in a comparative claim.",
+   "fix": "Use a fixed total sample allocation for all procedures, give comparators equivalent access to the audit data, or state that performance is conditional on an external audit dataset and report the associated data cost."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "Visibility is not a DGM factor for routine AIPW. The 16 collider scenarios contain only eight distinct generated distributions, and the eight noncollider scenarios contain only four. Consequently, the requirement that four collider scenarios qualify can be satisfied by only two distinct DGM cells duplicated across observed and latent visibility. The noncollider specificity count has the same duplication problem.",
+   "fix": "Treat visibility as an analysis condition rather than a separate DGM for routine performance. Base all scenario counts on the eight unique collider cells and four unique noncollider cells, with explicit requirements across strength, retention, and orientation."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The declaration that collider bias is real requires both absolute bias and severe coverage failure at a fixed sample size. Coverage depends on bias relative to the standard error, so the same structural bias can pass or fail this rule solely because sample size changes. This conflates practical bias magnitude with inferential precision.",
+   "fix": "Use the prespecified absolute-bias threshold for the materiality conclusion. Report coverage failure as a separate operating characteristic rather than a necessary condition for whether the bias exists."
+  },
+  {
+   "axis": "citation",
+   "severity": "serious",
+   "what": "The established citations are mostly accurate, but the two 2026 works are used for substantive claims despite having no authors in the bibliography and null supporting quotations in the audit payload. The title of the Frontiers article does not by itself establish that eligibility changes the resulting effect, and the temporal-selection title does not establish relevance to prospective collider auditing. No citation defines the claimed status quo AIPW implementation or supports deliberately excluding P and D, so the fairness claim cannot be checked against method guidance.",
+   "fix": "Resolve full metadata and extract supporting passages for both 2026 works before relying on them. Add primary references for AIPW, nuisance-variable selection, and stacked M-estimation variance, then define the status quo comparator from those recommendations."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "From negative trial to positive clinical impact: mitigating eligibility criteria-induced temporal selection. 2026. DOI 10.1038/s44401-026-00082-3",
+   "problem": "Authors and journal are omitted, and the associated audit record has no supporting quotation. The title alone does not show that the work evaluates a prospective collider auditor or resolves any part of that problem."
+  },
+  {
+   "cite": "Data-driven trial design: use of target trial emulation to evaluate eligibility criteria in asthma and COPD. Frontiers in Medicine. 2026. DOI 10.3389/fmed.2026.1863026",
+   "problem": "Authors are omitted, and the associated audit record has no supporting quotation. The title establishes evaluation of eligibility criteria but not the claimed finding that both target population and treatment effect changed."
+  },
+  {
+   "cite": "Hansford HJ, Cashin AG, Jones MD, et al. Transparent reporting of observational studies emulating a target trial: the TARGET statement. JAMA. 2025.",
+   "problem": "The attribution appears correct, but TARGET supports reporting eligibility criteria and their emulation. It does not support the validity or performance of collider assessment and should be used only as evidence of the reporting boundary."
+  },
+  {
+   "cite": "Weiskopf et al. 2023; Digitale et al. 2023; Wang et al. 2026; Tran et al. 2026",
+   "problem": "These works appear only as abbreviated attributions in the audit rationale, without sufficient titles, identifiers, locators, or quotations to check their claimed contents."
+  },
+  {
+   "cite": "Routine restricted-cohort AIPW and stacked M-estimation sandwich",
+   "problem": "No methodological citation is supplied for the estimator, the recommended nuisance-variable sets, or the finite-difference stacked sandwich. The label status quo is therefore unsupported."
+  }
+ ],
+ "what_is_sound": [
+  "The alpha equation correctly marginalizes the probit eligibility model over the independent normal variables.",
+  "The formulas for RD_H and RD_all are marginal superpopulation truths. RD_H correctly weights by the probability of H = 1, and the protocol does not conflate the realized selected sample with the target superpopulation.",
+  "Criterion removal is evaluated against RD_all and is not mislabeled as a repair of RD_H. Delta_target and the algebraic bias decomposition are correctly defined.",
+  "Observed-parent adjustment blocks the specified selected path, and the oracle analysis is clearly labeled unavailable in practice.",
+  "All causal estimators receive the same stacked-sandwich variance framework and Wald interval, so there is no direct variance-estimator rigging.",
+  "The Monte Carlo calculation for coverage is correct: 2000 replicates give MCSE approximately 0.00487 at 95 percent coverage. The numerical thresholds can fire; their principal defects are conceptual and scenario-counting defects rather than inadequate replicate count.",
+  "The count of at most 360000 probit fits is internally consistent. A 3 to 8 hour run is plausible if the timing check includes complete finite-difference sandwiches, parallel overhead, and checkpoint writing.",
+  "The Morris, White, and Crowther simulation citation, the 2004 structural-selection citation, and the 2016 target-trial citation are correctly attributed and appropriately used."
+ ]
+}

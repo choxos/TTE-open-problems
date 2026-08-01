@@ -1,0 +1,127 @@
+{
+ "verdict": "unsound",
+ "summary": "The protocol is unsound as a study intended to settle SEQ-01, although much of its simulation machinery is competent. Its global decision concerns accuracy for an equal-start average, so it can declare the problem absent while material start-specific heterogeneity remains, and it does not test the survival-conditioned later-eligibility claim. The diagnostic tests pooled-logit interactions rather than the declared marginal risk-difference heterogeneity, and several verdict calculations are undefined. The factorial DGM, superpopulation truth definitions, person clustering, and replicate-count arithmetic are otherwise strong.",
+ "findings": [
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "The not-real rule answers whether a restricted model can estimate theta_equal adequately, not whether pooling conceals incompatible start-specific effects. It permits true Delta_RD of at least 0.02 and can declare the problem not real when the pooled average is unbiased and the diagnostic rejects. An accurately estimated average does not make the homogeneity restriction true or make trial-specific effects dispensable.",
+   "fix": "Separate conclusions about theta_equal accuracy, material start heterogeneity, diagnostic performance, and efficiency. Do not negate the catalog problem merely because a pooled average is accurate. Report that result as accurate averaging despite heterogeneity."
+  },
+  {
+   "axis": "answers-problem",
+   "severity": "fatal",
+   "what": "The survival-conditioned later-eligibility arm of SEQ-01 is not tested. With truth defined separately within each natural E_k and treatment models always correct, changing s merely changes the target populations and finite-sample weighting problem. Nothing tests the claim that validity under later eligibility depends on outcome-model correctness.",
+   "fix": "Either label the study as a partial answer confined to the adjudicated calendar-time arm, or add a separate experiment that crosses selective survival with outcome-model misspecification while holding treatment assignment and the target estimand fixed."
+  },
+  {
+   "axis": "answers-problem",
+   "severity": "serious",
+   "what": "The aims claim to separate calendar-time confounding from effect modification, but every estimator models q in both weighting and outcome analysis. Crossing a and b changes whether confounding exists in the DGM, but there is no method that omits or misspecifies calendar time, so the consequences of unmodeled calendar-time confounding are never measured.",
+   "fix": "Add prespecified omitted, conventional, and flexible calendar-time adjustment analyses, or remove the claim that the study evaluates calendar-time confounding."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "serious",
+   "what": "The s factor does not isolate risk-selective later eligibility. Setting s from 0 to 1 simultaneously turns on covariate effects in treatment initiation and failure, thereby introducing measured confounding, prognostic heterogeneity, treatment-driven depletion, survival-driven depletion, and more variable weights.",
+   "fix": "Use separate parameters for untreated survival selection, covariate-dependent initiation, and within-trial confounding. Hold the latter two fixed when attributing a result to survival-conditioned eligibility."
+  },
+  {
+   "axis": "dgm-builds-in-finding",
+   "severity": "limitation",
+   "what": "Calendar treatment-effect heterogeneity is imposed directly by h(S)=0.30q_S or h(S)=0.30cos(pi q_S). The linear alternative lies in the proposed spline space, and the cosine alternative is a smooth four-degree-of-freedom target. The study can estimate consequences under these imposed alternatives, but it cannot establish that material heterogeneity is a real-world problem or that these magnitudes are representative.",
+   "fix": "Replace the label problem is real with conditional operating-characteristic language. Any claim about empirical prevalence or realistic magnitude requires external calibration rather than additional simulation."
+  },
+  {
+   "axis": "estimand",
+   "severity": "fatal",
+   "what": "The diagnostic and its truth label are on different scales. The four-coefficient Wald test tests G-by-q terms in a marginal pooled-logit hazard model against exact zero, while sensitivity and specificity are defined by the range of marginal 12-month risk differences. Noncollapsibility, changing baseline risk, and changing eligible populations can make either test positive while Delta_RD is small or make Delta_RD material without the tested coefficients representing that contrast. A 0.05 test of any interaction is also not a test of the material threshold 0.02.",
+   "fix": "Construct the diagnostic from the standardized RD_k vector and its full person-clustered covariance. Prespecify a global contrast or simultaneous band aligned with risk differences, and distinguish testing exact homogeneity from detecting heterogeneity exceeding 0.02."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "The four scenarios labeled negative controls by h=0 and s=0 are not exact marginal-effect nulls. The C-specific treatment odds ratios remain 0.65 and 0.85 because that interaction is not multiplied by s. When b=0.35 changes baseline risk over q, noncollapsibility alone can produce start-varying marginal hazard effects and risk differences.",
+   "fix": "Turn off the C-by-treatment interaction in exact null scenarios, or define negative controls solely by enumerated Delta_RD below a prespecified tolerance rather than by h and s labels."
+  },
+  {
+   "axis": "estimand",
+   "severity": "serious",
+   "what": "theta_PT is a valid eligibility-weighted causal summary, but it is not generally the implicit target of the pooled logistic estimator. The pooled estimating equation additionally weights starts through person-time, risk-set survival, treatment and censoring weights, and model information. Equal averaging of predictions after fitting does not make the shared treatment coefficient an equal-start projection.",
+   "fix": "Derive and report the actual population estimating-equation projection for each restricted model. If equal-start fitting is intended, explicitly equalize start contributions in the estimating equation and evaluate that estimator separately."
+  },
+  {
+   "axis": "estimand",
+   "severity": "minor",
+   "what": "The stated truth MCSE bound applies to a single arm risk, not to the maximum-minus-minimum functional Delta_RD or to classification around 0.005 and 0.02. Treating the simulated truth as fixed can misclassify scenarios near those boundaries and understates bias uncertainty.",
+   "fix": "Estimate the joint uncertainty of the RD_k vector by independent truth chunks, propagate it to Delta_RD, and continue truth simulation until its interval lies wholly on one side of every threshold used for classification."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "The proposed spline model is not guaranteed to represent its own DGM after marginalization. It includes G-by-follow-up and G-by-q terms but no G-by-follow-up-by-q interaction. Treatment-mediated L and C-specific effects can make the marginal calendar interaction evolve over follow-up, especially when s=1.",
+   "fix": "Use a sufficiently flexible three-way treatment, follow-up, and start-time surface, or model the standardized 12-month risk directly. Require the proposed estimator itself to meet the bias criterion before attributing a difference to the common-effect restriction."
+  },
+  {
+   "axis": "fair-comparison",
+   "severity": "serious",
+   "what": "Using the same fixed-weight sandwich for every method makes relative treatment symmetric, but it does not give the inferential procedures their recommended treatment in the sparse regime. The cited Limozin study reports that the simple sandwich can be conservative and that LEF bootstrap intervals perform better in small or sparse settings. Ordinary coverage and Wald diagnostic power can therefore reflect the deliberately retained variance approximation.",
+   "fix": "Include LEF or person-level bootstrap inference at least in a prespecified calibration subset for both common and effect-modified estimators. Keep point-estimator and empirical-variance conclusions separate from fixed-weight Wald performance."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "fatal",
+   "what": "The verdict is not reproducible as written. The construction of an absolute-bias interval is undefined near zero; sensitivity and specificity are not defined as scenario-wise, equally scenario-weighted, or replicate-pooled quantities; and MCSE procedures for variance and MSE ratios are absent. Different reasonable implementations can produce different verdicts.",
+   "fix": "Give formulas for every bound, including truth uncertainty, absolute-bias transformation, ratio uncertainty, scenario weighting, minimum denominators, and integer rounding. Prespecify whether Monte Carlo bounds are pointwise or simultaneous."
+  },
+  {
+   "axis": "decision-rule",
+   "severity": "serious",
+   "what": "The evidentiary standards favor the desired positive conclusion. Problem real needs either bias or coverage failure in half the material scenarios and allows either the spline or saturated estimator to succeed. Problem not real requires four simultaneous successes in 90 percent of scenarios. A saturated estimator can therefore rescue a misspecified spline and support attribution to common-effect pooling even when that attribution has not been isolated.",
+   "fix": "Use a symmetric hierarchy with an explicit indifference region. Require the matched spline estimator to remove the rich-common failure when claiming that the common-effect restriction caused it; treat saturated estimation only as corroboration."
+  },
+  {
+   "axis": "feasibility",
+   "severity": "serious",
+   "what": "The 5-second replicate assumption is unsupported and implausibly optimistic for three weighted outcome GLMs on as many as 288000 rows, with rich design matrices, clustered score aggregation, and nonlinear delta calculations. Truth generation also branches up to 12 eligible starts into two 12-month strategies for 2000000 people per scenario. Six workers may encounter substantial memory contention, so the 13-to-16-hour estimate is not credible without a pilot.",
+   "fix": "Benchmark complete replicates in median and worst-case scenarios, including expansion, covariance, prediction, serialization, and peak memory. Separately benchmark one full truth scenario, then extrapolate using observed parallel scaling rather than ideal division by six."
+  },
+  {
+   "axis": "citation",
+   "severity": "serious",
+   "what": "Limozin, Seaman, and Su are accurately attributed, but their results do not support treating the exact fixed-weight Wald inference used here as settled for sparse scenarios. The supplied evidence says the simple sandwich is conservative and LEF bootstrap has better coverage in the motivating regime.",
+   "fix": "Cite the work as evidence that repeated-person inference methods exist and that the selected sandwich has known limitations. Do not use it to validate absolute coverage or diagnostic conclusions based solely on that sandwich."
+  },
+  {
+   "axis": "citation",
+   "severity": "minor",
+   "what": "The 2024 TrialEmulation preprint cannot by itself establish the exact behavior of the installed 2026 package version or the precise robust covariance implementation being emulated.",
+   "fix": "Add a versioned citation to the package manual and source release used to define the package-like comparator, including the exact version and relevant implementation location."
+  }
+ ],
+ "citation_problems": [
+  {
+   "cite": "Limozin L, Seaman SR, Su L. Statistical Methods in Medical Research. 2025. DOI 10.1177/09622802251356594",
+   "problem": "The attribution and topic are correct, but the paper does not validate the simple fixed-weight sandwich as the preferred procedure in the sparse setting. Its reported conservatism and LEF results must qualify the protocol's Wald coverage and diagnostic claims."
+  },
+  {
+   "cite": "Su L, et al. TrialEmulation. arXiv:2402.12083",
+   "problem": "The preprint supports the general expansion, weighting, and pooled-MSM approach, but it is not sufficient evidence for exact behavior of a later installed package version. A versioned source citation is required."
+  },
+  {
+   "cite": "DeMonte, Shook-Sa and Hudgens. arXiv:2403.18115",
+   "problem": "The work supports calendar-varying effects, trial-specific reporting, and a homogeneity test in nested vaccine trials. It does not validate this protocol's four-degree-of-freedom pooled-logit Wald test as a detector of a marginal risk-difference range of 0.02."
+  }
+ ],
+ "what_is_sound": [
+  "The equal-start average, trial-specific RD vector, theta_PT, and RD_12 are explicitly defined as marginal superpopulation quantities rather than realized-sample effects.",
+  "Using natural eligibility E_k before branching into paired interventions gives the correct population for each trial-specific causal contrast.",
+  "Clustering by original person is the correct dependence unit; clustering by person-trial would be wrong.",
+  "Crossing treatment adoption a and background risk b correctly creates DGM scenarios where calendar time predicts treatment only, outcome only, both, or neither.",
+  "The rich-common comparator shares its nuisance basis with the spline estimator, which is a useful attempt to separate nuisance modeling from treatment-effect restriction.",
+  "The start-saturated benchmark and empirical variance and MSE comparison with a standalone month-12 trial are appropriate checks on model-based borrowing.",
+  "The calculation that 2000 replicates gives coverage MCSE 0.00487 at 95 percent is correct, and this replicate count can resolve large departures from the stated thresholds.",
+  "The exclusions concerning misspecified treatment models, irregular observation, switching, competing risks, dropout, and other sample sizes are stated honestly.",
+  "The Morris, Keogh, Caniglia, and DeMonte references are appropriately attributed for their stated broad purposes; no wrong-author citation is evident in the supplied list."
+ ]
+}
