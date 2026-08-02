@@ -90,6 +90,14 @@ perf_coverage <- function(lower, upper, truth) {
   ok <- is.finite(lower) & is.finite(upper)
   n <- sum(ok)
   if (n < 1L) return(list(est = NA_real_, mcse = NA_real_, n = n))
+  ## Bounds arrive in order. Transposed or misidentified arguments otherwise
+  ## produce a coverage near zero, which reads as a badly performing estimator
+  ## rather than as a wrong call, and the two are acted on very differently.
+  if (n >= 2L && mean(lower[ok] > upper[ok]) > 0.5) {
+    stop("perf_coverage: `lower` exceeds `upper` on ",
+         round(100 * mean(lower[ok] > upper[ok])), "% of rows. ",
+         "The arguments are (lower, upper, truth).")
+  }
   hit <- lower[ok] <= truth & truth <= upper[ok]
   p <- mean(hit)
   list(est = p, mcse = sqrt(p * (1 - p) / n), n = n)
@@ -163,6 +171,13 @@ perf_rejection <- function(lower, upper, null = 0) {
   ok <- is.finite(lower) & is.finite(upper)
   n <- sum(ok)
   if (n < 1L) return(list(est = NA_real_, mcse = NA_real_, n = n))
+  ## As in perf_coverage: a wrong argument order here reports a rejection rate
+  ## near one, which reads as a powerful test rather than as a wrong call.
+  if (n >= 2L && mean(lower[ok] > upper[ok]) > 0.5) {
+    stop("perf_rejection: `lower` exceeds `upper` on ",
+         round(100 * mean(lower[ok] > upper[ok])), "% of rows. ",
+         "The arguments are (lower, upper, null).")
+  }
   rej <- !(lower[ok] <= null & null <= upper[ok])
   p <- mean(rej)
   list(est = p, mcse = sqrt(p * (1 - p) / n), n = n)
