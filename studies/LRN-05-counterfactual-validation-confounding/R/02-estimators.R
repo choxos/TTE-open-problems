@@ -746,12 +746,39 @@ estimate_fitted_method <- function(dat, scores, cuts) {
                                            'finite-difference-failure'), weights, dat))
 
   total_if <- comp$influence + nuisance$influence %*% t(derivative)
+  ## This gate exists to notice a degenerate estimating-function system. It was
+  ## rejecting every replicate in every scenario, so the method never produced a
+  ## single estimate in the whole study, for two reasons that are both artifacts
+  ## rather than degeneracy.
+  ##
+  ## First, the exclusion list holds one column per distinct quantity, and it
+  ## missed two. The miscalibrated score is expit(-0.35 + 0.75 logit(p)), so its
+  ## weak-calibration slope is exactly 4/3 of the oracle slope and its intercept
+  ## is the oracle intercept plus 7/15 of the oracle slope. Those two columns per
+  ## strategy are affine functions of columns already in the stack, which came
+  ## out of the data as R-squared of 1.0000000000 and a rank of 93 out of 97.
+  ## The list already drops the miscalibrated calibration bins and AUC for the
+  ## same reason; these are redundant by an affine map rather than by equality,
+  ## which is why they were missed.
   unique_metric <- !grepl('[|]miscalibrated[|]cal_bin_', colnames(total_if)) &
-    !grepl('[|]miscalibrated[|]auc$', colnames(total_if))
+    !grepl('[|]miscalibrated[|]auc$', colnames(total_if)) &
+    !grepl('[|]miscalibrated[|]cal_(intercept|slope)$', colnames(total_if))
   stack <- cbind(nuisance$influence, total_if[, unique_metric, drop = FALSE])
   stack <- sweep(stack, 2L, colMeans(stack), '-')
   covariance <- crossprod(stack) / nrow(stack)^2
-  ev <- eigen((covariance + t(covariance)) / 2,
+  covariance <- (covariance + t(covariance)) / 2
+  ## Second, an eigenvalue relative to the largest is not scale free, and these
+  ## columns are calibration slopes beside bin risks beside an AUC: their
+  ## standard deviations span six hundredfold, and eigenvalue ratios move with
+  ## the square of that. On the covariance scale a full-rank stack still reports
+  ## 3.8e-12 against the 1e-10 threshold; the same stack on the correlation
+  ## scale reports 1.3e-07 and is comfortably clear. The threshold is a
+  ## statement about singularity, so it is applied where it means that. Nothing
+  ## downstream uses this matrix: it is built for this test and discarded.
+  scale <- sqrt(diag(covariance))
+  correlation <- if (all(is.finite(scale)) && all(scale > 0))
+    covariance / outer(scale, scale) else covariance
+  ev <- eigen((correlation + t(correlation)) / 2,
               symmetric = TRUE, only.values = TRUE)$values
   if (any(!is.finite(ev)) || max(ev) <= 0 ||
       any(ev < SINGULAR_RATIO * max(ev)))
