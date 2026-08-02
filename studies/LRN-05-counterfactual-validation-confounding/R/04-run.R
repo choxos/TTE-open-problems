@@ -158,7 +158,11 @@ run_bootstrap_gate <- function() {
   set.seed(MASTER_SEED + 700000L)
   for (i in anchors) for (d in seq_len(25L)) {
     path <- file.path(cache, sprintf('scenario-%03d-dataset-%02d.rds', i, d))
-    if (file.exists(path)) next
+    ## Same two-level cache as the replication plan, and the same hazard: these
+    ## datasets are estimated against TRUTH$cuts, so replacing truth strands
+    ## them without changing anything an existence check can see.
+    if (file.exists(path) &&
+        file.mtime(path) > file.mtime(file.path(OUT, 'truth.rds'))) next
     s <- scenarios[i, , drop = FALSE]
     cuts <- TRUTH$cuts[TRUTH$cuts$scenario == i,
                        c('strategy', 'score', 'cut', 'value'), drop = FALSE]
