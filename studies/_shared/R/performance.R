@@ -110,9 +110,44 @@ perf_becoverage <- function(est, lower, upper) {
   ## being computed at all, and it shipped in one study before a reviewer caught
   ## it. Fail loudly instead: an interval whose lower bound exceeds its upper
   ## bound on most rows is a wrong call, not a finding.
+  ##
+  ## That test alone was not enough, and assuming it was is why the wrong call
+  ## survived a sweep. It only fires when the standard error passed as a lower
+  ## bound happens to exceed the truth value passed as an upper bound. Standard
+  ## errors are usually smaller than the estimand, so on most studies it does
+  ## not fire at all: the call returns the coverage of the mean estimate by the
+  ## interval running from a standard error up to the truth, which is a real
+  ## number in [0, 1] sitting where a performance measure belongs.
+  ##
+  ## The shape gives it away regardless of the values. A genuine bound is one
+  ## per replicate, so it has the length of `est`. A truth value is a scalar and
+  ## recycles silently.
+  if (length(est) > 1L &&
+      (length(lower) != length(est) || length(upper) != length(est))) {
+    stop("perf_becoverage: got ", length(est), " estimates with ",
+         length(lower), " lower and ", length(upper), " upper bounds. ",
+         "Interval bounds are one per replicate. The arguments are ",
+         "(est, lower, upper); passing (est, se, truth) recycles the truth ",
+         "value and silently returns a number that is not this measure. ",
+         "If only a standard error is available, pass ",
+         "est - z * se and est + z * se.")
+  }
   ok <- is.finite(est) & is.finite(lower) & is.finite(upper)
   n <- sum(ok)
   if (n < 2L) return(list(est = NA_real_, mcse = NA_real_, n = n))
+  ## The invariant that catches every wrong call regardless of the values: an
+  ## interval contains the estimate it was built around. Wald and percentile
+  ## bounds both satisfy this by construction, so a set of arguments that does
+  ## not is not a set of bounds. The lower-exceeds-upper test below misses the
+  ## case where a truth vector is passed as `upper`, because a standard error
+  ## is smaller than the estimand and the comparison stays false.
+  inside <- mean(lower[ok] <= est[ok] & est[ok] <= upper[ok])
+  if (inside < 0.80) {
+    stop("perf_becoverage: the interval contains its own estimate on only ",
+         round(100 * inside), "% of rows. Interval bounds contain the estimate ",
+         "by construction, so these are not bounds. The arguments are ",
+         "(est, lower, upper); passing (est, se, truth) is the usual cause.")
+  }
   if (mean(lower[ok] > upper[ok]) > 0.5) {
     stop("perf_becoverage: `lower` exceeds `upper` on ", 
          round(100 * mean(lower[ok] > upper[ok])), "% of rows. ",
