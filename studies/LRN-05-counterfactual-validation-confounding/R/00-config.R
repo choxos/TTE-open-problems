@@ -25,7 +25,12 @@ N_REP <- N_REP_BUDGET_CAP
 
 N_TRUTH_MC <- 2000000L
 N_TRUTH_BATCHES <- 20L
-TRUTH_QUAD_ORDERS <- c(128L, 256L, 512L, 1024L)
+## The protocol says to start at 128, 256 and 512 and then keep doubling until
+## every cut point and bin risk moves by less than TRUTH_CURVE_TOL. The list
+## stopped at 1024, so the run could only ever report that it had not converged;
+## it never had the orders available to converge at.
+TRUTH_QUAD_ORDERS <- c(128L, 256L, 512L, 1024L, 2048L, 4096L,
+                       8192L, 16384L, 32768L, 65536L)
 TRUTH_CURVE_TOL <- 0.00025
 TRUTH_SCALAR_TOL <- 0.0001
 TRUTH_MC_TOL <- 0.0005

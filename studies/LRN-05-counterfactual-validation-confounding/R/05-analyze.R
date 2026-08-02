@@ -30,11 +30,11 @@ get_value <- function(x, name) if (is.list(x) && !is.null(x[[name]]))
 safe_perf <- function(expr) tryCatch(expr, error = function(e)
   list(est = NA_real_, mcse = NA_real_))
 
-## Bias-eliminated coverage recentres each interval on the mean estimate, so it
-## needs interval bounds, not a standard error and a truth value. The generated
-## wrapper passed (est, se, truth), which makes the interval empty and the
-## measure identically zero; the shared measure now refuses that call outright.
-## It is unused here and kept only so the file reads the same as its siblings.
+## Bias-eliminated coverage asks how often the interval covers the mean estimate
+## rather than the truth, so it needs interval bounds, not a standard error and
+## a truth value. The generated wrapper passed (est, se, truth), which makes the
+## interval empty and the measure identically zero; the shared measure now
+## refuses that call outright.
 call_becoverage <- function(est, lower, upper) {
   perf_becoverage(est, lower, upper)
 }
@@ -56,12 +56,20 @@ summarize_performance <- function(d) {
   hi <- d$hi[ok]
   if (!length(est)) {
     conv <- safe_perf(perf_convergence(d$est, nrow(d)))
+    ## A bare NA is logical. Every other group returns doubles here, and
+    ## data.table requires one type per column across groups, so a single
+    ## scenario in which no replicate estimated anything aborted the whole
+    ## analysis with a type complaint rather than reporting that scenario as
+    ## empty. The typed NA is the difference between a study that says nothing
+    ## about one cell and a study that cannot be analyzed at all.
     return(data.frame(
-      truth = tv, bias = NA, bias_mcse = NA, empse = NA, empse_mcse = NA,
-      modse = NA, modse_mcse = NA, relerror_modse = NA,
-      relerror_modse_mcse = NA, mse = NA, mse_mcse = NA, coverage = NA,
-      coverage_mcse = NA, becoverage = NA, becoverage_mcse = NA,
-      rejection = NA, rejection_mcse = NA,
+      truth = tv, bias = NA_real_, bias_mcse = NA_real_, empse = NA_real_,
+      empse_mcse = NA_real_, modse = NA_real_, modse_mcse = NA_real_,
+      relerror_modse = NA_real_, relerror_modse_mcse = NA_real_,
+      mse = NA_real_, mse_mcse = NA_real_, coverage = NA_real_,
+      coverage_mcse = NA_real_, becoverage = NA_real_,
+      becoverage_mcse = NA_real_, rejection = NA_real_,
+      rejection_mcse = NA_real_,
       convergence = get_value(conv, 'est'),
       convergence_mcse = get_value(conv, 'mcse'), n_used = 0L,
       n_attempted = nrow(d)))
@@ -72,7 +80,7 @@ summarize_performance <- function(d) {
   re <- safe_perf(perf_relerror_modse(est, se))
   mse <- safe_perf(perf_mse(est, tv))
   cv <- safe_perf(perf_coverage(lo, hi, tv))
-  bec <- safe_perf(call_becoverage(est, se, tv))
+  bec <- safe_perf(call_becoverage(est, lo, hi))
   rej <- safe_perf(call_rejection(est, se, lo, hi, tv))
   conv <- safe_perf(perf_convergence(d$est, nrow(d)))
   data.frame(

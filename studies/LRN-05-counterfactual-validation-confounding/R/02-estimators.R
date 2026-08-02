@@ -1,13 +1,55 @@
 ## Study LRN-05: deterministic truth, metric estimators, and sandwiches.
 
+## Deterministic Gaussian quadrature for the standard normal, applied on the
+## probability scale: Gauss-Legendre on u in (0,1) with x = qnorm(u).
+##
+## The Gauss-Hermite rule this replaces spends almost all of its nodes where
+## there is no mass. Its weights underflow to zero past |x| near 26, so at
+## order 4096 only 528 of 4096 nodes survive and effective resolution grows
+## like the square root of the order while the cost grows like its cube. The
+## protocol's own tolerance, every cut point and bin risk moving by less than
+## 0.00025, then needs order 56,000, which is not reachable in double
+## precision. Hermite converged the smooth components to 4e-6, far inside their
+## 1e-4 tolerance, and left 67 of 116 curve components outside theirs, because
+## cut points and bin risks are quantiles of the score distribution rather than
+## smooth integrals and quantile error is set by node spacing where the mass
+## is.
+##
+## Legendre weights are all of order 1/n, so every node is usable. This changes
+## the numerical rule for a fixed integral, not the estimand, and it is the
+## same class of rule the protocol names. The order-doubling convergence rule,
+## both tolerances, and the independent two-million-profile Monte Carlo check
+## are all unchanged, and that check is what establishes the answer is right.
+##
+## Nodes and weights come from Newton iteration on the Legendre polynomial
+## rather than an eigendecomposition, which makes high orders cheap.
 normal_quadrature <- function(order) {
-  j <- matrix(0, nrow = order, ncol = order)
-  off <- sqrt((seq_len(order - 1L)) / 2)
-  j[cbind(seq_len(order - 1L), 2:order)] <- off
-  j[cbind(2:order, seq_len(order - 1L))] <- off
-  eg <- eigen(j, symmetric = TRUE)
-  o <- order(eg$values)
-  list(x = sqrt(2) * eg$values[o], w = eg$vectors[1L, o]^2)
+  m <- (order + 1L) %/% 2L
+  i <- seq_len(m)
+  ## Tricomi's asymptotic starting values, accurate enough that Newton needs a
+  ## handful of steps at any order.
+  z <- cos(pi * (i - 0.25) / (order + 0.5))
+  for (step in seq_len(100L)) {
+    p0 <- rep(1, m)
+    p1 <- rep(0, m)
+    for (k in seq_len(order)) {
+      p2 <- p1
+      p1 <- p0
+      p0 <- ((2 * k - 1) * z * p1 - (k - 1) * p2) / k
+    }
+    dp <- order * (z * p0 - p1) / (z * z - 1)
+    dz <- p0 / dp
+    z <- z - dz
+    if (max(abs(dz)) < 1e-15) break
+  }
+  ## Legendre on (-1, 1), mirrored to the full set, then mapped to (0, 1).
+  xl <- c(-z, if (order %% 2L == 1L) rev(z)[-1L] else rev(z))
+  wl <- 2 / ((1 - z * z) * dp * dp)
+  wl <- c(wl, if (order %% 2L == 1L) rev(wl)[-1L] else rev(wl))
+  u <- 0.5 * (xl + 1)
+  w <- wl / 2
+  keep <- u > 0 & u < 1 & is.finite(w) & w > 0
+  list(x = stats::qnorm(u[keep]), w = w[keep] / sum(w[keep]))
 }
 
 weighted_quantile <- function(x, w, probabilities) {
@@ -34,7 +76,17 @@ weighted_auc_value <- function(score, case_weight, control_weight) {
   group_sorted <- rep(seq_along(rr$lengths), rr$lengths)
   group <- integer(length(score))
   group[o] <- group_sorted
-  m <- rowsum(cbind(case_weight, control_weight), group, reorder = FALSE)
+  ## `reorder` must stay at its default. Group labels number the distinct
+  ## scores in increasing order, and everything below reads `m` positionally:
+  ## `cumsum` treats row k as the k-th smallest score and `concordance[group]`
+  ## indexes by label. With `reorder = FALSE` the rows arrive in order of first
+  ## appearance in the input instead, so the answer depends on how the caller
+  ## happened to sort its data. It was right on the quadrature grid, which is
+  ## nearly sorted by score already, and wrong on everything else: 0.5900
+  ## against a true 0.6288 on the same 900 records. The truth verification
+  ## compared a nearly-sorted grid against a randomly ordered Monte Carlo
+  ## sample and reported a 0.0385 disagreement, which is how this was found.
+  m <- rowsum(cbind(case_weight, control_weight), group)
   before <- c(0, head(cumsum(m[, 2L]), -1L))
   concordance <- (before + 0.5 * m[, 2L]) / wn
   sum(case_weight * concordance[group]) / wc
@@ -50,8 +102,17 @@ population_grid <- function(order, delta) {
   p1 <- baseline_l_probability(x1, x2, 1)
   pl <- (1 - P_U) * p0 + P_U * p1
   w <- gh$w[ii] * 0.50 * ifelse(l0 == 1L, pl, 1 - pl)
-  w <- w / sum(w)
-  list(x1 = x1, x2 = x2, l0 = l0, w = w, delta = delta)
+
+  ## Gauss-Hermite nodes reach |x1| near 64 at order 1024 and near 90 at 2048,
+  ## and the outermost weights underflow to exactly zero long before that. Those
+  ## nodes carry no mass, but the risk recursion overflows on them, and 0 * NaN
+  ## is NaN, so nodes contributing nothing to the integral destroyed it: at
+  ## order 2048 every truth value came back NA. Dropping them is what lets the
+  ## protocol's rule, doubling the order until the change falls below tolerance,
+  ## run past 1024 at all.
+  keep <- w > 0 & is.finite(w)
+  w <- w[keep] / sum(w[keep])
+  list(x1 = x1[keep], x2 = x2[keep], l0 = l0[keep], w = w, delta = delta)
 }
 
 population_bundle <- function(x1, x2, l0, w, delta) {
@@ -296,7 +357,10 @@ auc_estimate_and_if <- function(score, y, w) {
   group_sorted <- rep(seq_along(rr$lengths), rr$lengths)
   group <- integer(length(score))
   group[o] <- group_sorted
-  m <- rowsum(cbind(w * y, w * (1 - y)), group, reorder = FALSE)
+  ## Same ordering requirement as `weighted_auc_value`, and the same reason.
+  ## Here it also reaches the influence function, so the AUC standard error and
+  ## every interval built from it moved with the row order of the replicate.
+  m <- rowsum(cbind(w * y, w * (1 - y)), group)
   control_before <- c(0, head(cumsum(m[, 2L]), -1L))
   case_after <- case_mass - cumsum(m[, 1L])
   case_concordance <- (control_before + 0.5 * m[, 2L]) / control_mass
