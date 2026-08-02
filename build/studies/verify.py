@@ -121,6 +121,39 @@ def clip(s, n):
     return s if len(s) <= n else s[:n] + f"\n... [truncated, {len(s)} bytes total]"
 
 
+def clip_csv(text, n):
+    """Reduce a long results table without biasing it toward the first rows.
+
+    These files are written in scenario order, so a prefix is not a sample of
+    the study: LRN-05's performance table is 1.3 MB across 24 scenarios, and
+    the first 90 KB is scenarios 1 and 2. A reviewer asked whether a conclusion
+    holds across the grid, and handed the first twelfth of the grid, cannot see
+    the question. Keep the header, take rows at an even stride across the whole
+    file, and say exactly what was dropped and how it was chosen; a reviewer
+    that knows it is reading a sample can ask for more, one that thinks it read
+    the file cannot.
+    """
+    if len(text) <= n:
+        return text
+    lines = text.splitlines()
+    if len(lines) < 3:
+        return clip(text, n)
+    header, body = lines[0], lines[1:]
+    # Budget rows by the average line length rather than guessing a count.
+    avg = max(1, len(text) // max(1, len(lines)))
+    keep = max(10, (n - len(header) - 200) // avg)
+    if keep >= len(body):
+        return clip(text, n)
+    stride = len(body) / keep
+    idx = sorted({min(len(body) - 1, int(i * stride)) for i in range(keep)})
+    out = [header] + [body[i] for i in idx]
+    out.append(f"... [sampled {len(idx)} of {len(body)} data rows at an even "
+               f"stride across the file, {len(text)} bytes total. Rows are in "
+               f"scenario order, so this is a spread across the grid and not "
+               f"the first scenarios. No row was altered.]")
+    return "\n".join(out)
+
+
 def protocol_for(pid, study):
     """The protocol the study was actually registered under.
 
@@ -150,7 +183,8 @@ def protocol_for(pid, study):
 def gather(study):
     res = {}
     for f in sorted(glob.glob(os.path.join(study, "results", "*.csv"))):
-        res[os.path.basename(f)] = clip(open(f, encoding="utf8").read(), MAX_CSV_BYTES)
+        res[os.path.basename(f)] = clip_csv(open(f, encoding="utf8").read(),
+                                            MAX_CSV_BYTES)
     prov = os.path.join(study, "results", "provenance.md")
     if os.path.exists(prov):
         res["provenance.md"] = open(prov, encoding="utf8").read()
