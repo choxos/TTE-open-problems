@@ -652,7 +652,11 @@ catalog is about.
       out.push(`**Question.** ${s.question}`, '')
       out.push(`**Answer.** ${s.answer}`, '')
       out.push(`**What it does not answer.** ${s.not_answered}`, '')
-      // Keys match FORMATS in build/studies/publish.py, where Markdown is 'gfm'.
+      // `downloads` is optional and no study carries it yet. When a study is
+      // exported, these keys are what this expects; 'gfm' rather than 'md'
+      // because that is pandoc's name for the flavour. An earlier version of
+      // this comment pointed at build/studies/publish.py, which does not exist:
+      // the same stale-script reference this repository exists to not inherit.
   const dl = Object.entries({ pdf: 'PDF', gfm: 'Markdown', odt: 'OpenDocument' })
         .filter(([k]) => s.downloads?.[k])
         .map(([k, l]) => `[${l}](/${s.downloads[k]})`).join(' · ')
