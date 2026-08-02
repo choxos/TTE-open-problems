@@ -223,9 +223,17 @@ PLAN_CACHE <- file.path(OUT, 'replication-plan-cache')
 dir.create(PLAN_CACHE, recursive = TRUE, showWarnings = FALSE)
 for (i in selected) {
   path <- file.path(PLAN_CACHE, sprintf('scenario-%03d.rds', i))
-  if (file.exists(path)) next
   raw <- file.path(PILOT_OUT, 'raw', sprintf('scenario-%03d.rds', i))
   stopifnot(file.exists(raw))
+  ## A cache keyed only on the scenario number outlives the pilot it summarizes.
+  ## Deleting the pilot and every result to rerun a corrected study left this
+  ## directory untouched, so the replication requirements were still those of a
+  ## run in which nothing had estimated: the paired pilot standard deviation was
+  ## Inf on all 1248 rows, every requirement was Inf, and 56 decisions were
+  ## published as protocol-cap-exceeded. Regenerating is seconds of work, so
+  ## tie it to the pilot rather than to the file merely existing.
+  if (file.exists(path) &&
+      file.mtime(path) > file.mtime(raw)) next
   saveRDS(precision_plan(readRDS(raw), i), path)
 }
 

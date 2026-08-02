@@ -150,11 +150,21 @@ paired_summary[, bin := fifelse(bin_key == 0L, NA_integer_, bin_key)]
 utils::write.csv(paired_summary, file.path(OUT, 'omission-effects.csv'),
                  row.names = FALSE)
 
+## The protocol widens the ten simultaneous bin-coverage bounds to the
+## Bonferroni critical value 2.807, and MC_Z_BINS exists in the config for
+## exactly that. It was being applied to the bias bound and to the paired effect
+## bounds but not to coverage, so the positive-control gate on the calibration
+## curve was stricter than the registered one. Level 1 - 0.05/10 reproduces
+## 2.807 through the same Wilson construction used everywhere else.
+coverage_level <- function(metric) {
+  if (metric_family(metric) == 'calibration_curve') 1 - 0.05 / 10 else 0.95
+}
+
 coverage_summary <- function(method_name) {
   res[method == method_name, {
     ok <- is.finite(est) & is.finite(se) & is.finite(truth)
     covered <- ok & lo <= truth & hi >= truth
-    ci <- wilson(sum(covered), sum(ok))
+    ci <- wilson(sum(covered), sum(ok), level = coverage_level(metric[1L]))
     bias <- if (sum(ok)) mean(est[ok] - truth[ok]) else NA_real_
     bias_mcse <- if (sum(ok) > 1L) stats::sd(est[ok] - truth[ok]) /
       sqrt(sum(ok)) else NA_real_
