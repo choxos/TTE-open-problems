@@ -194,7 +194,10 @@ balanced_folds <- function(dat) {
   strata <- interaction(dat$B3, dat$Y, drop = TRUE)
   fold <- integer(nrow(dat))
   for (idx in split(seq_len(nrow(dat)), strata)) {
-    idx <- sample(idx, length(idx), replace = FALSE)
+    ## Strata are interaction(B3, Y) and a stratum of size one is ordinary.
+    ## sample(idx, 1) would then return a random integer in seq_len(idx) and
+    ## the fold assignment would be written to a row that was never in it.
+    idx <- idx[sample.int(length(idx))]
     fold[idx] <- rep(1:2, length.out = length(idx))
   }
   fold

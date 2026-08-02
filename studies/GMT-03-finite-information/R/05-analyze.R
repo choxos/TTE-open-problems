@@ -239,7 +239,8 @@ conditional <- do.call(rbind, lapply(split(held, interaction(held$method,
   point <- calc(d)
   ids <- unique(d$scenario)
   boot <- replicate(ANALYSIS_BOOT_B, {
-    take <- sample(ids, length(ids), replace = TRUE)
+    ## A group holding one scenario would make sample() draw from seq_len(id).
+    take <- ids[sample.int(length(ids), replace = TRUE)]
     x <- do.call(rbind, lapply(take, function(z) d[d$scenario == z, ]))
     calc(x)
   })

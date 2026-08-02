@@ -426,7 +426,9 @@ pick_tied <- function(value, complexity, order, tolerance = 1e-8) {
 
 nested_select <- function(d, mats, outer_train) {
   ids <- which(outer_train)
-  shuffled <- sample(ids)
+  ## sample(x) permutes seq_len(x) when x has length one, so a size-one
+  ## training set would shuffle indices that do not exist. Index explicitly.
+  shuffled <- ids[sample.int(length(ids))]
   fold <- rep(seq_len(INNER_FOLDS), length.out = length(ids))
   inner_id <- integer(nrow(d)); inner_id[shuffled] <- fold
   met <- lapply(seq_len(INNER_FOLDS), function(k)

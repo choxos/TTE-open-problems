@@ -120,9 +120,18 @@ gate. Keep writing those, and when one fires, believe it before believing the st
   columns span six hundredfold in scale, a `1e-10` threshold measures units rather than
   singularity. Use the correlation scale when the question is whether a matrix is degenerate.
 - **`perf_becoverage` takes `(est, lower, upper)`.** Generated code reaches for
-  `(est, se, truth)` almost every time. It is guarded in `_shared/R/performance.R` on both the
-  length of the bounds and the invariant that an interval contains its own estimate; nine
-  studies still carry the wrong call and will stop when they run.
+  `(est, se, truth)` almost every time; thirteen of the eighteen studies did, each with the
+  bounds already in scope on the line above. It is guarded in `_shared/R/performance.R` on
+  both the length of the bounds and the invariant that an interval contains its own estimate.
+- **A wrapper that inspects `formals()` and picks an argument order is not a fallback.**
+  Five studies carried one. With the real signature ELG-01 fell through to passing a lower
+  bound as the estimate, OUT-01 dispatched on the name of the first formal, and SEQ-01 tried
+  three orders and returned whichever failed to raise an error, which turns a guard in the
+  callee into a selector and puts the wrong order first. Call the function.
+- **`sample(x)` permutes `seq_len(x)` when `x` has length one.** So `sample(ids)` with a
+  single index of 37 returns a 37-element permutation rather than `37`, and a bootstrap
+  stratum or cross-fitting fold of size one silently writes to rows that were never in it.
+  Four studies had this. Write `x[sample.int(length(x), size, replace = ...)]`.
 
 ## Available auditors
 

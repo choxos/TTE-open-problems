@@ -320,7 +320,9 @@ bootstrap_branch_rate <- function(values, branch, B = CALIBRATION_BOOTSTRAP_REPS
   if (!n) return(NA_real_)
   fired <- logical(B)
   for (b in seq_len(B)) {
-    p <- mean(sample(values, n, replace = TRUE))
+    ## n is one when a single replicate survives, and sample() would then draw
+    ## from seq_len(values) rather than resampling the value itself.
+    p <- mean(values[sample.int(n, n, replace = TRUE)])
     se <- sqrt(p * (1 - p) / n)
     lower <- max(0, p - 1.96 * se)
     upper <- min(1, p + 1.96 * se)
