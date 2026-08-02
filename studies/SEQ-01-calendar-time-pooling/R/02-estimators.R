@@ -641,7 +641,7 @@ projection_base_cells <- function(hist, scen) {
         w <- exp(logbase[z] + cumulative[z])
         bw[s, j + 1L, g + 1L] <- sum(w)
         bwy[s, j + 1L, g + 1L] <-
-          sum(w * (hist$event_time[ids[z]] == t + 1L))
+          sum(w * fails_at(hist$event_time[ids[z]], t))
       }
     }
   }

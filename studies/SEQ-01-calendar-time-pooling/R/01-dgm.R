@@ -89,6 +89,17 @@ eligible_ids <- function(hist, k) {
   which(alive & untreated_before)
 }
 
+## `event_time` is NA for everyone who never fails, so `event_time == t + 1L`
+## returns NA rather than FALSE on every never-event person-period. Written
+## that way, the outcome column was NA on most rows, the weighted cell sums of
+## the outcome were NA in all 288 cells, and every outcome model was handed
+## zero usable rows. The study still completed and still reported a decision.
+## Every other comparison against `event_time` in this study guards for NA;
+## these two did not, so the guard has a name.
+fails_at <- function(event_time, t) {
+  as.integer(!is.na(event_time) & event_time == t + 1L)
+}
+
 natural_initiation_rows <- function(hist) {
   rows <- vector("list", N_CAL_MONTHS)
   for (tt in seq_len(N_CAL_MONTHS)) {
@@ -130,7 +141,7 @@ expand_sequential_trials <- function(hist) {
       rows[[z]] <- data.table::data.table(
         id = ids[keep], pos = pos[keep], start_idx = s, start = k,
         j = j, t = t, q_start = START_Q[s], q = q_of(t), G = G[keep],
-        Y = as.integer(hist$event_time[ids[keep]] == t + 1L),
+        Y = fails_at(hist$event_time[ids[keep]], t),
         Sex = hist$Sex[ids[keep]], R = hist$R[ids[keep]],
         C = hist$C[ids[keep]], L = hist$L[ids[keep], t + 1L],
         L_start = L0[keep]
