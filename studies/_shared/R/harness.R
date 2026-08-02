@@ -144,9 +144,32 @@ run_design <- function(fn, scenarios, n_rep, master_seed, outdir,
         function(i) run_one(fn, scen, i, streams[[idx[i]]]),
         .options = furrr_options(seed = NULL, globals = TRUE)
       )
-      saveRDS(do.call(rbind, out), pf)
+      ## Write to a temporary name and rename. A process killed mid-write
+      ## otherwise leaves a truncated block that looks complete to the resume
+      ## check and then fails to decompress on the next pass, which is how a
+      ## checkpoint turns from a safeguard into a permanent wedge. rename is
+      ## atomic within a filesystem.
+      ## Recreate the directory immediately before the write. A study that calls
+      ## run_design more than once, for a pilot and then the real run, can clear
+      ## its output tree between calls, and a directory created once per
+      ## scenario is not guaranteed to still be there when the block finishes.
+      dir.create(part_dir, recursive = TRUE, showWarnings = FALSE)
+      tmp <- paste0(pf, ".partial")
+      saveRDS(do.call(rbind, out), tmp)
+      file.rename(tmp, pf)
     }
     parts <- sort(list.files(part_dir, "^block-.*\\.rds$", full.names = TRUE))
+    ## A block left unreadable by an earlier kill is treated as missing rather
+    ## than fatal, and recomputed on the next pass. The streams make that exact.
+    readable <- vapply(parts, function(f) {
+      !inherits(try(readRDS(f), silent = TRUE), "try-error")
+    }, logical(1))
+    if (any(!readable)) {
+      message(sprintf("  scenario %d: discarding %d unreadable block(s)",
+                      s, sum(!readable)))
+      unlink(parts[!readable])
+      parts <- parts[readable]
+    }
     res <- do.call(rbind, lapply(parts, readRDS))
     res <- cbind(scen[rep(1L, nrow(res)), , drop = FALSE], res)
     rownames(res) <- NULL
