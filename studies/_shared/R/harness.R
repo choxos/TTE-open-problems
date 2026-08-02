@@ -96,7 +96,7 @@ run_one <- function(fn, scenario, rep_id, stream) {
 ## monotone rather than a treadmill.
 run_design <- function(fn, scenarios, n_rep, master_seed, outdir,
                        workers = max(1L, parallel::detectCores() - 2L),
-                       resume = TRUE, only = NULL) {
+                       resume = TRUE, only = NULL, block = 250L) {
   raw <- file.path(outdir, "raw")
   dir.create(raw, recursive = TRUE, showWarnings = FALSE)
 
@@ -119,15 +119,39 @@ run_design <- function(fn, scenarios, n_rep, master_seed, outdir,
     idx <- (s - 1L) * n_rep + seq_len(n_rep)
     scen <- scenarios[s, , drop = FALSE]
     t0 <- proc.time()[["elapsed"]]
-    res <- future_map(
-      seq_len(n_rep),
-      function(i) run_one(fn, scen, i, streams[[idx[i]]]),
-      .options = furrr_options(seed = NULL, globals = TRUE)
-    )
-    res <- do.call(rbind, res)
+
+    ## Checkpoint inside the scenario, not only between scenarios.
+    ##
+    ## Several studies in this program have one scenario that takes longer than
+    ## this machine will hold a process. Flushing only at the end of a scenario
+    ## means a killed run loses all of it, so such a scenario can never finish
+    ## however many times the run is resumed: it is a treadmill, not slow
+    ## progress. Replicates are flushed in blocks instead.
+    ##
+    ## This is exact, not approximate. Every replicate draws from its own
+    ## L'Ecuyer stream indexed by absolute replicate number, so a block resumed
+    ## in a later process draws precisely the data the uninterrupted run would
+    ## have drawn. Reassembling blocks reproduces the whole scenario bit for bit.
+    part_dir <- file.path(raw, sprintf("scenario-%03d-parts", s))
+    dir.create(part_dir, recursive = TRUE, showWarnings = FALSE)
+    starts <- seq(1L, n_rep, by = block)
+    for (b in seq_along(starts)) {
+      pf <- file.path(part_dir, sprintf("block-%04d.rds", b))
+      if (resume && file.exists(pf)) next
+      these <- starts[b]:min(starts[b] + block - 1L, n_rep)
+      out <- future_map(
+        these,
+        function(i) run_one(fn, scen, i, streams[[idx[i]]]),
+        .options = furrr_options(seed = NULL, globals = TRUE)
+      )
+      saveRDS(do.call(rbind, out), pf)
+    }
+    parts <- sort(list.files(part_dir, "^block-.*\\.rds$", full.names = TRUE))
+    res <- do.call(rbind, lapply(parts, readRDS))
     res <- cbind(scen[rep(1L, nrow(res)), , drop = FALSE], res)
     rownames(res) <- NULL
     saveRDS(res, f)
+    unlink(part_dir, recursive = TRUE)
     fails <- sum(!is.na(res$error))
     message(sprintf("  scenario %d/%d: %.0fs, %d replicate errors",
                     s, n_scen, proc.time()[["elapsed"]] - t0, fails))
