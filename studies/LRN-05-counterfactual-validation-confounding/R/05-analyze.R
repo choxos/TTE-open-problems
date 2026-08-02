@@ -30,11 +30,13 @@ get_value <- function(x, name) if (is.list(x) && !is.null(x[[name]]))
 safe_perf <- function(expr) tryCatch(expr, error = function(e)
   list(est = NA_real_, mcse = NA_real_))
 
-call_becoverage <- function(est, se, truth) {
-  nm <- names(formals(perf_becoverage))
-  if (length(nm) {
-    >= 3L) perf_becoverage(est, se, truth)
-  } else perf_becoverage(est, se)
+## Bias-eliminated coverage recentres each interval on the mean estimate, so it
+## needs interval bounds, not a standard error and a truth value. The generated
+## wrapper passed (est, se, truth), which makes the interval empty and the
+## measure identically zero; the shared measure now refuses that call outright.
+## It is unused here and kept only so the file reads the same as its siblings.
+call_becoverage <- function(est, lower, upper) {
+  perf_becoverage(est, lower, upper)
 }
 
 call_rejection <- function(est, se, lo, hi, truth) {
@@ -368,14 +370,21 @@ diag <- unique(res[strategy %in% STRATEGIES,
 diag_summary <- diag[, {
   ok <- !is.na(diagnostic_flag)
   ci <- wilson(sum(diagnostic_flag[ok] == 1L), sum(ok))
-  list(flag_probability = ci['est'], flag_lo = ci['lo'], flag_hi = ci['hi'],
-       mean_max_weight = mean(max_weight_norm, na.rm = TRUE),
-       mean_p99_weight = mean(p99_weight, na.rm = TRUE),
-       mean_ess = mean(ess, na.rm = TRUE),
-       mean_ess_fraction = mean(ess_fraction, na.rm = TRUE),
-       mean_probability_below_005 = mean(probability_below_005, na.rm = TRUE),
-       mean_adherers = mean(n_adherent, na.rm = TRUE),
-       mean_events = mean(n_events_adherent, na.rm = TRUE))
+  ## data.table requires a column to have the same type in every group. A
+  ## diagnostic that is all-NA in one scenario and numeric in another comes back
+  ## logical for the first and double for the rest, and the aggregation fails on
+  ## whichever group happens to be numeric first. Coercing every summary makes
+  ## the type independent of the data.
+  m <- function(x) as.numeric(mean(as.numeric(x), na.rm = TRUE))
+  list(flag_probability = as.numeric(ci['est']),
+       flag_lo = as.numeric(ci['lo']), flag_hi = as.numeric(ci['hi']),
+       mean_max_weight = m(max_weight_norm),
+       mean_p99_weight = m(p99_weight),
+       mean_ess = m(ess),
+       mean_ess_fraction = m(ess_fraction),
+       mean_probability_below_005 = m(probability_below_005),
+       mean_adherers = m(n_adherent),
+       mean_events = m(n_events_adherent))
 }, by = .(scenario, method, strategy)]
 utils::write.csv(diag_summary, file.path(OUT, 'diagnostics.csv'), row.names = FALSE)
 

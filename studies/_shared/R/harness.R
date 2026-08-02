@@ -173,15 +173,33 @@ run_design <- function(fn, scenarios, n_rep, master_seed, outdir,
     res <- do.call(rbind, lapply(parts, readRDS))
     res <- cbind(scen[rep(1L, nrow(res)), , drop = FALSE], res)
     rownames(res) <- NULL
-    saveRDS(res, f)
+    ## The blocks are written atomically and the scenario file was not, so a
+    ## process killed during this write left a truncated scenario that the
+    ## resume check treated as complete and that then failed to decompress when
+    ## the whole design was assembled at the end. That is the same defect one
+    ## level up, and it cost a completed 24-scenario run its final assembly.
+    tmp_f <- paste0(f, ".partial")
+    saveRDS(res, tmp_f)
+    file.rename(tmp_f, f)
     unlink(part_dir, recursive = TRUE)
     fails <- sum(!is.na(res$error))
     message(sprintf("  scenario %d/%d: %.0fs, %d replicate errors",
                     s, n_scen, proc.time()[["elapsed"]] - t0, fails))
   }
 
-  do.call(rbind, lapply(sort(list.files(raw, "^scenario-.*\\.rds$",
-                                        full.names = TRUE)), readRDS))
+  ## Assembling the design is also where a truncated scenario surfaces, so it
+  ## reports which file is unreadable rather than failing with a stack trace
+  ## from inside lapply.
+  done_files <- sort(list.files(raw, "^scenario-[0-9]+\\.rds$", full.names = TRUE))
+  bad <- done_files[vapply(done_files, function(x)
+    inherits(try(readRDS(x), silent = TRUE), "try-error"), logical(1))]
+  if (length(bad)) {
+    unlink(bad)
+    stop("discarded ", length(bad), " unreadable scenario file(s): ",
+         paste(basename(bad), collapse = ", "),
+         ". Rerun to recompute them; the streams make it exact.")
+  }
+  do.call(rbind, lapply(done_files, readRDS))
 }
 
 ## Record exactly what produced a result set.

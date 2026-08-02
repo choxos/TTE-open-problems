@@ -331,15 +331,22 @@ metric_core <- function(y, score, bin, w, strict_bins = TRUE,
     if (sum(wk) <= 0) {
       estimates[metric] <- NA_real_
       empty <- c(empty, metric)
-      if (need_influence)
-        influence <- cbind(influence, stats::setNames(rep(NA_real_, length(y)), metric))
+      if (need_influence) {
+        ## setNames(vector, metric) names the ELEMENTS of a length-n vector, not
+        ## the column, so the metric names never reached colnames(influence) and
+        ## the later lookup influence[, keep] was out of bounds. Every replicate
+        ## in the study failed there. Name the column after binding it.
+        influence <- cbind(influence, rep(NA_real_, length(y)))
+        colnames(influence)[ncol(influence)] <- metric
+      }
     } else {
       m <- sum(wk * y) / sum(wk)
       estimates[metric] <- m
       nonempty <- c(nonempty, k)
       if (need_influence) {
         z <- wk * (y - m) / mean(wk)
-        influence <- cbind(influence, stats::setNames(z, metric))
+        influence <- cbind(influence, as.vector(z))
+        colnames(influence)[ncol(influence)] <- metric
       }
     }
   }
