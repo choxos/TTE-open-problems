@@ -68,7 +68,7 @@ perf <- do.call(rbind, lapply(
     re <- safe_perf(perf_relerror_modse(err, se))
     mse <- safe_perf(perf_mse(err, 0))
     cv <- safe_perf(perf_coverage(lo, hi, 0))
-    bec <- safe_perf(perf_becoverage(err, se, 0))
+    bec <- safe_perf(perf_becoverage(err, lo, hi))
     rej <- safe_perf(perf_rejection(lo, hi, 0))
     cg <- safe_perf(perf_convergence(ifelse(ok, d$latent_est, NA_real_), nrow(d)))
 

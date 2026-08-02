@@ -41,7 +41,7 @@ performance <- do.call(rbind, lapply(
     relative_se <- perf_relerror_modse(estimate, se)
     mse <- perf_mse(estimate, truth_value)
     coverage <- perf_coverage(lower, upper, truth_value)
-    becoverage <- perf_becoverage(estimate, se, truth_value)
+    becoverage <- perf_becoverage(estimate, lower, upper)
     rejection <- perf_rejection(lower, upper, 0)
     convergence <- perf_convergence(estimate, nrow(d))
     data.frame(

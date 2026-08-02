@@ -55,7 +55,7 @@ performance <- do.call(rbind, lapply(
     relative_se <- safe_metric(perf_relerror_modse(estimate, se))
     mse <- safe_metric(perf_mse(error, 0))
     coverage <- safe_metric(perf_coverage(lo_error, hi_error, 0))
-    becoverage <- safe_metric(perf_becoverage(error, se, 0))
+    becoverage <- safe_metric(perf_becoverage(error, lo_error, hi_error))
     rejection <- safe_metric(perf_rejection(estimate - 1.96 * se,
                                              estimate + 1.96 * se, 0))
     approximation_coverage <- safe_metric(perf_coverage(

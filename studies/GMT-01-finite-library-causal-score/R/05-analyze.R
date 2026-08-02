@@ -64,7 +64,7 @@ performance <- do.call(rbind, lapply(
     re <- safe_measure(perf_relerror_modse(est, se))
     mse <- safe_measure(perf_mse(est, tv))
     cv <- safe_measure(perf_coverage(lo, hi, tv))
-    bec <- safe_measure(perf_becoverage(est, se, tv))
+    bec <- safe_measure(perf_becoverage(est, lo, hi))
     reject <- safe_measure(perf_rejection(lo, hi, 0))
     conv <- safe_measure(perf_convergence(est, nrow(d)))
     data.frame(

@@ -25,7 +25,7 @@ perf <- do.call(rbind, lapply(split(expanded,
   b <- safe_perf(perf_bias(est, tv)); es <- safe_perf(perf_empse(est))
   ms <- safe_perf(perf_modse(se)); re <- safe_perf(perf_relerror_modse(est, se))
   mse <- safe_perf(perf_mse(est, tv)); cv <- safe_perf(perf_coverage(lo, hi, tv))
-  be <- safe_perf(perf_becoverage(est, se, tv))
+  be <- safe_perf(perf_becoverage(est, lo, hi))
   rj <- safe_perf(perf_rejection(lo, hi, 0))
   cg <- safe_perf(perf_convergence(est, nrow(d)))
   data.frame(observed_law = d$observed_law[1], method = d$method[1],

@@ -43,9 +43,11 @@ mean_or_na <- function(x) {
   if (length(x)) mean(x) else NA_real_
 }
 
-call_becoverage <- function(est, se, truth_value) {
-  n_args <- length(formals(perf_becoverage))
-  if (n_args >= 3L) perf_becoverage(est, se, truth_value) else perf_becoverage(est, se)
+## The signature is (est, lower, upper), and counting `formals` cannot tell you
+## what the third argument means. Passing a standard error as a lower bound and
+## the truth as an upper bound is not a fallback, it is a different quantity.
+call_becoverage <- function(est, lo, hi) {
+  perf_becoverage(est, lo, hi)
 }
 
 call_rejection <- function(lo, hi) {
@@ -93,7 +95,7 @@ performance_one <- function(d) {
   modse <- perf_modse(se)
   relative_se <- perf_relerror_modse(est, se)
   coverage <- perf_coverage(lo, hi, tv)
-  becoverage <- call_becoverage(est, se, tv)
+  becoverage <- call_becoverage(est, lo, hi)
   rejection <- call_rejection(lo, hi)
   convergence <- perf_convergence(est, nrow(d))
 

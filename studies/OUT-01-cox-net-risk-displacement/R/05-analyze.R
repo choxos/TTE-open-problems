@@ -34,19 +34,18 @@ binomial_interval <- function(success, attempts) {
   c(low = unname(ci[1]), high = unname(ci[2]))
 }
 
+## The signature is (est, lower, upper). What stood here read the name of the
+## first formal and dispatched on it, and with the real signature that first
+## name is `est`, so it fell to passing a standard error as a lower bound and
+## the truth as an upper bound.
+##
+## Its first branch is what was intended and is worth keeping as arithmetic:
+## shifting each interval by the bias and asking whether it covers the truth is
+## the same question as asking whether the unshifted interval covers the mean
+## estimate, since `est - bias - m*se <= truth` holds exactly when
+## `est - m*se <= truth + bias`, and `truth + bias` is `mean(est)`.
 invoke_becoverage <- function(est, se, truth_value) {
-  formal_names <- tolower(names(formals(perf_becoverage)))
-  first <- if (length(formal_names)) formal_names[1] else ""
-  if (grepl("lower|lcl|^lo$", first)) {
-    bias <- mean(est) - truth_value
-    lo <- est - bias - WALD_MULTIPLIER * se
-    hi <- est - bias + WALD_MULTIPLIER * se
-    perf_becoverage(lo, hi, truth_value)
-  } else if (length(formal_names) >= 3L) {
-    perf_becoverage(est, se, truth_value)
-  } else {
-    perf_becoverage(est, se)
-  }
+  perf_becoverage(est, est - WALD_MULTIPLIER * se, est + WALD_MULTIPLIER * se)
 }
 
 invoke_rejection <- function(lo, hi) {

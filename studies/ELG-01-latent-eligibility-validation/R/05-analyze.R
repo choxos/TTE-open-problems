@@ -55,31 +55,21 @@ wilson <- function(k, n, level = 0.95) {
   c(max(0, center - half), min(1, center + half))
 }
 
+## The signature is (est, lower, upper) and it is not in doubt. What stood here
+## inspected `formals(perf_becoverage)` and dispatched on the names it found,
+## which is a way of being wrong that survives review: with the real signature
+## it fell through to `perf_becoverage(lo - bias, hi - bias, truth_value)`,
+## passing a lower bound as the estimate and the truth as an upper bound.
+##
+## That fallback does show what was intended, and it is worth keeping the
+## algebra rather than the code. Shifting each interval by the bias and asking
+## whether it covers the truth is the same question as asking whether the
+## unshifted interval covers the mean estimate, because
+## `lo - bias <= truth <= hi - bias` holds exactly when
+## `lo <= truth + bias <= hi`, and `truth + bias` is `mean(est)`. So the direct
+## call computes what the wrapper was reaching for.
 call_becoverage <- function(est, se, lo, hi, truth_value) {
-  bias <- mean(est) - truth_value
-  fm <- tolower(names(formals(perf_becoverage)))
-  if (length(fm) == 3L && any(grepl('se', fm))) {
-    return(metric(perf_becoverage(est, se, truth_value)))
-  }
-  if (length(fm) == 3L) {
-    return(metric(perf_becoverage(lo - bias, hi - bias, truth_value)))
-  }
-  if (length(fm) == 4L) {
-    args <- lapply(fm, function(nm) {
-      if (grepl('lower|^lo$|lcl', nm)) lo
-      else if (grepl('upper|^hi$|ucl', nm)) hi
-      else if (grepl('truth|true', nm)) truth_value
-      else if (grepl('bias', nm)) bias
-      else if (grepl('est', nm)) est
-      else if (grepl('^se|stderr', nm)) se
-      else NULL
-    })
-    if (all(vapply(args, function(x) !is.null(x), logical(1)))) {
-      names(args) <- names(formals(perf_becoverage))
-      return(metric(do.call(perf_becoverage, args)))
-    }
-  }
-  metric(perf_becoverage(lo - bias, hi - bias, truth_value))
+  metric(perf_becoverage(est, lo, hi))
 }
 
 summarize_point <- function(d) {

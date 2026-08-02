@@ -33,7 +33,7 @@ perf <- do.call(rbind, lapply(split(res, list(res$sid, res$method, res$variant, 
   re <- metric(perf_relerror_modse(est, se))
   mse <- metric(perf_mse(est, tv))
   cv <- metric(perf_coverage(lo, hi, tv))
-  bec <- metric(perf_becoverage(est, se, tv))
+  bec <- metric(perf_becoverage(est, lo, hi))
   rej <- metric(perf_rejection(lo, hi, 0))
   cg <- metric(perf_convergence(ifelse(valid, d$est, NA_real_), nrow(d)))
   data.frame(

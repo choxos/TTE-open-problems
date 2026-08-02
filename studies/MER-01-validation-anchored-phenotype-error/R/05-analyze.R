@@ -18,17 +18,15 @@ res <- merge(res, truth[, c("scenario", "estimand", "truth", "truth_mcse")],
 get_est_mcse <- function(x) if (is.list(x)) unname(x[["est"]]) else unname(x[1L])
 get_mcse <- function(x) if (is.list(x)) unname(x[["mcse"]]) else unname(x[2L])
 
+## The signature is (est, lower, upper). What stood here inspected
+## `formals(perf_becoverage)` and dispatched on what it found, which is a way of
+## being wrong that survives review. Shifting each interval by the bias and
+## asking whether it covers the truth, which is what the last branch reached
+## for, is the same question as asking whether the unshifted interval covers the
+## mean estimate: `lo - bias <= truth <= hi - bias` holds exactly when
+## `lo <= truth + bias <= hi`, and `truth + bias` is `mean(est)`.
 call_becoverage <- function(est, se, lo, hi, truth_value, bias) {
-  nf <- length(formals(perf_becoverage))
-  ans <- if (nf >= 4L) {
-    perf_becoverage(lo, hi, truth_value, bias)
-  } else {
-    nm <- names(formals(perf_becoverage))
-    if (any(grepl("se", nm, ignore.case = TRUE)))
-      perf_becoverage(est, se, truth_value) else
-        perf_becoverage(lo - bias, hi - bias, truth_value)
-  }
-  ans
+  perf_becoverage(est, lo, hi)
 }
 
 call_rejection <- function(est, se, lo, hi) {

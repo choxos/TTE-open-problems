@@ -32,17 +32,16 @@ res <- merge(res, truth_target[, c("scenario", "estimand", ".start_key", "true")
              sort = FALSE)
 
 metric_est <- function(x) if (is.list(x)) unname(x$est) else unname(x)
+## The signature is (est, lower, upper). What stood here tried three different
+## argument orders in turn and returned whichever one failed to raise an error,
+## which makes a guard in the callee into a selector: a wrong call that happens
+## not to error is indistinguishable from a right one, and the first candidate,
+## (est, se, truth), was the wrong one. Shifting the interval by the bias and
+## asking whether it covers the truth, which the other two candidates reach for,
+## is the same question as asking whether the unshifted interval covers the mean
+## estimate, so there is one call to make and no dispatch to do.
 call_becoverage <- function(est, se, lo, hi, truth_value) {
-  candidates <- list(
-    list(est, se, truth_value),
-    list(lo, hi, truth_value, mean(est, na.rm = TRUE) - truth_value),
-    list(lo, hi, truth_value)
-  )
-  for (a in candidates) {
-    z <- try(do.call(perf_becoverage, a), silent = TRUE)
-    if (!inherits(z, "try-error")) return(z)
-  }
-  list(est = NA_real_, mcse = NA_real_)
+  perf_becoverage(est, lo, hi)
 }
 
 parts <- split(res, interaction(res$scenario, res$method, res$estimand,

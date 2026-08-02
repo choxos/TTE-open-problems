@@ -35,8 +35,8 @@ safe_metric <- function(fun, ...) {
   z <- try(fun(...), silent = TRUE)
   if (inherits(z, "try-error")) list(est = NA_real_, mcse = NA_real_) else z
 }
-safe_becoverage <- function(e, s, truth) {
-  z <- try(perf_becoverage(e, s, truth), silent = TRUE)
+safe_becoverage <- function(e, lower, upper) {
+  z <- try(perf_becoverage(e, lower, upper), silent = TRUE)
   if (inherits(z, "try-error")) list(est = NA_real_, mcse = NA_real_) else z
 }
 safe_rejection <- function(lo, hi) {
@@ -57,7 +57,7 @@ summarize_cell <- function(d) {
   re <- safe_metric(perf_relerror_modse, e, s)
   mse <- safe_metric(perf_mse, e, tv)
   cv <- safe_metric(perf_coverage, lo, hi, tv)
-  bec <- safe_becoverage(e, s, tv)
+  bec <- safe_becoverage(e, lo, hi)
   rej <- safe_rejection(lo, hi)
   av <- safe_metric(perf_convergence, e, nrow(d))
   ulo <- ifelse(d$success, d$lo, Inf)
