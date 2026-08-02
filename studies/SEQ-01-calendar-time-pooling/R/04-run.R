@@ -53,9 +53,22 @@ one_rep <- function(scen, rep_id) {
 
 run_feasibility <- function() {
   f <- file.path(OUT, "feasibility.rds")
-  if (file.exists(f)) return(readRDS(f))
-  stopifnot(file.exists(file.path(OUT, "truth.rds")))
+  truth_file <- file.path(OUT, "truth.rds")
+  stopifnot(file.exists(truth_file))
   pilot_dir <- file.path(OUT, "pilot-cache")
+  ## This summary is derived from the pilot cache and from truth, so an
+  ## existence check lets it outlive both. The same shape in LRN-05 left the
+  ## replication plan describing a pilot in which nothing had estimated, and
+  ## every replication requirement was published as Inf.
+  newest <- function(dir) {
+    fs <- list.files(dir, recursive = TRUE, full.names = TRUE)
+    if (!length(fs)) return(-Inf)
+    max(as.numeric(file.mtime(fs)))
+  }
+  if (file.exists(f) &&
+      as.numeric(file.mtime(f)) > max(newest(pilot_dir),
+                                      as.numeric(file.mtime(truth_file))))
+    return(readRDS(f))
   rows <- list()
   z <- 0L
   for (w in PILOT_WORKERS) for (sid in c(1L, 12L)) {

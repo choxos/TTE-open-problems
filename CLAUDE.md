@@ -89,6 +89,41 @@ because auditors run out of quota, so the denominator cannot be the roster size.
 - **A finding without a verbatim quote and a locator is discarded.** `verify_quotes.py` checks
   every quote against the paper.
 
+## How generated study code fails
+
+Every defect found so far is silent. None raised an error, and each one disabled something
+while the study went on producing performance measures, Monte Carlo standard errors and a
+decision-rule branch. What has caught them, every time, is a guard written before the run:
+a decision rule with a reachable negative branch, a calibration gate, a truth-verification
+gate. Keep writing those, and when one fires, believe it before believing the study.
+
+- **A cache keyed only on an index outlives what it was derived from.** Deleting truth, the
+  pilot and every result to rerun LRN-05 left `replication-plan-cache/` untouched, and
+  `if (file.exists(path)) next` reused it. The plans summarized a pilot in which nothing had
+  estimated, so the paired standard deviation was `Inf` on all 1248 rows and every replication
+  requirement was published as `protocol-cap-exceeded`. Any cache derived from another
+  derived artifact must regenerate when that artifact is newer, not when the file is absent.
+- **`rowsum(..., reorder = FALSE)` returns rows in order of first appearance.** Code that then
+  reads them positionally, with `cumsum` or `x[group]`, is correct only when the input happened
+  to arrive sorted. LRN-05's AUC was right on the quadrature grid, which is nearly sorted by
+  score, and wrong on every replicate: 0.5900 against a true 0.6288. Reading `rownames()` and
+  scattering is safe; positional reads are not.
+- **`NA == x` is `NA`, and `as.integer(NA)` is `NA`.** SEQ-01 built its outcome as
+  `event_time == t + 1L` where `event_time` is `NA` for everyone who never fails, so the
+  outcome was missing on most person-periods and every model got zero usable rows.
+  `build/studies/scan_na_comparisons.py` sweeps for the comparisons that reach a numeric sink.
+- **Redundancy by an affine map is invisible where redundancy by equality is not.** LRN-05
+  excluded duplicated influence columns and missed two that were exact affine functions of
+  others, leaving the stack rank-deficient in every replicate and its one realistic estimator
+  unable to return a single number. Check rank, not column names.
+- **An eigenvalue relative to the largest is not scale free.** Applied to a covariance whose
+  columns span six hundredfold in scale, a `1e-10` threshold measures units rather than
+  singularity. Use the correlation scale when the question is whether a matrix is degenerate.
+- **`perf_becoverage` takes `(est, lower, upper)`.** Generated code reaches for
+  `(est, se, truth)` almost every time. It is guarded in `_shared/R/performance.R` on both the
+  length of the bounds and the invariant that an interval contains its own estimate; nine
+  studies still carry the wrong call and will stop when they run.
+
 ## Available auditors
 
 | Auditor | CLI | Lens |

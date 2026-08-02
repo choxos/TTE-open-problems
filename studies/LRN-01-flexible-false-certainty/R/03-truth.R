@@ -44,9 +44,16 @@ for (complexity in sort(unique(scenarios$complexity[sel]))) {
 
 for (i in sel) {
   f <- file.path(CACHE, sprintf("scenario-%03d.rds", i))
-  if (file.exists(f)) next
   s <- scenarios[i, , drop = FALSE]
-  b <- readRDS(file.path(BUNDLE, sprintf("complexity-%d.rds", s$complexity)))
+  bundle_file <- file.path(BUNDLE, sprintf("complexity-%d.rds", s$complexity))
+  ## This cache is derived from the bundle, and a cache keyed only on the
+  ## scenario number outlives the thing it was derived from. In LRN-05 the same
+  ## shape left the replication plan describing a pilot in which nothing had
+  ## estimated, and every requirement was published as Inf. Regenerate whenever
+  ## the bundle is newer.
+  if (file.exists(f) && file.exists(bundle_file) &&
+      file.mtime(f) > file.mtime(bundle_file)) next
+  b <- readRDS(bundle_file)
   key <- if (s$support_kind == "exact") s$support_key else "common"
   r <- b$rd[b$rd$support_key == key & abs(b$rd$delta - s$delta) < 1e-12, ]
   stopifnot(nrow(r) == 1L)
