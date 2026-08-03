@@ -705,8 +705,9 @@ estimate_fitted_method <- function(dat, scores, cuts) {
     g0 = weights_from_probabilities(dat, p, 'g0'),
     g1 = weights_from_probabilities(dat, p, 'g1')
   )
+  ## Same registered rule as the other methods; see safe_known.
   comp <- compute_base_metrics(dat, scores, cuts, weights,
-                               strict_bins = TRUE, need_influence = TRUE)
+                               strict_bins = FALSE, need_influence = TRUE)
   if (!is.null(comp$fail))
     return(apply_diagnostics(blank_method('fitted_reduced', comp$fail), weights, dat))
   nuisance <- nuisance_influence(dat, fit)
@@ -733,8 +734,9 @@ estimate_fitted_method <- function(dat, scores, cuts) {
                g1 = weights_from_probabilities(dat, pp, 'g1'))
     wm <- list(g0 = weights_from_probabilities(dat, pm, 'g0'),
                g1 = weights_from_probabilities(dat, pm, 'g1'))
-    ep <- compute_base_metrics(dat, scores, cuts, wp, TRUE, FALSE)
-    em <- compute_base_metrics(dat, scores, cuts, wm, TRUE, FALSE)
+    ## The Jacobian must not be stricter than the point estimate it differentiates.
+    ep <- compute_base_metrics(dat, scores, cuts, wp, FALSE, FALSE)
+    em <- compute_base_metrics(dat, scores, cuts, wm, FALSE, FALSE)
     if (!is.null(ep$fail) || !is.null(em$fail))
       return(apply_diagnostics(blank_method('fitted_reduced',
                                              'finite-difference-failure'), weights, dat))
@@ -790,7 +792,28 @@ estimate_fitted_method <- function(dat, scores, cuts) {
 
 estimate_all <- function(dat, scen, cuts) {
   scores <- make_scores(dat, scen)
-  safe_known <- function(method, probability, strict = TRUE) {
+  ## `strict` deletes a whole replicate when any one of the ten calibration bins
+  ## is empty. The protocol's registered condition is different and much weaker:
+  ## a method fails on "fewer than two nonempty calibration bins", which
+  ## `metric_core` enforces separately and which survives this default. Nothing
+  ## in the protocol asks for the stricter rule, and `performance/secondary[1]`
+  ## asks for the Brier score, AUC and marginal risk as outputs; none of the
+  ## three uses bins at all.
+  ##
+  ## The cost was half the design. Support is a designed factor and in the
+  ## twelve stressed-support scenarios a population decile is often empty, so
+  ## the three weighted methods returned nothing on 94.5 percent of replicates
+  ## while `unweighted`, the only caller that passed FALSE, returned estimates
+  ## on 91 percent of the same replicates. A study comparing these methods was
+  ## holding them to different convergence rules, in the direction that deletes
+  ## the oracle and keeps the confounded comparator.
+  ##
+  ## On stressed scenario 22 the registered rule returns 57 to 61 of 63 metrics
+  ## where this one returned 0, including all 23 metrics that do not use bins,
+  ## and reports the 2 to 6 genuinely empty bins as `empty-bin`, which is what
+  ## the per-bin machinery in `metric_core` and `estimate_known_method` was
+  ## written to do and could never reach.
+  safe_known <- function(method, probability, strict = FALSE) {
     tryCatch({
       weights <- if (is.null(probability)) {
         list(g0 = unweighted_weights(dat, 'g0'),
