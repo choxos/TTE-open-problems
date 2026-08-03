@@ -34,11 +34,30 @@ that window and cannot checkpoint can never complete however many times it is
 resumed. That is a property of where this is being run, not of the study: an
 overnight run on a machine that will hold a process would finish it.
 
+## The environmental half of this is resolved
+
+The nine-minute window was the tool invoking the run, not the machine. Runs are
+now started detached through `build/studies/drive.sh` under `nohup`, which holds
+a process for as long as it needs: LRN-05 has since run for five hours inside a
+single `Rscript` invocation, and its precision pilot alone took four hours and
+forty-nine minutes without interruption.
+
+So the reason recorded here for not finishing no longer applies, and the
+question it was hiding is now askable: whether `fit_population_models` at
+`TRUTH_FIT_N = 250000` terminates in a reasonable time for process scenario 4.
+It was killed at nine minutes, which is evidence that it is slow and no evidence
+at all that it does not finish. That has not been tested, because testing it
+means running it, and the machine is committed to another study.
+
+This study is therefore no longer blocked on its environment. It is queued.
+
 ## What this needs
 
-Either a machine that will hold the process, or `fit_population_models` made
-resumable by caching its fitted models per process scenario, which is
-deterministic given the scenario and would need only the first successful fit.
+Run it detached and find out whether the truth step completes. If it does, the
+study proceeds. If it turns out to be genuinely intractable rather than merely
+slow, `fit_population_models` can be made resumable by caching its fitted models
+per process scenario, which is deterministic given the scenario and would need
+only the first successful fit.
 
 The batch checkpointing added here is kept either way: it is correct, and the
 batches are deterministic given the scenario and batch index, so a cached batch
