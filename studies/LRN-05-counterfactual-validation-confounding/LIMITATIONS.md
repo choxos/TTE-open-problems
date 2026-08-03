@@ -1,7 +1,34 @@
 # Known implementation limitations of the run
 
-Stated here rather than left for a reviewer to discover, because both are visible
-in the result files and neither is a finding about the methods being compared.
+Stated here rather than left for a reviewer to discover, because each is visible
+in the result files and none is a finding about the methods being compared.
+
+## The run uses the protocol's minimum replicate count, not its planned one
+
+The protocol asks the precision pilot to set a scenario-specific replicate count
+and permits up to 10,000 per scenario, and its decision rule declares a result
+uninformative when the required count exceeds that 10,000. This run fixes every
+scenario at 2,000, which is the registered minimum, through `N_REP_BUDGET_CAP`,
+and reports cells needing more under a reason of its own, `budget-precision-shortfall`,
+which is not in the registered decision rule.
+
+The reason is resources rather than judgment. The pilot's requirements are mostly
+2,000, but the calibration intercept needs 78,000 to 176,000 replicates in several
+scenarios, so honoring the plan would run those scenarios at the 10,000 cap. At
+roughly an hour a scenario for 2,000 replicates, that is on the order of eighty
+hours for one study. The deviation is declared here and in the reason string
+attached to every affected row rather than presented as the protocol's rule.
+
+What it costs is specific and worth separating from genuine estimator bias,
+because the two look identical in a table of uninformative rows. The positive
+control gate compares `|bias| + 1.96 * bias_mcse` against the negligible limit,
+and `bias_mcse` shrinks with replicates while `bias` does not. For the never-treat
+oracle calibration intercept the bias is 0.0326 against a limit of 0.05, so the
+gate quantity converges to 0.0326 and the cell would pass at 10,000 replicates and
+fails at 2,000 only through Monte Carlo error. For the same intercept under the
+miscalibrated score the bias is 0.0505, already past the limit on its own, and no
+number of replicates rescues it. The first is a budget artifact; the second is the
+estimator.
 
 ## The fitted reduced-history method does not estimate under stressed support
 
