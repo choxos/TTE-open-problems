@@ -46,9 +46,9 @@ make_streams <- function(n, master_seed) {
 ##
 ## `fn` receives the scenario row (a one-row data frame) and must return a data
 ## frame of results, one row per method. Warnings are captured too: a
-## non-convergence warning from a fitting routine is the usual way a PAIC
-## estimator tells you its answer is not to be trusted, and losing it means
-## treating a bad fit as a good one.
+## non-convergence warning from a fitting routine is the usual way a weighting
+## or g-computation estimator tells you its answer is not to be trusted, and
+## losing it means treating a bad fit as a good one.
 run_one <- function(fn, scenario, rep_id, stream) {
   assign(".Random.seed", stream, envir = .GlobalEnv)
   warns <- character(0)
@@ -165,10 +165,23 @@ run_design <- function(fn, scenarios, n_rep, master_seed, outdir,
       !inherits(try(readRDS(f), silent = TRUE), "try-error")
     }, logical(1))
     if (any(!readable)) {
-      message(sprintf("  scenario %d: discarding %d unreadable block(s)",
-                      s, sum(!readable)))
+      ## There was no next pass. The discarded block was deleted, the scenario
+      ## was assembled from whatever survived, written as complete, and its
+      ## parts directory removed, after which the resume check skipped the
+      ## scenario forever. The result is a scenario carrying fewer replicates
+      ## than it claims, with nothing anywhere recording that it is short: the
+      ## performance measures are computed over the replicates that happen to
+      ## be present and read exactly like a full scenario.
+      ##
+      ## Leave the surviving blocks in place and move on instead. The next pass
+      ## recomputes only the missing ones, which the per-replicate streams make
+      ## bit-for-bit identical to an uninterrupted run.
+      message(sprintf(
+        "  scenario %d: %d unreadable block(s) discarded; leaving the scenario ",
+        s, sum(!readable)),
+        "incomplete so the next pass recomputes them")
       unlink(parts[!readable])
-      parts <- parts[readable]
+      next
     }
     res <- do.call(rbind, lapply(parts, readRDS))
     res <- cbind(scen[rep(1L, nrow(res)), , drop = FALSE], res)
@@ -191,11 +204,20 @@ run_design <- function(fn, scenarios, n_rep, master_seed, outdir,
   ## reports which file is unreadable rather than failing with a stack trace
   ## from inside lapply.
   done_files <- sort(list.files(raw, "^scenario-[0-9]+\\.rds$", full.names = TRUE))
-  bad <- done_files[vapply(done_files, function(x)
-    inherits(try(readRDS(x), silent = TRUE), "try-error"), logical(1))]
+  ## Unreadable is the loud failure. Short is the quiet one, and it is the one
+  ## worth a check of its own: a scenario carrying fewer replicates than it
+  ## claims produces a complete set of performance measures over whatever
+  ## survived and is indistinguishable from a full scenario in every downstream
+  ## file. Count the replicates rather than trusting the file's existence.
+  bad <- done_files[vapply(done_files, function(x) {
+    d <- try(readRDS(x), silent = TRUE)
+    if (inherits(d, "try-error")) return(TRUE)
+    !("rep" %in% names(d)) || length(unique(d$rep)) < n_rep
+  }, logical(1))]
   if (length(bad)) {
     unlink(bad)
-    stop("discarded ", length(bad), " unreadable scenario file(s): ",
+    stop("discarded ", length(bad),
+         " unreadable or short scenario file(s): ",
          paste(basename(bad), collapse = ", "),
          ". Rerun to recompute them; the streams make it exact.")
   }
@@ -205,8 +227,8 @@ run_design <- function(fn, scenarios, n_rep, master_seed, outdir,
 ## Record exactly what produced a result set.
 ##
 ## Written next to the results and quoted in the manuscript. Without it a
-## simulation is not reproducible in any useful sense: `multinma` 0.9.1 and
-## 0.9.1.9002 are different estimators, and a result that changes between them
+## simulation is not reproducible in any useful sense: two versions of `ltmle`
+## or `lmtp` are different estimators, and a result that changes between them
 ## is a finding rather than a nuisance.
 write_provenance <- function(outdir, packages = character(0), extra = list()) {
   si <- utils::sessionInfo()
