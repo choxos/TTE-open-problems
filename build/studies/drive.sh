@@ -17,6 +17,8 @@ set -u
 STUDY="${1:?study directory}"
 WANT="${2:?expected scenario count}"
 MAX_ATTEMPTS="${3:-200}"
+# TTE_SLICE (for example 1:2) runs only those scenarios; pass their count as
+# <expected-scenarios>.
 # TTE_RAW points the completion count at a run that writes elsewhere, such as a
 # registered replication under results/replication/raw.
 RAW="${TTE_RAW:-$STUDY/results/raw}"
@@ -59,7 +61,7 @@ for attempt in $(seq 1 "$MAX_ATTEMPTS"); do
   echo "[drive] attempt $attempt, $have of $WANT scenarios, $(date '+%H:%M:%S')"
   kill_study_r "$STUDY"
   sleep 2
-  ( cd "$STUDY" && Rscript R/04-run.R ) 2>&1 | tail -n 40
+  ( cd "$STUDY" && Rscript R/04-run.R ${TTE_SLICE:-} ) 2>&1 | tail -n 40
 
   # A restart loop that makes no progress is not resilience, it is a machine
   # burning cores on the same failure. Blocks land inside a scenario, so
