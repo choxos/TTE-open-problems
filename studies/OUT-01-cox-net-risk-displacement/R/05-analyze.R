@@ -48,14 +48,6 @@ invoke_becoverage <- function(est, se, truth_value) {
   perf_becoverage(est, est - WALD_MULTIPLIER * se, est + WALD_MULTIPLIER * se)
 }
 
-invoke_rejection <- function(lo, hi) {
-  if (length(formals(perf_rejection)) >= 3L) {
-    perf_rejection(lo, hi, 0)
-  } else {
-    perf_rejection(lo, hi)
-  }
-}
-
 performance_one <- function(d) {
   target <- if (d$method[1] == "death_censored_net") d$net_rd[1] else d$total_rd[1]
   usable <- (is.na(d$fail) | !nzchar(d$fail)) &
@@ -94,7 +86,7 @@ performance_one <- function(d) {
   mse <- perf_mse(est, target)
   coverage <- perf_coverage(lo, hi, target)
   becoverage <- invoke_becoverage(est, se, target)
-  rejection <- invoke_rejection(lo, hi)
+  rejection <- perf_rejection(lo, hi, 0)
   coverage_success <- sum(lo <= target & hi >= target)
   coverage_ci <- binomial_interval(coverage_success, length(est))
 

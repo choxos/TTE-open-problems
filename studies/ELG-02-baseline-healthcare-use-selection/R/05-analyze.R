@@ -50,11 +50,6 @@ call_becoverage <- function(est, lo, hi) {
   perf_becoverage(est, lo, hi)
 }
 
-call_rejection <- function(lo, hi) {
-  n_args <- length(formals(perf_rejection))
-  if (n_args >= 3L) perf_rejection(lo, hi, 0) else perf_rejection(lo, hi)
-}
-
 performance_one <- function(d) {
   available <- isTRUE(d$available[1])
   base <- data.frame(
@@ -96,7 +91,7 @@ performance_one <- function(d) {
   relative_se <- perf_relerror_modse(est, se)
   coverage <- perf_coverage(lo, hi, tv)
   becoverage <- call_becoverage(est, lo, hi)
-  rejection <- call_rejection(lo, hi)
+  rejection <- perf_rejection(lo, hi, 0)
   convergence <- perf_convergence(est, nrow(d))
 
   cbind(

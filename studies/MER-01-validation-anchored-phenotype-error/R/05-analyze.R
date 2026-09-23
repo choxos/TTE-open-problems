@@ -29,12 +29,6 @@ call_becoverage <- function(est, se, lo, hi, truth_value, bias) {
   perf_becoverage(est, lo, hi)
 }
 
-call_rejection <- function(est, se, lo, hi) {
-  nm <- names(formals(perf_rejection))
-  if (any(grepl("se", nm, ignore.case = TRUE))) perf_rejection(est, se, 0) else
-    perf_rejection(lo, hi, 0)
-}
-
 group_key <- interaction(res$scenario, res$method, res$analysis_pattern,
                          res$estimand, drop = TRUE)
 groups <- split(res, group_key)
@@ -52,7 +46,7 @@ perf <- do.call(rbind, lapply(groups, function(d) {
   mse <- perf_mse(est, tv)
   cv <- perf_coverage(lo, hi, tv)
   bec <- call_becoverage(est, se, lo, hi, tv, get_est_mcse(b))
-  rej <- call_rejection(est, se, lo, hi)
+  rej <- perf_rejection(lo, hi, 0)
   conv <- perf_convergence(est, nrow(d))
   valid <- is.finite(est) & is.finite(se) & is.na(d$fail)
   covered <- valid & lo <= tv & hi >= tv

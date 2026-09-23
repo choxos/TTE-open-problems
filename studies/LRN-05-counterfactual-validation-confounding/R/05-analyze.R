@@ -39,14 +39,6 @@ call_becoverage <- function(est, lower, upper) {
   perf_becoverage(est, lower, upper)
 }
 
-call_rejection <- function(est, se, lo, hi, truth) {
-  nm <- names(formals(perf_rejection))
-  if (length(nm) && grepl('lo|lower|lcl', nm[1L], ignore.case = TRUE))
-    perf_rejection(lo, hi, truth)
-  else if (length(nm) >= 3L) perf_rejection(est, se, truth)
-  else perf_rejection(est, se)
-}
-
 summarize_performance <- function(d) {
   tv <- d$truth[which(is.finite(d$truth))[1L]]
   ok <- is.finite(d$est) & is.finite(d$se) & is.finite(tv)
@@ -81,7 +73,7 @@ summarize_performance <- function(d) {
   mse <- safe_perf(perf_mse(est, tv))
   cv <- safe_perf(perf_coverage(lo, hi, tv))
   bec <- safe_perf(call_becoverage(est, lo, hi))
-  rej <- safe_perf(call_rejection(est, se, lo, hi, tv))
+  rej <- safe_perf(perf_rejection(lo, hi, tv))
   conv <- safe_perf(perf_convergence(d$est, nrow(d)))
   data.frame(
     truth = tv,
