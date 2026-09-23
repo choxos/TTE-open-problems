@@ -1,54 +1,38 @@
-# GMT-04 is blocked on its ltmle interface
+# GMT-04: interface fixed, blocked on compute
 
-Three defects fixed, one structural problem left that is a rewrite rather than
-a fix. Nothing has been run and nothing is published.
+## Resolved 2026-09-22
 
-## Fixed: provenance by download
+The ltmle interface is fixed and passes its contract test.
 
-`ensure_ltmle_vendor` fetched the ltmle source archive and reference manual from
-CRAN. CRAN moves superseded versions to Archive and the plain contrib URL
-returns 404, so the study could not start on a machine that already had the
-correct version installed. It also made the provenance of a run depend on what
-CRAN was serving that day.
+1. **Outcome coding.** ltmle's survival contract needs an event indicator that
+   stays 1, and censoring nodes coded censored/uncensored. The study's wide data
+   carry `S` as alive and `R` as 1 for uncensored. `ltmle_wide()` recodes both
+   for the ltmle call only; every other consumer of `S` is unchanged. ltmle then
+   estimates the 36-month risk directly and its influence curve needs no sign
+   change.
+2. **Influence curve.** ltmle 1.3 returns `IC` as a named list of unnamed
+   vectors. The extractor searched for a named numeric and never found it, so
+   every call failed as "influence curve not found".
 
-This repository already vendors a version-pinned ltmle at
-`documentation/refs/packages/cran/ltmle`, which is the tree the technical
-auditor reads and the one `calibration.json` pins. The check now hashes those
-sources. CRAN writes the version as `1.3-0` and R reports `1.3.0`, so the
-comparison is on the parsed version rather than the string.
+Known-answer check on the C0 control (n = 4000, true risks 0.352 and 0.352, true
+RD 0): ltmle returns 0.364 and 0.351, RD −0.013, SE 0.022.
 
-## Fixed: Qform unnamed, then the wrong length
+ltmle reports that L1 to L5 are dropped from `Qform` because each sits in a block
+with the preceding outcome node. That is correct: with no intervention node
+between S_k and L_k, one regression at the head of the block integrates over
+both.
 
-ltmle requires every element of `Qform` to be named after the L or Y node it
-models. The spec builder stripped the names with `unname()`, so ltmle rejected
-the call outright.
+## Not a defect
 
-With names attached it then rejected the length. The builder produced one
-formula per visit, six of them, where the data carries eleven L and Y nodes
-(`S1 L1 S2 L2 S3 L3 S4 L4 S5 L5 S6`). `Qform` is now derived from the nodes
-present in the data, in data order, with each formula built from the last
-covariate and treatment preceding its node.
+The nuisance-adjusted IPTW variance is missing when a regime-by-interval cell has
+no events (1 of 3 test replicates at s = 1.0). The protocol registers a
+saturated pooled logistic event model, whose logit-scale sandwich is singular at
+a zero hazard. The protocol records such common invalid outputs as a separate
+outcome, so this is behavior to report, not to repair.
 
-## Blocked: the outcome coding contradicts ltmle's survival contract
+## Remaining block: compute
 
-ltmle requires a survival Ynode to be an event indicator that stays at 1 once it
-reaches 1. This study codes `S` the other way round, as an indicator of being
-alive, and `est_ltmle` depends on that: it reads ltmle's estimate as a survival
-probability and converts with `risk <- 1 - survival`.
-
-So the fix is not local. Flipping `S` to an event indicator satisfies ltmle and
-changes what every downstream consumer of `S` means, including the risk
-extraction and its influence-function terms. Keeping the survival coding and
-declaring the outcome non-survival changes what ltmle estimates.
-
-Either way the study's central estimator interface has to be rewritten and
-re-verified against a known answer, which is a design and implementation
-question rather than a defect to patch. Patching it far enough to run and
-publishing whatever comes out is the failure this program exists to avoid: the
-result would arrive with a number attached.
-
-## Also noted
-
-The contract test asserts `length(Qform) == N_VISITS`, which was the wrong
-length in the first place and is now wrong for a second reason. It has to be
-rewritten alongside the interface.
+One replicate takes 110 to 470 seconds per run scenario on this machine, which is
+shared and at load average about 200. At the registered 2000 replicates across 14
+run scenarios that is roughly 1500 CPU hours. The run needs either more compute
+or a registered reduction in replicates.

@@ -524,6 +524,11 @@ find_named_numeric <- function(x, target, depth = 0L) {
 }
 
 extract_ltmle_ic <- function(fit, n) {
+  ## ltmle 1.3 returns r$IC <- list(tmle = ..., iptw = ...): unnamed vectors in
+  ## a named list. The search below looks for a named numeric, so it never found
+  ## the list element and every call failed as "influence curve not found".
+  if (is.list(fit$IC) && is.numeric(fit$IC$tmle) && length(fit$IC$tmle) == n)
+    return(as.numeric(fit$IC$tmle))
   candidates <- list(fit$IC, fit$ic, fit$influence.curve)
   for (x in candidates) {
     if (is.null(x)) next
@@ -548,13 +553,27 @@ collect_glms <- function(x, depth = 0L) {
   unlist(lapply(x, collect_glms, depth = depth + 1L), recursive = FALSE)
 }
 
+## ltmle's survival contract is an event indicator that stays 1 once it reaches 1,
+## and censoring nodes coded "censored"/"uncensored". The study's wide data carry
+## S as alive (1) or dead (0) and R as 1 for uncensored, so both are recoded here,
+## for ltmle only. Every other consumer of S keeps the survival coding. With the
+## event coding, ltmle's estimate is the 36-month risk under the regime and its
+## influence curve is the risk's, so no sign change follows.
+ltmle_wide <- function(wide) {
+  out <- wide
+  for (s in grep('^S[0-9]+$', names(out), value = TRUE)) out[[s]] <- 1L - out[[s]]
+  for (r in grep('^R[0-9]+$', names(out), value = TRUE))
+    out[[r]] <- ltmle::BinaryToCensoring(is.uncensored = out[[r]])
+  out
+}
+
 ltmle_regime <- function(wide, observed_u, regime) {
   spec <- make_ltmle_spec(wide, observed_u)
   warnings <- character()
   fit <- tryCatch(
     withCallingHandlers(
       ltmle::ltmle(
-        wide,
+        ltmle_wide(wide),
         Anodes = spec$Anodes,
         Cnodes = spec$Cnodes,
         Lnodes = spec$Lnodes,
@@ -596,8 +615,8 @@ ltmle_regime <- function(wide, observed_u, regime) {
     if (length(positive)) max(1 / positive) else NA_real_
   }
   list(
-    survival = estimate,
-    ic_survival = ic,
+    risk = estimate,
+    ic_risk = ic,
     warnings = warnings,
     rank_deficient = rank_deficient,
     max_coef = finite_max(abs(coefficients)),
@@ -617,11 +636,9 @@ est_ltmle <- function(generated, observed_u) {
     return(finish_result(list(software_error =
       paste(c(z0$error, z1$error), collapse = '; '))))
   }
-  risk0 <- 1 - z0$survival
-  risk1 <- 1 - z1$survival
-  ic0 <- -z0$ic_survival
-  ic1 <- -z1$ic_survival
-  ic_rd <- ic1 - ic0
+  risk0 <- z0$risk
+  risk1 <- z1$risk
+  ic_rd <- z1$ic_risk - z0$ic_risk
   variance <- stats::var(ic_rd) / generated$n
 
   ## Critique fix: this is the formula-based implementation with its specified
@@ -715,7 +732,9 @@ ltmle_contract_test <- function(generated) {
   observed_spec <- make_ltmle_spec(observed, TRUE)
   hidden_spec <- make_ltmle_spec(hidden, FALSE)
   checks <- c(
-    length(observed_spec$Qform) == N_VISITS,
+    ## One Q regression per L and Y node: N_VISITS outcome nodes and
+    ## N_VISITS - 1 time-varying covariate nodes.
+    length(observed_spec$Qform) == 2L * N_VISITS - 1L,
     length(observed_spec$gform) == 2L * N_VISITS,
     all(grepl('U', observed_spec$Qform, fixed = TRUE)),
     !any(grepl('U', hidden_spec$Qform, fixed = TRUE)),

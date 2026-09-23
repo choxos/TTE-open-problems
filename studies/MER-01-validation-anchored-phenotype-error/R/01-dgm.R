@@ -27,7 +27,7 @@ individual_error_probability <- function(scen, X2, X3) {
     stop("unknown profile: ", scen$profile)
   )
   if (scen$profile == "nondifferential") rep(pp[["low"]], length(X2)) else
-    ifelse(high, pp[["high"]], pp[["low"])
+    ifelse(high, pp[["high"]], pp[["low"]])
 }
 
 gen_error_process <- function(p_fresh, second_order = FALSE,
