@@ -1,64 +1,46 @@
-# TZO-01 is blocked on this machine, not on its science
+# TZO-01 cannot answer as registered
 
-Two real defects were found and fixed, and a third obstacle is environmental.
+Earlier defects are fixed: an off-by-one in the panel builder, invented base-R
+arguments, the end of follow-up treated as an initiation decision, and a
+diverged population model counted as converged. What remains is below.
+`AMENDMENT-DESIGN.md` proposes the changes that would let it answer.
 
-## Fixed: an off-by-one that stopped it generating anything
+## The truth precision gate cannot pass
 
-`marker_boundary` is boundary-indexed and carries `N_WEEKS + 1` columns;
-`p_start` is interval-indexed and carries `N_WEEKS`. The panel builder read both
-at `b + 1`, so on the last interval it indexed one column past the end of
-`p_start` and the study died before producing a single replicate.
+The registered truth draws batches until every decisive Monte Carlo standard
+error is at most 0.0005, to a cap of four million people. The check matched
+`approx-panel` while the columns are named `approx|panel|...`, so it ignored the
+approximation-error columns and stopped at 500,000 people reporting precision
+met. Those columns have standard errors up to 0.0058 (one-week grid). Standard
+errors fall as one over the square root of n, so the four-million cap reaches
+about 0.002. The analysis marks a cell uninformative when its truth misses the
+target, so every cell would be uninformative. The check is fixed
+(commit bf779f1); the committed `results/truth.csv` still carries the
+incorrect `precision_met` values and is superseded by any recomputation.
 
-## Fixed: two more invented base-R arguments
+## The one-week comparator fails in the higher-pressure scenarios
 
-`tabulate(d$period, nbins = K, weights = weight)`. `base::tabulate` has no
-`weights` argument. Same defect as SEQ-01, now replaced by the grouped sum it
-was meant to be and swept across every generated file rather than fixed one at
-a time.
+The initiation model carries one intercept per interval. In process scenarios
+3 and 4, 97 to 100% of 4000-person cohorts have a week with no initiations
+(weeks 62 to 104, with 18 to 190 people at risk); at the two-week grid, 40% and
+7%. The intercept diverges and the Hessian condition number exceeds the
+registered 1e12, so the fit fails by the registered rule, and a cell whose
+required comparator fails in more than 5% of replicates is uninformative.
 
-## Blocked: one uninterruptible step is longer than the execution window
+## The selector can only choose one week
 
-Truth is adaptive. It draws quarter-million batches until the Monte Carlo
-standard error on every decisive column is under 0.0005, to a ceiling of four
-million, and the sparse-visit higher-pressure cells reach that ceiling. 39 of
-the 48 cells are enumerated and cached.
+The selector compares each grid's cross-validated log loss with the one-week
+grid's, in the 1000-person design sample. The one-week model fails there in
+every scenario because late weeks have no starts, so the reference is missing,
+no coarser grid qualifies, and the rule falls back to one week in every
+replicate.
 
-Within-cell batch checkpointing was added for exactly this, and it does not
-help, because the bottleneck is upstream of it. `fit_population_models` runs
-once per process scenario at `TRUTH_FIT_N = 250000` before any batch is drawn,
-and for process scenario 4 it does not finish in nine minutes. It is a single
-call, so there is nothing inside it to resume from.
+## Support in the early arm is marginal
 
-Long processes are killed on this machine, so a step that cannot finish inside
-that window and cannot checkpoint can never complete however many times it is
-resumed. That is a property of where this is being run, not of the study: an
-overnight run on a machine that will hold a process would finish it.
+At 4000 people the one-week early-arm effective sample size is 56 to 84 in
+scenarios 1 and 2 (five replicates each). The cell-level median per arm, pooled
+over grids, is 124 to 153 and passes the registered 100; the one-week grid on its
+own does not.
 
-## The environmental half of this is resolved
-
-The nine-minute window was the tool invoking the run, not the machine. Runs are
-now started detached through `build/studies/drive.sh` under `nohup`, which holds
-a process for as long as it needs: LRN-05 has since run for five hours inside a
-single `Rscript` invocation, and its precision pilot alone took four hours and
-forty-nine minutes without interruption.
-
-So the reason recorded here for not finishing no longer applies, and the
-question it was hiding is now askable: whether `fit_population_models` at
-`TRUTH_FIT_N = 250000` terminates in a reasonable time for process scenario 4.
-It was killed at nine minutes, which is evidence that it is slow and no evidence
-at all that it does not finish. That has not been tested, because testing it
-means running it, and the machine is committed to another study.
-
-This study is therefore no longer blocked on its environment. It is queued.
-
-## What this needs
-
-Run it detached and find out whether the truth step completes. If it does, the
-study proceeds. If it turns out to be genuinely intractable rather than merely
-slow, `fit_population_models` can be made resumable by caching its fitted models
-per process scenario, which is deterministic given the scenario and would need
-only the first successful fit.
-
-The batch checkpointing added here is kept either way: it is correct, and the
-batches are deterministic given the scenario and batch index, so a cached batch
-is the batch the run would have drawn.
+A run of scenarios 1 and 2 was started under the registered design and stopped
+when the truth defect was found.
