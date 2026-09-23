@@ -187,6 +187,10 @@ unit_test_arm_indices <- function() {
 }
 
 ## Deterministic population states used only for the pre-study power calculation.
+## `ifelse(y == 1L, p_y, 1 - p_y)` with a scalar y returns p_y[1] alone, so every
+## state carried the outcome probability of the first quadrature node and the power
+## calculation ran on the wrong population. Its variance drifted with the node count
+## at O(n^-2), as that node moved towards -1, and the convergence check never passed.
 population_states <- function(h, n_nodes) {
   base <- baseline_grid(n_nodes)
   pieces <- list()
@@ -206,7 +210,7 @@ population_states <- function(h, n_nodes) {
       d$Z <- z
       d$A_star <- as.integer(z > 0L)
       d$Y <- y
-      d$w <- d$w * p_z_assign * ifelse(y == 1L, p_y, 1 - p_y)
+      d$w <- d$w * p_z_assign * (if (y == 1L) p_y else 1 - p_y)
       if (h$component == 'eligibility') {
         p_es <- ifelse(d$E == 1L, elig_sens_prob(h, d$X1),
                        1 - elig_spec_prob(h, d$X1))
@@ -214,7 +218,7 @@ population_states <- function(h, n_nodes) {
           de <- d
           de$E_star <- es
           de$Y_star <- y
-          de$w <- de$w * ifelse(es == 1L, p_es, 1 - p_es)
+          de$w <- de$w * (if (es == 1L) p_es else 1 - p_es)
           push(de)
         }
       } else if (h$component == 'outcome') {
@@ -223,7 +227,7 @@ population_states <- function(h, n_nodes) {
           dy <- d
           dy$E_star <- dy$E
           dy$Y_star <- ys
-          dy$w <- dy$w * ifelse(ys == 1L, p_ys, 1 - p_ys)
+          dy$w <- dy$w * (if (ys == 1L) p_ys else 1 - p_ys)
           push(dy)
         }
       } else {
