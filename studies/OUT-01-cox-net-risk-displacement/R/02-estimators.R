@@ -301,6 +301,13 @@ blank_estimates <- function(why) {
 
 estimate_both <- function(dat, need_se = TRUE, keep_iid = FALSE) {
   out <- blank_estimates("not run")
+  ## riskRegression::ate requires a factor treatment, and ate re-reads the CSC
+  ## formula looking for a bare Hist(); with prodlim::Hist it stops with "The
+  ## left side of the formula must contain Hist() or Surv()". Every replicate
+  ## failed on one or the other. prodlim is attached here, not only in the
+  ## calling session, so multisession workers find Hist too.
+  suppressPackageStartupMessages(library(prodlim))
+  dat$A <- factor(dat$A, levels = c(0L, 1L))
   common_warnings <- character()
 
   if (!any(dat$status == 1L)) {
@@ -314,7 +321,7 @@ estimate_both <- function(dat, need_se = TRUE, keep_iid = FALSE) {
   ## those two retained cause-specific coxph models in one call.
   fitted <- capture_conditions(
     riskRegression::CSC(
-      prodlim::Hist(time, status) ~ A + Z + M + C + S + Q + A:C,
+      Hist(time, status) ~ A + Z + M + C + S + Q + A:C,
       data = dat,
       cause = 1
     )
@@ -344,8 +351,8 @@ estimate_both <- function(dat, need_se = TRUE, keep_iid = FALSE) {
 
   d1 <- dat
   d0 <- dat
-  d1$A <- 1L
-  d0$A <- 0L
+  d1$A <- factor(1L, levels = c(0L, 1L))
+  d0$A <- factor(0L, levels = c(0L, 1L))
   retained <- list()
 
   net_rows <- out$method == "death_censored_net"

@@ -45,7 +45,13 @@ invert_piecewise_exponential <- function(threshold, multiplier,
 }
 
 cause_multipliers <- function(x, scen, treatment) {
-  a <- rep(as.numeric(treatment), nrow(x))
+  ## Scalar for a counterfactual intervention (truth), one value per person for
+  ## the observed treatment (replicates). rep(treatment, nrow(x)) was written for
+  ## the scalar case only: given the observed vector it returned n^2 values, and
+  ## every replicate became a 16-million-row data frame of recycled covariates.
+  a <- if (length(treatment) == 1L) rep(as.numeric(treatment), nrow(x)) else
+    as.numeric(treatment)
+  stopifnot(length(a) == nrow(x))
   primary_lp <- 0.20 * x$Z + 0.10 * x$M + 0.45 * x$C +
     0.30 * x$S + scen$gamma[[1]] * x$Q +
     scen$beta_YA[[1]] * a + scen$beta_YAC[[1]] * a * x$C
