@@ -134,7 +134,7 @@ build_scenarios <- function() {
   out <- do.call(rbind, rows)
   out$scenario <- seq_len(nrow(out))
   out$effect_modification <- out$profile != "no_effect_modification"
-  out$differential_error <- !out$profile %in% c("nondifferential") && out$accuracy < 1
+  out$differential_error <- !out$profile %in% c("nondifferential") & out$accuracy < 1
   out$high_error_stratum <- ifelse(
     out$profile %in% c("aligned", "no_effect_modification"), "X2=1",
     ifelse(out$profile == "reversed", "X2=0",
