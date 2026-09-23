@@ -132,7 +132,6 @@ gate. Keep writing those, and when one fires, believe it before believing the st
   single index of 37 returns a 37-element permutation rather than `37`, and a bootstrap
   stratum or cross-fitting fold of size one silently writes to rows that were never in it.
   Four studies had this. Write `x[sample.int(length(x), size, replace = ...)]`.
-
 - **`ifelse()` takes its shape from the test.** PRO-04 wrote
   `ifelse(y == 1L, p_y, 1 - p_y)` inside `for (y in 0:1)`, which returns `p_y[1]`,
   so every state carried the first quadrature node's outcome probability and the
@@ -140,7 +139,7 @@ gate. Keep writing those, and when one fires, believe it before believing the st
   quadrature convergence check could never pass. `_shared/R/guards.R` now makes a
   scalar test with vector branches an error in every study that sources the
   harness. `TTE_SMOKE=k Rscript R/04-run.R i:j` runs k replicates per scenario
-  through the registered streams, writes nothing, and is the check to run before
+  through the registered streams, writes only `results/smoke.rds`, and is the check to run before
   launching a study.
 
 ## Available auditors

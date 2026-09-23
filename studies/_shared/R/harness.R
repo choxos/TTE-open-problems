@@ -126,9 +126,12 @@ run_design <- function(fn, scenarios, n_rep, master_seed, outdir,
       cbind(scenarios[rep(s, nrow(res)), , drop = FALSE], res)
     })
     res <- do.call(rbind, out)
-    saveRDS(res, file.path(tempdir(), "smoke.rds"))
+    ## Not tempdir(): R removes it on exit, taking the output with it.
+    dir.create(outdir, recursive = TRUE, showWarnings = FALSE)
+    smoke_file <- file.path(outdir, "smoke.rds")
+    saveRDS(res, smoke_file)
     message("SMOKE: ", nrow(res), " rows, ", sum(!is.na(res$error)),
-            " replicate errors; saved to ", file.path(tempdir(), "smoke.rds"))
+            " replicate errors; saved to ", smoke_file)
     stop("TTE_SMOKE run complete; nothing written", call. = FALSE)
   }
 
