@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Causal forests and meta-learners estimate heterogeneous treatment effects and inherit every identification assumption of the base analysis without relaxing any of them. A subgroup analysis therefore requires subgroup-specific assessment of exchangeability, measurement validity, positivity and uncertainty, and apparent heterogeneity can reflect differential measurement or differential access rather than differential biology. Two further requirements are routinely skipped. Adaptively chosen subgroups need selection-aware inference, because the reported interval otherwise conditions on a subgroup the data chose. And restricting to regions with adequate overlap changes the target population rather than fixing the estimate, so it has to be reported as a change of question. Where the groups with the poorest support are the protected groups the analysis was undertaken to examine, that has to be demonstrated in the data at hand rather than assumed, and it is neither demonstrated nor required to be.">
+<meta name="description" content="Causal forests and meta-learners estimate heterogeneous treatment effects, and they inherit every identification assumption of the base analysis without relaxing any of them. Subgroup discovery adds three specific hazards: confounding that varies by subgroup, multiplicity across the many subgroups a flexible learner implicitly examines, and limited overlap within small strata. Apparent heterogeneity can therefore reflect differential measurement, differential healthcare access or model extrapolation rather than differential biology. The distributional problem is that the groups with the least data and the poorest overlap are frequently the protected groups whose effects the analysis was undertaken to examine, so the least reliable estimates carry the most weight in interpretation.">
 
 <title>Subgroup effects are estimated where overlap is worst, and the groups with worst overlap are often the protected ones – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -395,6 +395,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -411,12 +412,17 @@ ul.task-list li input[type="checkbox"] {
     <div class="quarto-category">Machine learning, high-dimensional adjustment &amp; automated emulation</div>
     <div class="quarto-category">High priority</div>
     <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Causal contrast</div>
+    <div class="quarto-category">Protocol: Analysis plan</div>
+    <div class="quarto-category">Data: EHR</div>
+    <div class="quarto-category">Data: Claims</div>
+    <div class="quarto-category">Data: Any setting</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Causal forests and meta-learners estimate heterogeneous treatment effects and inherit every identification assumption of the base analysis without relaxing any of them. A subgroup analysis therefore requires subgroup-specific assessment of exchangeability, measurement validity, positivity and uncertainty, and apparent heterogeneity can reflect differential measurement or differential access rather than differential biology. Two further requirements are routinely skipped. Adaptively chosen subgroups need selection-aware inference, because the reported interval otherwise conditions on a subgroup the data chose. And restricting to regions with adequate overlap changes the target population rather than fixing the estimate, so it has to be reported as a change of question. Where the groups with the poorest support are the protected groups the analysis was undertaken to examine, that has to be demonstrated in the data at hand rather than assumed, and it is neither demonstrated nor required to be.
+    Causal forests and meta-learners estimate heterogeneous treatment effects, and they inherit every identification assumption of the base analysis without relaxing any of them. Subgroup discovery adds three specific hazards: confounding that varies by subgroup, multiplicity across the many subgroups a flexible learner implicitly examines, and limited overlap within small strata. Apparent heterogeneity can therefore reflect differential measurement, differential healthcare access or model extrapolation rather than differential biology. The distributional problem is that the groups with the least data and the poorest overlap are frequently the protected groups whose effects the analysis was undertaken to examine, so the least reliable estimates carry the most weight in interpretation.
   </div>
 </div>
 
@@ -436,13 +442,17 @@ ul.task-list li input[type="checkbox"] {
 <div class="problem-meta">
 <p><span class="problem-id">LRN-04</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-promising">Promising</span> <span class="chip">Tractability 4/5</span></p>
 </div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Causal contrast</span> <span class="chip chip-axis">Analysis plan</span><br>
+Seen in: <span class="chip chip-axis">EHR</span> <span class="chip chip-axis">Claims</span> <span class="chip chip-axis">Any setting</span></p>
+</div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>Causal forests and meta-learners estimate heterogeneous treatment effects and inherit every identification assumption of the base analysis without relaxing any of them. A subgroup analysis therefore requires subgroup-specific assessment of exchangeability, measurement validity, positivity and uncertainty, and apparent heterogeneity can reflect differential measurement or differential access rather than differential biology. Two further requirements are routinely skipped. Adaptively chosen subgroups need selection-aware inference, because the reported interval otherwise conditions on a subgroup the data chose. And restricting to regions with adequate overlap changes the target population rather than fixing the estimate, so it has to be reported as a change of question. Where the groups with the poorest support are the protected groups the analysis was undertaken to examine, that has to be demonstrated in the data at hand rather than assumed, and it is neither demonstrated nor required to be.</p>
+<p>Causal forests and meta-learners estimate heterogeneous treatment effects, and they inherit every identification assumption of the base analysis without relaxing any of them. Subgroup discovery adds three specific hazards: confounding that varies by subgroup, multiplicity across the many subgroups a flexible learner implicitly examines, and limited overlap within small strata. Apparent heterogeneity can therefore reflect differential measurement, differential healthcare access or model extrapolation rather than differential biology. The distributional problem is that the groups with the least data and the poorest overlap are frequently the protected groups whose effects the analysis was undertaken to examine, so the least reliable estimates carry the most weight in interpretation.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>Overlap within a subgroup is a property of the data that no estimator improves, and restricting to where it holds removes the subgroups a fairness analysis exists to report on. Distinguishing effect modification from differential measurement requires validation data within each subgroup, which is scarcest where the subgroup is smallest. Honest sample splitting and selection-aware inference both cost precision in exactly the strata that are already imprecise, so the statistically correct analysis is the one least able to say anything.</p>
+<p>Overlap within a subgroup is a property of the data that cannot be improved by a better estimator, and restricting to regions with adequate overlap changes which subgroups can be reported at all. Distinguishing effect modification from differential measurement requires validation data within each subgroup, which is rarer where the subgroup is smaller. Honest sample splitting costs precision in exactly the strata that are already imprecise.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -469,14 +479,13 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Report subgroup-specific data support, calibration and uncertainty next to every subgroup effect, so a wide and poorly supported estimate cannot be read as a finding, and show the support of protected groups in the data at hand rather than asserting it. Use honest sample splitting and selection-aware inference for adaptively chosen subgroups, and state overlap restriction as a change of target population when it is used. Evaluate not only whether benefit varies across groups but whether the emulation’s identification assumptions hold equally across them, since differential measurement and differential access are alternative explanations for the same pattern.</p>
+<p>Use honest sample splitting, restrict conditional effect estimation to regions with adequate overlap, and apply hierarchical shrinkage across subgroups so that small strata borrow rather than assert. Report subgroup-specific data support, calibration and uncertainty next to every subgroup effect, so that a wide, poorly supported estimate cannot be read as a finding. Evaluate not only whether benefit varies across groups but whether the emulation’s assumptions vary across them, since differential measurement and differential access are alternative explanations for the same pattern.</p>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
 <p><strong>Verdict.</strong> Partially addressed. Part of this problem is addressed by existing work; the entry names which part.</p>
-<p><strong>The source said.</strong> “Causal forests and meta-learners estimate heterogeneous treatment effects, and they inherit every identification assumption of the base analysis without relaxing any of them. Subgroup discovery adds three specific hazards: confounding that varies by subgroup, multiplicity across the many subgroups a flexible learner implicitly examines, and limited overlap within small strata. Apparent heterogeneity can therefore reflect differential measurement, differential healthcare access or model extrapolation rather than differential biology. The distributional problem is that the groups with the least data and the poorest overlap are frequently the protected groups whose effects the analysis was undertaken to examine, so the least reliable estimates carry the most weight in interpretation.”</p>
-<p><strong>What was wrong with it.</strong> The claim that protected groups have the poorest overlap is an empirical claim about a particular dataset and has to be shown there rather than assumed. Adaptive subgroup selection also needs selection-aware inference specifically, and restricting to regions of adequate overlap changes the target population rather than repairing the estimate.</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -490,7 +499,7 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>open / supported-with-caveat.</strong> Feuerriegel et al.&nbsp;(2024) again bind individualized causal ML to classical identification assumptions; that supports the problem’s premise without solving subgroup practice. Tools already recommended in the agenda exist in partial form: honest sample splitting in causal forests (Wager and Athey lineage), propensity trimming and common-support restriction, and various hierarchical or shrinkage approaches to unstable strata. Recent applied causal-forest work still documents poor within-stratum overlap and relies on post hoc trimming (e.g., 2025 Scientific Reports-style pipelines). What remains open is the joint operational problem the statement names: subgroup and protected-group HTE is often the scientific target; those strata systematically have the worst overlap and measurement quality; and there is no adopted standard that reports subgroup-specific data support, calibration, and differential assumption plausibility next to every CATE so that a poorly supported protected-group estimate cannot be read as a finding. Overlap is a data property no estimator repairs. Fairness-aware HTE and group-bias CATE work is active on arXiv and conference tracks but has not certified subgroup effects under differential access and measurement. Status remains open; the caveat is that honesty, trimming, and shrinkage are available components, not a field solution to protected-stratum extrapolation.
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The claim is internally consistent and correctly identifies that overlap is a property of the data that cannot be fixed by the estimator, and that this disproportionately affects protected groups. The reasons given for it being open logically support the claim. The scope and severity are proportionate to the real-world cost of misinterpreting subgroup effects.
 </dd>
@@ -501,12 +510,176 @@ ul.task-list li input[type="checkbox"] {
 </dl>
 </div>
 </section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>28 papers in the reviewed corpus bear on this problem, published 2014 to 2026. Partial progress is on the record, and later work still calls this open. Both belong in view.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2014</td>
+<td>confirms it is open</td>
+<td>Assessment of patient-specific surgery effect based on weighted estimation and propensity scoring in the re-analysis of the sciatica trial.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Mediation Analysis for Health Disparities Research.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Using observational data for personalized medicine when clinical trial evidence is limited.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Estimating long-term treatment effects in observational data: A comparison of the performance of different methods under real-world uncertainty.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Using the Causal Inference Framework to Support Individualized Drug Treatment Decisions Based on Observational Healthcare Data.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Can Machine Learning from Real-World Data Support Drug Treatment Decisions? A Prediction Modeling Case for Direct Oral Anticoagulants.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Causal interaction trees: Finding subgroups with heterogeneous treatment effects in observational data.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Modeling treatment effect modification in multidrug-resistant tuberculosis in an individual patient data meta-analysis.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Invited Commentary: Conducting and Emulating Trials to Study Effects of Social Interventions.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Benchmarking Observational Analyses Before Using Them to Address Questions Trials Do Not Answer: An Application to Coronary Thrombus Aspiration.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Ranking tailoring variables for constructing individualized treatment rules: an application to schizophrenia.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Effectiveness and risk of ARB and ACEi among different ethnic groups in England: A reference trial (ONTARGET) emulation analysis using UK Clinical Practice Research Datalink Aurum-linked data.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Representation of Real-World Adults With Chronic Kidney Disease in Clinical Trials Supporting Blood Pressure Treatment Targets.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Going beyond randomised controlled trials to assess treatment effect heterogeneity across target populations.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>A MARGINAL STRUCTURAL MODEL FOR PARTIAL COMPLIANCE IN SMARTS.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Estimating marginal structural model parameters for time-fixed, binary actions with g-computation and estimating equations.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Evaluating generalizability of oncology trial results to real-world patients using machine learning-based trial emulations.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>On the use of natural language processing to implement the target trial framework using unstructured data from the electronic health record.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Modelling Asthma Treatment Dynamics: Insights from the g-Formula</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statistical Methods in Aging Research: Improving Current Practices and Embracing Emerging Approaches.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Estimating Heterogeneous Treatment Effects With Target Trial Emulation: A Checklist of Causal Machine Learning for Observational Data.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Synthetic target trial emulation and predictive modeling of amylin-pathway therapies for obesity and type 2 diabetes.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>The R.O.A.D. to clinical trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Penalized G-estimation for effect modifier selection in a structural nested mean model for repeated outcomes.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Causal estimands and identification of time-varying effects in nonstationary time series from N-of-1 mobile device studies</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Nesting a Target Study within a Target Trial: A Framework for Evaluating Intervention Effects on Disparities.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Federated target trial emulation for time-to-event outcomes via POLARIS: Pooled-equivalent One-shot Likelihood Aggregation for Real-world Inference in Survival.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>The heterogeneous treatment effects of statins on dementia: a target trial emulation with causal machine learning using integrated genetic and real-world data.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.html">LRN-01 — Flexible estimation is presented as a remedy for identification failure</a></li>
-<li><a href="../problems/OVL-01-positivity-diagnostics-describe-weights-instead-of-naming-wh.html">OVL-01 — Positivity diagnostics describe weights instead of naming which patient histories are unsupported</a></li>
+<li><a href="../problems/LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.html">LRN-01: Flexible estimation is presented as a remedy for identification failure</a></li>
+<li><a href="../problems/LRN-05-a-counterfactual-prediction-is-validated-under-the-assumptio.html">LRN-05: A counterfactual prediction is validated under the assumptions that produced it, and nothing maps its output to a decision</a></li>
+<li><a href="../problems/OVL-01-positivity-diagnostics-describe-weights-instead-of-naming-wh.html">OVL-01: Positivity diagnostics describe weights instead of naming which patient histories are unsupported</a></li>
 </ul>
 </div>
 </section>

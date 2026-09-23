@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Estimating a per-protocol effect requires the sustained strategy and its relevant treatment versions to be clinically specified first; artificial censoring with inverse probability weighting is one valid estimation route rather than a requirement. Beneath the mechanics sits the question the mechanics assume answered: what counts as the same treatment. Real treatments differ by dose, route, provider, formulation, combination and adherence pattern, and two regimens sharing a label may not satisfy consistency. Clone-censor-weight handles a patient compatible with several predefined strategies and does not decide whether versions should be pooled into one. Observed data can expose heterogeneity across versions and cannot establish that versions are irrelevant, so the pooling decision is clinical. Finer definitions also create practical support problems, so the more faithful specification is often the less identifiable one, and no guidance exists for making that trade.">
+<meta name="description" content="A per-protocol effect requires censoring at deviation and weighting for the informative censoring that censoring creates. Beneath that mechanics sits a question the mechanics assume away: what counts as the same treatment. Real treatments differ by dose, route, provider, formulation, combination and adherence pattern, and two regimens sharing a label may not satisfy consistency. Clone-censor-weight handles the case where baseline assignment is genuinely ambiguous, at the cost of data expansion, artificial censoring and sensitivity to the censoring model, but it takes the strategy definition as given. There is no guidance for constructing defensible equivalence classes of treatment versions, and none for overlapping combination therapies where a patient is simultaneously compatible with more than one labeled strategy.">
 
 <title>No procedure defines clinically defensible equivalence classes of treatment versions – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -395,6 +395,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -410,13 +411,18 @@ ul.task-list li input[type="checkbox"] {
   <div class="quarto-categories">
     <div class="quarto-category">Treatment strategies, grace periods &amp; cloning</div>
     <div class="quarto-category">High priority</div>
-    <div class="quarto-category">Unverifiable</div>
+    <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Treatment strategies</div>
+    <div class="quarto-category">Protocol: Causal contrast</div>
+    <div class="quarto-category">Data: Claims</div>
+    <div class="quarto-category">Data: EHR</div>
+    <div class="quarto-category">Data: Any setting</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Estimating a per-protocol effect requires the sustained strategy and its relevant treatment versions to be clinically specified first; artificial censoring with inverse probability weighting is one valid estimation route rather than a requirement. Beneath the mechanics sits the question the mechanics assume answered: what counts as the same treatment. Real treatments differ by dose, route, provider, formulation, combination and adherence pattern, and two regimens sharing a label may not satisfy consistency. Clone-censor-weight handles a patient compatible with several predefined strategies and does not decide whether versions should be pooled into one. Observed data can expose heterogeneity across versions and cannot establish that versions are irrelevant, so the pooling decision is clinical. Finer definitions also create practical support problems, so the more faithful specification is often the less identifiable one, and no guidance exists for making that trade.
+    A per-protocol effect requires censoring at deviation and weighting for the informative censoring that censoring creates. Beneath that mechanics sits a question the mechanics assume away: what counts as the same treatment. Real treatments differ by dose, route, provider, formulation, combination and adherence pattern, and two regimens sharing a label may not satisfy consistency. Clone-censor-weight handles the case where baseline assignment is genuinely ambiguous, at the cost of data expansion, artificial censoring and sensitivity to the censoring model, but it takes the strategy definition as given. There is no guidance for constructing defensible equivalence classes of treatment versions, and none for overlapping combination therapies where a patient is simultaneously compatible with more than one labeled strategy.
   </div>
 </div>
 
@@ -434,15 +440,19 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="problem-meta">
-<p><span class="problem-id">STR-01</span> <span class="verdict verdict-unverifiable">Unverifiable</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 3/5</span></p>
+<p><span class="problem-id">STR-01</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 3/5</span></p>
+</div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Treatment strategies</span> <span class="chip chip-axis">Causal contrast</span><br>
+Seen in: <span class="chip chip-axis">Claims</span> <span class="chip chip-axis">EHR</span> <span class="chip chip-axis">Any setting</span></p>
 </div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>Estimating a per-protocol effect requires the sustained strategy and its relevant treatment versions to be clinically specified first; artificial censoring with inverse probability weighting is one valid estimation route rather than a requirement. Beneath the mechanics sits the question the mechanics assume answered: what counts as the same treatment. Real treatments differ by dose, route, provider, formulation, combination and adherence pattern, and two regimens sharing a label may not satisfy consistency. Clone-censor-weight handles a patient compatible with several predefined strategies and does not decide whether versions should be pooled into one. Observed data can expose heterogeneity across versions and cannot establish that versions are irrelevant, so the pooling decision is clinical. Finer definitions also create practical support problems, so the more faithful specification is often the less identifiable one, and no guidance exists for making that trade.</p>
+<p>A per-protocol effect requires censoring at deviation and weighting for the informative censoring that censoring creates. Beneath that mechanics sits a question the mechanics assume away: what counts as the same treatment. Real treatments differ by dose, route, provider, formulation, combination and adherence pattern, and two regimens sharing a label may not satisfy consistency. Clone-censor-weight handles the case where baseline assignment is genuinely ambiguous, at the cost of data expansion, artificial censoring and sensitivity to the censoring model, but it takes the strategy definition as given. There is no guidance for constructing defensible equivalence classes of treatment versions, and none for overlapping combination therapies where a patient is simultaneously compatible with more than one labeled strategy.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>Consistency is an assumption about the world rather than about the data, so no amount of data adjudicates whether two versions are the same treatment; heterogeneity across versions is evidence against pooling and its absence is not evidence for it. The clinical judgment that would adjudicate is specific to the drug, the indication and the era, which makes a general criterion the wrong shape. And making the versions explicit multiplies the strategies, each costing positivity, so the honest specification is frequently the one the data cannot support.</p>
+<p>Consistency is an assumption about the world rather than about the data, so no amount of data adjudicates whether two versions are the same treatment. The clinical judgment that would adjudicate it is specific to the drug, the indication and the era, which makes a general criterion the wrong shape for the problem. Making the versions explicit also multiplies the strategies, and each additional strategy costs positivity, so the honest specification is often the one the data cannot support.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -473,15 +483,14 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Use hierarchical treatment ontologies and latent treatment-version models so the equivalence class is an explicit, versioned object, and report the observed heterogeneity across versions as evidence bearing on the pooling decision rather than as a robustness check. Estimate joint effects of initiation, dose and adherence through longitudinal multivariate modified treatment policies where an analyst-specified joint policy is what is wanted, noting that such an estimator does not supply the equivalence classes and need not target the same per-protocol estimand. Quantify by simulation how much bias a wrong equivalence class induces relative to the positivity cost of the correct one, since that trade is the actual decision.</p>
+<p>Use hierarchical treatment ontologies and latent treatment-version models so that the equivalence class is an explicit, versioned object rather than an implicit one, and estimate the joint effect of initiation, dose and adherence through longitudinal modified treatment policies rather than through a single binary strategy. Use causal discovery only to generate hypotheses about which versions are consequential; final strategy definitions must stay clinically specified, because a version set chosen to maximize the apparent effect is a result rather than a design. Quantify, by simulation, how much bias a wrong equivalence class induces relative to the positivity cost of the correct one, since that trade is the actual decision.</p>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
-<p><strong>Verdict.</strong> Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.</p>
-<p><strong>The source said.</strong> “A per-protocol effect requires censoring at deviation and weighting for the informative censoring that censoring creates. Beneath that mechanics sits a question the mechanics assume away: what counts as the same treatment. Real treatments differ by dose, route, provider, formulation, combination and adherence pattern, and two regimens sharing a label may not satisfy consistency. Clone-censor-weight handles the case where baseline assignment is genuinely ambiguous, at the cost of data expansion, artificial censoring and sensitivity to the censoring model, but it takes the strategy definition as given. There is no guidance for constructing defensible equivalence classes of treatment versions, and none for overlapping combination therapies where a patient is simultaneously compatible with more than one labeled strategy.”</p>
-<p><strong>What was wrong with it.</strong> Three corrections. Artificial censoring with inverse probability weighting is one valid way to estimate a per-protocol effect, not a requirement. Clone-censor-weight does handle individuals compatible with several predefined strategies, which the entry listed as unaddressed; what it does not do is decide whether treatment versions should be pooled. And observed data can expose heterogeneity across versions even though they cannot establish that versions are irrelevant, so the situation is not entirely uninformative.</p>
-<p><strong>Dissent.</strong> literature dissented (supported-with-caveat): The treatment-versions problem has a longer literature than the entry credits. Confounding adjustment in the presence of multiple versions of treatment was worked out for an organ-transplant application in 2019, and marginal structural models for partial exposure regimes date to 2008. A 2026 iScience paper shows that changing the exposure definition unmasks confounding in an applied emulation, which is empirical evidence for the entry’s premise and also evidence that the field is examining it. What remains genuinely absent is guidance for constructing defensible equivalence classes and for overlapping combination therapies, which is the constructive half of the entry rather than the diagnostic half. codex dissented (overstated): Treatment-version ambiguity is real: collapsing causally different doses, formulations, routes, combinations, or adherence patterns can make the named intervention ill-defined. However, the report overstates both the required mechanics and the remaining gap. Estimating a per-protocol effect does not require artificial censoring plus inverse-probability weighting; the longitudinal g-formula and targeted or sequential-regression estimators can estimate sustained-strategy effects under their respective identification and modeling conditions. Clone-censor-weight already provides the bookkeeping for individuals compatible with multiple prespecified strategies, although it cannot choose those strategies or determine which versions are equivalent. Observed data cannot prove treatment-version irrelevance, but version-specific data can reveal heterogeneity and inform clinical judgment. Finer definitions may worsen practical support and precision, but every additional strategy does not mechanically violate positivity. Pinned lmtp 1.5.4 is correctly described: its NAMESPACE exports lmtp_tmle and lmtp_sdr, while its source accepts list-valued treatment nodes and applies analyst-specified multivariate shifts. It therefore supports estimation after a joint policy has been defined, not construction of clinical equivalence classes. Moreover, a longitudinal modified treatment policy generally targets a natural-value-dependent policy estimand, not automatically the per-protocol effect of a fixed sustained strategy. The issue is decision-critical when collapsed versions have materially different effects; a universal treatment ontology or latent-version model is a roadmap item rather than a prerequisite for every well-specified emulation.</p>
+<p><strong>Verdict.</strong> Partially addressed. Part of this problem is addressed by existing work; the entry names which part.</p>
+<p><strong>Dissent.</strong> codex dissented (overstated): Treatment-version ambiguity is real: collapsing causally different doses, formulations, routes, combinations, or adherence patterns can make the named intervention ill-defined. However, the report overstates both the required mechanics and the remaining gap. Estimating a per-protocol effect does not require artificial censoring plus inverse-probability weighting; […]</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -495,24 +504,722 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>open / supported.</strong> Inverted-prior search does not find a procedure that constructs clinically defensible equivalence classes of treatment versions for consistency in sustained-strategy target-trial emulation. The report’s own cited works do not close the gap: Gaber et al.&nbsp;(2024, 10.1002/cam4.70461) is a didactic CCW primer that takes the strategy as given; Cain et al.&nbsp;(2016, 10.1093/ije/dyv295) is the closest specification template for dynamic switching but does not adjudicate dose, route, formulation, provider, or combination-version equivalence; lmtp supplies estimation for continuous and multivariate modified treatment policies once an intervention is defined, not a clinical rule for which versions may be labeled the same treatment. Classic prior art formalizes the identification problem without solving clinical construction: VanderWeele and Hernán (2013, J Causal Inference; multiple versions) and Hernán and VanderWeele (2011, compound treatments) show when version-mixed averages versus version-specific effects are identifiable, which strengthens rather than resolves the claim that consistency is a world assumption adjudicated by clinical judgment specific to drug, indication, and era. 2024–2026 work remains proposal-level or off-scope. Yoshikawa and Kawano (arXiv:2601.00287, 2026) propose mixture-of-experts estimation of latent versions under point treatment; the number of versions is pre-specified, versions are data-driven latent classes rather than clinically specified equivalence classes, and the paper itself notes that version-specific methodology was previously underdeveloped. That is a partial advance along the report’s proposed latent-version direction, not a solved clinical procedure, and it does not cover sustained or dynamic strategies or overlapping multi-drug regimens. Ostropolets et al.&nbsp;(2024) ATC–RxNorm hierarchies improve drug coding and retrieval; they are not causal equivalence classes for consistency. Fu et al.&nbsp;(BMJ 2026) and related CCW guidance clarify cloning when baseline data are compatible with more than one labeled strategy; that is the mechanics the report already credits, still leaving strategy definition as input. Practical TTE guides (e.g.&nbsp;Fridén 2026) restate “define interventions so relevant multiple versions do not exist” without a constructive algorithm. Package release notes and GitHub activity for TrialEmulation, gfoRmula, gfoRmulaICE, lmtp, ltmle, WeightIt, MatchIt, and related tools implement estimation given a user-defined regimen; none encode an equivalence-class constructor. 2025–2026 FDA RWE / externally controlled trial materials, EMA/HMA registry guidance, HARPER/STaRT-RWE, ENCePP, and TARGET-style reporting require explicit treatment-strategy specification but do not supply a general method for building clinically defensible version sets or for adjudicating simultaneous multi-strategy compatibility beyond cloning. Because consistency is structurally untestable from data alone, sensitivity analyses and latent-mixture recoveries quantify consequences or statistical heterogeneity; they do not identify clinical sameness. Queries that returned nothing closing the gap included combinations of: treatment version equivalence class + target trial; clinically defensible versions of treatment + consistency; hierarchical ontology + causal strategy definition + sustained treatment; overlapping combination therapy + clone-censor equivalence; and journal-restricted 2024–2026 searches in AJE, Epidemiology, IJE, Stat Med, Biometrics, BMJ, JAMA, plus arXiv stat.ME and medRxiv. Residual risk is a narrowly scoped clinical protocol for one drug class that was not indexed under causal-inference terms; that would at most partially narrow the problem for that class, not the general gap as stated.
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>abstain / supported-with-caveat.</strong> The claim is internally consistent and identifies a genuine structural tension: consistency is an assumption about the world, not the data, so clinical adjudication of treatment-version equivalence is inherently context-specific (drug, indication, era). The report’s own reasoning—that ‘a general criterion [is] the wrong shape for the problem’—supports a structural impossibility for a universal procedure, which is a stronger and more defensible claim than the empirical assertion that ‘no guidance exists.’ The latter is a negative existential about the current literature that I cannot verify without search. Additionally, the report itself cites Cain et al.&nbsp;2016 as ‘the closest existing template for specifying what a strategy includes,’ which suggests related guidance exists even if it does not directly address equivalence-class construction. The claim is pitched at a level that conflates a structural limitation (no general procedure can work) with an empirical gap (no guidance has been written), and the proposed direction (ontologies, latent models, modified treatment policies) implies that partial frameworks are possible, undercutting the implication that the problem is permanently intractable. The severity is proportionate: a wrong equivalence class induces bias, and the positivity trade-off is a real decision cost. I abstain on status because confirming the absence of all guidance requires literature search I cannot perform.
 </dd>
 <dt>Decision path</dt>
 <dd>
-<code>R3:partially-solved(n=2/3) → R7:counter-and-support-both-present(support=1/counter=1)</code>
+<code>R3:partially-solved(n=2/3) → R9:substantiated-overstatement(n=1/4):codex</code>
 </dd>
 </dl>
+</div>
+</section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>135 papers in the reviewed corpus bear on this problem, published 2008 to 2026. Partial progress is on the record, and later work still calls this open. Both belong in view.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2008</td>
+<td>confirms it is open</td>
+<td>Evaluating dose response from flexible dose clinical trials.</td>
+</tr>
+<tr class="even">
+<td>2009</td>
+<td>confirms it is open</td>
+<td>Intervening on risk factors for coronary heart disease: an application of the parametric g-formula.</td>
+</tr>
+<tr class="odd">
+<td>2010</td>
+<td>confirms it is open</td>
+<td>Time scale and adjusted survival curves for marginal structural cox models.</td>
+</tr>
+<tr class="even">
+<td>2010</td>
+<td>confirms it is open</td>
+<td>Marginal structural models for sufficient cause interactions.</td>
+</tr>
+<tr class="odd">
+<td>2011</td>
+<td>confirms it is open</td>
+<td>How to use marginal structural models in randomized trials to estimate the natural direct and indirect effects of therapies mediated by causal intermediates.</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>confirms it is open</td>
+<td>Comparing marginal structural models to standard methods for estimating treatment effects of antihypertensive combination therapy.</td>
+</tr>
+<tr class="odd">
+<td>2013</td>
+<td>confirms it is open</td>
+<td>Work related asthma. A causal analysis controlling the healthy worker effect.</td>
+</tr>
+<tr class="even">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>Severe COPD Exacerbation Risk and Long-Acting Bronchodilator Treatments: Comparison of Three Observational Data Analysis Methods.</td>
+</tr>
+<tr class="odd">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Comparative Effectiveness Research Using Observational Data: Active Comparators to Emulate Target Trials with Inactive Comparators.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Metformin and cancer in type 2 diabetes: a systematic review and comprehensive bias evaluation.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Methods for time-varying exposure related problems in pharmacoepidemiology: An overview.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Performance of the marginal structural cox model for estimating individual and joined effects of treatments given in combination.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Statistical Methods for Modeling Time-Updated Exposures in Cohort Studies of Chronic Kidney Disease.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Evaluation of the risk of bias in non-randomized studies of interventions (ROBINS-I) and the ‘target experiment’ concept in studies of exposures: Rationale and preliminary instrument development.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Estimating Counterfactual Risk Under Hypothetical Interventions in the Presence of Competing Events: Crystalline Silica Exposure and Mortality From 2 Causes of Death.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Comparative performance of a modified landmark approach when no time of treatment data are available within oncological databases: exemplary cohort study among resected pancreatic cancer patients.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>The roll-out of a health insurance program and its impact on the supply of healthcare services: a new method to evaluate time-varying continuous interventions.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Marginal structural models with dose-delay joint-exposure for assessing variations to chemotherapy intensity.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>The Impact of Unemployment on Antidepressant Purchasing: Adjusting for Unobserved Time-constant Confounding in the g-Formula.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Refining the Association Between Body Mass Index and Atrial Fibrillation: G-Formula and Restricted Mean Survival Times.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Emulating a Novel Clinical Trial Using Existing Observational Data. Predicting Results of the PreVent Study.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Description, prediction and causation: Methodological challenges of studying child and adolescent development.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Rural-Urban Differences in Adult Life Expectancy in Indonesia: A Parametric g-formula-based Decomposition Approach.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Improving rheumatoid arthritis comparative effectiveness research through causal inference principles: systematic review using a target trial emulation framework.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Long-term effects of asthma medication on asthma symptoms: an application of the targeted maximum likelihood estimation.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Impact of antimicrobial de-escalation on mortality: a literature review of study methodology and recommendations for observational studies.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Marginal structural models for repeated measures where intercept and slope are correlated: An application exploring the benefit of nutritional supplements on weight gain in HIV-infected children initiating antiretroviral therapy.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Emulating a Randomised Controlled Trial With Observational Data: An Introduction to the Target Trial Framework.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Computational drug repositioning of atorvastatin for ulcerative colitis.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Mediation effects that emulate a target randomised trial: Simulation-based evaluation of ill-defined interventions on multiple mediators.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Versatility of the clone-censor-weight approach: response to “trial emulation in the presence of immortal-time bias”</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Reply to: Versatility of the clone-censor-weight approach: response to “trial emulation in the presence of immortal-time bias”</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>A scoping review of studies using observational data to optimise dynamic treatment regimens.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>The importance of the design of observational studies in comparative effectiveness research: Lessons from the GARFIELD-AF and ORBIT-AF registries.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Target trial emulations: bridging the gap between clinical trial and real-world data.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>The Need for a Practical Approach to Evaluate the Effectiveness of COVID-19 Vaccines for Low- and Middle-Income Countries.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Randomized Trial Replication Using Observational Data for Comparative Effectiveness of Secukinumab and Ustekinumab in Psoriasis: A Study From the British Association of Dermatologists Biologics and Immunomodulators Register.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Modeling treatment effect modification in multidrug-resistant tuberculosis in an individual patient data meta-analysis.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Mediterranean Diet and Cardiovascular Prevention: Why Analytical Observational Designs Do Support Causality and Not Only Associations.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Combined Conventional Synthetic Disease Modifying Therapy vs.&nbsp;Infliximab for Rheumatoid Arthritis: Emulating a Randomized Trial in Observational Data.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>ASO Author Reflections: Real-World Effectiveness of Prehabilitation Before Colorectal Cancer Surgery: The Value of an Emulated Target Trial Design.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Medication-Wide Association Study Plus (MWAS+): A Proof of Concept Study on Drug Repurposing.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Geriatrician assessment and immortal time bias in the FiTR 2 study.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Trial emulation and survival analysis for disease incidence registers: A case study on the causal effect of pre-emptive kidney transplantation.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Immortal Time Bias-Corrected Effectiveness of Traditional Chinese Medicine in Non-Small Cell Lung Cancer (C-EVID): A Prospective Cohort Study.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Estimating the effect of donor sex on red blood cell transfused patient mortality: A retrospective cohort study using a targeted learning and emulated trials-based approach.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Emulating the MERINO randomised control trial using data from an observational cohort and trial of rapid diagnostic (BSI-FOO).</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Comparison of a Target Trial Emulation Framework vs Cox Regression to Estimate the Association of Corticosteroids With COVID-19 Mortality.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Systematically exploring repurposing effects of antihypertensives.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Statistical methods for assessing drug interactions using observational data.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Ranking tailoring variables for constructing individualized treatment rules: an application to schizophrenia.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Trial emulation with observational data in cystic fibrosis.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Emulating Target Trials With Real-World Data to Inform Health Technology Assessment: Findings and Lessons From an Application to Emergency Surgery.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Evaluation of national institute for health and care excellence guidance for ruptured abdominal aortic aneurysms by emulating a hypothetical target trial.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Emulating a target trial of intensive nurse home visiting in the policy-relevant population using linked administrative data.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Invited Perspective: Risk of Bias Assessments, Target Trials, and the Strengths of Environmental Epidemiology.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>On optimal timing of antenatal corticosteroids: time to reformulate the question.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Implementation of the trial emulation approach in medical research: a scoping review.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Competing risks analysis of external versus internal radiation in patients with hepatocellular carcinoma after controlling for immortal time bias.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>On the estimation of the effect of weight change on a health outcome using observational data, by utilising the target trial emulation framework.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>[Comparing the effectiveness of multiple dynamic treatment strategies using target trial emulation].</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation: A Design Tool for Cancer Clinical Trials.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Emulated trial investigating effects of multiple treatments: estimating combined effects of mucoactive nebulisers in cystic fibrosis using registry data.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Improving the quality of evidence production in rehabilitation. Results of the 5th Cochrane Rehabilitation Methodological Meeting.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Causal inference using observational intensive care unit data: a scoping review and recommendations for future practice.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation to Improve Causal Inference from Observational Data: What, Why, and How?</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Design considerations for observational studies of drugs for advanced cancer.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Marginal structural models with latent class growth analysis of treatment trajectories: Statins for primary prevention among older adults.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Comparative Effectiveness of Dynamic Treatment Strategies for Medication Use and Dosage: Emulating a Target Trial Using Observational Data.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Comparison of Different Modeling Approaches for Prescription Opioid Use and Its Association With Adverse Events.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Estimating the causal effects of multiple intermittent treatments with application to COVID-19.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Using instrumental variables to correct for bias in real-world cohort studies of the effects of disease-modifying treatment in MS.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>History-restricted marginal structural model and latent class growth analysis of treatment trajectories for a time-dependent outcome.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Timing of follow-up visits after hospital discharge for COPD: Application of a new method.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Comparison of Methods of Clinical Trial Emulation Utilizing Data From the Comparison of AMD Treatment Trial (CATT) and the IRIS® Registry.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Observational studies to emulate randomized trials: Some real-world barriers.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Assessing Wolbachia-mediated sterility for dengue control: emulation of a cluster-randomized target trial in Singapore.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Core Concepts in Pharmacoepidemiology: New-User Designs.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Enhancing inferences and conclusions in body image focused non-experimental research via a causal modelling approach: A tutorial.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Target Trial Framework: A Solution for Limited Randomized Clinical Trials in Dialysis Vascular Access?</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Target trial framework for determining the effect of changes in training load on injury risk using observational data: a methodological commentary.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Patients on vitamin K treatment: is switching to direct-acting oral anticoagulation cost-effective? A target trial on a prospective cohort.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>De-Mystifying the Clone-Censor-Weight Method for Causal Research Using Observational Data: A Primer for Cancer Researchers</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>A Review of Causal Inference Methods for Estimating the Effects of Exposure Change</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>An Eternal Dilemma: Exposing the Impact of Immortal Time Bias on Antifibrotic Effectiveness.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Causal Inference Challenges in the Relationship Between Social Determinants and Cardiovascular Outcomes.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Using Parametric g-Computation for Time-to-Event Data and Distributed Lag Models to Identify Critical Exposure Windows for Preterm Birth: An Illustrative Example Using PM2.5 in a Retrospective Birth Cohort Based in Eastern Massachusetts (2011-2016).</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Target trial emulation for comparative effectiveness research with observational data: Promise and challenges for studying medications for opioid use disorder.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>“Real-World” Evidence, Target Trial Emulation, and Randomized Clinical Trials-Which Data Should Clinicians Rely on When Choosing Antibiotics?</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Conducting observational analyses with the target trial emulation approach: a methodological systematic review.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Charting the Waters of Sickle Cell Disease With Target Trial Emulation.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Bariatric Surgery and Cardiovascular Disease: The Target Trial Emulation Framework Provides Transparency in Articulating the Limits of Observational Studies.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Application of the target trial emulation framework to external comparator studies.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation for Evaluating Health Policy.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>The Inflation Reduction Act: An Opportunity to Accelerate Confidence in Real-World Evidence in the United States.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Introduction to target trial emulation in rehabilitation: a systematic approach to emulate a randomized controlled trial using observational data.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Using Trial and Observational Data to Assess Effectiveness: Trial Emulation, Transportability, Benchmarking, and Joint Analysis.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>An introduction to inverse probability weighting and marginal structural models: The case of environmental tobacco exposure and attention deficit/hyperactivity disorder behaviors.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Change in employment status and its causal effect on suicidal ideation and depressive symptoms: A marginal structural model with machine learning algorithms.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Association of Medication Use and 8-Year Mortality Risk in Patients With Parkinson Disease: Drug-Wide Trial Emulation.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Prompt versus Delayed Triple Therapy in COPD: Solutions to Time-Related Biases in Observational Studies.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Moving beyond the prevalent exposure design for causal inference in dementia research.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Methods and reporting of studies assessing the impact of adherence to clinical practice guidelines: a scoping review.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Estimating the Effects of Lifestyle Interventions on Mortality Among Cancer Survivors: A Methodologic Framework.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>The interventionist approach can address questions related to causes of effects if causes are considered as states instead of interventions.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Trial emulation to assess the effect of surgery on survival when there are competing risks, with application to patients with thoracic aortic aneurysms</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statin use and breast cancer-specific mortality and recurrence: a systematic review and meta-analysis including the role of immortal time bias and tumour characteristics.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>The Reporting and Methodological Recommendations for Observational Studies Estimating the Effects of Deprescribing Medications (REMROSE-D) ISPE-Endorsed Guidance.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Critical evaluation of real-world evidence of repurposable medicines in the Alzheimer’s disease drug development pipeline using a target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Advancing efficacy prediction for electronic health records based emulated trials in repurposing heart failure therapies.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Effects of azithromycin in young adults with cystic fibrosis: a protocol for emulating a published randomised controlled trial using registry data.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>A New Target from a Target Trial Emulation: Allow Early Assisted Breathing.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Cancer publications using real-world data from the Taiwan National Health Insurance Research Database: Conceptual framework and bibliometric analysis.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Estimating per-protocol effects in external comparator analyses using real-world data.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Need for Real-World Evaluation of Malaria Vaccines and Reliable Vaccination Records in Africa.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Letter to the editor on “Glucagon-like peptide 1 receptor agonist and reduced liver and non-liver complications in adults with type 2 diabetes and metabolic dysfunction-associated steatotic liver disease: a target trial emulation study”.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Missing the target in target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Strength of evidence for paternal influence on offspring epigenome in observational human studies: a systematic review and risk-of-bias appraisal for non-randomized exposures.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Site-specific complications of central venous catheterization under systematic ultrasound guidance: a target trial emulation revisiting the 3SITES study.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Target trial emulation to estimate the effects of lifestyle interventions on mortality among cancer survivors: an editorial commentary.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Continuous-Time Causal Inference With Marked Point Process Weights: An Example on Sodium-Glucose Co-Transporters 2 Inhibitor Medications and Urinary Tract Infection.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>A marginal structural model for normal tissue complication probability.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Impact of quitline services on tobacco cessation: an application of modern epidemiologic methods.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Caution in handling switchers in pharmacoepidemiologic studies estimating treatment effects: the example of dipeptidyl peptidase-4 inhibitors and inflammatory bowel disease.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>A commentary on “Robotic versus laparoscopic surgery for middle and low rectal cancer: a retrospective cohort study emulating the target trial”.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Applying a hypothetical strategy to the intercurrent event of non-adherence with the parametric g-formula: a post hoc secondary analysis of the MET-PREVENT trial</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>An operational target trial emulation framework for causal inference using electronic health record data.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Exposure definition sensitivity unmasks hidden confounding in crystalloid target trial emulation.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Federated target trial emulation for time-to-event outcomes via POLARIS: Pooled-equivalent One-shot Likelihood Aggregation for Real-world Inference in Survival.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Emulating the LEADER trial in China: a regulatory science case study on non-interventional research.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Identifying and avoiding design related biases in observational studies using the target trial framework.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Real-World Emulation of Landmark Lung Cancer Trials: A Registry-Based Reconstruction of KN189, KN407, IMpower133, and PACIFIC.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Supporting complex mental health care and services research today and beyond: a mini-review of real-world evidence strategies and informed approaches.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>REACT (Real-world Emulated Clinical Trials): A Framework for Drug Repurposing Applied to Osteoporotic Fractures.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Estimating conditional survival benefit for the allocation of scarce resources.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/CNF-01-convergence-of-treatment-in-the-comparator-arm-attenuates-th.html">CNF-01 — Convergence of treatment in the comparator arm attenuates the observational intention-to-treat analogue with follow-up length</a></li>
-<li><a href="../problems/PRO-05-emulation-is-proposed-for-non-pharmaceutical-and-policy-inte.html">PRO-05 — Emulation is proposed for non-pharmaceutical and policy interventions whose treatment versions and assignment units are not defined</a></li>
-<li><a href="../problems/TZO-01-no-outcome-blind-procedure-selects-the-time-grid-or-the-grac.html">TZO-01 — No outcome-blind procedure selects the time grid or the grace period</a></li>
+<li><a href="../problems/CNF-01-convergence-of-treatment-in-the-comparator-arm-attenuates-th.html">CNF-01: Convergence of treatment in the comparator arm attenuates the observational intention-to-treat analogue with follow-up length</a></li>
+<li><a href="../problems/PRO-05-emulation-is-proposed-for-non-pharmaceutical-and-policy-inte.html">PRO-05: Emulation is proposed for non-pharmaceutical and policy interventions whose treatment versions and assignment units are not defined</a></li>
+<li><a href="../problems/TZO-01-no-outcome-blind-procedure-selects-the-time-grid-or-the-grac.html">TZO-01: No outcome-blind procedure selects the time grid or the grace period</a></li>
 </ul>
 </div>
 </section>

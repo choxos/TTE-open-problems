@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation processes alone with outcome labels masked, and treatment and observation processes without further clinical and causal assumptions cannot identify a uniquely meaningful grace period or guarantee that a grid preserves the relevant ordering. Alternative grace periods are different treatment strategies rather than alternative specifications of one, and are presented as sensitivity analyses of a single estimand.">
+<meta name="description" content="An emulated protocol has to fix three times that a randomized trial fixes in one act: when eligibility is assessed, when treatment is assigned, and when follow-up begins. It also has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as a schedule of study visits. Clone-censor-weight and sequential emulation both handle the misalignment itself, but neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring is applied; a fine interval produces high-dimensional nuisance models and unstable weights. What does not exist is a procedure that selects either quantity from the treatment and observation processes alone, without touching outcome information, together with a reported measure of how far the estimate would have moved under the alternatives.">
 
 <title>No outcome-blind procedure selects the time grid or the grace period – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -394,7 +394,9 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#why-it-is-open" id="toc-why-it-is-open" class="nav-link" data-scroll-target="#why-it-is-open">Why it is open</a></li>
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
+  <li><a href="#our-study" id="toc-our-study" class="nav-link" data-scroll-target="#our-study">Our study</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -410,13 +412,17 @@ ul.task-list li input[type="checkbox"] {
   <div class="quarto-categories">
     <div class="quarto-category">Time zero, alignment &amp; time-related bias</div>
     <div class="quarto-category">Very high priority</div>
-    <div class="quarto-category">Confirmed open</div>
+    <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Eligibility</div>
+    <div class="quarto-category">Protocol: Assignment</div>
+    <div class="quarto-category">Protocol: Follow-up</div>
+    <div class="quarto-category">Data: Any setting</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation processes alone with outcome labels masked, and treatment and observation processes without further clinical and causal assumptions cannot identify a uniquely meaningful grace period or guarantee that a grid preserves the relevant ordering. Alternative grace periods are different treatment strategies rather than alternative specifications of one, and are presented as sensitivity analyses of a single estimand.
+    An emulated protocol has to fix three times that a randomized trial fixes in one act: when eligibility is assessed, when treatment is assigned, and when follow-up begins. It also has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as a schedule of study visits. Clone-censor-weight and sequential emulation both handle the misalignment itself, but neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring is applied; a fine interval produces high-dimensional nuisance models and unstable weights. What does not exist is a procedure that selects either quantity from the treatment and observation processes alone, without touching outcome information, together with a reported measure of how far the estimate would have moved under the alternatives.
   </div>
 </div>
 
@@ -434,15 +440,19 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="problem-meta">
-<p><span class="problem-id">TZO-01</span> <span class="verdict verdict-confirmed-open">Confirmed open</span> <span class="chip chip-priority-very-high">Very high priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 4/5</span></p>
+<p><span class="problem-id">TZO-01</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-very-high">Very high priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 4/5</span></p>
+</div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Eligibility</span> <span class="chip chip-axis">Assignment</span> <span class="chip chip-axis">Follow-up</span><br>
+Seen in: <span class="chip chip-axis">Any setting</span></p>
 </div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>An emulated protocol has to fix three times that a randomized trial fixes in one act, when eligibility is assessed, when treatment is assigned, and when follow-up begins, and it has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as scheduled visits. Clone-censor-weight and sequential emulation handle the misalignment; neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring applies; a fine interval produces high-dimensional nuisance models and unstable weights. Selection tools exist and use outcome information: cross-validated variance has been evaluated as a measure of data support for choosing a discretization. What does not exist is a procedure that selects either quantity from the treatment and observation processes alone with outcome labels masked, and treatment and observation processes without further clinical and causal assumptions cannot identify a uniquely meaningful grace period or guarantee that a grid preserves the relevant ordering. Alternative grace periods are different treatment strategies rather than alternative specifications of one, and are presented as sensitivity analyses of a single estimand.</p>
+<p>An emulated protocol has to fix three times that a randomized trial fixes in one act: when eligibility is assessed, when treatment is assigned, and when follow-up begins. It also has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as a schedule of study visits. Clone-censor-weight and sequential emulation both handle the misalignment itself, but neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring is applied; a fine interval produces high-dimensional nuisance models and unstable weights. What does not exist is a procedure that selects either quantity from the treatment and observation processes alone, without touching outcome information, together with a reported measure of how far the estimate would have moved under the alternatives.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>The choice is made before any model is fitted, so no model can price it, and selecting by fit to the outcome is the one move that would make it a statistical problem and the move that induces selection. The clinically meaningful interval is a property of the disease and the care process rather than of the data, and no purely data-driven criterion recovers it. Published emulations overwhelmingly report a single specification: a systematic review of 14 comparative studies found the grace period unreported in 36% and ranging from 0 to 180 days when reported, with no study conducting a sensitivity analysis on it.</p>
+<p>The choice is made before any model is fitted, so no model can price it. Selecting the grid or the grace period by fit to the outcome is the one move that would turn it into a statistical problem, and it is exactly the move that induces selection. The clinically meaningful interval is a property of the disease and of the care process rather than of the data, and no purely data-driven criterion recovers it. Published emulations overwhelmingly report a single specification, so the field also lacks the empirical distribution of how much the answer depends on it.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -457,35 +467,19 @@ ul.task-list li input[type="checkbox"] {
 <tbody>
 <tr class="odd">
 <td><a href="https://doi.org/10.1016/j.jclinepi.2016.04.014">Hernán MA, Sauer BC, Hernández-Díaz S, Platt R, Shrier I. Specifying a target trial prevents immortal time bias and other self-inflicted injuries in observational analyses. J Clin Epidemiol 2016</a></td>
-<td>Names the misalignment of eligibility, assignment and follow-up as the source of immortal time bias and shows that specifying the trial removes it. Treats the grace period as given.</td>
+<td>Names the misalignment of eligibility, assignment and follow-up as the source of immortal time bias and shows that specifying the trial removes it. Treats the grace period as given rather than as a quantity to be selected.</td>
 </tr>
 <tr class="even">
 <td><a href="https://doi.org/10.1093/ije/dyv295">Cain LE, Robins JM, Lanoy E, Logan R, Costagliola D, Hernán MA. Using observational data to emulate a randomized trial of dynamic treatment-switching strategies. Int J Epidemiol 2016;45(6):2038-2049</a></td>
-<td>Works an emulation with grace periods and dynamic switching, establishing the design without a criterion for the grace period’s length.</td>
+<td>Works an emulation with grace periods and dynamic switching strategies, establishing the design but not a criterion for the grace period’s length.</td>
 </tr>
 <tr class="odd">
 <td><a href="https://doi.org/10.1093/ije/dyaa057">Maringe C, Benitez Majano S, Exarchakou A, et al.&nbsp;Reflection on modern methods: trial emulation in the presence of immortal-time bias. Int J Epidemiol 2020;49(5):1719-1729</a></td>
 <td>A worked clone-censor-weight example that makes the artificial censoring and its weights explicit.</td>
 </tr>
 <tr class="even">
-<td><a href="https://doi.org/10.1002/sim.8710">Ferreira Guerra S, et al.&nbsp;Impact of discretization of the timeline for longitudinal causal inference methods. Stat Med 2020</a></td>
-<td>Shows that discretization changes the parameter and loses confounder information, and evaluates cross-validated variance as a data-support criterion for choosing a discretization. A selection tool, and not an outcome-blind one.</td>
-</tr>
-<tr class="odd">
-<td><a href="https://doi.org/10.1097/ede.0000000000000043">Optimal CD4 count for initiating HIV treatment: impact of CD4 observation frequency and grace periods, and performance of dynamic marginal structural models. Epidemiology 2014</a></td>
-<td>Quantifies how the optimal dynamic regime shifts with observation frequency and grace-period length.</td>
-</tr>
-<tr class="even">
-<td><a href="https://doi.org/10.1093/aje/kwaf221">Impact of time zero designation on estimated COVID-19 antiviral effectiveness in observational studies. Am J Epidemiol 2026</a></td>
-<td>Compares five time-zero designations in one cohort, a worked example of the multiverse this entry asks for.</td>
-</tr>
-<tr class="odd">
-<td><a href="https://doi.org/10.1002/pds.5071">Reporting and variability of constructing medication treatment episodes in pharmacoepidemiology studies: a meta-epidemiological review. Pharmacoepidemiol Drug Saf 2020</a></td>
-<td>Finds the grace period unreported in 36% of 14 studies and ranging from 0 to 180 days when reported, with no study conducting a sensitivity analysis on the assumption.</td>
-</tr>
-<tr class="even">
 <td><a href="https://arxiv.org/abs/2603.15924">Tankpinou Zoumenou H, et al.&nbsp;Time Partitioning in Target Trial Emulation. arXiv 2026</a></td>
-<td>Treats time partitioning as an unresolved problem in its own right rather than an implementation detail.</td>
+<td>Identifies inappropriate time partitioning as an unresolved problem in its own right rather than an implementation detail.</td>
 </tr>
 </tbody>
 </table>
@@ -493,14 +487,37 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Prespecify an outcome-blind grid rule and report post-lock comparisons across plausible grids that hold the estimand fixed, so what varies is the discretization rather than the question. Present alternative grace periods as different treatment strategies with their own estimands, not as a sensitivity analysis of one. Compare landmarking, sequential trials, continuous-time g-computation, counting-process marginal structural models and clone-censor-weighting on the same generated data, scoring the proportion of within-interval ordering conflicts alongside bias and coverage, and report grid invariance as a diagnostic while stating that it reveals sensitivity rather than establishing identification.</p>
+<p>Build an adaptive time-grid emulation in which intervals are chosen from treatment and visit intensities while outcome labels remain masked, and require a multiverse over plausible time-zero and grace-period definitions rather than one convenient specification. Compare landmarking, sequential trials, continuous-time g-computation, counting-process marginal structural models and clone-censor-weighting on the same generated data, scoring the proportion of within-interval ordering conflicts alongside bias and coverage. Make grid invariance a reported diagnostic: an estimate that moves materially between nested grids is evidence that the discretization is doing work the protocol never authorized.</p>
+</section>
+<section id="our-study" class="level2">
+<h2 class="anchored" data-anchor-id="our-study">Our study</h2>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A study is designed
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Question.</strong> Within a prespecified two-year treatment-initiation setting, how much do causal estimates move when treatment, visit, covariate, and outcome histories are observed and modeled only on 1-, 2-, 4-, or 8-week grids; can an outcome-masked process rule choose a grid that reduces computation without materially worsening bias, coverage, precision, or treatment decisions relative to always choosing one week; and how much do estimates differ between separately defined 4- and 12-week grace-period strategies?</p>
+<p><strong>Status.</strong> its truth step has never been run to completion</p>
+</div>
+</div>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
-<p><strong>Verdict.</strong> Confirmed open. Auditors agreed the problem is open and no counterevidence surfaced.</p>
-<p><strong>The source said.</strong> “An emulated protocol has to fix three times that a randomized trial fixes in one act: when eligibility is assessed, when treatment is assigned, and when follow-up begins. It also has to fix the resolution at which time is measured, because routine data arrive as dated records rather than as a schedule of study visits. Clone-censor-weight and sequential emulation both handle the misalignment itself, but neither chooses the grace period or the interval width, and estimates move with both. A coarse interval lets treatment affect an outcome inside the interval before censoring is applied; a fine interval produces high-dimensional nuisance models and unstable weights. What does not exist is a procedure that selects either quantity from the treatment and observation processes alone, without touching outcome information, together with a reported measure of how far the estimate would have moved under the alternatives.”</p>
-<p><strong>What was wrong with it.</strong> Two additions. A selection tool for the time grid does exist, using cross-validated variance as a measure of data support, and it uses outcome information, so it is a procedure and not an outcome-blind one. And alternative grace periods are not competing specifications of one estimand: they define different treatment strategies and potentially different estimands, so presenting them as a sensitivity analysis misdescribes what is varying.</p>
+<p><strong>Verdict.</strong> Partially addressed. Auditors found the problem open. At least one qualified how it is stated; the qualification and who made it are in the trail below. Moved by the full-text reading: 5 findings from 5 papers naming work that covers part of this problem survived both the reader and an independent second reviewer, so the verdict moves from confirmed-open to partially-addressed. A further 191 findings in the same reading restate the problem as open; the two are consistent, and the part that is covered is named above.</p>
+<p><strong>Revised by the full-text reading.</strong> Applied full-text reading of the consolidated library.</p>
+<dl>
+<dt>Verdict changed</dt>
+<dd>
+<strong>confirmed-open -&gt; partially-addressed</strong> 5 surviving findings from: Analytic Considerations for the Evaluation of Tuberculosis P; Bias due to coarsening of time intervals in the inference fo; Emulating Target Trials With Real-World Data to Inform Healt; Emulating target trials of postexposure vaccines using obser; Timing of follow-up visits after hospital discharge for COPD. New citations: 10.1016/j.jval.2023.04.010, 10.1093/aje/kwae350, 10.1093/ije/dyae100, 10.1353/obs.2025.a973070, 10.1371/journal.pone.0302681
+</dd>
+</dl>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -514,24 +531,1029 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>open / supported.</strong> Inverted-prior search did not turn up an outcome-blind procedure that selects the time-grid width or grace-period length from treatment and observation processes alone and reports how far the estimate moves under alternatives. The report’s own core citation, Tankpinou Zoumenou et al.&nbsp;(arXiv:2603.15924, 2026), formalizes when partitioning is too fine or too coarse via structural causal models, shows that clone-censor-weight can fail when treatment affects outcome inside a period, and recommends clinical specification of partitioning rather than defaulting to data resolution. That is design guidance and a validity check, not an algorithmic, outcome-masked selector. Wanis et al.&nbsp;(JRSS-A 2024; arXiv:2212.11398) formalizes natural versus stochastic grace-period strategies (how treatment is distributed during a grace window) and leaves window length as a protocol input. Ferreira Guerra et al.&nbsp;(Stat Med 2020) and Adams, Saria, and Rosenblum (arXiv:2011.15099) quantify estimation consequences of timeline discretization; they do not choose the grid without outcome use. Continuous-time MSMs and marked-point-process weights (Ryalen/Røysland line; Kalia et al., Stat Med 2025) reduce dependence on an arbitrary binning for some sustained-treatment estimands, but they do not select a grace period, do not fix the eligibility–assignment–follow-up triad for clone or sequential emulations, and do not ship a grid-invariance diagnostic. TARGET (JAMA 2025), HARPER/STaRT-RWE-style protocol templates, and Fu et al.&nbsp;(BMJ 2026) require reporting interval width and grace period and teach alignment; none supply a data-only selection rule. Applied emulations often vary grace period in one-off sensitivity analyses (for example six versus twelve months); that is ad hoc robustness, not outcome-blind primary selection plus a multiverse movement measure. CRAN/GitHub surfaces for TrialEmulation, gfoRmula, gfoRmulaICE, lmtp, ltmle, concrete, CICI, WeightIt, ipw, adjustedCurves, riskRegression, zEpid, and related tools treat interval unit and grace length as user arguments, with no merged PR implementing outcome-masked grid or grace selection. Queries covered the problem’s prior_work list; grace-period/time-grid/partitioning terms in AJE, Epidemiology, IJE, EJE, JCE, PDS, Stat Med, Biometrics/Biostatistics, BMJ/JAMA family, 2024–2026; arXiv stat.ME and medRxiv; multiverse/specification-curve + grace or time-zero; continuous-time MSM/g-computation; visit-intensity or observation-process interval selection; and package activity. Proposal, formalization, and sensitivity practice leave the stated gap open.
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The claim asserts a methodological gap: no outcome-blind procedure currently exists for selecting the time grid or grace period, nor is there a standard for reporting sensitivity to these choices. The reason given (that outcome-based selection induces selection bias, and clinical intervals are not purely data-driven) coherently supports why this gap exists and why it remains open. The claim is pitched at the right level of generality, describing a current absence in practice rather than a structural impossibility, as evidenced by the proposed direction to build such a procedure.
 </dd>
 <dt>Decision path</dt>
 <dd>
-<code>R5:default-open → R9:substantiated-overstatement(n=1/4):codex</code>
+<code>R5:default-open → R9:substantiated-overstatement(n=1/4):codex → R17:reading-moved(confirmed-open-&gt;partially-addressed)</code>
 </dd>
 </dl>
+</div>
+</section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>196 papers in the reviewed corpus bear on this problem, published 2007 to 2026. Partial progress is on the record, and later work still calls this open. Both belong in view.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<p>It is also being <strong>closed in pieces</strong>: partial results come from more than one paper in more than one year, each covering a different part.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2007</td>
+<td>confirms it is open</td>
+<td>Causal inference in longitudinal studies with history-restricted marginal structural models.</td>
+</tr>
+<tr class="even">
+<td>2010</td>
+<td>confirms it is open</td>
+<td>Time scale and adjusted survival curves for marginal structural cox models.</td>
+</tr>
+<tr class="odd">
+<td>2011</td>
+<td>confirms it is open</td>
+<td>Quantification of the healthy worker effect: a nationwide cohort study among electricians in Denmark.</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>confirms it is open</td>
+<td>Metformin and the risk of cancer: time-related biases in observational studies.</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>confirms it is open</td>
+<td>Comparing marginal structural models to standard methods for estimating treatment effects of antihypertensive combination therapy.</td>
+</tr>
+<tr class="even">
+<td>2013</td>
+<td>confirms it is open</td>
+<td>Challenges of guarantee-time bias.</td>
+</tr>
+<tr class="odd">
+<td>2014</td>
+<td>confirms it is open</td>
+<td>Validation of methods to control for immortal time bias in a pharmacoepidemiologic analysis of renin-angiotensin system inhibitors in type 2 diabetes.</td>
+</tr>
+<tr class="even">
+<td>2014</td>
+<td>confirms it is open</td>
+<td>Optimal CD4 count for initiating HIV treatment: impact of CD4 observation frequency and grace periods, and performance of dynamic marginal structural models.</td>
+</tr>
+<tr class="odd">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>Immortal time bias in retrospective analysis: comment on ‘Efficacy and safety of long-term treatment with lenalidomide and dexamethasone in patients with relapsed/refractory multiple myeloma’.</td>
+</tr>
+<tr class="even">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>The Impact of Different CD4 Cell-Count Monitoring and Switching Strategies on Mortality in HIV-Infected African Adults on Antiretroviral Therapy: An Application of Dynamic Marginal Structural Models.</td>
+</tr>
+<tr class="odd">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>Double robust and efficient estimation of a prognostic model for events in the presence of dependent censoring.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Comparative Effectiveness Research Using Observational Data: Active Comparators to Emulate Target Trials with Inactive Comparators.</td>
+</tr>
+<tr class="odd">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Risk of Preterm or Small-for-Gestational-Age Birth After Influenza Vaccination During Pregnancy: Caveats When Conducting Retrospective Observational Studies.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Invited Commentary: Influenza, Influenza Immunization, and Pregnancy-It’s About Time.</td>
+</tr>
+<tr class="odd">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Statins and Risk of Lower Limb Revision Surgery: The Influence of Differences in Study Design Using Electronic Health Records From the United Kingdom and Denmark.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Correcting for Measurement Error in Time-Varying Covariates in Marginal Structural Models.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Patients with Staged Bilateral Total Joint Arthroplasty in Registries: Immortal Time Bias and Methodological Options.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Conditioning on future exposure to define study cohorts can induce bias: the case of low-dose acetylsalicylic acid and risk of major bleeding.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Methods for time-varying exposure related problems in pharmacoepidemiology: An overview.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Sampling strategies for selecting general population comparison cohorts.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Comparative performance of a modified landmark approach when no time of treatment data are available within oncological databases: exemplary cohort study among resected pancreatic cancer patients.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Immortal Time Bias in Observational Studies of Time-to-Event Outcomes: Assessing Effects of Postmastectomy Radiation Therapy Using the National Cancer Database.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>The Challenges and Opportunities of Pharmacoepidemiology in Bone Diseases.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Marginal structural models with dose-delay joint-exposure for assessing variations to chemotherapy intensity.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Electronic medical records can be used to emulate target trials of sustained treatment strategies.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Guidance for a causal comparative effectiveness analysis emulating a target trial based on big real world evidence: when to start statin treatment.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Effect Estimates in Randomized Trials and Observational Studies: Comparing Apples With Apples.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Learning from registries in pulmonary arterial hypertension: pitfalls and recommendations.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Resurrecting immortal-time bias in the study of readmissions.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Adjusting for time-varying confounders in survival analysis using structural nested cumulative survival time models.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>The additive hazard estimator is consistent for continuous-time marginal structural models.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Warning of Immortal Time Bias When Studying Drug Safety in Pregnancy: Application to Late Use of Antibiotics and Preterm Delivery.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Immortal time bias: a possible explanation for “Impact of acyclovir use on survival of patients with ventilator-associated pneumonia and high load herpes simplex virus replication”.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>New-onset atrial fibrillation can be falsely associated with increased length of stay in ICU due to immortal time bias.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Methodological considerations when analysing and interpreting real-world data.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Reflection on modern methods: trial emulation in the presence of immortal-time bias. Assessing the benefit of major surgery for elderly lung cancer patients using observational data.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>A trial emulation approach for policy evaluations with group-level longitudinal data.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Long-term effects of asthma medication on asthma symptoms: an application of the targeted maximum likelihood estimation.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Impact of antimicrobial de-escalation on mortality: a literature review of study methodology and recommendations for observational studies.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Marginal structural models for repeated measures where intercept and slope are correlated: An application exploring the benefit of nutritional supplements on weight gain in HIV-infected children initiating antiretroviral therapy.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>The Impact of Delayed Switch to Second-Line Antiretroviral Therapy on Mortality, Depending on Definition of Failure Time and CD4 Count at Failure.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Bias of time-varying exposure effects due to time-varying covariate measurement strategies.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Emulating a Randomised Controlled Trial With Observational Data: An Introduction to the Target Trial Framework.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Computational drug repositioning of atorvastatin for ulcerative colitis.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Versatility of the clone-censor-weight approach: response to “trial emulation in the presence of immortal-time bias”</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Avoiding Time-Related Biases: A Feasibility Study on Antidiabetic Drugs and Pancreatic Cancer Applying the Parametric g-Formula to a Large German Healthcare Database.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Immortal Time-Bias-Corrected Survival of Highly Sensitized Patients and HLA-desensitized Kidney Transplant Recipients.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Medications and the Risk of Colorectal Cancer in Patients with Inflammatory Bowel Diseases: Use of the Landmark Method.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Bilateral Salpingo-oophorectomy and Breast Cancer Risk for BRCA1 and BRCA2 Mutation Carriers: Assessing the Evidence.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Immortal Time Bias in Comparing Late vs Early Intubation in Patients With Coronavirus Disease 2019.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>New-user and prevalent-user designs and the definition of study time origin in pharmacoepidemiology: A review of reporting practices.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Methodological evaluation of bias in observational coronavirus disease 2019 studies on drug effectiveness.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Multidisciplinary tumor boards and their analyses: the yin and yang of outcome measures.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Survival analyses in cardiovascular research, part II: statistical methods in challenging situations.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Risk of bias in observational studies using routinely collected data of comparative effectiveness research: a meta-research study.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>The importance of the design of observational studies in comparative effectiveness research: Lessons from the GARFIELD-AF and ORBIT-AF registries.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Target trial emulations: bridging the gap between clinical trial and real-world data.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Comparing New-User Cohort Designs: The Example of Proton Pump Inhibitor Effectiveness in Idiopathic Pulmonary Fibrosis.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>When emulating a trial, do as the trialists do: Missteps in estimating relative effectiveness of a SARS-CoV-2 vaccine booster dose</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Augmenting control arms with real-world data for cancer trials: Hybrid control arm methods and considerations.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>The Timing, the Treatment, the Question: Comparison of Epidemiologic Approaches to Minimize Immortal Time Bias in Real-World Data Using a Surgical Oncology Example</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Commentary: Maintenance with hypomethylating agents after allogeneic stem cell transplantation in acute myeloid leukemia and myelodysplastic syndrome: A systematic review and meta-analysis.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Matters Arising: Immortal time bias in the analysis of drug prescription trajectories.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Reducing the effect of immortal time bias affects the analysis of prevention of delirium by suvorexant in critically ill patients: A retrospective cohort study.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Statin Intake and Gastric Cancer Risk: An Updated Subgroup Meta-analysis Considering Immortal Time Bias.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Geriatrician assessment and immortal time bias in the FiTR 2 study.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Metformin and Dementia Risk: A Systematic Review with Respect to Time Related Biases.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Immortal Time Bias-Corrected Effectiveness of Traditional Chinese Medicine in Non-Small Cell Lung Cancer (C-EVID): A Prospective Cohort Study.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Immune-related adverse events in urothelial cancer patients: Adjustment for immortal time bias.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Immortal time bias for life-long conditions in retrospective observational studies using electronic health records.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Comparison of a Target Trial Emulation Framework vs Cox Regression to Estimate the Association of Corticosteroids With COVID-19 Mortality.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Causal inference from observational data and target trial emulation.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>The Use of the Target Trial Approach in Perinatal Pharmacoepidemiology: A Scoping Review Protocol.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Comparison of a Target Trial Emulation Framework to Cox Regression to Estimate the Effect of Corticosteroids on COVID-19 Mortality.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Clinical and population-based study design considerations to accelerate the investigation of new antiretrovirals during pregnancy.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>partly addresses it</td>
+<td>Emulating Target Trials With Real-World Data to Inform Health Technology Assessment: Findings and Lessons From an Application to Emergency Surgery.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Data Imputation for Clinical Trial Emulation: A Case Study on Impact of Intracranial Pressure Monitoring for Traumatic Brain Injury.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Trial Emulation Methods.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Invited Perspective: Risk of Bias Assessments, Target Trials, and the Strengths of Environmental Epidemiology.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>On optimal timing of antenatal corticosteroids: time to reformulate the question.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Target trial emulation with multi-state model analysis to assess treatment effectiveness using clinical COVID-19 data</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Optimizing Dynamic Antibiotic Treatment Strategies against Invasive Methicillin-Resistant Staphylococcus Aureus Infections using Causal Survival Forests and G-Formula on Statewide Electronic Health Record Data.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Addressing common sources of bias in studies of new-onset type 2 diabetes following COVID that use electronic health record data.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Analysis of immortal-time effect in post-infarction ventricular septal defect.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Are early post-discharge physician contacts associated with 30-day psychiatric re-hospitalisation? A nationwide claims data based retrospective cohort study in Austria free of immortal time bias.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Immortal Time Bias With Time-Varying Exposures in Environmental Epidemiology: A Case Study in Lung Cancer Survival.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Implementation of the trial emulation approach in medical research: a scoping review.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Competing risks analysis of external versus internal radiation in patients with hepatocellular carcinoma after controlling for immortal time bias.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Immortal-time bias in older vs younger age groups: a simulation study with application to a population-based cohort of patients with colon cancer.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>A systematic review of methodological considerations in time to diagnosis and treatment in colorectal cancer research.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Antifibrotics and Reduced Mortality in Idiopathic Pulmonary Fibrosis: Immortal Time Bias.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Prognostic impact of severe neutropenia in colorectal cancer patients treated with TAS-102 and bevacizumab, addressing immortal-time bias.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>On the estimation of the effect of weight change on a health outcome using observational data, by utilising the target trial emulation framework.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Positive Impact of [18F]FDG-PET/CT on Mortality in Patients With Staphylococcus aureus Bacteremia Explained by Immortal Time Bias.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>The influence of immortal time bias in observational studies examining associations of antifibrotic therapy with survival in idiopathic pulmonary fibrosis: A simulation study.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Tixagevimab/cilgavimab pre-exposure prophylaxis and breakthrough infection risk in vaccinated solid organ transplant recipients: concern for immortal time bias effect.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation: A Design Tool for Cancer Clinical Trials.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Comparison of the Test-negative Design and Cohort Design With Explicit Target Trial Emulation for Evaluating COVID-19 Vaccine Effectiveness.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Design considerations for observational studies of drugs for advanced cancer.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>What should be done and what should be avoided when comparing two treatments?</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Comparative Effectiveness of Dynamic Treatment Strategies for Medication Use and Dosage: Emulating a Target Trial Using Observational Data.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Causal inference in survival analysis using longitudinal observational data: Sequential trials and marginal structural models.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Estimation of marginal structural models under irregular visits and unmeasured confounder: calibrated inverse probability weights.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Using instrumental variables to correct for bias in real-world cohort studies of the effects of disease-modifying treatment in MS.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Timing of follow-up visits after hospital discharge for COPD: Application of a new method.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Bias due to coarsening of time intervals in the inference for the effectiveness of cancer screening</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Emulating target trials of postexposure vaccines using observational data.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Observational studies to emulate randomized trials: Some real-world barriers.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Assessing Wolbachia-mediated sterility for dengue control: emulation of a cluster-randomized target trial in Singapore.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Core Concepts in Pharmacoepidemiology: New-User Designs.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Emulating Hypothetical Target Trials of the Broad-Spectrum T2 Biologic Dupilumab.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Target trial framework for determining the effect of changes in training load on injury risk using observational data: a methodological commentary.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Prospective benchmarking of an observational analysis in the SWEDEHEART registry against the REDUCE-AMI randomized trial.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Patients on vitamin K treatment: is switching to direct-acting oral anticoagulation cost-effective? A target trial on a prospective cohort.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>De-Mystifying the Clone-Censor-Weight Method for Causal Research Using Observational Data: A Primer for Cancer Researchers</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Effect of immortal time bias on the association between immune-related adverse events and oncological outcomes following immune checkpoint inhibitors therapy for head and neck squamous cell carcinoma.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Characteristics of non-randomised studies of drug treatments: cross sectional study.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Comparing broad and narrow phenotype algorithms: differences in performance characteristics and immortal time incurred.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Association of Immune-Related Adverse Events and the Efficacy of Anti-PD-(L)1 Monotherapy in Non-Small Cell Lung Cancer: Adjusting for Immortal-Time Bias.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>The hazard of using the Poisson model to cope with immortal time bias in the case of time-varying hazard.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation Using Cohort Studies: Estimating the Effect of Antihypertensive Medication Initiation on Incident Dementia.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Target trial emulation for comparative effectiveness research with observational data: Promise and challenges for studying medications for opioid use disorder.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Designs for Vaccine Studies.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Conducting observational analyses with the target trial emulation approach: a methodological systematic review.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Application of the target trial emulation framework to external comparator studies.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Can Observational Data and Target Trial Emulation Inform Cardiovascular Disease Prevention and Management Guidelines?</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Applying the estimand and target trial frameworks to external control analyses using observational data: a case study in the solid tumor setting.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Obeticholic acid as second-line therapy for primary biliary cholangitis: Does target trial emulation solve the issue?</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation for Evaluating Health Policy.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Flexible Approaches Based on Multistate Models and Microsimulation to Perform Real-World Cost-Effectiveness Analyses: An Application to Proprotein Convertase Subtilisin-Kexin Type 9 Inhibitors.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>An introduction to inverse probability weighting and marginal structural models: The case of environmental tobacco exposure and attention deficit/hyperactivity disorder behaviors.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Change in employment status and its causal effect on suicidal ideation and depressive symptoms: A marginal structural model with machine learning algorithms.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>History-restricted marginal structural model and latent class growth analysis of treatment trajectories for a time-dependent outcome.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Simulating Data From Marginal Structural Models for a Survival Time Outcome.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Analytic Considerations for the Evaluation of Tuberculosis Preventative Therapy Effectiveness Among People Living with HIV.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>From ‘Negative’ Trial to Positive Clinical Impact: Emulating WARCEF While Accounting for Selection Bias in Trial Timing.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>An application of the augmented synthetic control method within a target trial framework: the case of the soda tax policy in California.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Hepatic real-world outcomes with obeticholic acid in primary biliary cholangitis (HEROES): A trial emulation study design.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Prompt versus Delayed Triple Therapy in COPD: Solutions to Time-Related Biases in Observational Studies.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Adjacent spillover efficacy of Wolbachia for control of dengue: emulation of a cluster randomised target trial.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Transparent reporting of observational studies emulating a target trial: the TARGET Statement.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>[Methodological appraisal of statistical approaches to evaluating the impact of time-dependent events on survival outcomes]</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Identifying, handling and impact of immortal time bias on addressing treatment effects in observational studies using routinely collected data.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Demystifying Clone-Censor-Weighting to Studying Treatment Initiation Windows: An Example Using Publicly Available Synthetic Medicare Claims Data.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Effectiveness of a Covid mRNA Vaccine Against Two Early Variants: A Reanalysis of Published Data.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Glucagon-like Peptide-1 (GLP-1) Receptor Agonists and Cancer Prevention: Methodological Pitfalls in Observational Studies.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Immortal Time Bias in Cohort Studies: A Concept Simply Explained.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Immortal Time Bias with NSQIP Readmission.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statistical Methods in Aging Research: Improving Current Practices and Embracing Emerging Approaches.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>The Impact of Immortal Time Bias on Survival Estimates of Patients with Heart Failure with Improved Ejection Fraction.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Opportunities, challenges and future perspectives for target trial emulation in critical care clinical research.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Immortal time bias from selection: a principal stratification perspective.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statin use and breast cancer-specific mortality and recurrence: a systematic review and meta-analysis including the role of immortal time bias and tumour characteristics.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Immortal time bias in survival outcomes when comparing treatment with chemotherapy versus immunochemotherapy for non-small cell lung cancer.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation: A Concept Simply Explained.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Quantifying Potential Immortal Time Bias in Observational Studies in Acute Severe Infection.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Step-by-step causal analysis of EHRs to ground decision-making.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>The Reporting and Methodological Recommendations for Observational Studies Estimating the Effects of Deprescribing Medications (REMROSE-D) ISPE-Endorsed Guidance.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Time-related Bias When Studying Perinatal Complications After Maternal Injuries: Application to Maternal Injuries and Preterm Birth.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Adjusting for selection bias due to missing eligibility criteria in emulated target trials.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Concordance between randomized controlled trials and target trial emulation: A meta-analysis</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Illustrating an Adaptive Prespecification Framework for Observational Research: Target Trial Emulations Comparing Immunomodulator Treatments for COVID-19.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Early cancer risk reduction after GLP-1RA use: Signal or bias?: Letter to the editor on “Glucagon-like peptide 1 receptor agonist and reduced liver and non-liver complications in adults with type 2 diabetes and metabolic dysfunction-associated steatotic liver disease: a target trial emulation study”.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Investigating Primary Care Indications to Improve the Quality of Electronic Health Record Data in Target Trial Emulation for Dementia.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Generating real-world evidence in early Alzheimer’s disease: Considerations for applying the target trial emulation framework to study the safety of anti-amyloid therapies.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Letter to the editor regarding ‘Liberal or restrictive transfusion for veno-arterial extracorporeal membrane oxygenation patients: a target trial emulation using the OBLEX study data’.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Missing the target in target trial emulation: the authors reply.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Missing the target in target trial emulation.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Methodologies for the Emulation of Biomarker-Guided Trials Using Observational Data: A Systematic Review.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Response to the letter titled “Comment on associations of semaglutide with first-time diagnosis of Alzheimer’s disease in patients with type 2 diabetes: Target trial emulation using nationwide real-world data in the US”.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Reply to “Associations of semaglutide with first-time diagnosis of Alzheimer’s disease in patients with type 2 diabetes: Target trial emulation using nationwide real-world data in the US”.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Target trial emulation to estimate the effects of lifestyle interventions on mortality among cancer survivors: an editorial commentary.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Trastuzumab in early curative breast cancer: A target trial emulation benchmarked against two randomized clinical trials.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Target trial emulation on dexmedetomidine for critically ill patients: all that glitters is not gold.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Strengthening health technology assessment for cancer treatments in Europe by integrating causal inference and target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>The importance of properly specifying your target trial emulation: commentary on Mésidor et al.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statistical approaches in ambispective cohort studies: Challenges and methodological insights.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statistical Methods for Baseline Adjustment and Cohort Analysis in Korean National Health Insurance Claims Data: A Review of PSM, IPTW, and Survival Analysis With Future Directions.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>From “negative” trial to positive clinical impact: mitigating eligibility criteria-induced temporal selection bias in emulated clinical trials.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Starting right: aligning eligibility and treatment assignment at time zero when emulating a target trial.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Methodological Challenges of Emulating a Target Trial to Assess Effectiveness of Timing of PCSK9 Inhibitor Treatment Initiation Post Myocardial Infarction</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Beyond cohort versus case-control: the primacy of exposure assessment over study design in occupational cancer epidemiology.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Effect of Exposure to Inhaled Corticosteroids on Lung Cancer Incidence - A Comparison of Earlier Study Methodology on the Financial Database of the Hungarian National Health Insurance Fund.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Immortal time bias from conditioning on future events in Parkinson’s disease survival analysis.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Electronic health records research: easy evidence, harder oversight.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Association of Immune-Related Adverse Events and the Efficacy of Immune Checkpoint Inhibitors in Non-Small Cell Lung Cancer: Adjusting for Immortal Time Bias.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Evaluation of Time-related Bias With Non-user Control.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Reassessment of the Collaborative Normal-Tension Glaucoma Study: Statistical Evidence and Implications for Current Management.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Time dependent outcomes modeling in a real-world analysis of the molecular tumor board at University Cancer Center Hamburg (2016-2022).</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Target trial emulation in oncology: current use and future directions.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Exposure definition sensitivity unmasks hidden confounding in crystalloid target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Design and Implementation of Observational Studies Emulating a Target Trial.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation Without Matching: A More Efficient Approach for Evaluating Vaccine Effectiveness Using Observational Data.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation to Incorporate Real-World Data in the Estimation of the Clinical and Cost-Effectiveness of Biologic Treatment.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Concordance between target trial emulation and randomised controlled trials: systematic review and meta-analysis.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Estimating conditional survival benefit for the allocation of scarce resources.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/GMT-02-identification-of-dynamic-regimes-in-continuous-time-under-t.html">GMT-02 — Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved</a></li>
-<li><a href="../problems/SEQ-01-sequential-emulation-creates-repeated-participation-and-cale.html">SEQ-01 — Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals</a></li>
-<li><a href="../problems/STR-01-no-procedure-defines-clinically-defensible-equivalence-class.html">STR-01 — No procedure defines clinically defensible equivalence classes of treatment versions</a></li>
+<li><a href="../problems/ELG-03-no-procedure-bounds-the-bias-a-comparator-sampling-scheme-in.html">ELG-03: No procedure bounds the bias a comparator sampling scheme introduces before the study is run</a></li>
+<li><a href="../problems/GMT-02-identification-of-dynamic-regimes-in-continuous-time-under-t.html">GMT-02: Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved</a></li>
+<li><a href="../problems/SEQ-01-sequential-emulation-creates-repeated-participation-and-cale.html">SEQ-01: Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals</a></li>
+<li><a href="../problems/STR-01-no-procedure-defines-clinically-defensible-equivalence-class.html">STR-01: No procedure defines clinically defensible equivalence classes of treatment versions</a></li>
 </ul>
 </div>
 </section>

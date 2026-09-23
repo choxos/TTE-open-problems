@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Discretizing that onto a grid can reverse the temporal ordering of a treatment and an outcome falling in the same interval, merge several events into one, and define an estimand that exists only relative to the chosen interval. Identification and efficient estimation for dynamic interventions in continuous time under counting-process filtrations and irregular monitoring have been established. They do not yet settle the case an emulation on routine data actually faces: a visit process that depends on treatment, combined with effects that occur inside an interval. A continuous-time emulation must define the treatment, covariate, visit, censoring and outcome processes relative to a filtration and impose assumptions linking latent histories to the observed visit process, and most applied emulations still discretize without an identification result tied to the grid they chose.">
+<meta name="description" content="Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Almost every applied g-method assumes a prespecified discrete grid, and discretization can reverse temporal ordering between a treatment and an outcome that fell in the same interval, merge multiple events into one, or define an estimand that exists only relative to the chosen interval. General identification results for dynamic regimes under irregular observation, treatment-dependent visiting and within-interval effects remain limited, so the applied analyst working in continuous time has a modeling apparatus without an identification theorem to sit under it.">
 
 <title>Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -395,6 +395,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -410,13 +411,17 @@ ul.task-list li input[type="checkbox"] {
   <div class="quarto-categories">
     <div class="quarto-category">G-methods: specification, estimation &amp; inference</div>
     <div class="quarto-category">High priority</div>
-    <div class="quarto-category">Unverifiable</div>
+    <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Follow-up</div>
+    <div class="quarto-category">Protocol: Analysis plan</div>
+    <div class="quarto-category">Data: EHR</div>
+    <div class="quarto-category">Data: Linked records</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Discretizing that onto a grid can reverse the temporal ordering of a treatment and an outcome falling in the same interval, merge several events into one, and define an estimand that exists only relative to the chosen interval. Identification and efficient estimation for dynamic interventions in continuous time under counting-process filtrations and irregular monitoring have been established. They do not yet settle the case an emulation on routine data actually faces: a visit process that depends on treatment, combined with effects that occur inside an interval. A continuous-time emulation must define the treatment, covariate, visit, censoring and outcome processes relative to a filtration and impose assumptions linking latent histories to the observed visit process, and most applied emulations still discretize without an identification result tied to the grid they chose.
+    Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Almost every applied g-method assumes a prespecified discrete grid, and discretization can reverse temporal ordering between a treatment and an outcome that fell in the same interval, merge multiple events into one, or define an estimand that exists only relative to the chosen interval. General identification results for dynamic regimes under irregular observation, treatment-dependent visiting and within-interval effects remain limited, so the applied analyst working in continuous time has a modeling apparatus without an identification theorem to sit under it.
   </div>
 </div>
 
@@ -434,15 +439,19 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="problem-meta">
-<p><span class="problem-id">GMT-02</span> <span class="verdict verdict-unverifiable">Unverifiable</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 2/5</span></p>
+<p><span class="problem-id">GMT-02</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 2/5</span></p>
+</div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Follow-up</span> <span class="chip chip-axis">Analysis plan</span><br>
+Seen in: <span class="chip chip-axis">EHR</span> <span class="chip chip-axis">Linked records</span></p>
 </div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Discretizing that onto a grid can reverse the temporal ordering of a treatment and an outcome falling in the same interval, merge several events into one, and define an estimand that exists only relative to the chosen interval. Identification and efficient estimation for dynamic interventions in continuous time under counting-process filtrations and irregular monitoring have been established. They do not yet settle the case an emulation on routine data actually faces: a visit process that depends on treatment, combined with effects that occur inside an interval. A continuous-time emulation must define the treatment, covariate, visit, censoring and outcome processes relative to a filtration and impose assumptions linking latent histories to the observed visit process, and most applied emulations still discretize without an identification result tied to the grid they chose.</p>
+<p>Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Almost every applied g-method assumes a prespecified discrete grid, and discretization can reverse temporal ordering between a treatment and an outcome that fell in the same interval, merge multiple events into one, or define an estimand that exists only relative to the chosen interval. General identification results for dynamic regimes under irregular observation, treatment-dependent visiting and within-interval effects remain limited, so the applied analyst working in continuous time has a modeling apparatus without an identification theorem to sit under it.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>In continuous time the treatment, visit and outcome processes are counting processes whose intensities depend on one another, so sequential exchangeability has to be stated with respect to filtrations rather than a fixed sequence of covariate vectors, and the resulting conditions are stronger and harder to interpret. Grid-refinement analyses can reveal sensitivity to discretization and cannot establish identification, so the diagnostic available to applied work does not answer the question it raises. There is also no natural sample-size asymptotics, because information about an intensity comes from event counts rather than from patients.</p>
+<p>In continuous time the treatment process, the visit process and the outcome process are counting processes whose intensities depend on each other, and sequential exchangeability has to be stated with respect to filtrations rather than to a fixed sequence of covariate vectors. The conditions under which a dynamic regime is identified in that setting are strictly stronger and harder to interpret than their discrete counterparts. There is also no natural sample-size asymptotics: the information about an intensity comes from event counts rather than from patients, so the usual scaling arguments do not apply cleanly.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -473,15 +482,21 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Extend the existing continuous-time identification results to treatment-dependent visiting with within-interval effects, and state which conditions a standard electronic health record violates. Combine marked point-process models, continuous-time structural nested models and neural differential equations, constraining the learned components to the nuisance functions identification actually requires, so flexibility sits where it cannot manufacture a contrast. Report invariance across nested grids as a routine diagnostic while stating what it does and does not establish.</p>
+<p>Combine marked point-process models, continuous-time structural nested models and neural ordinary differential equations, constraining the learned components to nuisance functions that the identification result actually requires, so the flexibility sits where it cannot manufacture a contrast. Study invariance of estimates across nested time grids as a routine diagnostic: an estimand defined in continuous time should be stable as the grid refines, and instability localizes the failure. State the identification conditions in filtration terms and show which of them a standard electronic health record violates.</p>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
-<p><strong>Verdict.</strong> Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.</p>
-<p><strong>The source said.</strong> “Treatments, outcomes and clinical observations occur asynchronously and are recorded at times determined by the care process. Almost every applied g-method assumes a prespecified discrete grid, and discretization can reverse temporal ordering between a treatment and an outcome that fell in the same interval, merge multiple events into one, or define an estimand that exists only relative to the chosen interval. General identification results for dynamic regimes under irregular observation, treatment-dependent visiting and within-interval effects remain limited, so the applied analyst working in continuous time has a modeling apparatus without an identification theorem to sit under it.”</p>
-<p><strong>What was wrong with it.</strong> Continuous-time identification and efficient estimation for dynamic interventions under counting-process filtrations and irregular monitoring have been established, so the claim that the analyst has no identification theorem was wrong. What those results do not yet settle is the treatment-dependent informative visit process together with within-interval effects, as an apparatus an applied analyst can use by default.</p>
-<p><strong>Dissent.</strong> literature dissented (supported-with-caveat): The entry says general implementable identification results for dynamic regimes under irregular, treatment-dependent observation remain limited. Estimation in that setting is further along than the entry allows. Continuous-time marginal structural model weights built from a marked point process have been constructed and applied where visit times are irregular and informative and treatment history carries duration and dose. G-computation and doubly robust standardization for continuous-time data have been compared with inverse probability weighting. What has not been supplied is the general identification theorem the entry asks for, stated in filtration terms and covering within-interval effects, so the theoretical half of the claim stands while the estimation half is weaker than written. grok dissented (overstated): The claim that continuous-time dynamic-regime identification under irregular, process-driven observation is essentially without an identification theorem is stronger than the literature allows. Rytgaard, Gerds, and van der Laan (Annals of Statistics 2022) give a continuous-time counting-process TMLE for intervention-specific means when treatment, covariates, and outcomes occur at subject-specific times; intensities track monitoring; dynamic regimes on treatment assigned are defined with visit times kept as they naturally occur; and identification is via continuous-time g-computation under sequential exchangeability and positivity on the product-integral likelihood. Røysland, Ryalen, Nygård, and Didelez (JRSS-B 2025; arXiv:2202.02311) supply nonparametric graphical identification criteria for marginal effects of interventions on treatment-process intensities in continuous-time survival and event-history models, including structural conditions on censoring beyond classical independent censoring. Earlier continuous-time MSM and structural nested model work (Røysland; Ryalen et al.&nbsp;on prostate cancer) already stated filtration-based sequential exchangeability. What remains open, and why this is only partial: applied g-methods still default to discrete grids (Tankpinou et al.&nbsp;arXiv:2603.15924 still treats time partitioning as a consequential modeling choice); Rytgaard’s main identification path intervenes on treatment decisions while leaving the visit intensity natural, so full dynamic control of a treatment-dependent informative visit process plus within-interval effects is not a closed applied recipe for EHR; software for continuous-time LTMLE is not yet a routine TTE default. Proposal papers that add unmeasured confounding (for example arXiv:2604.00544) are not resolutions. Identification theory exists; the residual gap is completeness for treatment-dependent observation, within-interval estimands, and routine practice.</p>
+<p><strong>Verdict.</strong> Partially addressed. 2 independent auditors judged the claim as stated too strong. Discretizing asynchronous clinical processes can obscure temporal ordering and change the intervention being estimated. A continuous-time emulation must define treatment, covariate, visit, censoring and outcome processes relative to a filtration and impose assumptions connecting latent histories to the observed visit process. Grid-refinement analyses can reveal sensitivity to discretization, but they cannot establish identification. Moved by the full-text reading: 6 findings from 6 papers naming work that covers part of this problem survived both the reader and an independent second reviewer, so the verdict moves from overstated to partially-addressed. A further 21 findings in the same reading restate the problem as open; the two are consistent, and the part that is covered is named above.</p>
+<p><strong>Dissent.</strong> literature dissented (supported-with-caveat): The entry says general implementable identification results for dynamic regimes under irregular, treatment-dependent observation remain limited. Estimation in that setting is further along than the entry allows. […]</p>
+<p><strong>Revised by the full-text reading.</strong> Applied full-text reading of the consolidated library.</p>
+<dl>
+<dt>Verdict changed</dt>
+<dd>
+<strong>overstated -&gt; partially-addressed</strong> 6 surviving findings from: Bias due to coarsening of time intervals in the inference fo; Causal estimands and identification of time-varying effects ; Continuous-Time Causal Inference With Marked Point Process W; Estimating the causal effects of multiple intermittent treat; The Impact of Different CD4 Cell-Count Monitoring and Switch; The additive hazard estimator is consistent for continuous-t. New citations: 10.1002/sim.70102, 10.1007/s10985-019-09468-y, 10.1093/aje/kwv083, 10.1093/biostatistics/kxag014, 10.1093/ije/dyae100
+</dd>
+</dl>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -495,23 +510,182 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>partially-solved / overstated.</strong> The claim that continuous-time dynamic-regime identification under irregular, process-driven observation is essentially without an identification theorem is stronger than the literature allows. Rytgaard, Gerds, and van der Laan (Annals of Statistics 2022) give a continuous-time counting-process TMLE for intervention-specific means when treatment, covariates, and outcomes occur at subject-specific times; intensities track monitoring; dynamic regimes on treatment assigned are defined with visit times kept as they naturally occur; and identification is via continuous-time g-computation under sequential exchangeability and positivity on the product-integral likelihood. Røysland, Ryalen, Nygård, and Didelez (JRSS-B 2025; arXiv:2202.02311) supply nonparametric graphical identification criteria for marginal effects of interventions on treatment-process intensities in continuous-time survival and event-history models, including structural conditions on censoring beyond classical independent censoring. Earlier continuous-time MSM and structural nested model work (Røysland; Ryalen et al.&nbsp;on prostate cancer) already stated filtration-based sequential exchangeability. What remains open, and why this is only partial: applied g-methods still default to discrete grids (Tankpinou et al.&nbsp;arXiv:2603.15924 still treats time partitioning as a consequential modeling choice); Rytgaard’s main identification path intervenes on treatment decisions while leaving the visit intensity natural, so full dynamic control of a treatment-dependent informative visit process plus within-interval effects is not a closed applied recipe for EHR; software for continuous-time LTMLE is not yet a routine TTE default. Proposal papers that add unmeasured confounding (for example arXiv:2604.00544) are not resolutions. Identification theory exists; the residual gap is completeness for treatment-dependent observation, within-interval estimands, and routine practice. Cites 10.1214/21-AOS2114: Provides continuous-time counting-process identification (g-computation on product integrals) and efficient TMLE for time-varying and dynamic treatment interventions when monitoring times are subject-specific; models monitoring intensities and covers dynamic regimes on treatment assigned with natural visit schedules.. Cites 10.1093/jrsssb/qkae056: States nonparametric graphical identification criteria for marginal effects of interventions on continuous-time treatment-process intensities using local independence / counting-process graphs, including structural conditions on censoring; directly supplies the filtration-style identification theorem the agenda says is missing.. Cites arxiv:2603.15924: Does not close identification; documents that discrete time partitioning remains a consequential open modeling choice in applied TTE, which supports residual openness after continuous-time theory..
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The claim is coherent and proportionate. It says general identification results ‘remain limited’ rather than asserting they do not exist, which correctly frames this as a gap in current theory rather than a structural impossibility. The reason given for openness is substantive: in continuous time, exchangeability must be stated over filtrations, conditions are strictly stronger than discrete counterparts, and event-count-based asymptotics do not scale the way patient-count asymptotics do. These are genuine theoretical obstacles, not mere inconveniences. The scope is appropriately narrow—dynamic regimes under irregular observation and treatment-dependent visiting—rather than overgeneralizing to all continuous-time causal inference.
 </dd>
 <dt>Decision path</dt>
 <dd>
-<code>R3:partially-solved(n=2/4) → R7:counter-and-support-both-present(support=1/counter=1)</code>
+<code>R3:partially-solved(n=2/4) → R8:overstated-majority(n=2/4) → R17:reading-moved(overstated-&gt;partially-addressed)</code>
 </dd>
 </dl>
+</div>
+</section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>27 papers in the reviewed corpus bear on this problem, published 2008 to 2026. Progress and a fresh assertion of openness land in the same year.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<p>It is also being <strong>closed in pieces</strong>: partial results come from more than one paper in more than one year, each covering a different part.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2008</td>
+<td>confirms it is open</td>
+<td>Evaluating dose response from flexible dose clinical trials.</td>
+</tr>
+<tr class="even">
+<td>2010</td>
+<td>confirms it is open</td>
+<td>Dynamic regime marginal structural mean models for estimation of optimal dynamic treatment regimes, Part II: proofs of results.</td>
+</tr>
+<tr class="odd">
+<td>2014</td>
+<td>confirms it is open</td>
+<td>Optimal CD4 count for initiating HIV treatment: impact of CD4 observation frequency and grace periods, and performance of dynamic marginal structural models.</td>
+</tr>
+<tr class="even">
+<td>2015</td>
+<td>partly addresses it</td>
+<td>The Impact of Different CD4 Cell-Count Monitoring and Switching Strategies on Mortality in HIV-Infected African Adults on Antiretroviral Therapy: An Application of Dynamic Marginal Structural Models.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>partly addresses it</td>
+<td>The additive hazard estimator is consistent for continuous-time marginal structural models.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Time-dependent mediators in survival analysis: Modeling direct and indirect effects with the additive hazards model.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Impact of antimicrobial de-escalation on mortality: a literature review of study methodology and recommendations for observational studies.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Bias of time-varying exposure effects due to time-varying covariate measurement strategies.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>A scoping review of causal methods enabling predictions under hypothetical interventions.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Spillover benefit of pre-exposure prophylaxis for HIV prevention: evaluating the importance of effect modification using an agent-based model.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Ranking tailoring variables for constructing individualized treatment rules: an application to schizophrenia.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>partly addresses it</td>
+<td>Estimating the causal effects of multiple intermittent treatments with application to COVID-19.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>On optimal timing of antenatal corticosteroids: time to reformulate the question.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Causal inference using observational intensive care unit data: a scoping review and recommendations for future practice.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Bias due to coarsening of time intervals in the inference for the effectiveness of cancer screening</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Making causal inferences from transactional data: A narrative review of opportunities and challenges when implementing the target trial framework.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Challenges and Opportunities in Interdisciplinary Research and Real-World Data for Treatment Sequences in Health Technology Assessments.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Simulating Data From Marginal Structural Models for a Survival Time Outcome.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Multiply robust estimation of marginal structural models in observational studies subject to covariate-driven observations.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Continuous-Time Causal Inference With Marked Point Process Weights: An Example on Sodium-Glucose Co-Transporters 2 Inhibitor Medications and Urinary Tract Infection.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Estimating Heterogeneous Treatment Effects With Target Trial Emulation: A Checklist of Causal Machine Learning for Observational Data.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Estimating per-protocol effects in external comparator analyses using real-world data.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>partly addresses it</td>
+<td>Causal estimands and identification of time-varying effects in nonstationary time series from N-of-1 mobile device studies</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>A Path-Specific Effect Approach to Mediation Analysis With Time-Varying Mediators and Time-to-Event Outcomes Accounting for Competing Risks</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Individual causal effect estimation accounting for latent disease state modification</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Evaluation of clinical utility in emulated clinical trials.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Nonparametric Causal Inference for Optogenetics: Sequential Excursion Effects for Dynamic Regimes.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/MIS-01-the-visit-process-is-treated-as-a-nuisance-to-be-imputed-rat.html">MIS-01 — The visit process is treated as a nuisance to be imputed rather than as part of the causal structure</a></li>
-<li><a href="../problems/TZO-01-no-outcome-blind-procedure-selects-the-time-grid-or-the-grac.html">TZO-01 — No outcome-blind procedure selects the time grid or the grace period</a></li>
+<li><a href="../problems/MIS-01-the-visit-process-is-treated-as-a-nuisance-to-be-imputed-rat.html">MIS-01: The visit process is treated as a nuisance to be imputed rather than as part of the causal structure</a></li>
+<li><a href="../problems/TZO-01-no-outcome-blind-procedure-selects-the-time-grid-or-the-grac.html">TZO-01: No outcome-blind procedure selects the time grid or the grace period</a></li>
 </ul>
 </div>
 </section>

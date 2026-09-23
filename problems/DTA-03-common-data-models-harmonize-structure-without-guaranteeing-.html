@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within one site. Multi-source linked databases are associated with better emulation of trials, which makes linkage decisions consequential rather than administrative. Common data models solve the structural half and do not guarantee semantic equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications. Semantic drift is invisible in the analytic dataset, because the column is populated and the values are in range.">
+<meta name="description" content="Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within a site. Multi-source linked databases are associated with better emulation of trials, which makes the linkage decisions consequential rather than administrative. Common data models solve the structural half of this and do not guarantee semantic or causal equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications.">
 
 <title>Common data models harmonize structure without guaranteeing that the same variable means the same thing – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -395,6 +395,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -410,13 +411,20 @@ ul.task-list li input[type="checkbox"] {
   <div class="quarto-categories">
     <div class="quarto-category">Data sources, linkage &amp; federated infrastructure</div>
     <div class="quarto-category">High priority</div>
-    <div class="quarto-category">Confirmed open</div>
+    <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Eligibility</div>
+    <div class="quarto-category">Protocol: Outcome</div>
+    <div class="quarto-category">Protocol: Follow-up</div>
+    <div class="quarto-category">Data: Linked records</div>
+    <div class="quarto-category">Data: Registry</div>
+    <div class="quarto-category">Data: Claims</div>
+    <div class="quarto-category">Data: Multi-database</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within one site. Multi-source linked databases are associated with better emulation of trials, which makes linkage decisions consequential rather than administrative. Common data models solve the structural half and do not guarantee semantic equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications. Semantic drift is invisible in the analytic dataset, because the column is populated and the values are in range.
+    Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within a site. Multi-source linked databases are associated with better emulation of trials, which makes the linkage decisions consequential rather than administrative. Common data models solve the structural half of this and do not guarantee semantic or causal equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications.
   </div>
 </div>
 
@@ -434,15 +442,19 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="problem-meta">
-<p><span class="problem-id">DTA-03</span> <span class="verdict verdict-confirmed-open">Confirmed open</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-promising">Promising</span> <span class="chip">Tractability 4/5</span></p>
+<p><span class="problem-id">DTA-03</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-promising">Promising</span> <span class="chip">Tractability 4/5</span></p>
+</div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Eligibility</span> <span class="chip chip-axis">Outcome</span> <span class="chip chip-axis">Follow-up</span><br>
+Seen in: <span class="chip chip-axis">Linked records</span> <span class="chip chip-axis">Registry</span> <span class="chip chip-axis">Claims</span> <span class="chip chip-axis">Multi-database</span></p>
 </div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within one site. Multi-source linked databases are associated with better emulation of trials, which makes linkage decisions consequential rather than administrative. Common data models solve the structural half and do not guarantee semantic equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications. Semantic drift is invisible in the analytic dataset, because the column is populated and the values are in range.</p>
+<p>Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within a site. Multi-source linked databases are associated with better emulation of trials, which makes the linkage decisions consequential rather than administrative. Common data models solve the structural half of this and do not guarantee semantic or causal equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>Detecting drift requires the mapping history and a comparison across extracts, and both are normally discarded once the analytic file is built, so the evidence that would settle it is destroyed rather than merely unexamined. Linkage error is also non-random, correlating with the same social and health-system factors that predict treatment and outcome, which makes it a confounded measurement error rather than noise. And propagating linkage uncertainty correctly needs an explicit model of the linkage mechanism, which is exactly what a probabilistic linkage supplies only partially.</p>
+<p>Semantic drift is invisible in the analytic dataset: the column is populated and the values are in range. Detecting it requires the mapping history and a comparison across extracts, both of which are usually discarded once the analytic file is built. Linkage error is also non-random, correlating with the same social and health-system factors that predict treatment and outcome, so it is a confounded measurement error rather than noise.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -469,14 +481,20 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Maintain provenance graphs from source field to analytic variable and publish them, so a reader can see which code set produced an outcome and when it changed. Run phenotype invariance and temporal-drift checks as standard diagnostics, and report leave-one-source-out analyses so each linked source’s contribution is visible. Propagate linkage uncertainty under stated assumptions about the linkage mechanism, and report a linkage sensitivity analysis rather than treating a probabilistic weight as though it converted bias into variance.</p>
+<p>Maintain provenance graphs from source field to analytic variable and publish them with the study, so a reader can see which code set produced an outcome and when it changed. Run phenotype invariance and temporal-drift checks as standard diagnostics, and report leave-one-source-out analyses so the contribution of each linked source to the estimate is visible. Carry probabilistic linkage weights into the causal estimator rather than resolving links to a hard match, which turns linkage uncertainty into interval width instead of hidden bias.</p>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
-<p><strong>Verdict.</strong> Confirmed open. Auditors agreed the problem is open and no counterevidence surfaced.</p>
-<p><strong>The source said.</strong> “Claims, records, registries, mortality files and laboratory data each carry part of what a protocol needs, and linking them changes both who is eligible and which outcomes are captured. Linkage is imperfect and coding systems change over time, so the same analytic variable can shift meaning across sites and across years within a site. Multi-source linked databases are associated with better emulation of trials, which makes the linkage decisions consequential rather than administrative. Common data models solve the structural half of this and do not guarantee semantic or causal equivalence, and the historical code mappings and extract versions that would let a reader check are rarely preserved in publications.”</p>
-<p><strong>What was wrong with it.</strong> The statement stands; the proposed direction did not. Carrying probabilistic linkage weights into the estimator does not turn linkage bias into variance and does not by itself guarantee unbiased estimation. Propagating linkage uncertainty requires stating the assumptions under which the propagation is valid.</p>
+<p><strong>Verdict.</strong> Partially addressed. Auditors found the problem open. At least one qualified how it is stated; the qualification and who made it are in the trail below. Moved by the full-text reading: 1 finding from 1 paper naming work that covers part of this problem survived both the reader and an independent second reviewer, so the verdict moves from confirmed-open to partially-addressed, on a single finding. A further 19 findings in the same reading restate the problem as open; the two are consistent, and the part that is covered is named above.</p>
+<p><strong>Revised by the full-text reading.</strong> Applied full-text reading of the consolidated library.</p>
+<dl>
+<dt>Verdict changed</dt>
+<dd>
+<strong>confirmed-open -&gt; partially-addressed</strong> 1 surviving finding from: A Common Longitudinal Intensive Care Unit data Format (CLIF). New citations: 10.1101/2024.09.04.24313058
+</dd>
+</dl>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -490,24 +508,146 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>open / supported.</strong> The core claim is still true and was not overturned by 2024-2026 literature or software: common data models (OMOP and peers) standardize structure and vocabulary mapping, but do not guarantee semantic or causal equivalence of analytic variables across sites or years, and the mapping history and extract versions needed to check drift are still rarely published with target trial emulations. TARGET (2025) improves reporting of how the trial protocol is mapped to observational data, and OHDSI tools (DataQualityDashboard, CohortDiagnostics, standardized vocabularies) improve structural quality and phenotype characterization, but neither certifies that the same column means the same clinical construct. Work that partially implements pieces of the proposed direction exists and should not be ignored: Guha and Reiter (2024) fuse Bayesian probabilistic record linkage with causal estimators so linkage uncertainty propagates into treatment-effect inference rather than being collapsed to a hard match (bipartite two-file setting, evaluated in simulation and survey data, not multi-source claims-EHR-registry TTE as standard practice); Johns, Baum, and Prasser (2025) track provenance through clinical-warehouse ETL for quality management; semi-automated linkage provenance prototypes appear in the data-linkage literature. Those are proposals or infrastructure for components of the agenda, not a solved provenance-plus-invariance-plus-leave-one-source-out standard for multi-source TTE. The BMJ 2025 concordance review supports that design and outcome emulation quality matter for trial agreement, which makes provenance consequential, but does not itself close the semantic-equivalence gap. Searches for phenotype temporal-drift diagnostics, published source-to-analytic provenance graphs in TTE, and routine leave-one-source-out multi-source analyses as standard practice returned methods papers and tools, not field resolution. Vote open; partial methods noted in rationale without over-crediting them as solutions.
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The statement is internally consistent and correctly distinguishes structural harmonization from semantic equivalence. The claim that common data models solve the structural half without guaranteeing semantic equivalence is proportionate. The reasons provided for it being open (semantic drift is invisible in the analytic dataset, mapping histories are discarded, and linkage error is non-random) logically entail that the problem is currently open.
 </dd>
 <dt>Decision path</dt>
 <dd>
-<code>R5:default-open → R9:substantiated-overstatement(n=1/4):codex</code>
+<code>R5:default-open → R9:substantiated-overstatement(n=1/4):codex → R17:reading-moved(confirmed-open-&gt;partially-addressed)</code>
 </dd>
 </dl>
+</div>
+</section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>20 papers in the reviewed corpus bear on this problem, published 2019 to 2026. Partial progress is on the record, and later work still calls this open. Both belong in view.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Learning from registries in pulmonary arterial hypertension: pitfalls and recommendations.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Methodological frontiers in vaccine safety: qualifying available evidence for rare events, use of distributed data networks to monitor vaccine safety issues, and monitoring the safety of pregnancy interventions.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>The importance of the design of observational studies in comparative effectiveness research: Lessons from the GARFIELD-AF and ORBIT-AF registries.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Early special educational needs provision and its impact on unplanned hospital utilisation and school absences in children with isolated cleft lip and/or palate: a demonstration target trial emulation study protocol using ECHILD</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Observational studies of treatment effectiveness in neurology.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>A Common Longitudinal Intensive Care Unit data Format (CLIF) to enable multi-institutional federated critical illness research.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Feasibility of using real-world data to emulate substance use disorder clinical trials: a cross-sectional study.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Representation of Real-World Adults With Chronic Kidney Disease in Clinical Trials Supporting Blood Pressure Treatment Targets.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Observational methods for COVID-19 vaccine effectiveness research: an empirical evaluation and target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Causal inference in multi-cohort studies using the target trial framework to identify and minimize sources of bias.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>The target trial framework in global health research: barriers and opportunities.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Research with cancer registry data in radiation oncology-current possibilities and perspectives : A narrative review.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Federated target trial emulation using distributed observational data for treatment effect estimation.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statistical approaches in ambispective cohort studies: Challenges and methodological insights.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Systematic Evaluation of Data and Trial Fitness for Oncology Trial Emulation: Empirical Findings from the CARE Initiative.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Real-world comparative effectiveness of SARS-CoV-2 primary vaccination campaigns against SARS-CoV-2 infections: a federated observational study emulating a target trial in three nations.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Electronic health records research: easy evidence, harder oversight.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Assessing the quality of electronic health record data and the claims linked data for target trial emulation studies.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Mapping eligibility criteria in oncology target trial emulations using real-world data: a scoping review.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Supporting complex mental health care and services research today and beyond: a mini-review of real-world evidence strategies and informed approaches.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/DTA-01-data-fitness-assessment-is-narrative-and-has-no-thresholds-t.html">DTA-01 — Data-fitness assessment is narrative and has no thresholds that would stop a study</a></li>
-<li><a href="../problems/DTA-02-averaging-site-estimates-in-a-federated-emulation-can-concea.html">DTA-02 — Averaging site estimates in a federated emulation can conceal that the sites emulated different trials</a></li>
-<li><a href="../problems/MER-01-phenotypes-enter-emulations-as-error-free-binary-variables.html">MER-01 — Phenotypes enter emulations as error-free binary variables</a></li>
+<li><a href="../problems/DTA-01-data-fitness-assessment-is-narrative-and-has-no-thresholds-t.html">DTA-01: Data-fitness assessment is narrative and has no thresholds that would stop a study</a></li>
+<li><a href="../problems/DTA-02-averaging-site-estimates-in-a-federated-emulation-can-concea.html">DTA-02: Averaging site estimates in a federated emulation can conceal that the sites emulated different trials</a></li>
+<li><a href="../problems/MER-01-phenotypes-enter-emulations-as-error-free-binary-variables.html">MER-01: Phenotypes enter emulations as error-free binary variables</a></li>
 </ul>
 </div>
 </section>

@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.26">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Emulation is increasingly used to produce a risk under a hypothetical treatment strategy and to learn which treatment an individual should receive, and both outputs are then offered as decision support. Ordinary validation compares a predicted risk against an observed outcome, and under a strategy the outcome is observed only for the part of a validation set that happened to follow it, so the label a calibration curve needs does not exist for everyone else. Counterfactual analogues of the standard measures now exist: artificial censoring with inverse probability weighting extends calibration, the c-index, the time-dependent AUC and the Brier score to sustained strategies with time-to-event outcomes, and identification results cover loss-based measures, the ROC area and the calibration curve even when the prediction model is misspecified. All of them are identified under the same conditional exchangeability and positivity conditions used to fit the model, and violations are referred to sensitivity analysis, so a counterfactual calibration curve computed in a validation database is evidence about fit rather than about the assumption carrying the causal claim. What nobody reports is how these measures behave when exchangeability fails, so a check aimed at the failure mode that motivates the whole exercise has no known operating characteristics. The scoping review that named the absence screened 4919 records down to 13 included papers and asked for extension to non-discrete treatments and to nonparametric models; the published performance results cover discrete strategies, with dynamic regimes in an appendix. At the applied end a machine-learned antidepressant rule was scored by emulating a four-arm target trial in a held-out test set of the same claims database of 715,246 patients and 739,980 treatment episodes, which reuses the identification assumptions instead of testing them, and applied prediction work still stops at predicted probabilities without defining the action space that maps them to the set of possible decisions.">
+
+<title>A counterfactual prediction is validated under the assumptions that produced it, and nothing maps its output to a decision – Open Problems in Target Trial Emulation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-b758ccaa5987ceb1b75504551e579abf.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": true,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Open Problems in Target Trial Emulation</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../catalog.html"> 
+<span class="menu-text">Catalog</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-categories" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Categories</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-categories">    
+        <li>
+    <a class="dropdown-item" href="../categories/protocol.html">
+ <span class="dropdown-text">Protocol specification &amp; well-defined interventions</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/eligibility.html">
+ <span class="dropdown-text">Eligibility, cohort entry &amp; the new-user question</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/time-zero.html">
+ <span class="dropdown-text">Time zero, alignment &amp; time-related bias</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/strategies.html">
+ <span class="dropdown-text">Treatment strategies, grace periods &amp; cloning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/estimands.html">
+ <span class="dropdown-text">Estimands, causal contrasts &amp; target populations</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/confounding.html">
+ <span class="dropdown-text">Confounding control &amp; the assignment assumption</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/g-methods.html">
+ <span class="dropdown-text">G-methods: specification, estimation &amp; inference</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/positivity.html">
+ <span class="dropdown-text">Positivity, structural violations &amp; extrapolation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/unmeasured-confounding.html">
+ <span class="dropdown-text">Unmeasured confounding, negative controls &amp; bias analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/measurement.html">
+ <span class="dropdown-text">Measurement error &amp; misclassification in routine data</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/missing-data.html">
+ <span class="dropdown-text">Missing data, censoring &amp; loss to follow-up</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/outcomes.html">
+ <span class="dropdown-text">Outcomes, competing events &amp; the time scale</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/sequential.html">
+ <span class="dropdown-text">Sequential emulation &amp; nested trials</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/data-sources.html">
+ <span class="dropdown-text">Data sources, linkage &amp; federated infrastructure</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/benchmarking.html">
+ <span class="dropdown-text">Benchmarking, falsification &amp; empirical validation</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/reporting.html">
+ <span class="dropdown-text">Reporting, regulation &amp; decision acceptance</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/software.html">
+ <span class="dropdown-text">Software, computation &amp; reproducibility</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../categories/learning.html">
+ <span class="dropdown-text">Machine learning, high-dimensional adjustment &amp; automated emulation</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../agenda.html"> 
+<span class="menu-text">Agenda</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../studies.html"> 
+<span class="menu-text">Studies</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../chronology.html"> 
+<span class="menu-text">Chronology</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../landscape.html"> 
+<span class="menu-text">Landscape</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../methods.html"> 
+<span class="menu-text">How this was verified</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../references.html"> 
+<span class="menu-text">References</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/choxos/TTE-open-problems"> <i class="bi bi-github" role="img" aria-label="GitHub repository">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#statement" id="toc-statement" class="nav-link active" data-scroll-target="#statement">Statement</a></li>
+  <li><a href="#why-it-is-open" id="toc-why-it-is-open" class="nav-link" data-scroll-target="#why-it-is-open">Why it is open</a></li>
+  <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
+  <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
+  <li><a href="#our-study" id="toc-our-study" class="nav-link" data-scroll-target="#our-study">Our study</a></li>
+  <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
+  <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">A counterfactual prediction is validated under the assumptions that produced it, and nothing maps its output to a decision</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Machine learning, high-dimensional adjustment &amp; automated emulation</div>
+    <div class="quarto-category">Medium-high priority</div>
+    <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Analysis plan</div>
+    <div class="quarto-category">Protocol: Causal contrast</div>
+    <div class="quarto-category">Data: EHR</div>
+    <div class="quarto-category">Data: Claims</div>
+    <div class="quarto-category">Data: Any setting</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Emulation is increasingly used to produce a risk under a hypothetical treatment strategy and to learn which treatment an individual should receive, and both outputs are then offered as decision support. Ordinary validation compares a predicted risk against an observed outcome, and under a strategy the outcome is observed only for the part of a validation set that happened to follow it, so the label a calibration curve needs does not exist for everyone else. Counterfactual analogues of the standard measures now exist: artificial censoring with inverse probability weighting extends calibration, the c-index, the time-dependent AUC and the Brier score to sustained strategies with time-to-event outcomes, and identification results cover loss-based measures, the ROC area and the calibration curve even when the prediction model is misspecified. All of them are identified under the same conditional exchangeability and positivity conditions used to fit the model, and violations are referred to sensitivity analysis, so a counterfactual calibration curve computed in a validation database is evidence about fit rather than about the assumption carrying the causal claim. What nobody reports is how these measures behave when exchangeability fails, so a check aimed at the failure mode that motivates the whole exercise has no known operating characteristics. The scoping review that named the absence screened 4919 records down to 13 included papers and asked for extension to non-discrete treatments and to nonparametric models; the published performance results cover discrete strategies, with dynamic regimes in an appendix. At the applied end a machine-learned antidepressant rule was scored by emulating a four-arm target trial in a held-out test set of the same claims database of 715,246 patients and 739,980 treatment episodes, which reuses the identification assumptions instead of testing them, and applied prediction work still stops at predicted probabilities without defining the action space that maps them to the set of possible decisions.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="problem-meta">
+<p><span class="problem-id">LRN-05</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-medium-high">Medium-high priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 3/5</span></p>
+</div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Analysis plan</span> <span class="chip chip-axis">Causal contrast</span><br>
+Seen in: <span class="chip chip-axis">EHR</span> <span class="chip chip-axis">Claims</span> <span class="chip chip-axis">Any setting</span></p>
+</div>
+<section id="statement" class="level2">
+<h2 class="anchored" data-anchor-id="statement">Statement</h2>
+<p>Emulation is increasingly used to produce a risk under a hypothetical treatment strategy and to learn which treatment an individual should receive, and both outputs are then offered as decision support. Ordinary validation compares a predicted risk against an observed outcome, and under a strategy the outcome is observed only for the part of a validation set that happened to follow it, so the label a calibration curve needs does not exist for everyone else. Counterfactual analogues of the standard measures now exist: artificial censoring with inverse probability weighting extends calibration, the c-index, the time-dependent AUC and the Brier score to sustained strategies with time-to-event outcomes, and identification results cover loss-based measures, the ROC area and the calibration curve even when the prediction model is misspecified. All of them are identified under the same conditional exchangeability and positivity conditions used to fit the model, and violations are referred to sensitivity analysis, so a counterfactual calibration curve computed in a validation database is evidence about fit rather than about the assumption carrying the causal claim. What nobody reports is how these measures behave when exchangeability fails, so a check aimed at the failure mode that motivates the whole exercise has no known operating characteristics. The scoping review that named the absence screened 4919 records down to 13 included papers and asked for extension to non-discrete treatments and to nonparametric models; the published performance results cover discrete strategies, with dynamic regimes in an appendix. At the applied end a machine-learned antidepressant rule was scored by emulating a four-arm target trial in a held-out test set of the same claims database of 715,246 patients and 739,980 treatment episodes, which reuses the identification assumptions instead of testing them, and applied prediction work still stops at predicted probabilities without defining the action space that maps them to the set of possible decisions.</p>
+</section>
+<section id="why-it-is-open" class="level2">
+<h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
+<p>The label validation needs is the outcome under the strategy, and it is missing by construction for exactly the individuals whose treatment departed from that strategy; recovering it requires the identification assumptions, which is why every counterfactual performance estimator inherits them and none can test them. Moving validation to a second database changes the confounding structure along with the population, so a disagreement between sources is not attributable to the model rather than to the new source’s own unmeasured confounding. The design that breaks the circle is a trial randomizing patients to the rule against usual care, which costs what the observational route exists to avoid. A threshold is what turns a predicted benefit into an action, and a threshold encodes how much benefit is worth how much harm, which is a value judgment no estimator supplies. The simulation that would at least establish whether counterfactual calibration degrades under unmeasured confounding has not been published, and its answer would be a property of the confounding structure assumed, so it yields a scenario rather than a guarantee.</p>
+</section>
+<section id="what-has-been-tried" class="level2">
+<h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
+<div class="table-scroll">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Work</th>
+<th>What it contributes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://doi.org/10.1186/s41512-021-00092-9">Lin L, Sperrin M, Jenkins DA, Martin GP, Peek N. A scoping review of causal methods enabling predictions under hypothetical interventions. Diagn Progn Res 2021;5(1):3</a></td>
+<td>Screens 4919 records down to 13 included papers, finds most observational approaches built on marginal structural models and g-estimation, and concludes that techniques for validating causal prediction models are in their infancy.</td>
+</tr>
+<tr class="even">
+<td><a href="https://doi.org/10.1097/EDE.0000000000001713">Keogh RH, Van Geloven N. Prediction under interventions: evaluation of counterfactual performance using longitudinal observational data. Epidemiology 2024;35(3):329-339</a></td>
+<td>Builds a validation set mimicking the strategy through artificial censoring and inverse probability weighting, and extends calibration, the c-index, the cumulative dynamic AUC and the Brier score to sustained strategies with time-to-event outcomes.</td>
+</tr>
+<tr class="odd">
+<td><a href="https://doi.org/10.1002/sim.70287">Boyer CB, Dahabreh IJ, Steingrimsson JA. Estimating and evaluating counterfactual prediction models. Stat Med 2025;44(23-24):e70287</a></td>
+<td>Gives identification and estimation results for counterfactual loss-based measures, the ROC area and the calibration curve that stay valid under a misspecified prediction model, and refers violations of exchangeability to sensitivity analysis.</td>
+</tr>
+<tr class="even">
+<td><a href="https://doi.org/10.1186/s41512-025-00201-y">Voter SC, Dahabreh IJ, Boyer CB, Rahbar H, Kontos D, Steingrimsson JA. Counterfactual prediction from machine learning models: transportability and joint analysis for model development and evaluation using multi-source data. Diagn Progn Res 2025;9(1):22</a></td>
+<td>Estimates counterfactual model performance in the population underlying an observational study either from that study alone or by transporting from the randomized trial it emulates, and states that the assumptions of both routes are untestable.</td>
+</tr>
+<tr class="odd">
+<td><a href="https://doi.org/10.1097/EDE.0000000000001173">Sachs MC, Sjölander A, Gabriel EE. Aim for clinical utility, not just predictive accuracy. Epidemiology 2020;31(3):359-364</a></td>
+<td>Derives a decision rule from a prognostic model and emulates a prediction-driven trial in a split sample to evaluate its clinical utility, holding that a randomized comparison against standard care is what settles the question.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="probable-solution-or-research-direction" class="level2">
+<h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
+<p>Start with operating characteristics: simulate a sustained strategy under a known confounding structure, compute counterfactual calibration, discrimination and the Brier score with the confounder in the adjustment set and then without it, and report how large the confounding has to be before each measure moves. Report counterfactual performance as a bias-analysis interval rather than as a point estimate, so a calibration curve carries the same sensitivity parameter as the effect estimate it descends from. Extend the counterfactual performance results from discrete strategies to dose-defined and dynamic strategies, which is what the scoping review asked for and where routine treatment data actually sit. For a learned rule, require the emulated evaluation to be reported with the action space it implies: the decision threshold, the number of patients whose treatment would change, and the net benefit at that threshold, rather than a table of predicted probabilities.</p>
+</section>
+<section id="our-study" class="level2">
+<h2 class="anchored" data-anchor-id="our-study">Our study</h2>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A study is designed
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Question.</strong> Across 24 prespecified sensitivity scenarios for static always-treat and never-treat strategies, what is the scenario-specific paired change in estimated 24-month counterfactual calibration, AUC, and Brier score when exact artificial-censoring weights omit U rather than condition on U; when do Monte Carlo confidence bounds establish consequential distortion or negligible distortion; and how often do conventional weight diagnostics flag consequential distortion?</p>
+<p><strong>Status.</strong> 4 of 24 scenarios complete; the run was interrupted and resumes from its checkpoints</p>
+</div>
+</div>
+</section>
+<section id="verification" class="level2">
+<h2 class="anchored" data-anchor-id="verification">Verification</h2>
+<div class="verification-trail">
+<p><strong>Verdict.</strong> Partially addressed. Part of this problem is addressed by existing work; the entry names which part.</p>
+<p><strong>Dissent.</strong> literature dissented (open): Searched the 1,376-record screened corpus and read two records in full text. The core claim survives: every counterfactual performance measure in the corpus is identified under the same exchangeability and positivity conditions used to fit the model, and no record reports how those measures behave when the conditions fail, so the check aimed at the failure mode has no […]</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
+<dl>
+<dt>Literature and prior-art check</dt>
+<dd>
+<strong>open / supported-with-caveat.</strong> Searched the 1,376-record screened corpus and read two records in full text. The core claim survives: every counterfactual performance measure in the corpus is identified under the same exchangeability and positivity conditions used to fit the model, and no record reports how those measures behave when the conditions fail, so the check aimed at the failure mode has no established operating characteristics. Two caveats, both from records the entry does not cite. First, the entry’s closing sentence, that applied prediction work stops at predicted probabilities and defines no action space, is contradicted by a 2021 study in the corpus that estimates individual treatment effects for two direct oral anticoagulants, converts them into treatment recommendations, and evaluates those recommendations with c-for-benefit, absolute risk reduction and an absolute risk difference obtained by trial emulation, reporting how many patients would have been recommended something other than what they received. That is the action-space reporting the entry’s proposed direction asks for, published four years before the entry. Second, the entry describes the machine-learned antidepressant rule as scored in a held-out test set of 715,246 patients and 739,980 treatment episodes, and carries no citation for it. Both numbers are real and come from the 2021 Taiwanese study that is one of the four gaps behind this entry, but they are the full analysis cohort and the count of next-step episodes, not the test set: the evaluation ran in a randomly assigned 20 percent of patients. The design description is otherwise exact, since that study does state one target trial with four arms. The uncited numeric claim and the misplaced denominator are the two things a reader could check and find wrong.
+</dd>
+<dt>GPT-5.6 Sol, technical and source-code lens</dt>
+<dd>
+<strong>partially-solved / overstated.</strong> The central identification concern is correct: except where consistency links observed outcomes to the strategy, individual counterfactual outcomes are unavailable, and performance measures estimated from observational validation data cannot by themselves test conditional or sequential exchangeability. A held-out sample from the same database addresses overfitting and sampling variability, not unmeasured confounding. Existing work nevertheless supplies identifiable counterfactual calibration, discrimination, and loss measures and shows how predictions can enter decision rules, so neither the validation problem nor the prediction-to-decision mapping is wholly unsolved. Several absolutes are technically wrong. Performance identification in a validation population need not use exactly the assumptions used during model development; it additionally depends on consistency and the relevant treatment, adherence, censoring, and possibly transport conditions. Exchangeability is not empirically testable from the same observed data, but observed treatment support and practical positivity can be diagnosed; structural nonpositivity cannot be repaired by truncation or sensitivity analysis. A randomized rule-versus-usual-care trial identifies the effect of adopting the rule, not the calibration of every individual counterfactual prediction, and it is not the only conceivable causal design. Decisions do not invariably require a scalar threshold, especially for multi-arm or dynamic strategies; they require an explicit action space and utility or loss function. Likewise, a sensitivity parameter for an average treatment effect cannot automatically be carried unchanged into nonlinear calibration, AUC, or Brier-score functionals; a metric-specific sensitivity model must be derived. Simulations can characterize selected confounding scenarios but cannot validate exchangeability in the application. The action-space and causal-validity issues are important for decision-support claims, while extensions to continuous treatments and additional simulation studies are roadmap items rather than universal prerequisites. Literature-novelty assertions such as ‘nobody reports’ were not judged. No R or Python package capability is asserted here, so no pinned-package source check applies. Cites doi:10.1097/EDE.0000000000001713: Provides counterfactual calibration, concordance, time-dependent AUC, and Brier-score evaluation for sustained strategies using artificial censoring and weighting, conditional on identification assumptions.. Cites doi:10.1002/sim.70287: Provides identification and estimation results for counterfactual loss, ROC-area, and calibration functionals, including evaluation of a fixed misspecified prediction model; it does not verify causal identification assumptions.. Cites doi:10.1097/EDE.0000000000001173: Shows that predictions can be mapped into an explicit decision rule and evaluated for clinical utility, refuting the universal claim that nothing maps predictions to decisions while leaving observational identification limitations intact..
+</dd>
+<dt>Grok 4.5, recency lens</dt>
+<dd>
+<strong>partially-solved / supported-with-caveat.</strong> Inverted-prior search first re-read the report’s own prior work, then scanned 2024–2026 epidemiology/stats literature, arXiv/medRxiv, and related software. Keogh &amp; Van Geloven (2024) and Boyer, Dahabreh &amp; Steingrimsson (2025) do what the report already says: identify and estimate counterfactual calibration, discrimination, loss, AUC, and Brier under conditional exchangeability and positivity, including (in appendices) dynamic or time-varying regimes. Their simulations probe nuisance misspecification and model misspecification, not exchangeability failure. Boyer states that exchangeability violations can be examined with sensitivity analysis and that further work is needed; Voter et al.&nbsp;(2025) restate that both observational and trial-transport routes rest on untestable assumptions. That circular-validation core remains open for sustained-strategy interventional prediction as formulated in TTE.
+</dd>
+</dl>
+<p>Two lines of prior art close parts of the agenda without closing the whole problem. First, Rambachan, Coston &amp; Kennedy (arXiv:2212.09844, revised 2025 as robust design/evaluation under unobserved confounding) partially identify MSE, calibration, TPR/FPR, ROC/precision-recall, and expected decision payoffs under explicit bounds on outcome differences between selected and unselected units, and they apply the framework to credit risk with thresholds. That is exactly the report’s proposed move of reporting performance as a confounding-sensitive interval and tying scores to actions, but the data structure is selective labels (binary selection, binary outcome), not artificial censoring plus IPW for sustained strategies with time-to-event outcomes. Per the case-discipline rule, that does not solve longitudinal interventional validation. Second, Luijken et al.&nbsp;(2024) formalize estimands for sequential prediction under interventions so that risks under defined intervention options can inform decisions; Sachs et al.&nbsp;(2020, already cited) argue for clinical utility over raw accuracy and for randomized evaluation of prediction-driven rules. Neither delivers published operating characteristics of Keogh/Boyer-style counterfactual calibration curves when exchangeability fails, nor a standard that forces learned rules to report threshold, treatment-change count, and net benefit under a stated action space.</p>
+<p>No CRAN/GitHub release was found that implements confounding-sensitive counterfactual performance for sustained strategies. No 2025–2026 FDA/EMA/ICH/ENCePP/TARGET-style guidance resolves validation-under-assumptions for interventional prediction. Net: the report’s central failure mode (performance identified only under the assumptions used to fit the model, with no published OC under violation for that estimator class, and applied work often stopping at probabilities) is still open; partial solutions exist for decision-oriented estimands and for robust performance under selective-label confounding. Cites arxiv:2212.09844: Provides partial-identification bounds and estimators for predictive performance (MSE, calibration, TPR/FPR, ROC-style measures) and expected decision payoffs under researcher-specified unobserved confounding, so performance is reported as a sensitivity interval rather than a point estimate that pretends exchangeability holds. Covers the report’s sensitivity-interval and action/threshold directions in the selective-labels setting (lending, pretrial, testing), not sustained-strategy TTE interventional prediction.. Cites 10.1002/bimj.70011: Formalizes population, decision moments, intervention options, horizon, and predictors so prediction under interventions is stated as a decision-relevant estimand rather than a free-floating probability. Partially addresses the report’s ‘nothing maps output to a decision’ clause by defining the intervention options the risk is supposed to inform; does not supply confounding OC for counterfactual performance metrics or net-benefit reporting standards for learned rules.. Cites 10.1002/sim.70287: Identification and estimation of counterfactual loss, AUC, and calibration that remain valid when the prediction model is misspecified, with appendix extensions toward random/dynamic and time-varying regimes. Advances the methods the report already treats as existing; explicitly leaves exchangeability violations to sensitivity analysis and further work, so it does not close the OC-under-failure gap..</p>
+<dl>
+<dt>GLM-5.2, third independent lens</dt>
+<dd>
+<strong>abstain / supported.</strong> The statement is internally consistent and correctly identifies that counterfactual performance estimators inherit the identification assumptions of the causal model, meaning they cannot independently test those assumptions. The claim that ‘nobody reports’ how these measures behave under exchangeability failure is a claim about current practice rather than a structural impossibility, which is appropriate since the proposed direction is to simulate this. The scope and severity are proportionate to the risk of using unvalidated counterfactual predictions for clinical decisions. I abstain on the status axis because I cannot verify the absence of recent publications that might have addressed this gap.
+</dd>
+<dt>Decision path</dt>
+<dd>
+<code>R3:partially-solved(n=2/3) → R9:substantiated-overstatement(n=1/4):codex</code>
+</dd>
+</dl>
+</div>
+</section>
+<section id="related-problems" class="level2">
+<h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
+<div class="related-links">
+<ul>
+<li><a href="../problems/EST-02-transporting-an-observational-estimate-compounds-sampling-as.html">EST-02: Transporting an observational estimate compounds sampling assumptions on top of confounding assumptions with no accounting</a></li>
+<li><a href="../problems/GMT-01-cross-validation-for-longitudinal-nuisance-models-optimizes-.html">GMT-01: Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance</a></li>
+<li><a href="../problems/LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.html">LRN-01: Flexible estimation is presented as a remedy for identification failure</a></li>
+<li><a href="../problems/LRN-04-subgroup-effects-are-estimated-where-overlap-is-worst-and-th.html">LRN-04: Subgroup effects are estimated where overlap is worst, and the groups with worst overlap are often the protected ones</a></li>
+</ul>
+</div>
+</section>
+<section id="source" class="level2">
+<h2 class="anchored" data-anchor-id="source">Source</h2>
+<p>Extracted from the source document at named as a missing theme by 2 (batches 03, 05) of the twelve gap labellers, working on disjoint gaps; reported as “Validating a counterfactual prediction model or a learned treatment rule outside the data that produced it, and mapping its output to a decision”; evidence is 4 future-research gaps in 4 papers: L0043#0, L0152#0, L0458#0, L0032#0 (gap-labelling).</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/choxos\.github\.io\/TTE-open-problems\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Ahmad Sofi-Mahmudi</p>
+</div>   
+    <div class="nav-footer-center">
+<p>Every entry carries a verification verdict. See <a href="../methods.html">How this was verified</a>.</p>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+    <div class="nav-footer-right">
+<p><a href="https://github.com/choxos/TTE-open-problems">Source</a></p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

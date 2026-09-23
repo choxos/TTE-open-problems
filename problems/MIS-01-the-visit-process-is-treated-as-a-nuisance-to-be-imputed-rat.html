@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends on a latent state needs further identifying assumptions or a sensitivity analysis. Applied emulations continue to use complete case or last observation carried forward, and enter healthcare use as a baseline confounder rather than as a process.">
+<meta name="description" content="Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so record-based covariate histories are irregular and selectively missing in a way that carries clinical information. Missing-at-random conditional on the recorded history can therefore fail precisely because the recording is itself informative. Standard handling, and last observation carried forward in particular, constructs an artificial history in which a patient’s state is asserted to be unchanged over an interval during which the absence of measurement was itself evidence about their state.">
 
 <title>The visit process is treated as a nuisance to be imputed rather than as part of the causal structure – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -394,7 +394,9 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#why-it-is-open" id="toc-why-it-is-open" class="nav-link" data-scroll-target="#why-it-is-open">Why it is open</a></li>
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
+  <li><a href="#our-study" id="toc-our-study" class="nav-link" data-scroll-target="#our-study">Our study</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -410,13 +412,17 @@ ul.task-list li input[type="checkbox"] {
   <div class="quarto-categories">
     <div class="quarto-category">Missing data, censoring &amp; loss to follow-up</div>
     <div class="quarto-category">Very high priority</div>
-    <div class="quarto-category">Unverifiable</div>
+    <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Follow-up</div>
+    <div class="quarto-category">Protocol: Analysis plan</div>
+    <div class="quarto-category">Data: EHR</div>
+    <div class="quarto-category">Data: Linked records</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends on a latent state needs further identifying assumptions or a sensitivity analysis. Applied emulations continue to use complete case or last observation carried forward, and enter healthcare use as a baseline confounder rather than as a process.
+    Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so record-based covariate histories are irregular and selectively missing in a way that carries clinical information. Missing-at-random conditional on the recorded history can therefore fail precisely because the recording is itself informative. Standard handling, and last observation carried forward in particular, constructs an artificial history in which a patient’s state is asserted to be unchanged over an interval during which the absence of measurement was itself evidence about their state.
   </div>
 </div>
 
@@ -434,15 +440,19 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="problem-meta">
-<p><span class="problem-id">MIS-01</span> <span class="verdict verdict-unverifiable">Unverifiable</span> <span class="chip chip-priority-very-high">Very high priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 3/5</span></p>
+<p><span class="problem-id">MIS-01</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-very-high">Very high priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 3/5</span></p>
+</div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Follow-up</span> <span class="chip chip-axis">Analysis plan</span><br>
+Seen in: <span class="chip chip-axis">EHR</span> <span class="chip chip-axis">Linked records</span></p>
 </div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so missing-at-random conditional on the recorded history can fail precisely because the recording is itself informative, last observation carried forward constructs a history in which the absence of measurement was itself evidence, and conditioning on having been observed can induce selection bias. Three estimator families now address this: multiply robust estimation under covariate-driven observation times, calibrated inverse probability weights under irregular visits, and continuous-time weights built from a marked point process. Inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds; visiting that depends on a latent state needs further identifying assumptions or a sensitivity analysis. Applied emulations continue to use complete case or last observation carried forward, and enter healthcare use as a baseline confounder rather than as a process.</p>
+<p>Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so record-based covariate histories are irregular and selectively missing in a way that carries clinical information. Missing-at-random conditional on the recorded history can therefore fail precisely because the recording is itself informative. Standard handling, and last observation carried forward in particular, constructs an artificial history in which a patient’s state is asserted to be unchanged over an interval during which the absence of measurement was itself evidence about their state.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>The remaining methodological case is the one that matters most in practice: visiting driven by a latent severity the record does not contain, which no observation model can condition on. Weight instability is driven by small conditional observation probabilities and by intensity-model misspecification, and calibration of the intensity model does not validate it, so the diagnostic available does not settle whether the weights are trustworthy. The larger gap is adoption rather than method, and adoption is slow because modeling the visit process multiplies the nuisance components and therefore the positivity requirements, so the more faithful model can be the less identifiable one.</p>
+<p>Conditioning on having been observed can open a collider path, so the natural fix makes a different bias, and choosing between them requires knowing the structure that is in question. Inverse-intensity-of-visit weights are unstable when visit rates vary by an order of magnitude across patients, which they do. Modeling the visit process jointly with treatment and outcome multiplies the nuisance components and therefore the positivity requirements, so the more faithful model can be the less identifiable one.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -460,16 +470,8 @@ ul.task-list li input[type="checkbox"] {
 <td>Establishes when the visit process biases inference in record-based studies and characterizes the mechanism.</td>
 </tr>
 <tr class="even">
-<td><a href="https://doi.org/10.1093/biomtc/ujae065">Multiply robust estimation of marginal structural models in observational studies subject to covariate-driven observation times. Biometrics 2024</a></td>
-<td>Supplies a multiply robust estimator for irregularly spaced, covariate-driven observation times, more flexible and more efficient than the existing doubly weighted alternative.</td>
-</tr>
-<tr class="odd">
-<td><a href="https://doi.org/10.1186/s12874-022-01831-2">Estimation of marginal structural models under irregular visits and unmeasured confounder: calibrated inverse probability weights. BMC Med Res Methodol 2023</a></td>
-<td>Gives calibrated weights for irregular visits in the presence of an unmeasured confounder.</td>
-</tr>
-<tr class="even">
-<td><a href="https://doi.org/10.1002/sim.70102">Continuous-time causal inference with marked point process weights. Stat Med 2025</a></td>
-<td>Builds continuous-time weights from a marked point process because primary-care visit times are irregular and informative and treatment history carries duration and dose.</td>
+<td><a href="https://doi.org/10.1038/s41746-026-02563-z">Wang, et al.&nbsp;An operational target trial emulation framework for causal inference using electronic health records. npj Digit Med 2026</a></td>
+<td>Places the observation process among the operational constraints an emulation must handle rather than among its data-cleaning steps.</td>
 </tr>
 </tbody>
 </table>
@@ -477,21 +479,37 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Adopt the estimators that exist rather than defaulting to complete case or last observation carried forward, and state which assumption the chosen one requires: conditionally independent visiting, or a latent-state model with its own identifying conditions. Model visits as recurrent events or point processes jointly with treatment and outcome, and include healthcare use in the causal diagram as a process so conditioning decisions can be read off the graph. Report the dispersion of the observation weights and the conditional observation probabilities rather than the marginal visit rate, and pair a latent-state analysis with a sensitivity analysis, since calibration of an intensity model is not validation of it.</p>
+<p>Model visits as recurrent events or point processes jointly with treatment and outcome, and compare complete case, last observation carried forward, multiple imputation, inverse-intensity weighting and joint latent-state targeted learning on data generated with a known, treatment-dependent visiting mechanism. Include healthcare use as a process in the causal diagram rather than as a baseline confounder, so that conditioning decisions can be read off the graph. Report visit-weight dispersion and the calibration of the predicted visit intensity, since an uncalibrated intensity model produces weights that look like adjustment and are noise.</p>
+</section>
+<section id="our-study" class="level2">
+<h2 class="anchored" data-anchor-id="our-study">Our study</h2>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A study is designed
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Question.</strong> Within prespecified monthly latent-state selection models, how do complete-record, last-observation-carried-forward, multiple-imputation, inverse-intensity, calibrated-weight, operational visit-process, and joint latent-state analyses estimate the 24-month sustained-treatment risk difference when latent-state-dependent observation changes while marginal observation frequency is held fixed? How does performance change when latent confounding, prognosis, effect modification, and persistence independently range from null to weak, and can observable diagnostics identify replicate-level estimation errors within and across simulated environments?</p>
+</div>
+</div>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
-<p><strong>Verdict.</strong> Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.</p>
-<p><strong>The source said.</strong> “Biomarkers and diagnoses are observed when a patient attends care and a clinician orders a test. That visit process depends on latent severity, on prior treatment and often on an impending outcome, so record-based covariate histories are irregular and selectively missing in a way that carries clinical information. Missing-at-random conditional on the recorded history can therefore fail precisely because the recording is itself informative. Standard handling, and last observation carried forward in particular, constructs an artificial history in which a patient’s state is asserted to be unchanged over an interval during which the absence of measurement was itself evidence about their state.”</p>
-<p><strong>What was wrong with it.</strong> Estimators that model the observation process jointly with treatment and outcome exist in three separate families, so the entry’s implication that the analyst has no principled option was wrong. Two further corrections: inverse-intensity weighting handles conditionally independent visiting when the intensity model is correct and observation positivity holds, and weight instability comes from small conditional observation probabilities and misspecification rather than from marginal visit-rate heterogeneity on its own.</p>
-<p><strong>Dissent.</strong> literature dissented (overstated): The entry says standard handling constructs artificial histories and that modeling visits jointly with treatment and outcome multiplies nuisance components without a worked solution. Three separate estimator families in the corpus contradict the strong reading. A 2024 Biometrics paper proposes a multiply robust estimator for marginal structural models under irregularly spaced, covariate-driven observation times and shows it is more flexible and more efficient than the previously proposed doubly weighted estimator. A 2023 BMC Medical Research Methodology paper gives calibrated inverse probability weights for marginal structural models under irregular visits with an unmeasured confounder. A 2025 Statistics in Medicine paper builds continuous-time weights from a marked point process for the same reason. What survives is an adoption claim rather than a methods claim: these estimators exist and applied emulation pipelines do not use them, and healthcare use is still entered as a baseline confounder rather than modeled as a process. grok dissented (supported-with-caveat): Inverted-prior search finds methods that put the visit process in the causal or estimating structure, so the problem is not open as a pure absence of methodology. It is not fully solved either: the report’s hard tradeoffs remain live, and the comparative evaluation it proposes has not been delivered for sustained-strategy target trial emulation under a known, treatment-dependent visiting mechanism.</p>
-<p>Cited works first. Goldstein et al.&nbsp;(JAMIA 2019; 10.1093/jamia/ocz148) characterize when informative visits bias EHR association analyses; that paper diagnoses the mechanism and does not close it. Wang et al.&nbsp;(npj Digit Med 2026; 10.1038/s41746-026-02563-z) elevate the observation process to an operational constraint on whether an EHR can realize a target trial protocol element. Secondary commentary on that paper treats the contribution as specification-versus-realization discipline, not as a solved estimator. Both strengthen the claim that the issue is still on the agenda; neither resolves identification or estimation under treatment-dependent visiting.</p>
-<p>Prior art that treats visits as structure rather than pure nuisance: (i) inverse-intensity-of-visit (IIW) theory and software for irregular longitudinal data (Pullenayegum line; CRAN IrregLong with Cox visit-intensity weights and IIW-GEE), still actively refined in 2025 on visit-model variable selection and selection of patients with no follow-up; (ii) parametric g-formula software that models a random measurement or visit process jointly with covariates for sustained strategies (gfoRmula’s visitprocess argument: visit indicators attached to intermittently measured confounders, with last-measured values and a cap on consecutive missed visits); (iii) Kalia et al.&nbsp;(BMC Med Res Methodol 2023; 10.1186/s12874-022-01831-2), calibrated inverse probability weights for marginal structural models under irregular visits, with Monte Carlo evaluation; (iv) Kalia et al.&nbsp;(Stat Med 2025; 10.1002/sim.70102), continuous-time MSM weights factored as visit intensity times dose (marked point process) on primary-care EHR for cumulative SGLT-2i exposure and recurrent UTI, explicitly motivated by informative visit timing. Coulombe et al.&nbsp;(Stat Methods Med Res 2023) combine inverse intensity of visit weights with individualized treatment rules in longitudinal observational data, which is related but not full sustained-strategy TTE.</p>
-<p>What remains open, and why a full solved vote fails. IIW and continuous-time visit weights still require sequential positivity for the visit intensity and can be unstable when intensities vary sharply across patients; Kalia 2025 itself discusses extreme weights, stabilization, and constrained optimal weights, not elimination of the variance problem the report flags. Joint visit–treatment–outcome models still multiply nuisance components and positivity requirements; that structural cost is not removed by packaging. gfoRmula’s visit process assumes a discrete grid and a correctly specified visit model, and still encodes non-visit intervals via last measured values, so it does not by itself refute the LOCF critique for continuous-time EHR generation. No 2024–2026 paper or package release was found that runs the report’s proposed horse race (complete case, LOCF, MI, IIW, joint latent-state targeted learning) on data generated with a known treatment-dependent visiting mechanism in a sustained-strategy TTE design. Method proposals and single-setting applications therefore count as partial, not full, resolution.</p>
-<p>Package and guidance scan. IrregLong and gfoRmula implement visit or measurement process handling; TrialEmulation, lmtp, ltmle, WeightIt, MatchIt, cobalt, ipw, adjustedCurves, riskRegression, zEpid, causallib, lifelines, and scikit-survival did not surface merged work that closes this gap for informative EHR visit processes under sustained strategies. 2025–2026 RWE guidances (FDA RWE, EMA/HMA registry, ICH E9(R1), TARGET, HARPER/STaRT-RWE, ENCePP, ISPE, NICE) frame data-generation and missingness issues at a high level; none was found that settles a preferred causal handling of informative visits for TTE.</p>
-<p>Caveat on the claim as stated. Applied TTE and EHR pipelines still often grid time and carry forward or impute under MAR, so the nuisance framing is still a fair description of common practice. The methodological literature has long refused that framing, so a reader who only knows IIW, gfoRmula visitprocess, or continuous-time marked point process MSMs would find the absolute statement overstated. The agenda item that remains is comparative, practical, and identification-theoretic under realistic visit heterogeneity, not the invention of the first joint visit model.</p>
-<p>Queries run (among others): Goldstein informative visit JAMIA 2019; Wang operational TTE npj Digit Med 2026; informative visit process inverse intensity EHR TTE 2024–2026; joint modeling visit process treatment outcome causal; site:arxiv.org informative visit inverse intensity; gfoRmula/lmtp/TrialEmulation visit process; CRAN IrregLong; Kalia MSM irregular visits; Kalia continuous-time marked point process 2025; Pullenayegum IIW 2025 Biometrics; Coulombe ITR IIV; FDA/EMA/TARGET visit observation process TTE.</p>
+<p><strong>Verdict.</strong> Partially addressed. 2 independent auditors judged the claim as stated too strong. Estimators that model the observation process jointly with treatment and outcome exist in three separate families; applied emulations continue to use complete case or last observation carried forward, and healthcare use is entered as a baseline confounder rather than as a process. Moved by the full-text reading: 11 findings from 11 papers naming work that covers part of this problem survived both the reader and an independent second reviewer, so the verdict moves from overstated to partially-addressed. A further 83 findings in the same reading restate the problem as open; the two are consistent, and the part that is covered is named above.</p>
+<p><strong>Dissent.</strong> grok dissented (supported-with-caveat): Inverted-prior search finds methods that put the visit process in the causal or estimating structure, so the problem is not open as a pure absence of methodology. […]</p>
+<p><strong>Revised by the full-text reading.</strong> Applied full-text reading of the consolidated library.</p>
+<dl>
+<dt>Verdict changed</dt>
+<dd>
+<strong>overstated -&gt; partially-addressed</strong> 11 surviving findings from: Applying Trial Emulation Methods to Population-Scale Linked ; Bias of time-varying exposure effects due to time-varying co; Comparison of a Target Trial Emulation Framework to Cox Regr; Continuous-Time Causal Inference With Marked Point Process W; Estimation of marginal structural models under irregular vis; Missingness in Eligibility Criteria for Target Trial Emulati; Multiply robust estimation of marginal structural models in ; Target Trial Emulation to Improve Causal Inference from Obse; The Impact of Different CD4 Cell-Count Monitoring and Switch; gfoRmula: An R Package for Estimating the Effects of Sustain; simcausal R Package: Conducting Transparent and Reproducible. New citations: 10.1002/pds.5328, 10.1002/sim.70102, 10.1002/sim.70500, 10.1016/j.patter.2020.100008, 10.1093/aje/kwv083, 10.1093/biomtc/ujae065, 10.1101/2022.05.27.22275037, 10.1186/s12874-022-01831-2, 10.1681/asn.0000000000000152, 10.18637/jss.v081.i02, 10.23889/ijpds.v9i5.2884
+</dd>
+</dl>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -513,23 +531,518 @@ ul.task-list li input[type="checkbox"] {
 <p>Caveat on the claim as stated. Applied TTE and EHR pipelines still often grid time and carry forward or impute under MAR, so the nuisance framing is still a fair description of common practice. The methodological literature has long refused that framing, so a reader who only knows IIW, gfoRmula visitprocess, or continuous-time marked point process MSMs would find the absolute statement overstated. The agenda item that remains is comparative, practical, and identification-theoretic under realistic visit heterogeneity, not the invention of the first joint visit model.</p>
 <p>Queries run (among others): Goldstein informative visit JAMIA 2019; Wang operational TTE npj Digit Med 2026; informative visit process inverse intensity EHR TTE 2024–2026; joint modeling visit process treatment outcome causal; site:arxiv.org informative visit inverse intensity; gfoRmula/lmtp/TrialEmulation visit process; CRAN IrregLong; Kalia MSM irregular visits; Kalia continuous-time marked point process 2025; Pullenayegum IIW 2025 Biometrics; Coulombe ITR IIV; FDA/EMA/TARGET visit observation process TTE. Cites 10.1002/sim.70102: Implements continuous-time MSM weights as the product of visit-intensity weights and dose weights via a marked point process on primary-care EHR, treating informative visit timing as part of the treatment-process model rather than as a nuisance to impute for cumulative exposure and recurrent outcomes.. Cites 10.1186/s12874-022-01831-2: Gives calibrated IPW estimators for MSMs when visits are irregular, with Monte Carlo evidence that calibration reduces finite-sample bias relative to uncalibrated longitudinal weights under irregular observation and unmeasured confounding.. Cites 10.1016/j.patter.2020.100008: Released software for sustained treatment strategies that models a random measurement or visit process jointly with intermittently observed covariates (visitprocess), so visits enter the g-formula rather than being only a pre-analysis cleaning step; CRAN description still advertises handling of a random measurement/visit process.. Cites cran:IrregLong: Maintained CRAN implementation of inverse-intensity weights and IIW-GEE for irregular, potentially informative observation times, providing operational infrastructure for visit-process adjustment outside pure LOCF or MAR imputation..</p>
 <dl>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The problem statement accurately describes a methodological tension in EHR-based target trial emulation: the visit process is informative, yet standard practice treats it as a nuisance to be imputed. The reasons given for it being open (collider bias from conditioning on observation, instability of inverse-intensity weights, and positivity violations from joint modeling) are valid structural tradeoffs that genuinely support the claim being open. The claim is proportionate and does not assert an impossibility, but rather highlights a difficult modeling tradeoff that remains unresolved in standard practice.
 </dd>
 <dt>Decision path</dt>
 <dd>
-<code>R3:partially-solved(n=2/4) → R7:counter-and-support-both-present(support=1/counter=1)</code>
+<code>R3:partially-solved(n=2/4) → R8:overstated-majority(n=2/4) → R17:reading-moved(overstated-&gt;partially-addressed)</code>
 </dd>
 </dl>
+</div>
+</section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>93 papers in the reviewed corpus bear on this problem, published 2010 to 2026. Progress and a fresh assertion of openness land in the same year.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<p>It is also being <strong>closed in pieces</strong>: partial results come from more than one paper in more than one year, each covering a different part.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2010</td>
+<td>confirms it is open</td>
+<td>Testing and estimating model-adjusted effect-measure modification using marginal structural models and complex survey data.</td>
+</tr>
+<tr class="even">
+<td>2011</td>
+<td>confirms it is open</td>
+<td>How to use marginal structural models in randomized trials to estimate the natural direct and indirect effects of therapies mediated by causal intermediates.</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>confirms it is open</td>
+<td>Comparing marginal structural models to standard methods for estimating treatment effects of antihypertensive combination therapy.</td>
+</tr>
+<tr class="even">
+<td>2014</td>
+<td>confirms it is open</td>
+<td>Optimal CD4 count for initiating HIV treatment: impact of CD4 observation frequency and grace periods, and performance of dynamic marginal structural models.</td>
+</tr>
+<tr class="odd">
+<td>2015</td>
+<td>partly addresses it</td>
+<td>The Impact of Different CD4 Cell-Count Monitoring and Switching Strategies on Mortality in HIV-Infected African Adults on Antiretroviral Therapy: An Application of Dynamic Marginal Structural Models.</td>
+</tr>
+<tr class="even">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>Double robust and efficient estimation of a prognostic model for events in the presence of dependent censoring.</td>
+</tr>
+<tr class="odd">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Mediation Analysis for Health Disparities Research.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>partly addresses it</td>
+<td>simcausal R Package: Conducting Transparent and Reproducible Simulation Studies of Causal Effect Estimation with Complex Longitudinal Data.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Instrumental Variable Analyses in Pharmacoepidemiology: What Target Trials Do We Emulate?</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Comparing the Effectiveness of Dynamic Treatment Strategies Using Electronic Health Records: An Application of the Parametric g-Formula to Anemia Management Strategies.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Conditioning on future exposure to define study cohorts can induce bias: the case of low-dose acetylsalicylic acid and risk of major bleeding.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Statistical Methods for Modeling Time-Updated Exposures in Cohort Studies of Chronic Kidney Disease.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Bootstrap inference when using multiple imputation.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Immortal Time Bias in Observational Studies of Time-to-Event Outcomes: Assessing Effects of Postmastectomy Radiation Therapy Using the National Cancer Database.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Using marginal structural models to adjust for treatment drop-in when developing clinical prediction models.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Analysis of Longitudinal Studies With Repeated Outcome Measures: Adjusting for Time-Dependent Confounding Using Conventional Methods.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Effect Estimates in Randomized Trials and Observational Studies: Comparing Apples With Apples.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Bias in pharmacoepidemiologic studies using secondary health care databases: a scoping review.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>A comparison of methods to estimate the survivor average causal effect in the presence of missing data: a simulation study.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Adjusting for time-varying confounders in survival analysis using structural nested cumulative survival time models.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>partly addresses it</td>
+<td>gfoRmula: An R Package for Estimating the Effects of Sustained Treatment Strategies via the Parametric g-formula.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Rivaroxaban was found to be noninferior to warfarin in routine clinical care: A retrospective noninferiority cohort replication study.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Replicating Randomized Trial Results with Observational Data Using the Parametric g-Formula: An Application to Intravenous Iron Treatment in Hemodialysis Patients.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Analysis of time-to-event for observational studies: Guidance to the use of intensity models.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Reflection on modern methods: trial emulation in the presence of immortal-time bias. Assessing the benefit of major surgery for elderly lung cancer patients using observational data.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Improving rheumatoid arthritis comparative effectiveness research through causal inference principles: systematic review using a target trial emulation framework.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Joint calibrated estimation of inverse probability of treatment and censoring weights for marginal structural models.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Impact of antimicrobial de-escalation on mortality: a literature review of study methodology and recommendations for observational studies.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Marginal structural models for repeated measures where intercept and slope are correlated: An application exploring the benefit of nutritional supplements on weight gain in HIV-infected children initiating antiretroviral therapy.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>The Impact of Delayed Switch to Second-Line Antiretroviral Therapy on Mortality, Depending on Definition of Failure Time and CD4 Count at Failure.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>partly addresses it</td>
+<td>Bias of time-varying exposure effects due to time-varying covariate measurement strategies.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Simulating longitudinal data from marginal structural models using the additive hazard model.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Randomized Trial Replication Using Observational Data for Comparative Effectiveness of Secukinumab and Ustekinumab in Psoriasis: A Study From the British Association of Dermatologists Biologics and Immunomodulators Register.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Accounting for selection bias due to death in estimating the effect of wealth shock on cognition for the Health and Retirement Study.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Common Methods for Handling Missing Data in Marginal Structural Models: What Works and Why.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Variable selection for causal mediation analysis using LASSO-based methods.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>partly addresses it</td>
+<td>Comparison of a Target Trial Emulation Framework to Cox Regression to Estimate the Effect of Corticosteroids on COVID-19 Mortality.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Oncology Drug Effectiveness from Electronic Health Record Data Calibrated Against RCT Evidence: The PARSIFAL Trial Emulation.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>The effect of duration of therapy for treatment of Staphylococcus aureus blood stream infection: an application of cloning to deal with immortal-time bias in an analysis of data from a cohort study (BSI-FOO).</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Trial emulation and survival analysis for disease incidence registers: A case study on the causal effect of pre-emptive kidney transplantation.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Immortal time bias for life-long conditions in retrospective observational studies using electronic health records.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Invited Commentary: Conducting and Emulating Trials to Study Effects of Social Interventions.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Causal inference from observational data and target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Within-Person Variability Score-Based Causal Inference: A Two-Step Estimation for Joint Effects of Time-Varying Treatments.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>partly addresses it</td>
+<td>Target Trial Emulation to Improve Causal Inference from Observational Data: What, Why, and How?</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>partly addresses it</td>
+<td>Estimation of marginal structural models under irregular visits and unmeasured confounder: calibrated inverse probability weights.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Data Imputation for Clinical Trial Emulation: A Case Study on Impact of Intracranial Pressure Monitoring for Traumatic Brain Injury.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Emulating a target trial of intensive nurse home visiting in the policy-relevant population using linked administrative data.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation Using Hospital-Based Observational Data: Demonstration and Application in COVID-19</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Target trial emulation with multi-state model analysis to assess treatment effectiveness using clinical COVID-19 data</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Addressing common sources of bias in studies of new-onset type 2 diabetes following COVID that use electronic health record data.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Observational studies of treatment effectiveness in neurology.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Estimation of marginal structural models under irregular visits and unmeasured confounder: calibrated inverse probability weights.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Using instrumental variables to correct for bias in real-world cohort studies of the effects of disease-modifying treatment in MS.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Applying Trial Emulation Methods to Population-Scale Linked Electronic Health Records for Individuals with Multiple Long-Term Conditions Whilst Adjusting for Informative Observations.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Multiply robust estimation of marginal structural models in observational studies subject to covariate-driven observations.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Timing of follow-up visits after hospital discharge for COPD: Application of a new method.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Enhancing inferences and conclusions in body image focused non-experimental research via a causal modelling approach: A tutorial.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Estimating the Effect of Bariatric Surgery on Cardiovascular Events Using Observational Data?</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Patients on vitamin K treatment: is switching to direct-acting oral anticoagulation cost-effective? A target trial on a prospective cohort.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Making causal inferences from transactional data: A narrative review of opportunities and challenges when implementing the target trial framework.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Methodological biases in observational hospital studies of COVID-19 treatment effectiveness: pitfalls and potential</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Causal Effects of Stochastic PrEP Interventions on HIV Incidence Among Men Who Have Sex With Men</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Addressing immortal time bias in precision medicine: Practical guidance and methods development.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Bariatric Surgery and Cardiovascular Disease: The Target Trial Emulation Framework Provides Transparency in Articulating the Limits of Observational Studies.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>History-restricted marginal structural model and latent class growth analysis of treatment trajectories for a time-dependent outcome.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Continuous-Time Causal Inference With Marked Point Process Weights: An Example on Sodium-Glucose Co-Transporters 2 Inhibitor Medications and Urinary Tract Infection.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Considerations for emulations of randomized controlled trials using real-world data: learnings from an emulation of MONALEESA-2.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>An application of the augmented synthetic control method within a target trial framework: the case of the soda tax policy in California.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Strengthening inferential studies in the FDA Sentinel initiative: results from a methodological demonstration project.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Demystifying Clone-Censor-Weighting to Studying Treatment Initiation Windows: An Example Using Publicly Available Synthetic Medicare Claims Data.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Requiring continuous enrollment during follow-up? A call for robust research methods.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>The Impact of Immortal Time Bias on Survival Estimates of Patients with Heart Failure with Improved Ejection Fraction.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Advancing efficacy prediction for electronic health records based emulated trials in repurposing heart failure therapies.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Causal inference from observational data in neurosurgical studies: a mini-review and tutorial.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Adjusting for selection bias due to missing eligibility criteria in emulated target trials.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Estimating per-protocol effects in external comparator analyses using real-world data.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Editorial: External control arms for single-arm studies: methodological considerations and applications.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Federated target trial emulation using distributed observational data for treatment effect estimation.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Investigating Primary Care Indications to Improve the Quality of Electronic Health Record Data in Target Trial Emulation for Dementia.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Generating real-world evidence in early Alzheimer’s disease: Considerations for applying the target trial emulation framework to study the safety of anti-amyloid therapies.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Review of Recent Pharmacoepidemiologic Post-Market Safety Studies Through the Lens of the Estimand Framework.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Methodologies for the Emulation of Biomarker-Guided Trials Using Observational Data: A Systematic Review.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Analytic Considerations for the Evaluation of Tuberculosis Preventative Therapy Effectiveness Among People Living with HIV.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statistical approaches in ambispective cohort studies: Challenges and methodological insights.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statistical Methods to Adjust for Treatment Switching in Real-World Clinical Studies: A Scoping Review and Descriptive Comparison.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Penalized G-estimation for effect modifier selection in a structural nested mean model for repeated outcomes.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>partly addresses it</td>
+<td>Missingness in Eligibility Criteria for Target Trial Emulation in EHR With Survival Outcomes.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>From “negative” trial to positive clinical impact: mitigating eligibility criteria-induced temporal selection bias in emulated clinical trials.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Enhancing evidence-based care using trial emulation in electronic health records: real-world effects of empagliflozin in people with type 2 diabetes.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Individual causal effect estimation accounting for latent disease state modification</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Risk Prediction in Cardio-Oncology: Conceptual and Methodological Considerations: JACC: CardioOncology State-of-the-Art Review.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Assessing the quality of electronic health record data and the claims linked data for target trial emulation studies.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>An operational target trial emulation framework for causal inference using electronic health record data.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/GMT-02-identification-of-dynamic-regimes-in-continuous-time-under-t.html">GMT-02 — Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved</a></li>
-<li><a href="../problems/MER-01-phenotypes-enter-emulations-as-error-free-binary-variables.html">MER-01 — Phenotypes enter emulations as error-free binary variables</a></li>
+<li><a href="../problems/EST-04-no-mediated-effect-is-defined-for-a-sustained-treatment-stra.html">EST-04: No mediated effect is defined for a sustained treatment strategy, and emulations report a proportion mediated anyway</a></li>
+<li><a href="../problems/GMT-02-identification-of-dynamic-regimes-in-continuous-time-under-t.html">GMT-02: Identification of dynamic regimes in continuous time under treatment-dependent observation is unresolved</a></li>
+<li><a href="../problems/MER-01-phenotypes-enter-emulations-as-error-free-binary-variables.html">MER-01: Phenotypes enter emulations as error-free binary variables</a></li>
 </ul>
 </div>
 </section>

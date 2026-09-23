@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Transporting an observational contrast requires treatment exchangeability in the source, effect exchangeability across samples conditional on a sufficient measured set, and positivity for both treatment and sampling. A sufficient set is weaker than every effect modifier: modifiers that do not differ across populations or that are irrelevant after conditioning need not be observed. Transport estimators are now being applied to emulations, including post hoc standardization of emulations to their trial populations inside a benchmarking program. What remains is the accounting. If either exchangeability condition fails, source outcomes and target covariates alone cannot generally identify the resulting bias or apportion it between the two conditions, and no reporting practice attempts either.">
+<meta name="description" content="An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Weighting, outcome modeling and doubly robust transport estimators all exist, and all of them require that the effect modifiers be measured, that the populations overlap, and that effects be conditionally exchangeable across samples. Applied transport work still mostly uses conventional sampling weights or outcome models despite the more flexible alternatives. The deeper issue is that transporting an observational estimate stacks the sampling-exchangeability assumption on top of the treatment-exchangeability assumption, and no current reporting practice shows how the two compound or which one a given discrepancy should be charged to.">
 
 <title>Transporting an observational estimate compounds sampling assumptions on top of confounding assumptions with no accounting – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -395,6 +395,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -411,12 +412,17 @@ ul.task-list li input[type="checkbox"] {
     <div class="quarto-category">Estimands, causal contrasts &amp; target populations</div>
     <div class="quarto-category">High priority</div>
     <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Eligibility</div>
+    <div class="quarto-category">Protocol: Causal contrast</div>
+    <div class="quarto-category">Data: Multi-database</div>
+    <div class="quarto-category">Data: Federated</div>
+    <div class="quarto-category">Data: Any setting</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Transporting an observational contrast requires treatment exchangeability in the source, effect exchangeability across samples conditional on a sufficient measured set, and positivity for both treatment and sampling. A sufficient set is weaker than every effect modifier: modifiers that do not differ across populations or that are irrelevant after conditioning need not be observed. Transport estimators are now being applied to emulations, including post hoc standardization of emulations to their trial populations inside a benchmarking program. What remains is the accounting. If either exchangeability condition fails, source outcomes and target covariates alone cannot generally identify the resulting bias or apportion it between the two conditions, and no reporting practice attempts either.
+    An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Weighting, outcome modeling and doubly robust transport estimators all exist, and all of them require that the effect modifiers be measured, that the populations overlap, and that effects be conditionally exchangeable across samples. Applied transport work still mostly uses conventional sampling weights or outcome models despite the more flexible alternatives. The deeper issue is that transporting an observational estimate stacks the sampling-exchangeability assumption on top of the treatment-exchangeability assumption, and no current reporting practice shows how the two compound or which one a given discrepancy should be charged to.
   </div>
 </div>
 
@@ -436,13 +442,17 @@ ul.task-list li input[type="checkbox"] {
 <div class="problem-meta">
 <p><span class="problem-id">EST-02</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-promising">Promising</span> <span class="chip">Tractability 3/5</span></p>
 </div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Eligibility</span> <span class="chip chip-axis">Causal contrast</span><br>
+Seen in: <span class="chip chip-axis">Multi-database</span> <span class="chip chip-axis">Federated</span> <span class="chip chip-axis">Any setting</span></p>
+</div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Transporting an observational contrast requires treatment exchangeability in the source, effect exchangeability across samples conditional on a sufficient measured set, and positivity for both treatment and sampling. A sufficient set is weaker than every effect modifier: modifiers that do not differ across populations or that are irrelevant after conditioning need not be observed. Transport estimators are now being applied to emulations, including post hoc standardization of emulations to their trial populations inside a benchmarking program. What remains is the accounting. If either exchangeability condition fails, source outcomes and target covariates alone cannot generally identify the resulting bias or apportion it between the two conditions, and no reporting practice attempts either.</p>
+<p>An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Weighting, outcome modeling and doubly robust transport estimators all exist, and all of them require that the effect modifiers be measured, that the populations overlap, and that effects be conditionally exchangeable across samples. Applied transport work still mostly uses conventional sampling weights or outcome models despite the more flexible alternatives. The deeper issue is that transporting an observational estimate stacks the sampling-exchangeability assumption on top of the treatment-exchangeability assumption, and no current reporting practice shows how the two compound or which one a given discrepancy should be charged to.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>Both assumption sets are untestable and they fail in correlated ways: a health system whose case mix differs is usually also one whose confounding structure and treatment availability differ, so a single sensitivity parameter cannot represent the joint failure and separate parameters are not separately identified. Unmeasured effect modification is undetectable in the source population by construction. Combining transport with flexible representation learning risks erasing the effect modification transport is meant to preserve, because predictive invariance and causal invariance are different properties.</p>
+<p>Both assumption sets are untestable and they fail in correlated ways: a health system whose case mix differs is usually also one whose confounding structure and treatment availability differ, so a single sensitivity parameter cannot represent the joint failure. Unmeasured effect modification is not detectable in the source population, since by construction it is a variable nobody measured. Combining transport with flexible representation learning risks erasing the very effect modification that transport is supposed to preserve, because predictive invariance and causal invariance are different properties.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -469,14 +479,13 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Develop causal representation learning for transportability that balances populations only on representations sufficient for effect modification rather than on everything predictive, combined with targeted standardization and site-level random effects. Derive bounds under unmeasured effect modification and report them with the point estimate, so a transported number carries its own fragility rather than inheriting the source’s precision. Simulate populations that differ in covariates, treatment mechanisms, baseline hazards and effect modifiers separately, so each source of non-transportability is measurable rather than confounded with the others.</p>
+<p>Develop causal representation learning for transportability that balances sites only on representations sufficient for effect modification, rather than on everything predictive, and combine it with targeted standardization and site-level random effects. Derive bounds under unmeasured effect modification and report them alongside the point estimate, so a transported number carries its own fragility. Simulate sites that differ in covariates, treatment mechanisms, baseline hazards and effect modifiers separately, so that the contribution of each source of non-transportability is measurable rather than confounded with the others.</p>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
 <p><strong>Verdict.</strong> Partially addressed. Part of this problem is addressed by existing work; the entry names which part.</p>
-<p><strong>The source said.</strong> “An internally valid estimate need not apply to the health system, population or calendar period where the decision will be made. Weighting, outcome modeling and doubly robust transport estimators all exist, and all of them require that the effect modifiers be measured, that the populations overlap, and that effects be conditionally exchangeable across samples. Applied transport work still mostly uses conventional sampling weights or outcome models despite the more flexible alternatives. The deeper issue is that transporting an observational estimate stacks the sampling-exchangeability assumption on top of the treatment-exchangeability assumption, and no current reporting practice shows how the two compound or which one a given discrepancy should be charged to.”</p>
-<p><strong>What was wrong with it.</strong> Identification does not require that every effect modifier be measured; it requires a sufficient set. Modifiers that do not differ across populations, or that are irrelevant after conditioning, need not be observed. Transport estimators are also reaching emulation practice faster than the entry allowed, including inside benchmarking programs.</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -490,7 +499,7 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>open / supported.</strong> Transport estimators (IOSW, outcome modeling, doubly robust/TMLE, calibration) are mature for trials and increasingly documented for observational sources; that is already acknowledged by the report’s Westreich citation and does not close the problem. The open core is accounting: transporting an observational estimate stacks treatment-exchangeability on sampling-exchangeability, both largely untestable, and no standard reporting practice decomposes a discrepancy between those failure modes. Scelo et al.&nbsp;(Front Epidemiol 2024; 10.3389/fepid.2024.1335241) explicitly lists the internal-validity and external-validity assumption blocks side by side, notes that most are untestable, and demonstrates TMLE transport from an observational birth cohort to a registry target; that formalizes the stack and does not provide joint sensitivity or attribution. Manke-Reimers et al.&nbsp;(Eur J Epidemiol 2025; 10.1007/s10654-025-01217-w), already cited, maps applied transport studies and underuse of flexible estimators; a scoping review of practice is evidence the gap remains, not a solution. Adamson et al.&nbsp;(Pharmacoepidemiol Drug Saf 2026; 10.1002/pds.70396) offers a stepwise transportability framework for comparative effectiveness and urges sensitivity for unmeasured effect modifiers, e-values, and tipping-point analyses; that is guidance and one-parameter sensitivity, not a joint compounding account that charges residual bias to confounding versus selection/effect-modification structure. Separate sensitivity tools for unmeasured confounding and for unmeasured selection/effect modification exist; they do not identify effects when both fail in correlated ways, and the discipline rule forbids treating sensitivity as solving identification. Causal representation learning for transport that preserves effect modification (rather than predictive invariance) remains workshop/early-methods work; no 2024–2026 applied TTE package (lmtp, ltmle, WeightIt, TrialEmulation, zEpid) was found that ships joint internal-plus-external fragility bounds with attribution. Queries run: transportability observational compounding/joint sensitivity; unmeasured effect modification bounds transport; Manke-Reimers and Adamson follow-ups; Scelo 2024 full text; CRL transport effect modifiers; CRAN/GitHub keyword checks for transport modules. Vote open: methods and guidance expanded; the compounding-accounting and attribution problem as stated is not solved.
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The claim is coherent and pitched at the right level of generality. It accurately describes the compounding of sampling-exchangeability and treatment-exchangeability assumptions in transportability, and notes the lack of reporting practices to disentangle them. The reasons given for it being open (correlated failures of untestable assumptions, undetectable unmeasured effect modification, and the tension between predictive and causal invariance in representation learning) are valid and support the claim being open.
 </dd>
@@ -501,11 +510,271 @@ ul.task-list li input[type="checkbox"] {
 </dl>
 </div>
 </section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>47 papers in the reviewed corpus bear on this problem, published 2014 to 2026. Partial progress is on the record, and later work still calls this open. Both belong in view.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2014</td>
+<td>confirms it is open</td>
+<td>Assessment of patient-specific surgery effect based on weighted estimation and propensity scoring in the re-analysis of the sciatica trial.</td>
+</tr>
+<tr class="even">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>Controlling Time-Dependent Confounding by Health Status and Frailty: Restriction Versus Statistical Adjustment.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Invited Commentary: Agent-Based Models-Bias in the Face of Discovery.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Using observational data for personalized medicine when clinical trial evidence is limited.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Antiretroviral Therapy and Mortality in Rural South Africa: A Comparison of Causal Modeling Approaches.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>partly addresses it</td>
+<td>Study Designs for Extending Causal Inferences From a Randomized Trial to a Target Population.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Can Machine Learning from Real-World Data Support Drug Treatment Decisions? A Prediction Modeling Case for Direct Oral Anticoagulants.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Emulating Target Trials to Improve Causal Inference From Agent-Based Models.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Contextualizing single-arm trials with real-world data: An emulated target trial comparing therapies for neovascular age-related macular degeneration.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>The Need for a Practical Approach to Evaluate the Effectiveness of COVID-19 Vaccines for Low- and Middle-Income Countries.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>A scoping review of causal methods enabling predictions under hypothetical interventions.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Spillover benefit of pre-exposure prophylaxis for HIV prevention: evaluating the importance of effect modification using an agent-based model.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Augmenting control arms with real-world data for cancer trials: Hybrid control arm methods and considerations.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Approaches to Selecting “Time Zero” in External Control Arms with Multiple Potential Entry Points: A Simulation Study of 8 Approaches.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>The Timing, the Treatment, the Question: Comparison of Epidemiologic Approaches to Minimize Immortal Time Bias in Real-World Data Using a Surgical Oncology Example</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Bridging disconnected networks of first and second lines of biologic therapies in rheumatoid arthritis with registry data: bayesian evidence synthesis with target trial emulation.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Comparison of a Target Trial Emulation Framework to Cox Regression to Estimate the Effect of Corticosteroids on COVID-19 Mortality.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Clinical and population-based study design considerations to accelerate the investigation of new antiretrovirals during pregnancy.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Emulating a target trial of intensive nurse home visiting in the policy-relevant population using linked administrative data.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Emulated trial investigating effects of multiple treatments: estimating combined effects of mucoactive nebulisers in cystic fibrosis using registry data.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Comparison of the Test-negative Design and Cohort Design With Explicit Target Trial Emulation for Evaluating COVID-19 Vaccine Effectiveness.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Comparison of oral anticoagulants for stroke prevention in atrial fibrillation using the UK clinical practice research Datalink Aurum: A reference trial (ARISTOTLE) emulation study.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>In-silico trial emulation to predict the cardiovascular protection of new lipid-lowering drugs: an illustration through the design of the SIRIUS programme.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Representation of Real-World Adults With Chronic Kidney Disease in Clinical Trials Supporting Blood Pressure Treatment Targets.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Comparing PCSK9 Monoclonal Antibody Treatment Strategies Following Myocardial Infarction Using Negative Control Outcomes: A Target Trial Emulation Study</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>A Review of Causal Inference Methods for Estimating the Effects of Exposure Change</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Designs for Vaccine Studies.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Challenges and Opportunities in Interdisciplinary Research and Real-World Data for Treatment Sequences in Health Technology Assessments.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Application of the target trial emulation framework to external comparator studies.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Applying the estimand and target trial frameworks to external control analyses using observational data: a case study in the solid tumor setting.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Going beyond randomised controlled trials to assess treatment effect heterogeneity across target populations.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Using Trial and Observational Data to Assess Effectiveness: Trial Emulation, Transportability, Benchmarking, and Joint Analysis.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>A MARGINAL STRUCTURAL MODEL FOR PARTIAL COMPLIANCE IN SMARTS.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>A Benchmark, Expand, and Calibration (BenchExCal) Trial Emulation Approach for Using Real-World Evidence to Support Indication Expansions: Design and Process for a Planned Empirical Evaluation.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Machine Learning Versus Logistic Regression for Propensity Score Estimation: A Benchmark Trial Emulation Against the PARADIGM-HF Randomized Trial.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Causal inference in multi-cohort studies using the target trial framework to identify and minimize sources of bias.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>The target trial framework in global health research: barriers and opportunities.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Estimating cardiovascular effects of influenza vaccination in older adults: a target trial emulation using proximal causal inference.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Endocrine therapies and mortality risk in postmenopausal women with breast cancer: benchmarking an observational analysis against a randomized trial.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Emulating a Target Trial Using Observational Data.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Need for Real-World Evaluation of Malaria Vaccines and Reliable Vaccination Records in Africa.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Target trial emulation to estimate the effects of lifestyle interventions on mortality among cancer survivors: an editorial commentary.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Synthetic target trial emulation and predictive modeling of amylin-pathway therapies for obesity and type 2 diabetes.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>A commentary on “Robotic versus laparoscopic surgery for middle and low rectal cancer: a retrospective cohort study emulating the target trial”.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Evaluation of clinical utility in emulated clinical trials.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Transferability of Real World Evidence to Support HTA Recommendations in Lower Income European Countries.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Estimating conditional survival benefit for the allocation of scarce resources.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/DTA-02-averaging-site-estimates-in-a-federated-emulation-can-concea.html">DTA-02 — Averaging site estimates in a federated emulation can conceal that the sites emulated different trials</a></li>
+<li><a href="../problems/DTA-02-averaging-site-estimates-in-a-federated-emulation-can-concea.html">DTA-02: Averaging site estimates in a federated emulation can conceal that the sites emulated different trials</a></li>
+<li><a href="../problems/EST-05-an-emulation-enters-a-synthesis-with-randomized-trials-throu.html">EST-05: An emulation enters a synthesis with randomized trials through a discrepancy parameter that nothing identifies</a></li>
+<li><a href="../problems/LRN-05-a-counterfactual-prediction-is-validated-under-the-assumptio.html">LRN-05: A counterfactual prediction is validated under the assumptions that produced it, and nothing maps its output to a decision</a></li>
 </ul>
 </div>
 </section>

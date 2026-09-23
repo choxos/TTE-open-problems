@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquely separated. Emulation pipelines threshold at the start and propagate none of this.">
+<meta name="description" content="Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care received outside the system may be incompletely captured. Methods for outcome misclassification in electronic health records increasingly use validation samples and probabilistic phenotypes. Emulation pipelines almost universally do not: a phenotype is thresholded to a binary variable at the start and treated as truth thereafter. Differential misclassification then interacts with weighting and with time-varying confounding in ways that are not intuitive, because an error in the exposure at one time propagates into the weights at every later time, and no standard analysis propagates the phenotype uncertainty at all.">
 
 <title>Phenotypes enter emulations as error-free binary variables – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -394,7 +394,9 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#why-it-is-open" id="toc-why-it-is-open" class="nav-link" data-scroll-target="#why-it-is-open">Why it is open</a></li>
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
+  <li><a href="#our-study" id="toc-our-study" class="nav-link" data-scroll-target="#our-study">Our study</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -410,13 +412,19 @@ ul.task-list li input[type="checkbox"] {
   <div class="quarto-categories">
     <div class="quarto-category">Measurement error &amp; misclassification in routine data</div>
     <div class="quarto-category">Very high priority</div>
-    <div class="quarto-category">Unverifiable</div>
+    <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Eligibility</div>
+    <div class="quarto-category">Protocol: Treatment strategies</div>
+    <div class="quarto-category">Protocol: Outcome</div>
+    <div class="quarto-category">Data: EHR</div>
+    <div class="quarto-category">Data: Claims</div>
+    <div class="quarto-category">Data: Linked records</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquely separated. Emulation pipelines threshold at the start and propagate none of this.
+    Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care received outside the system may be incompletely captured. Methods for outcome misclassification in electronic health records increasingly use validation samples and probabilistic phenotypes. Emulation pipelines almost universally do not: a phenotype is thresholded to a binary variable at the start and treated as truth thereafter. Differential misclassification then interacts with weighting and with time-varying confounding in ways that are not intuitive, because an error in the exposure at one time propagates into the weights at every later time, and no standard analysis propagates the phenotype uncertainty at all.
   </div>
 </div>
 
@@ -434,15 +442,19 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="problem-meta">
-<p><span class="problem-id">MER-01</span> <span class="verdict verdict-unverifiable">Unverifiable</span> <span class="chip chip-priority-very-high">Very high priority</span> <span class="chip chip-maturity-promising">Promising</span> <span class="chip">Tractability 4/5</span></p>
+<p><span class="problem-id">MER-01</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-very-high">Very high priority</span> <span class="chip chip-maturity-promising">Promising</span> <span class="chip">Tractability 4/5</span></p>
+</div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Eligibility</span> <span class="chip chip-axis">Treatment strategies</span> <span class="chip chip-axis">Outcome</span><br>
+Seen in: <span class="chip chip-axis">EHR</span> <span class="chip chip-axis">Claims</span> <span class="chip chip-axis">Linked records</span></p>
 </div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care outside the system may be incompletely captured. When a treatment, a time-varying confounder, an eligibility criterion or an outcome is a latent clinical state and the emulation analyzes an error-prone thresholded proxy as though it were fixed, differential longitudinal misclassification distorts several things at once. An erroneous weight factor persists in the cumulative weights of every clone that remains at risk. Artificial-censoring membership changes as well, but only where the mismeasured variable enters the strategy, the eligibility rule or the censoring rule. Without validation information and assumptions that identify a joint measurement model and transport it to the analysis population, measurement bias and confounding bias cannot be uniquely separated. Emulation pipelines threshold at the start and propagate none of this.</p>
+<p>Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care received outside the system may be incompletely captured. Methods for outcome misclassification in electronic health records increasingly use validation samples and probabilistic phenotypes. Emulation pipelines almost universally do not: a phenotype is thresholded to a binary variable at the start and treated as truth thereafter. Differential misclassification then interacts with weighting and with time-varying confounding in ways that are not intuitive, because an error in the exposure at one time propagates into the weights at every later time, and no standard analysis propagates the phenotype uncertainty at all.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>The interaction is nonlinear: misclassification of a time-varying confounder biases the weight and changes who is censored, so the bias does not decompose into a measurement part and a confounding part without further assumptions. Validation samples that would calibrate a phenotype are usually convenience samples from one site, and transporting a sensitivity and specificity across sites is itself an untested transport claim. Propagation is achievable without rebuilding the pipeline, by embedding a deterministic analysis in multiple imputation, posterior draws or a bootstrap, which makes the absence a matter of convention rather than of capability.</p>
+<p>The interaction is genuinely nonlinear: misclassification in a time-varying confounder both biases the weight and changes which patients are censored, so the bias does not decompose into a measurement part and a confounding part. Validation samples that would calibrate the phenotype are usually convenience samples from one site, and transporting a sensitivity and specificity across sites is itself an untested transport claim. Propagating uncertainty end to end also requires the whole pipeline to accept probabilistic inputs, which most implementations cannot.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -469,15 +481,37 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Propagate phenotype uncertainty by embedding the existing deterministic pipeline in multiple imputation, posterior sampling or a bootstrap over the measurement model, which requires no new estimator and produces an interval that reflects the measurement. Develop validation-subsample targeted learning and Bayesian latent-class g-formula models for the cases where that is not enough, and state the transport assumption when a validation sample from one site calibrates another. Simulate sensitivity and specificity from 0.70 to 0.99 with differential misclassification odds ratios from 1 to 4, reporting bias in the estimated regime effect rather than in the phenotype, and establish how large a validation sample must be before the correction is worth its variance cost.</p>
+<p>Develop validation-subsample targeted learning, Bayesian latent-class g-formula models and pipelines that accept probabilistic treatment and outcome nodes rather than thresholded ones, so phenotype uncertainty is propagated to the final interval rather than discarded at the first step. Simulate sensitivity and specificity from 0.70 to 0.99 with differential misclassification odds ratios from 1 to 4, and report the bias in the estimated regime effect rather than in the phenotype, since the phenotype’s accuracy is not what the study claims. Establish how large a validation sample has to be before the correction is worth its variance cost.</p>
+</section>
+<section id="our-study" class="level2">
+<h2 class="anchored" data-anchor-id="our-study">Our study</h2>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A study is designed
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Question.</strong> For a dynamic strategy whose treatment rule depends on a latent time-varying confounder, how much does thresholding longitudinal treatment and confounder proxies distort artificial-censoring membership, inverse-probability weights, and the marginal 12-month risk difference after ordinary propensity-model misspecification has been removed; and what internal validation sample is required for latent-state correction to remain beneficial under prespecified treatment, confounder, outcome, and error-transition model misspecification?</p>
+</div>
+</div>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
-<p><strong>Verdict.</strong> Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.</p>
-<p><strong>The source said.</strong> “Prescriptions differ from dispensings and dispensings differ from ingestion; diagnostic codes differ from clinical events; death and care received outside the system may be incompletely captured. Methods for outcome misclassification in electronic health records increasingly use validation samples and probabilistic phenotypes. Emulation pipelines almost universally do not: a phenotype is thresholded to a binary variable at the start and treated as truth thereafter. Differential misclassification then interacts with weighting and with time-varying confounding in ways that are not intuitive, because an error in the exposure at one time propagates into the weights at every later time, and no standard analysis propagates the phenotype uncertainty at all.”</p>
-<p><strong>What was wrong with it.</strong> The propagation mechanism was stated too loosely. An erroneous weight factor persists in the cumulative weights of clones that remain at risk, and artificial-censoring membership changes only when the mismeasured variable enters the strategy, the eligibility rule or the censoring rule; those are different channels. The entry also implied that a pipeline must accept probabilistic inputs natively, when a deterministic pipeline embedded in multiple imputation, posterior draws or a bootstrap achieves the same propagation.</p>
-<p><strong>Dissent.</strong> literature dissented (supported): Searching for phenotype uncertainty propagated through an emulation returned discussions of misclassification as a listed threat and no pipeline that accepts probabilistic treatment or outcome nodes and carries the uncertainty to the final interval. Design-bias reviews name outcome misclassification among the biases to avoid without supplying the propagation. The entry’s specific claim, that the interaction between differential misclassification, weighting and time-varying confounding is not handled, is consistent with what the corpus shows. codex dissented (overstated): The underlying joint longitudinal measurement-error problem is real, but several assertions are too categorical. Prescribing, dispensing, and ingestion are distinct variables; their difference is misclassification only when the estimand targets one but the protocol measures another. In a cumulative inverse-probability weight, an erroneous treatment factor at time s remains in later cumulative products for a clone still at risk, but a clone artificially censored at s has no later weights. Mismeasurement of a time-varying confounder changes artificial-censoring membership only when that variable determines the dynamic strategy, eligibility, or censoring rule; under a static sustained strategy it can distort nuisance models without changing who is censored. The resulting biases can interact, but the defensible claim is that no unique identified additive measurement-versus-confounding decomposition generally exists without additional assumptions, not that no decomposition is possible. End-to-end propagation also does not require every estimator to accept soft inputs natively: multiple imputation, posterior draws, or a whole-pipeline bootstrap can wrap deterministic estimators. No package is named, so the claims about ‘almost universally,’ ‘no standard analysis,’ and ‘most implementations’ cannot be established from package ground truth. TrialEmulation 0.0.4.11 confirms one indicator-based implementation, not the asserted prevalence. The narrowed problem remains open, while uniformly assigning very-high severity is unjustified because importance depends on the estimand, error mechanism, validation information, and decision sensitivity.</p>
+<p><strong>Verdict.</strong> Partially addressed. Auditors disagreed and the disagreement was evidence-bearing on both sides. Moved by the full-text reading: 9 findings from 9 papers naming work that covers part of this problem survived both the reader and an independent second reviewer, so the verdict moves from unverifiable to partially-addressed. A further 112 findings in the same reading restate the problem as open; the two are consistent, and the part that is covered is named above.</p>
+<p><strong>Dissent.</strong> literature dissented (supported): Searching for phenotype uncertainty propagated through an emulation returned discussions of misclassification as a listed threat and no pipeline that accepts probabilistic treatment or outcome nodes and carries the uncertainty to the final interval. Design-bias reviews name outcome misclassification among the biases to avoid without supplying the propagation. […]</p>
+<p><strong>Revised by the full-text reading.</strong> Applied full-text reading of the consolidated library.</p>
+<dl>
+<dt>Verdict changed</dt>
+<dd>
+<strong>unverifiable -&gt; partially-addressed</strong> 9 surviving findings from: Applying a hypothetical strategy to the intercurrent event o; Combining high quality data with rigorous methods: emulation; Comparing broad and narrow phenotype algorithms: differences; Correcting for Measurement Error in Time-Varying Covariates ; Exposure effects on count outcomes with observational data, ; Impact of Alcohol Consumption on Multiple Sclerosis Using Mo; Quantitative Bias Analysis for a Misclassified Confounder: A; Time-dependent mediators in survival analysis: Modeling dire; Transparency in real-world evidence (RWE) studies to build c.&nbsp;New citations: 10.1002/bimj.201800263, 10.1093/aje/kwae023, 10.1093/aje/kww068, 10.1097/ede.0000000000001239, 10.1111/dom.13918, 10.1136/bmj-2022-072346, 10.1186/s13063-026-09708-1, 10.3389/jpps.2023.12095, 10.34172/aim.2023.79
+</dd>
+</dl>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -499,24 +533,653 @@ ul.task-list li input[type="checkbox"] {
 <p>Queries run (representative): Wang operational TTE DOI and Nature page/PDF; Benz kwae471/arXiv; “probabilistic phenotype” + causal/IPTW/g-formula/lmtp/ltmle/TTE 2023–2026; measurement error misclassification + MSM-IPW / g-formula / time-varying / sustained strategy; Hubbard probabilistic phenotypes; Edwards RIME and g-formula misclassification; Ross transporting measurement error; CRAN/GitHub TrialEmulation gfoRmula lmtp measurement error; TARGET/ENCePP/FDA RWE measurement error guidance cross-check. Journals and preprint venues searched via web for 2024–2026 hits on those terms.</p>
 <p>Caveat on support: the entry is faithful that standard TTE pipelines threshold phenotypes and that the nonlinear interaction of differential time-varying misclassification with weighting and censoring is not handled end to end. It would be overstated only if read as “no methods exist for any piece of phenotype error.” Pieces exist (outcome probabilistic correction in associations; exposure misclassification with IPW; g-formula outcome SA; transport problems formalized). None of those pieces, alone or as packaged software, solves the problem as stated for sustained-strategy emulation with uncertainty carried to the final interval.</p>
 <dl>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The statement correctly identifies a methodological gap in target trial emulation using EHR data. It asserts that standard pipelines threshold phenotypes and do not propagate uncertainty, which is a claim about current practice rather than a structural impossibility. The reasoning given for it being open (nonlinear interaction of misclassification, transportability of validation samples, pipeline architecture limitations) is internally consistent and supports the claim being open. The scope is appropriate for a methodological research agenda, and the severity is proportionate to the risk of biased causal estimates.
 </dd>
 <dt>Decision path</dt>
 <dd>
-<code>R5:default-open → R7:counter-and-support-both-present(support=2/counter=1)</code>
+<code>R5:default-open → R7:counter-and-support-both-present(support=1/counter=1) → R17:reading-moved(unverifiable-&gt;partially-addressed)</code>
 </dd>
 </dl>
+</div>
+</section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>121 papers in the reviewed corpus bear on this problem, published 2009 to 2026. Progress and a fresh assertion of openness land in the same year.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<p>It is also being <strong>closed in pieces</strong>: partial results come from more than one paper in more than one year, each covering a different part.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2009</td>
+<td>confirms it is open</td>
+<td>Intervening on risk factors for coronary heart disease: an application of the parametric g-formula.</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>confirms it is open</td>
+<td>Comparing marginal structural models to standard methods for estimating treatment effects of antihypertensive combination therapy.</td>
+</tr>
+<tr class="odd">
+<td>2013</td>
+<td>confirms it is open</td>
+<td>Work related asthma. A causal analysis controlling the healthy worker effect.</td>
+</tr>
+<tr class="even">
+<td>2014</td>
+<td>confirms it is open</td>
+<td>Optimal CD4 count for initiating HIV treatment: impact of CD4 observation frequency and grace periods, and performance of dynamic marginal structural models.</td>
+</tr>
+<tr class="odd">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>Immortal time bias in retrospective analysis: comment on ‘Efficacy and safety of long-term treatment with lenalidomide and dexamethasone in patients with relapsed/refractory multiple myeloma’.</td>
+</tr>
+<tr class="even">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>Severe COPD Exacerbation Risk and Long-Acting Bronchodilator Treatments: Comparison of Three Observational Data Analysis Methods.</td>
+</tr>
+<tr class="odd">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>Controlling Time-Dependent Confounding by Health Status and Frailty: Restriction Versus Statistical Adjustment.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>partly addresses it</td>
+<td>Correcting for Measurement Error in Time-Varying Covariates in Marginal Structural Models.</td>
+</tr>
+<tr class="odd">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Invited Commentary: Influenza, Influenza Immunization, and Pregnancy-It’s About Time.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Statins and Risk of Lower Limb Revision Surgery: The Influence of Differences in Study Design Using Electronic Health Records From the United Kingdom and Denmark.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Does Fetal Growth Restriction Cause Later Obesity? Pitfalls in Analyzing Causal Mediators as Confounders.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Intensive care unit (ICU)-acquired bacteraemia and ICU mortality and discharge: addressing time-varying confounding using appropriate methodology.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Making fair comparisons in pregnancy medication safety studies: An overview of advanced methods for confounding control.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Evaluation of the risk of bias in non-randomized studies of interventions (ROBINS-I) and the ‘target experiment’ concept in studies of exposures: Rationale and preliminary instrument development.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>partly addresses it</td>
+<td>Time-dependent mediators in survival analysis: Modeling direct and indirect effects with the additive hazards model.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Guidance for a causal comparative effectiveness analysis emulating a target trial based on big real world evidence: when to start statin treatment.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Recommendation on unbiased estimation of population attributable fraction calculated in “prevalence and risk factors of active pulmonary tuberculosis among elderly people in China: a population based cross-sectional study”.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>The Impact of Unemployment on Antidepressant Purchasing: Adjusting for Unobserved Time-constant Confounding in the g-Formula.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Bias in pharmacoepidemiologic studies using secondary health care databases: a scoping review.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>partly addresses it</td>
+<td>Transparency in real-world evidence (RWE) studies to build confidence for decision-making: Reporting RWE research in diabetes.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>partly addresses it</td>
+<td>Quantitative Bias Analysis for a Misclassified Confounder: A Comparison Between Marginal Structural Models and Conditional Models for Point Treatments.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Emulating Randomized Clinical Trials With Nonrandomized Real-World Evidence Studies: First Results From the RCT DUPLICATE Initiative.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Rivaroxaban was found to be noninferior to warfarin in routine clinical care: A retrospective noninferiority cohort replication study.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Rural-Urban Differences in Adult Life Expectancy in Indonesia: A Parametric g-formula-based Decomposition Approach.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Warning of Immortal Time Bias When Studying Drug Safety in Pregnancy: Application to Late Use of Antibiotics and Preterm Delivery.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Using the Causal Inference Framework to Support Individualized Drug Treatment Decisions Based on Observational Healthcare Data.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Long-term effects of asthma medication on asthma symptoms: an application of the targeted maximum likelihood estimation.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Impact of antimicrobial de-escalation on mortality: a literature review of study methodology and recommendations for observational studies.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Bias of time-varying exposure effects due to time-varying covariate measurement strategies.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Emulating a Randomised Controlled Trial With Observational Data: An Introduction to the Target Trial Framework.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Computational drug repositioning of atorvastatin for ulcerative colitis.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Exploring the feasibility of using real-world data from a large clinical data research network to simulate clinical trials of Alzheimer’s disease.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Avoiding Time-Related Biases: A Feasibility Study on Antidiabetic Drugs and Pancreatic Cancer Applying the Parametric g-Formula to a Large German Healthcare Database.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Methodological frontiers in vaccine safety: qualifying available evidence for rare events, use of distributed data networks to monitor vaccine safety issues, and monitoring the safety of pregnancy interventions.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Educational note: addressing special cases of bias that frequently occur in perinatal epidemiology.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Validation of Machine Learning-Based Individualized Treatment for Depressive Disorder Using Target Trial Emulation.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>An informatics consult approach for generating clinical evidence for treatment decisions.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Variable selection for causal mediation analysis using LASSO-based methods.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Oncology Drug Effectiveness from Electronic Health Record Data Calibrated Against RCT Evidence: The PARSIFAL Trial Emulation.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Temporal Trends in Clinical Evidence of 5-Year Survival Within Electronic Health Records Among Patients With Early-Stage Colon Cancer Managed With Laparoscopy-Assisted Colectomy vs Open Colectomy.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Immune-related adverse events in urothelial cancer patients: Adjustment for immortal time bias.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Bridging disconnected networks of first and second lines of biologic therapies in rheumatoid arthritis with registry data: bayesian evidence synthesis with target trial emulation.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Systematically exploring repurposing effects of antihypertensives.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Impact of time-varying confounders on the association between early-life allergy sensitization and the risk of current asthma: A post hoc analysis of a birth cohort.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Within-Person Variability Score-Based Causal Inference: A Two-Step Estimation for Joint Effects of Time-Varying Treatments.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>partly addresses it</td>
+<td>Combining high quality data with rigorous methods: emulation of a target trial using electronic health records and a nested case-control design.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>partly addresses it</td>
+<td>Impact of Alcohol Consumption on Multiple Sclerosis Using Model-based Standardization and Misclassification Adjustment Via Probabilistic Bias Analysis</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Trial Emulation Methods.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Invited Perspective: Risk of Bias Assessments, Target Trials, and the Strengths of Environmental Epidemiology.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation Using Hospital-Based Observational Data: Demonstration and Application in COVID-19</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Addressing common sources of bias in studies of new-onset type 2 diabetes following COVID that use electronic health record data.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Emulated trial investigating effects of multiple treatments: estimating combined effects of mucoactive nebulisers in cystic fibrosis using registry data.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>High-throughput target trial emulation for Alzheimer’s disease drug repurposing with real-world data.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Marginal structural models with latent class growth analysis of treatment trajectories: Statins for primary prevention among older adults.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Comparison of Different Modeling Approaches for Prescription Opioid Use and Its Association With Adverse Events.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Exposure effects on count outcomes with observational data, with application to incarcerated women</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Comparing broad and narrow phenotype algorithms: differences in performance characteristics and immortal time incurred.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Feasibility of using real-world data to emulate substance use disorder clinical trials: a cross-sectional study.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Comparison of Methods of Clinical Trial Emulation Utilizing Data From the Comparison of AMD Treatment Trial (CATT) and the IRIS® Registry.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Enhancing inferences and conclusions in body image focused non-experimental research via a causal modelling approach: A tutorial.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Emulating Hypothetical Target Trials of the Broad-Spectrum T2 Biologic Dupilumab.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Making causal inferences from transactional data: A narrative review of opportunities and challenges when implementing the target trial framework.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Comparing PCSK9 Monoclonal Antibody Treatment Strategies Following Myocardial Infarction Using Negative Control Outcomes: A Target Trial Emulation Study</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Bias due to coarsening of time intervals in the inference for the effectiveness of cancer screening</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Effect of immortal time bias on the association between immune-related adverse events and oncological outcomes following immune checkpoint inhibitors therapy for head and neck squamous cell carcinoma.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Characteristics of non-randomised studies of drug treatments: cross sectional study.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Antifibrotics and mortality in idiopathic pulmonary fibrosis: external validity and avoidance of immortal time bias.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Causal Inference Challenges in the Relationship Between Social Determinants and Cardiovascular Outcomes.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>A target trial emulation comparing the antidepressant effectiveness of selective serotonin reuptake inhibitors (SSRIs) highlighting the importance of patent-related confounding by indication.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Bariatric Surgery and Cardiovascular Disease: The Target Trial Emulation Framework Provides Transparency in Articulating the Limits of Observational Studies.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Designing observational studies for credible causal inference in addiction research-Directed acyclic graphs, modified disjunctive cause criterion and target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Obeticholic acid as second-line therapy for primary biliary cholangitis: Does target trial emulation solve the issue?</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>External comparator studies and the joint application of the estimand and target trial emulation frameworks.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Using Trial and Observational Data to Assess Effectiveness: Trial Emulation, Transportability, Benchmarking, and Joint Analysis.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Considerations for emulations of randomized controlled trials using real-world data: learnings from an emulation of MONALEESA-2.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Association of Medication Use and 8-Year Mortality Risk in Patients With Parkinson Disease: Drug-Wide Trial Emulation.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>An application of the augmented synthetic control method within a target trial framework: the case of the soda tax policy in California.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Prompt versus Delayed Triple Therapy in COPD: Solutions to Time-Related Biases in Observational Studies.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Causal inference in multi-cohort studies using the target trial framework to identify and minimize sources of bias.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Strengthening inferential studies in the FDA Sentinel initiative: results from a methodological demonstration project.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>On the use of natural language processing to implement the target trial framework using unstructured data from the electronic health record.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Trial emulation to assess the effect of surgery on survival when there are competing risks, with application to patients with thoracic aortic aneurysms</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Modelling Asthma Treatment Dynamics: Insights from the g-Formula</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Research with cancer registry data in radiation oncology-current possibilities and perspectives : A narrative review.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Critical evaluation of real-world evidence of repurposable medicines in the Alzheimer’s disease drug development pipeline using a target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Advancing efficacy prediction for electronic health records based emulated trials in repurposing heart failure therapies.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Comparative Effectiveness Research Using Randomized Trials and Observational Studies: Validity and Feasibility Considerations.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>A Post-Authorisation Safety Study of a Respiratory Syncytial Virus Vaccine in Pregnant Women and Their Offspring in a Real-World Setting: Generic Protocol for a Target Trial Emulation.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Concordance between randomized controlled trials and target trial emulation: A meta-analysis</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Estimating per-protocol effects in external comparator analyses using real-world data.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Editorial: External control arms for single-arm studies: methodological considerations and applications.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Investigating Primary Care Indications to Improve the Quality of Electronic Health Record Data in Target Trial Emulation for Dementia.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Generating real-world evidence in early Alzheimer’s disease: Considerations for applying the target trial emulation framework to study the safety of anti-amyloid therapies.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Emulations of oncology trials using real-world data: a systematic literature review.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Need for Real-World Evaluation of Malaria Vaccines and Reliable Vaccination Records in Africa.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Letter to the editor on “Glucagon-like peptide 1 receptor agonist and reduced liver and non-liver complications in adults with type 2 diabetes and metabolic dysfunction-associated steatotic liver disease: a target trial emulation study”.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Response to the letter titled “Comment on associations of semaglutide with first-time diagnosis of Alzheimer’s disease in patients with type 2 diabetes: Target trial emulation using nationwide real-world data in the US”.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Response to the letter titled reply to “Associations of semaglutide with first-time diagnosis of Alzheimer’s disease in patients with type 2 diabetes: Target trial emulation using nationwide real-world data in the US”.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Reply to “Associations of semaglutide with first-time diagnosis of Alzheimer’s disease in patients with type 2 diabetes: Target trial emulation using nationwide real-world data in the US”.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Strength of evidence for paternal influence on offspring epigenome in observational human studies: a systematic review and risk-of-bias appraisal for non-randomized exposures.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Trastuzumab in early curative breast cancer: A target trial emulation benchmarked against two randomized clinical trials.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Target trial emulation on dexmedetomidine for critically ill patients: all that glitters is not gold.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Continuous-Time Causal Inference With Marked Point Process Weights: An Example on Sodium-Glucose Co-Transporters 2 Inhibitor Medications and Urinary Tract Infection.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Impact of quitline services on tobacco cessation: an application of modern epidemiologic methods.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statistical approaches in ambispective cohort studies: Challenges and methodological insights.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statistical Methods for Baseline Adjustment and Cohort Analysis in Korean National Health Insurance Claims Data: A Review of PSM, IPTW, and Survival Analysis With Future Directions.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>partly addresses it</td>
+<td>Applying a hypothetical strategy to the intercurrent event of non-adherence with the parametric g-formula: a post hoc secondary analysis of the MET-PREVENT trial</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Surgical Fixation Versus Cast Immobilization for Adults With Bicortical Scaphoid Fractures: A Target Trial Emulation of the SWIFFT Trial</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Beyond cohort versus case-control: the primacy of exposure assessment over study design in occupational cancer epidemiology.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Effect of Exposure to Inhaled Corticosteroids on Lung Cancer Incidence - A Comparison of Earlier Study Methodology on the Financial Database of the Hungarian National Health Insurance Fund.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Electronic health records research: easy evidence, harder oversight.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Target trial emulation to replicate randomised clinical trials using registry data in multiple sclerosis.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Assessing the quality of electronic health record data and the claims linked data for target trial emulation studies.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Agentic Authoring of OMOP Concept Sets from Natural Language.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Federated target trial emulation for time-to-event outcomes via POLARIS: Pooled-equivalent One-shot Likelihood Aggregation for Real-world Inference in Survival.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Mapping eligibility criteria in oncology target trial emulations using real-world data: a scoping review.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Real-World Emulation of Landmark Lung Cancer Trials: A Registry-Based Reconstruction of KN189, KN407, IMpower133, and PACIFIC.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Supporting complex mental health care and services research today and beyond: a mini-review of real-world evidence strategies and informed approaches.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>REACT (Real-world Emulated Clinical Trials): A Framework for Drug Repurposing Applied to Osteoporotic Fractures.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Concordance between target trial emulation and randomised controlled trials: systematic review and meta-analysis.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>The heterogeneous treatment effects of statins on dementia: a target trial emulation with causal machine learning using integrated genetic and real-world data.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/DTA-03-common-data-models-harmonize-structure-without-guaranteeing-.html">DTA-03 — Common data models harmonize structure without guaranteeing that the same variable means the same thing</a></li>
-<li><a href="../problems/ELG-01-an-unrecorded-eligibility-criterion-is-indistinguishable-fro.html">ELG-01 — An unrecorded eligibility criterion is indistinguishable from a criterion that was met</a></li>
-<li><a href="../problems/MIS-01-the-visit-process-is-treated-as-a-nuisance-to-be-imputed-rat.html">MIS-01 — The visit process is treated as a nuisance to be imputed rather than as part of the causal structure</a></li>
+<li><a href="../problems/DTA-03-common-data-models-harmonize-structure-without-guaranteeing-.html">DTA-03: Common data models harmonize structure without guaranteeing that the same variable means the same thing</a></li>
+<li><a href="../problems/ELG-01-an-unrecorded-eligibility-criterion-is-indistinguishable-fro.html">ELG-01: An unrecorded eligibility criterion is indistinguishable from a criterion that was met</a></li>
+<li><a href="../problems/MIS-01-the-visit-process-is-treated-as-a-nuisance-to-be-imputed-rat.html">MIS-01: The visit process is treated as a nuisance to be imputed rather than as part of the causal structure</a></li>
 </ul>
 </div>
 </section>

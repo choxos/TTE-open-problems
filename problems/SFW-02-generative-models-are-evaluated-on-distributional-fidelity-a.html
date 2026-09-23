@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation does not match the use. Marginal and temporal fidelity do not validate a generator’s counterfactual behavior, and cannot: without identifying assumptions or interventional ground truth, two generators indistinguishable on observed data can disagree on some interventions. A model optimized for fidelity can therefore reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those appears in the loss. Privacy mechanisms compound it by suppressing rare patterns, which are often the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and current benchmarks do not test whether it is.">
+<meta name="description" content="Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation practice does not match the use. A model optimized for marginal or temporal fidelity can reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those quantities appears in the loss. Privacy mechanisms compound this by suppressing rare patterns, and rare patterns are often exactly the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and current benchmarks do not test whether it is.">
 
 <title>Generative models are evaluated on distributional fidelity and used for causal work – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -395,6 +395,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -411,12 +412,14 @@ ul.task-list li input[type="checkbox"] {
     <div class="quarto-category">Software, computation &amp; reproducibility</div>
     <div class="quarto-category">Medium-high priority</div>
     <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Analysis plan</div>
+    <div class="quarto-category">Data: Any setting</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation does not match the use. Marginal and temporal fidelity do not validate a generator’s counterfactual behavior, and cannot: without identifying assumptions or interventional ground truth, two generators indistinguishable on observed data can disagree on some interventions. A model optimized for fidelity can therefore reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those appears in the loss. Privacy mechanisms compound it by suppressing rare patterns, which are often the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and current benchmarks do not test whether it is.
+    Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation practice does not match the use. A model optimized for marginal or temporal fidelity can reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those quantities appears in the loss. Privacy mechanisms compound this by suppressing rare patterns, and rare patterns are often exactly the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and current benchmarks do not test whether it is.
   </div>
 </div>
 
@@ -436,13 +439,17 @@ ul.task-list li input[type="checkbox"] {
 <div class="problem-meta">
 <p><span class="problem-id">SFW-02</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-medium-high">Medium-high priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 4/5</span></p>
 </div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Analysis plan</span><br>
+Seen in: <span class="chip chip-axis">Any setting</span></p>
+</div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation does not match the use. Marginal and temporal fidelity do not validate a generator’s counterfactual behavior, and cannot: without identifying assumptions or interventional ground truth, two generators indistinguishable on observed data can disagree on some interventions. A model optimized for fidelity can therefore reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those appears in the loss. Privacy mechanisms compound it by suppressing rare patterns, which are often the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and current benchmarks do not test whether it is.</p>
+<p>Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation practice does not match the use. A model optimized for marginal or temporal fidelity can reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those quantities appears in the loss. Privacy mechanisms compound this by suppressing rare patterns, and rare patterns are often exactly the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and current benchmarks do not test whether it is.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>Causal fidelity is not identifiable from the observational data the generator was trained on, which is the same reason the analyses these data are meant to support need assumptions. Evaluating it therefore requires a gold-standard structural model or external interventional evidence rather than a real dataset, which changes what is being validated. Privacy and causal fidelity are also in direct tension, since the mechanisms that protect rare individuals remove the rare strata that carry the overlap.</p>
+<p>Causal fidelity is not identifiable from the observed data the generator was trained on: two structural models that agree on every observational distribution can disagree on every interventional one. Evaluating it therefore requires a gold-standard structural model rather than a real dataset, which changes the object being validated. Privacy and causal fidelity are also in direct tension, since the mechanisms that protect rare individuals remove the rare strata that carry the overlap.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -465,16 +472,14 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Build causal benchmarks on an explicit structural data-generating model with known counterfactuals, or on external interventional evidence, rather than on a real dataset the generator can be scored against. Assess conditional support, longitudinal ordering, effect fidelity and privacy loss separately, since a single score lets a model trade one against another invisibly. State as a standing rule that synthetic-effect estimates are not clinical evidence, and confine synthetic data to code development, power planning and method benchmarking.</p>
+<p>Create causally annotated synthetic trials in which both observed and counterfactual outcomes are generated from a known structural model, so that interventional distributions have a ground truth to be scored against. Evaluate generative models on intervention response error, average and conditional effect fidelity, positivity preservation and disclosure risk, not only on distributional similarity. State as a standing rule that synthetic-effect estimates are not clinical evidence, and confine synthetic data to code development, power planning and method benchmarking.</p>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
 <p><strong>Verdict.</strong> Partially addressed. Part of this problem is addressed by existing work; the entry names which part.</p>
-<p><strong>The source said.</strong> “Generative patient models would support privacy-preserving code development, power planning and method stress testing, and synthetic patient data have shown value as a benchmark environment. The evaluation practice does not match the use. A model optimized for marginal or temporal fidelity can reproduce every observed association while generating wrong counterfactuals, wrong overlap and wrong time ordering, because none of those quantities appears in the loss. Privacy mechanisms compound this by suppressing rare patterns, and rare patterns are often exactly the causally important ones. Synthetic data are not evidence about treatment effects unless the generating model is causally valid, and current benchmarks do not test whether it is.”</p>
-<p><strong>What was wrong with it.</strong> Sharpened rather than corrected: the reason marginal fidelity does not validate a generator is that without identifying assumptions or interventional ground truth, observationally indistinguishable generators can disagree on some interventions, which is why a causal benchmark needs an explicit structural model or external interventional evidence rather than a better fidelity metric.</p>
-<p><strong>Dissent.</strong> literature dissented (open): The corpus contains synthetic patient generation aimed at causal effect estimation and generative approaches to causal graphs, and contains no evaluation of a generative model against a known structural model’s interventional distributions. The entry’s claim, that fidelity evaluation does not test causal validity, is consistent with the absence, and the confidence is capped because the generative-model literature sits mostly in venues these eight phrases would not retrieve. grok dissented (supported): Inverted prior: assume causal evaluation of synthetic patients is already standard. The report’s own prior work (Shi et al.&nbsp;2022) already builds privacy-conscious synthetic data with ground-truth multi-treatment effects, so the agenda’s proposed direction (causally annotated synthetic trials) has a published instance rather than a blank slate. Amad et al.&nbsp;(arXiv 2510.18768; NeurIPS 2025) explicitly diagnose evaluation on distributional resemblance while treatments invite causal analysis, state desiderata (covariate distribution, treatment assignment mechanism, outcome generation mechanism), propose metrics (precision/recall on covariates, propensity JSD, PEHE utility), and introduce STEAM to factor generation along that DGP. That is substantive prior art on evaluation design and generation, not mere marginal fidelity.</p>
-<p>It does not solve the problem as a field practice claim. STEAM and Shi are proposals/datasets, not industry standard. Causal fidelity of a generator trained only on observational data remains non-identifiable without a structural gold standard; two SCMs can match all observational margins and disagree on interventions. Privacy mechanisms that erase rare strata still conflict with positivity-relevant tails. Hernandez et al.&nbsp;(Front Digit Health 2025) still frame synthetic tabular evaluation around fidelity/utility/privacy without interventional ground truth. Queries run: causal fidelity synthetic evaluation; STEAM treatment effect synthetic data; Shi 2022 ground truth; PEHE synthetic medical; synthetic patient counterfactual evaluation 2024–2026. No evidence that clinical or regulatory use treats synthetic-effect estimates as non-evidence by default, nor that mainstream generators are scored on intervention response error. Partial solve of evaluation methodology; the practice mismatch remains open.</p>
+<p><strong>Dissent.</strong> literature dissented (open): The corpus contains synthetic patient generation aimed at causal effect estimation and generative approaches to causal graphs, and contains no evaluation of a generative model against a known structural model’s interventional distributions. […]</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -491,7 +496,7 @@ ul.task-list li input[type="checkbox"] {
 </dl>
 <p>It does not solve the problem as a field practice claim. STEAM and Shi are proposals/datasets, not industry standard. Causal fidelity of a generator trained only on observational data remains non-identifiable without a structural gold standard; two SCMs can match all observational margins and disagree on interventions. Privacy mechanisms that erase rare strata still conflict with positivity-relevant tails. Hernandez et al.&nbsp;(Front Digit Health 2025) still frame synthetic tabular evaluation around fidelity/utility/privacy without interventional ground truth. Queries run: causal fidelity synthetic evaluation; STEAM treatment effect synthetic data; Shi 2022 ground truth; PEHE synthetic medical; synthetic patient counterfactual evaluation 2024–2026. No evidence that clinical or regulatory use treats synthetic-effect estimates as non-evidence by default, nor that mainstream generators are scored on intervention response error. Partial solve of evaluation methodology; the practice mismatch remains open. Cites 10.3389/frai.2022.918813: Provides a large synthetic patient resource with explicit ground-truth effects for many hypertension treatments, showing that causally annotated synthetic data for multi-treatment effect estimation already exists as prior art (partial instance of the agenda’s proposed direction).. Cites arxiv:2510.18768: Formalizes that standard synthetic evaluation ignores treatment-specific causal structure; defines causal-use desiderata and metrics (propensity fidelity, PEHE utility); proposes STEAM generation aligned to those metrics. Partially closes the evaluation-design gap without making causal scoring universal practice..</p>
 <dl>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The claim is structurally sound and proportionate. The core identifiability argument—that two structural models agreeing on every observational distribution can disagree on every interventional one—is a well-established result in causal inference and correctly grounds the claim that causal fidelity cannot be assessed from observational data alone. The claim does not assert that causally valid generators are impossible to build; it asserts that current benchmarks do not test for causal validity, which is a claim about practice, not about impossibility. The tension between privacy mechanisms and causal fidelity (suppression of rare patterns that carry overlap) is a genuine practical tradeoff, correctly framed as tension rather than impossibility. The standing rule proposed—that synthetic-effect estimates are not clinical evidence—is proportionate to the severity of the error (clinical decisions based on non-causally-valid synthetic data). The scope is right: the claim is about evaluation practice, not about the existence of generative models per se.
 </dd>
@@ -502,11 +507,85 @@ ul.task-list li input[type="checkbox"] {
 </dl>
 </div>
 </section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>10 papers in the reviewed corpus bear on this problem, published 2017 to 2025. Partial progress is on the record, and later work still calls this open. Both belong in view.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<p>It is also being <strong>closed in pieces</strong>: partial results come from more than one paper in more than one year, each covering a different part.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2017</td>
+<td>partly addresses it</td>
+<td>simcausal R Package: Conducting Transparent and Reproducible Simulation Studies of Causal Effect Estimation with Complex Longitudinal Data.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Invited Commentary: Agent-Based Models-Bias in the Face of Discovery.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Developing an Interactive Online Guide to Support the Use of Causal Inference Methods in Comparative Effectiveness Research</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>partly addresses it</td>
+<td>Simulating longitudinal data from marginal structural models using the additive hazard model.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Emulating Target Trials to Improve Causal Inference From Agent-Based Models.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Spillover benefit of pre-exposure prophylaxis for HIV prevention: evaluating the importance of effect modification using an agent-based model.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>partly addresses it</td>
+<td>Longitudinal plasmode algorithms to evaluate statistical methods in realistic scenarios: an illustration applied to occupational epidemiology.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Simulating Data From Marginal Structural Models for a Survival Time Outcome.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>In-silico trial emulation to predict the cardiovascular protection of new lipid-lowering drugs: an illustration through the design of the SIRIUS programme.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Synthetic target trial emulation and predictive modeling of amylin-pathway therapies for obesity and type 2 diabetes.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/SFW-03-code-phenotype-logic-weight-diagnostics-and-rejected-protoco.html">SFW-03 — Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations</a></li>
+<li><a href="../problems/SFW-03-code-phenotype-logic-weight-diagnostics-and-rejected-protoco.html">SFW-03: Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations</a></li>
 </ul>
 </div>
 </section>

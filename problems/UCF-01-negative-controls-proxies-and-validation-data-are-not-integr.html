@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confounding, and it does not.">
+<meta name="description" content="Specifying a target trial prevents the temporal biases an analyst inflicts on themselves; it does not create randomization. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurements all reduce residual confounding without guaranteeing exchangeability. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, exist separately and are not part of any standard emulation workflow: there is no agreed order in which to apply them, no convention for reporting what each one bought, and no accepted way to combine their answers when they disagree. Covariate balance continues to be reported as though it bore on unmeasured confounding, which it does not.">
 
 <title>Negative controls, proxies and validation data are not integrated into a standard emulation workflow – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -395,6 +395,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -410,13 +411,16 @@ ul.task-list li input[type="checkbox"] {
   <div class="quarto-categories">
     <div class="quarto-category">Unmeasured confounding, negative controls &amp; bias analysis</div>
     <div class="quarto-category">Very high priority</div>
-    <div class="quarto-category">Unverifiable</div>
+    <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Assignment</div>
+    <div class="quarto-category">Protocol: Analysis plan</div>
+    <div class="quarto-category">Data: Any setting</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confounding, and it does not.
+    Specifying a target trial prevents the temporal biases an analyst inflicts on themselves; it does not create randomization. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurements all reduce residual confounding without guaranteeing exchangeability. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, exist separately and are not part of any standard emulation workflow: there is no agreed order in which to apply them, no convention for reporting what each one bought, and no accepted way to combine their answers when they disagree. Covariate balance continues to be reported as though it bore on unmeasured confounding, which it does not.
   </div>
 </div>
 
@@ -434,15 +438,19 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="problem-meta">
-<p><span class="problem-id">UCF-01</span> <span class="verdict verdict-unverifiable">Unverifiable</span> <span class="chip chip-priority-very-high">Very high priority</span> <span class="chip chip-maturity-promising">Promising</span> <span class="chip">Tractability 3/5</span></p>
+<p><span class="problem-id">UCF-01</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-very-high">Very high priority</span> <span class="chip chip-maturity-promising">Promising</span> <span class="chip">Tractability 3/5</span></p>
+</div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Assignment</span> <span class="chip chip-axis">Analysis plan</span><br>
+Seen in: <span class="chip chip-axis">Any setting</span></p>
 </div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>A correctly implemented emulation prevents specific design-induced temporal biases and does not create exchangeability. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurement all reduce residual confounding without guaranteeing it. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, identify under distinct and partly untestable assumptions and sometimes target different estimands. They therefore cannot be mechanically ordered or combined: doing so requires an explicit joint model aligned to one estimand, and no such model is in use, so there is no convention for reporting what each tool contributed or for reconciling them when they disagree. Balance on measured covariates continues to be reported as though it bore on unmeasured confounding, and it does not.</p>
+<p>Specifying a target trial prevents the temporal biases an analyst inflicts on themselves; it does not create randomization. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurements all reduce residual confounding without guaranteeing exchangeability. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, exist separately and are not part of any standard emulation workflow: there is no agreed order in which to apply them, no convention for reporting what each one bought, and no accepted way to combine their answers when they disagree. Covariate balance continues to be reported as though it bore on unmeasured confounding, which it does not.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>Combining these tools is not a matter of adding evidence but of reconciling incompatible identification stories, and the joint model that would do it has to commit to one estimand, which discards the reason several tools were used. A negative control shares only some of the confounding mechanisms of the primary outcome, and how much is not knowable from the data. Proximal methods need proxies satisfying completeness-type conditions that cannot be checked, and weak proxies produce instability that reads as precision loss rather than assumption failure. Validation subsamples are rarely random, which imports a second selection problem into the correction for the first.</p>
+<p>Each of these tools identifies under assumptions that are themselves untestable and that differ from one another, so combining them is not a matter of adding evidence but of reconciling incompatible identification stories. A negative control shares only some of the confounding mechanisms of the primary outcome, and how much is not knowable from the data. Proximal methods need proxies satisfying completeness-type conditions that cannot be checked, and weak proxies produce unstable estimates that look like precision loss rather than assumption failure. Validation subsamples are rarely random, which imports a second selection problem into the correction for the first.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -469,15 +477,21 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Build an estimand-aligned joint model in which the proxies, negative controls and validation data enter as components of one identification argument, rather than seeking an order in which to apply them separately. Declare the treatment-inducing and outcome-inducing proxies and the negative controls in the protocol, and report the conventional estimate alongside E-values, bias functions, Rosenbaum-style sensitivity models, tipping-point analyses and priors on unmeasured confounding, all keyed to the same estimand so a reader sees one quantity under several assumption sets. Establish by simulation how far negative-control calibration transfers when the control shares only part of the confounding structure, which is the assumption the method makes and never states.</p>
+<p>Develop a proximal emulation in which treatment-inducing and outcome-inducing proxies are declared in the protocol alongside the negative controls, and estimate the primary effect under the proximal identification conditions as well as the conventional ones. Report the conventional estimate next to E-values, bias functions, Rosenbaum-style sensitivity models, tipping-point analyses and priors on unmeasured confounding, all keyed to the same estimand so the reader sees one quantity under several assumption sets. Establish, by simulation, how far negative-control calibration transfers when the control shares only part of the confounding structure, because that is the assumption the method makes and never states.</p>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
-<p><strong>Verdict.</strong> Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.</p>
-<p><strong>The source said.</strong> “Specifying a target trial prevents the temporal biases an analyst inflicts on themselves; it does not create randomization. Active-comparator new-user designs, high-dimensional propensity scores and richer clinical measurements all reduce residual confounding without guaranteeing exchangeability. The tools that address what remains, negative control outcomes and exposures, instrumental variables, proximal causal learning and external validation samples, exist separately and are not part of any standard emulation workflow: there is no agreed order in which to apply them, no convention for reporting what each one bought, and no accepted way to combine their answers when they disagree. Covariate balance continues to be reported as though it bore on unmeasured confounding, which it does not.”</p>
-<p><strong>What was wrong with it.</strong> The entry asked for an agreed order in which to apply these tools. There cannot be one: they identify under distinct, partly untestable assumptions and sometimes target different estimands, so they cannot be mechanically ordered or combined without an explicit estimand-aligned joint model. The missing thing is that joint model, not a sequence.</p>
-<p><strong>Dissent.</strong> literature dissented (supported): Searching for an integrated workflow combining negative controls, proxies, instrumental variables and validation data within an emulation returned applied studies that use one of these tools, not a workflow that orders or combines them. A 2026 iScience paper shows exposure-definition sensitivity unmasking hidden confounding in a crystalloid emulation, which is a diagnostic in the family the entry describes and is a single-tool example. Proximal causal inference has been applied within an emulation for influenza vaccination and cardiovascular events, again as one method rather than as part of a standard sequence. The entry’s claim is about integration and reporting convention rather than about any missing method, and nothing in the corpus supplies that. grok dissented (supported-with-caveat): Inverted-prior search treated the gap as already closed and looked for a field-standard emulation pipeline that declares negative controls, treatment/outcome proxies, proximal identification, instruments, and validation samples in the protocol, reports what each tool bought on a shared estimand, and reconciles disagreements. That standard was not found. The cited works (Hubbard–Hernán 2024; Hernán–Robins 2016) correctly locate residual confounding outside protocol design; they do not integrate residual-confounding tools into a workflow. Recent literature and software add components and occasional applications, not a consensus order or combination rule. Guo et al.&nbsp;(2025) run a target trial emulation under proximal causal inference with declared NCE/NCO proxies and sensitivity swaps of those controls: that is a serious applied fusion of TTE and PCI, not a field standard or a protocol template for combining PCI with E-values, bias functions, Rosenbaum models, tipping points, and external validation on one estimand. BenchExCal (Wang et al.&nbsp;2025) proposes a structured benchmark–expand–calibration process that uses negative-control calibration in an emulation pipeline; the paper is a design and planned evaluation, not an established convention. Practical TTE checklists and operational EHR frameworks (e.g., Tran 2026; Nature Digital Medicine operational TTE 2026) recommend negative-control diagnostics, which softens the claim that residual tools are invisible in guidance, but still treat them as optional diagnostics rather than protocol-declared primary analyses. TARGET (JAMA 2025) is a reporting checklist for emulations; it does not prescribe proximal protocols or multi-tool reconciliation. CRAN task-view and package checks (TrialEmulation, gfoRmula, gfoRmulaICE, lmtp, ltmle, WeightIt, MatchIt, cobalt, PCL) show no merged standard that wires NCO panels, proximal estimation, validation-sample correction, and conventional estimands into one emulation API. Distributional NCO diagnosis/calibration work on medRxiv (2026) is a proposal. Sensitivity and proximal methods still rest on untestable, non-identical identification stories; papers that propose or apply methods do not solve combination under disagreement. Covariate balance remains widely reported without claiming identification of unmeasured confounding in the sources retrieved. Queries run: TTE+proximal; NCO calibration/BenchExCal/TARGET; PCI software (PCL, regression-based PCI); package/CRAN activity for TrialEmulation/gfoRmula/lmtp; guidance (TARGET, ENCePP, ICH). Net: the problem as stated (no agreed integrated residual-confounding workflow for emulations) remains open; the caveat is that TTE+PCI applications and NCO-centric calibration proposals now exist and should be cited as prior art, not as closure.</p>
+<p><strong>Verdict.</strong> Partially addressed. Auditors found the problem open. At least one qualified how it is stated; the qualification and who made it are in the trail below. Moved by the full-text reading: 20 findings from 20 papers naming work that covers part of this problem survived both the reader and an independent second reviewer, so the verdict moves from confirmed-open to partially-addressed. A further 69 findings in the same reading restate the problem as open; the two are consistent, and the part that is covered is named above.</p>
+<p><strong>Dissent.</strong> literature dissented (supported): Searching for an integrated workflow combining negative controls, proxies, instrumental variables and validation data within an emulation returned applied studies that use one of these tools, not a workflow that orders or combines them. […]</p>
+<p><strong>Revised by the full-text reading.</strong> Applied full-text reading of the consolidated library.</p>
+<dl>
+<dt>Verdict changed</dt>
+<dd>
+<strong>confirmed-open -&gt; partially-addressed</strong> 20 surviving findings from: Adjacent spillover efficacy of Wolbachia for control of deng; Antiretroviral Therapy and Mortality in Rural South Africa: ; Assessing Wolbachia-mediated sterility for dengue control: e; Association of Medication Use and 8-Year Mortality Risk in P; Comparison of the Test-negative Design and Cohort Design Wit; Controlling Time-Dependent Confounding by Health Status and ; Effectiveness of a Covid mRNA Vaccine Against Two Early Vari; Emulating target trials of postexposure vaccines using obser; Emulating the LEADER trial in China: a regulatory science ca; Estimating cardiovascular effects of influenza vaccination i; Estimating the Effects of Lifestyle Interventions on Mortali; Exposure definition sensitivity unmasks hidden confounding i; Incorporating genetic data improves target trial emulations ; Making fair comparisons in pregnancy medication safety studi; Observational methods for COVID-19 vaccine effectiveness res; Simultaneously Dealing With Immortal Time Bias and Residual ; Strengthening inferential studies in the FDA Sentinel initia; Target Trial Emulation Using Cohort Studies: Estimating the ; The Impact of Unemployment on Antidepressant Purchasing: Adj; Trial Emulation Methods.. New citations: 10.1002/pds.4336, 10.1002/pds.70174, 10.1016/j.eclinm.2025.103449, 10.1016/j.isci.2026.116584, 10.1038/s41588-025-02229-8, 10.1038/s41746-025-02234-5, 10.1053/j.ajkd.2023.07.024, 10.1093/aje/kwae350, 10.1093/aje/kwu485, 10.1093/aje/kwy065, 10.1093/ije/dyad138, 10.1093/jtm/taae103, 10.1097/ede.0000000000000985, 10.1097/ede.0000000000001709, 10.1097/ede.0000000000001802, 10.1097/ede.0000000000001889, 10.1186/s12916-025-03941-2, 10.1212/wnl.0000000000213783, 10.3389/fendo.2026.1777954, 10.7759/cureus.90666
+</dd>
+</dl>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -491,23 +505,492 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>open / supported-with-caveat.</strong> Inverted-prior search treated the gap as already closed and looked for a field-standard emulation pipeline that declares negative controls, treatment/outcome proxies, proximal identification, instruments, and validation samples in the protocol, reports what each tool bought on a shared estimand, and reconciles disagreements. That standard was not found. The cited works (Hubbard–Hernán 2024; Hernán–Robins 2016) correctly locate residual confounding outside protocol design; they do not integrate residual-confounding tools into a workflow. Recent literature and software add components and occasional applications, not a consensus order or combination rule. Guo et al.&nbsp;(2025) run a target trial emulation under proximal causal inference with declared NCE/NCO proxies and sensitivity swaps of those controls: that is a serious applied fusion of TTE and PCI, not a field standard or a protocol template for combining PCI with E-values, bias functions, Rosenbaum models, tipping points, and external validation on one estimand. BenchExCal (Wang et al.&nbsp;2025) proposes a structured benchmark–expand–calibration process that uses negative-control calibration in an emulation pipeline; the paper is a design and planned evaluation, not an established convention. Practical TTE checklists and operational EHR frameworks (e.g., Tran 2026; Nature Digital Medicine operational TTE 2026) recommend negative-control diagnostics, which softens the claim that residual tools are invisible in guidance, but still treat them as optional diagnostics rather than protocol-declared primary analyses. TARGET (JAMA 2025) is a reporting checklist for emulations; it does not prescribe proximal protocols or multi-tool reconciliation. CRAN task-view and package checks (TrialEmulation, gfoRmula, gfoRmulaICE, lmtp, ltmle, WeightIt, MatchIt, cobalt, PCL) show no merged standard that wires NCO panels, proximal estimation, validation-sample correction, and conventional estimands into one emulation API. Distributional NCO diagnosis/calibration work on medRxiv (2026) is a proposal. Sensitivity and proximal methods still rest on untestable, non-identical identification stories; papers that propose or apply methods do not solve combination under disagreement. Covariate balance remains widely reported without claiming identification of unmeasured confounding in the sources retrieved. Queries run: TTE+proximal; NCO calibration/BenchExCal/TARGET; PCI software (PCL, regression-based PCI); package/CRAN activity for TrialEmulation/gfoRmula/lmtp; guidance (TARGET, ENCePP, ICH). Net: the problem as stated (no agreed integrated residual-confounding workflow for emulations) remains open; the caveat is that TTE+PCI applications and NCO-centric calibration proposals now exist and should be cited as prior art, not as closure.
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The claim is internally consistent and correctly scoped as a problem of current practice (lack of standardization and integration) rather than a structural impossibility. The reasons given for it being open (incompatible identification stories, untestable assumptions differing across tools) genuinely support the claim that these tools are not currently integrated into a standard emulation workflow. The severity is proportionate to the methodological gap.
 </dd>
 <dt>Decision path</dt>
 <dd>
-<code>R5:default-open → R7:counter-and-support-both-present(support=2/counter=1)</code>
+<code>R5:default-open → R9:substantiated-overstatement(n=1/4):codex → R17:reading-moved(confirmed-open-&gt;partially-addressed)</code>
 </dd>
 </dl>
+</div>
+</section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>89 papers in the reviewed corpus bear on this problem, published 2013 to 2026. Progress and a fresh assertion of openness land in the same year.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<p>It is also being <strong>closed in pieces</strong>: partial results come from more than one paper in more than one year, each covering a different part.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2013</td>
+<td>confirms it is open</td>
+<td>Challenges of guarantee-time bias.</td>
+</tr>
+<tr class="even">
+<td>2015</td>
+<td>partly addresses it</td>
+<td>Controlling Time-Dependent Confounding by Health Status and Frailty: Restriction Versus Statistical Adjustment.</td>
+</tr>
+<tr class="odd">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Comparative Effectiveness Research Using Observational Data: Active Comparators to Emulate Target Trials with Inactive Comparators.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Specifying a target trial prevents immortal time bias and other self-inflicted injuries in observational analyses.</td>
+</tr>
+<tr class="odd">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Application of the Marginal Structural Model to Account for Suboptimal Adherence in a Randomized Controlled Trial.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>An Empirical Method of Detecting Time-Dependent Confounding: An Observational Study of Next Day Delirium in a Medical ICU.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>partly addresses it</td>
+<td>Making fair comparisons in pregnancy medication safety studies: An overview of advanced methods for confounding control.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Instrumental Variable Analyses in Pharmacoepidemiology: What Target Trials Do We Emulate?</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Comparing the Effectiveness of Dynamic Treatment Strategies Using Electronic Health Records: An Application of the Parametric g-Formula to Anemia Management Strategies.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Target trial emulation: teaching epidemiology and beyond.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Intensive care unit (ICU)-acquired bacteraemia and ICU mortality and discharge: addressing time-varying confounding using appropriate methodology.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>partly addresses it</td>
+<td>Antiretroviral Therapy and Mortality in Rural South Africa: A Comparison of Causal Modeling Approaches.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>How to estimate the effect of treatment duration on survival outcomes using observational data.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Using marginal structural models to adjust for treatment drop-in when developing clinical prediction models.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>partly addresses it</td>
+<td>The Impact of Unemployment on Antidepressant Purchasing: Adjusting for Unobserved Time-constant Confounding in the g-Formula.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Bias in pharmacoepidemiologic studies using secondary health care databases: a scoping review.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Emulating a Novel Clinical Trial Using Existing Observational Data. Predicting Results of the PreVent Study.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>A comparison of methods to estimate the survivor average causal effect in the presence of missing data: a simulation study.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Methodological considerations when analysing and interpreting real-world data.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Long-term effects of asthma medication on asthma symptoms: an application of the targeted maximum likelihood estimation.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Quantitative Bias Analysis for a Misclassified Confounder: A Comparison Between Marginal Structural Models and Conditional Models for Point Treatments.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Computational drug repositioning of atorvastatin for ulcerative colitis.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Statins as Potential Chemoprevention or Therapeutic Agents in Cancer: a Model for Evaluating Repurposed Drugs.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Bilateral Salpingo-oophorectomy and Breast Cancer Risk for BRCA1 and BRCA2 Mutation Carriers: Assessing the Evidence.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Target trial emulations: bridging the gap between clinical trial and real-world data.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Randomized Trial Replication Using Observational Data for Comparative Effectiveness of Secukinumab and Ustekinumab in Psoriasis: A Study From the British Association of Dermatologists Biologics and Immunomodulators Register.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Modeling treatment effect modification in multidrug-resistant tuberculosis in an individual patient data meta-analysis.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Mediterranean Diet and Cardiovascular Prevention: Why Analytical Observational Designs Do Support Causality and Not Only Associations.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Estimating the effect of donor sex on red blood cell transfused patient mortality: A retrospective cohort study using a targeted learning and emulated trials-based approach.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>partly addresses it</td>
+<td>Trial Emulation Methods.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>partly addresses it</td>
+<td>Comparison of the Test-negative Design and Cohort Design With Explicit Target Trial Emulation for Evaluating COVID-19 Vaccine Effectiveness.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Evaluation of national institute for health and care excellence guidance for ruptured abdominal aortic aneurysms by emulating a hypothetical target trial.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Defining the role of real-world data in cancer clinical research: The position of the European Organisation for Research and Treatment of Cancer.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Inverse probability of treatment weighting with generalized linear outcome models for doubly robust estimation.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Are early post-discharge physician contacts associated with 30-day psychiatric re-hospitalisation? A nationwide claims data based retrospective cohort study in Austria free of immortal time bias.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Positive Impact of [18F]FDG-PET/CT on Mortality in Patients With Staphylococcus aureus Bacteremia Explained by Immortal Time Bias.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Emulated trial investigating effects of multiple treatments: estimating combined effects of mucoactive nebulisers in cystic fibrosis using registry data.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Are Target Trial Emulations the Gold Standard for Observational Studies?</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation to Improve Causal Inference from Observational Data: What, Why, and How?</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation and Bias Through Missing Eligibility Data: An Application to a Study of Palivizumab for the Prevention of Hospitalization Due to Infant Respiratory Illness.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>What should be done and what should be avoided when comparing two treatments?</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Marginal structural models with latent class growth analysis of treatment trajectories: Statins for primary prevention among older adults.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Using instrumental variables to correct for bias in real-world cohort studies of the effects of disease-modifying treatment in MS.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Assessing Wolbachia-mediated sterility for dengue control: emulation of a cluster-randomized target trial in Singapore.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Emulating target trials of postexposure vaccines using observational data.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Target Trial Emulation Using Cohort Studies: Estimating the Effect of Antihypertensive Medication Initiation on Incident Dementia.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Observational methods for COVID-19 vaccine effectiveness research: an empirical evaluation and target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Target Trial Framework: A Solution for Limited Randomized Clinical Trials in Dialysis Vascular Access?</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Comparing PCSK9 Monoclonal Antibody Treatment Strategies Following Myocardial Infarction Using Negative Control Outcomes: A Target Trial Emulation Study</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>“Target Trial Emulation” for Observational Studies - Potential and Pitfalls.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Conducting observational analyses with the target trial emulation approach: a methodological systematic review.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>A target trial emulation comparing the antidepressant effectiveness of selective serotonin reuptake inhibitors (SSRIs) highlighting the importance of patent-related confounding by indication.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Can Observational Data and Target Trial Emulation Inform Cardiovascular Disease Prevention and Management Guidelines?</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Obeticholic acid as second-line therapy for primary biliary cholangitis: Does target trial emulation solve the issue?</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>The Inflation Reduction Act: An Opportunity to Accelerate Confidence in Real-World Evidence in the United States.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Introduction to target trial emulation in rehabilitation: a systematic approach to emulate a randomized controlled trial using observational data.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Association of Medication Use and 8-Year Mortality Risk in Patients With Parkinson Disease: Drug-Wide Trial Emulation.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Adjacent spillover efficacy of Wolbachia for control of dengue: emulation of a cluster randomised target trial.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Estimating the Effects of Lifestyle Interventions on Mortality Among Cancer Survivors: A Methodologic Framework.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Strengthening inferential studies in the FDA Sentinel initiative: results from a methodological demonstration project.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Effectiveness of a Covid mRNA Vaccine Against Two Early Variants: A Reanalysis of Published Data.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Simultaneously Dealing With Immortal Time Bias and Residual Confounding: A Case Study of a High-Dimensional Propensity Score Approach With a Nested Case-Control Framework in Multiple Sclerosis Research.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Estimating cardiovascular effects of influenza vaccination in older adults: a target trial emulation using proximal causal inference.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Incorporating genetic data improves target trial emulations and informs the use of polygenic scores in randomized controlled trial design.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Emulating the EPIC trial using VetCompass primary-care data: causal effects of pimobendan in UK dogs with grade IV/VI heart murmurs.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Opportunities, challenges and future perspectives for target trial emulation in critical care clinical research.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Step-by-step causal analysis of EHRs to ground decision-making.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Comment on “Associations of semaglutide with first-time diagnosis of Alzheimer’s disease in patients with type 2 diabetes: Target trial emulation using nationwide real-world data in the US”.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>A New Target from a Target Trial Emulation: Allow Early Assisted Breathing.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Endocrine therapies and mortality risk in postmenopausal women with breast cancer: benchmarking an observational analysis against a randomized trial.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Generating real-world evidence in early Alzheimer’s disease: Considerations for applying the target trial emulation framework to study the safety of anti-amyloid therapies.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Methodologies for the Emulation of Biomarker-Guided Trials Using Observational Data: A Systematic Review.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Response to the letter titled reply to “Associations of semaglutide with first-time diagnosis of Alzheimer’s disease in patients with type 2 diabetes: Target trial emulation using nationwide real-world data in the US”.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Reply to “Associations of semaglutide with first-time diagnosis of Alzheimer’s disease in patients with type 2 diabetes: Target trial emulation using nationwide real-world data in the US”.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Site-specific complications of central venous catheterization under systematic ultrasound guidance: a target trial emulation revisiting the 3SITES study.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>The R.O.A.D. to clinical trial emulation.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statistical Methods to Adjust for Treatment Switching in Real-World Clinical Studies: A Scoping Review and Descriptive Comparison.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Inference procedures in sequential trial emulation with survival outcomes: Comparing confidence intervals based on the sandwich variance estimator, bootstrap and jackknife.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>partly addresses it</td>
+<td>Exposure definition sensitivity unmasks hidden confounding in crystalloid target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>partly addresses it</td>
+<td>Emulating the LEADER trial in China: a regulatory science case study on non-interventional research.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Methodological Challenges of Emulating a Target Trial to Assess Effectiveness of Timing of PCSK9 Inhibitor Treatment Initiation Post Myocardial Infarction</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Causal estimands and identification of time-varying effects in nonstationary time series from N-of-1 mobile device studies</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Individual causal effect estimation accounting for latent disease state modification</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Harnessing Administrative Data for Real-World Evidence in Psoriatic Disease: Opportunities, Challenges, and Methodological Considerations.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Time dependent outcomes modeling in a real-world analysis of the molecular tumor board at University Cancer Center Hamburg (2016-2022).</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Design and Implementation of Observational Studies Emulating a Target Trial.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Real-World Emulation of Landmark Lung Cancer Trials: A Registry-Based Reconstruction of KN189, KN407, IMpower133, and PACIFIC.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>R WE ready for reimbursement? A round-up of developments in real-world evidence relating to health technology assessment: part 25.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>REACT (Real-world Emulated Clinical Trials): A Framework for Drug Repurposing Applied to Osteoporotic Fractures.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/LRN-03-learned-embeddings-from-clinical-text-can-carry-post-treatme.html">LRN-03 — Learned embeddings from clinical text can carry post-treatment information into a baseline adjustment set</a></li>
-<li><a href="../problems/UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.html">UCF-02 — Sensitivity analyses vary one violated assumption at a time when several are violated together</a></li>
+<li><a href="../problems/LRN-03-learned-embeddings-from-clinical-text-can-carry-post-treatme.html">LRN-03: Learned embeddings from clinical text can carry post-treatment information into a baseline adjustment set</a></li>
+<li><a href="../problems/UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.html">UCF-02: Sensitivity analyses vary one violated assumption at a time when several are violated together</a></li>
 </ul>
 </div>
 </section>

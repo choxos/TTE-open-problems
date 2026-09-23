@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. A learned representation of a clinical note is a dense summary of everything in the note, which can include the site, the treating clinician’s behavior, protected characteristics and information about a treatment decision already made. An embedding whose input window is not demonstrably prior to both the assignment and the decision behind it can therefore carry post-treatment content into a nominal baseline adjustment set, and a timestamp preceding assignment does not establish that it does not. Formal treatment-leakage methods and text distillation exist and are not standard practice in emulations, and no routine test certifies that a representation encodes prognosis rather than the treatment that was about to be given.">
+<meta name="description" content="Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. The risk is specific: a learned representation of a clinical note is a dense summary of everything in the note, which can include post-treatment information, the identity of the site, the behavior of the treating clinician and protected characteristics. Adjusting for such a representation is adjusting for an object whose causal role is unknown and probably mixed, and the usual justification, that more information reduces confounding, does not hold when part of that information is a descendant of treatment.">
 
 <title>Learned embeddings from clinical text can carry post-treatment information into a baseline adjustment set – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -395,6 +395,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -410,13 +411,16 @@ ul.task-list li input[type="checkbox"] {
   <div class="quarto-categories">
     <div class="quarto-category">Machine learning, high-dimensional adjustment &amp; automated emulation</div>
     <div class="quarto-category">High priority</div>
-    <div class="quarto-category">Unverifiable</div>
+    <div class="quarto-category">Overstated</div>
+    <div class="quarto-category">Protocol: Assignment</div>
+    <div class="quarto-category">Protocol: Eligibility</div>
+    <div class="quarto-category">Data: EHR</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. A learned representation of a clinical note is a dense summary of everything in the note, which can include the site, the treating clinician’s behavior, protected characteristics and information about a treatment decision already made. An embedding whose input window is not demonstrably prior to both the assignment and the decision behind it can therefore carry post-treatment content into a nominal baseline adjustment set, and a timestamp preceding assignment does not establish that it does not. Formal treatment-leakage methods and text distillation exist and are not standard practice in emulations, and no routine test certifies that a representation encodes prognosis rather than the treatment that was about to be given.
+    Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. The risk is specific: a learned representation of a clinical note is a dense summary of everything in the note, which can include post-treatment information, the identity of the site, the behavior of the treating clinician and protected characteristics. Adjusting for such a representation is adjusting for an object whose causal role is unknown and probably mixed, and the usual justification, that more information reduces confounding, does not hold when part of that information is a descendant of treatment.
   </div>
 </div>
 
@@ -434,15 +438,19 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="problem-meta">
-<p><span class="problem-id">LRN-03</span> <span class="verdict verdict-unverifiable">Unverifiable</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 3/5</span></p>
+<p><span class="problem-id">LRN-03</span> <span class="verdict verdict-overstated">Overstated</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 3/5</span></p>
+</div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Assignment</span> <span class="chip chip-axis">Eligibility</span><br>
+Seen in: <span class="chip chip-axis">EHR</span></p>
 </div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. A learned representation of a clinical note is a dense summary of everything in the note, which can include the site, the treating clinician’s behavior, protected characteristics and information about a treatment decision already made. An embedding whose input window is not demonstrably prior to both the assignment and the decision behind it can therefore carry post-treatment content into a nominal baseline adjustment set, and a timestamp preceding assignment does not establish that it does not. Formal treatment-leakage methods and text distillation exist and are not standard practice in emulations, and no routine test certifies that a representation encodes prognosis rather than the treatment that was about to be given.</p>
+<p>Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. The risk is specific: a learned representation of a clinical note is a dense summary of everything in the note, which can include post-treatment information, the identity of the site, the behavior of the treating clinician and protected characteristics. Adjusting for such a representation is adjusting for an object whose causal role is unknown and probably mixed, and the usual justification, that more information reduces confounding, does not hold when part of that information is a descendant of treatment.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>The causal role of an embedding dimension is not interpretable, so the standard remedy of inspecting an adjustment set does not apply. Predictiveness of treatment is the obvious test and settles nothing: a genuinely prognostic representation predicts treatment through confounding by indication, and a leaking one predicts it directly. Restricting to pre-assignment text bounds the leak without eliminating it, because a note written before treatment can describe a decision already taken, and validity therefore rests on auditable content provenance rather than on timing metadata.</p>
+<p>The causal role of an embedding dimension is not interpretable, so the standard remedy of inspecting the adjustment set does not apply. Temporal leakage is easy to introduce and hard to detect, because a note timestamped before treatment can still describe a treatment decision already made. Restricting to pre-assignment text limits the leak but does not eliminate it, and no test distinguishes a representation that encodes prognosis from one that encodes the treatment that was about to be given.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -469,15 +477,13 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Use temporally locked encoders trained on content demonstrably prior to both the assignment and the treatment decision, and publish the provenance of that window in dates and document types rather than in prose. Adopt the existing treatment-leakage tests and text distillation methods rather than treating predictiveness as a diagnostic, and where a representation is used as a proxy, state the proximal role and the identification conditions it requires. Prefer interpretable proxy sets over indiscriminate adjustment for a high-dimensional representation whose causal role cannot be argued.</p>
+<p>Use temporally locked encoders trained only on pre-assignment text, and audit the resulting representations for treatment leakage by testing whether the embedding predicts the assigned treatment better than the structured pre-assignment covariates do. Prefer interpretable proxy sets, or an explicit proximal role in which the proxy’s function is stated, over indiscriminate adjustment for a high-dimensional representation. Report what the embedding was allowed to see, in dates rather than in prose, because that is the claim on which its validity rests.</p>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
-<p><strong>Verdict.</strong> Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.</p>
-<p><strong>The source said.</strong> “Notes, imaging and device data capture severity, treatment rationale and outcomes that structured fields miss, and natural language processing has been proposed for eligibility extraction and phenotyping on that basis. The risk is specific: a learned representation of a clinical note is a dense summary of everything in the note, which can include post-treatment information, the identity of the site, the behavior of the treating clinician and protected characteristics. Adjusting for such a representation is adjusting for an object whose causal role is unknown and probably mixed, and the usual justification, that more information reduces confounding, does not hold when part of that information is a descendant of treatment.”</p>
-<p><strong>What was wrong with it.</strong> Two corrections. A timestamp preceding assignment is not sufficient: what matters is that the input window is demonstrably prior to both the assignment and the underlying treatment decision, which is a provenance requirement rather than a date check. And the entry’s proposed test, whether the embedding predicts treatment better than structured covariates do, neither establishes nor rules out leakage. Formal treatment-leakage methods and text distillation exist without being standard.</p>
-<p><strong>Dissent.</strong> grok dissented (overstated): The report frames embedding adjustment as an open risk without naming the literature that already defines and partially remediates it. Daoud, Jerzak, and Johansson (NAACL 2022) formalize treatment leakage when text is used as a confounder proxy, including leakage from pre-assignment documents that anticipate treatment. Daoud, Johansson, and Jerzak (arXiv:2601.02400, late 2025/2026) add formal definitions, four distillation methods (similarity passage removal, distant-supervision passage classification, salient-feature removal, iterative nullspace projection), and simulation plus empirical sensitivity analysis; they explicitly address the paradox that pre-timestamped text can still encode treatment. That is real prior art for detection and mitigation, not mere restatement. Residual openness remains for clinical TTE: methods are not standard in EHR phenotyping pipelines; Wang et al.&nbsp;(2026) still promote NLP for eligibility without a required leakage audit; temporal locking plus formal comparison of embedding-versus-structured treatment prediction is recommended in the agenda and only partially operationalized outside medicine. Sensitivity and distillation quantify or reduce leakage; they do not make an embedding’s causal role fully interpretable dimension-by-dimension. The problem is therefore partially solved in the text-as-confounder literature and still under-adopted in clinical emulation practice.</p>
+<p><strong>Verdict.</strong> Overstated. 3 independent auditors judged the claim as stated too strong. Embeddings whose input window is not demonstrably prior to treatment assignment and the underlying treatment decision can carry post-treatment or decision-related information into a nominal baseline adjustment set. Validity therefore requires auditable content provenance and causal timing. Treatment predictiveness alone neither establishes nor rules out leakage, and a proximal interpretation requires explicit proxy roles and additional identification conditions.</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -491,23 +497,61 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>partially-solved / overstated.</strong> The report frames embedding adjustment as an open risk without naming the literature that already defines and partially remediates it. Daoud, Jerzak, and Johansson (NAACL 2022) formalize treatment leakage when text is used as a confounder proxy, including leakage from pre-assignment documents that anticipate treatment. Daoud, Johansson, and Jerzak (arXiv:2601.02400, late 2025/2026) add formal definitions, four distillation methods (similarity passage removal, distant-supervision passage classification, salient-feature removal, iterative nullspace projection), and simulation plus empirical sensitivity analysis; they explicitly address the paradox that pre-timestamped text can still encode treatment. That is real prior art for detection and mitigation, not mere restatement. Residual openness remains for clinical TTE: methods are not standard in EHR phenotyping pipelines; Wang et al.&nbsp;(2026) still promote NLP for eligibility without a required leakage audit; temporal locking plus formal comparison of embedding-versus-structured treatment prediction is recommended in the agenda and only partially operationalized outside medicine. Sensitivity and distillation quantify or reduce leakage; they do not make an embedding’s causal role fully interpretable dimension-by-dimension. The problem is therefore partially solved in the text-as-confounder literature and still under-adopted in clinical emulation practice. Cites https://aclanthology.org/2022.naacl-main.413/: Defines treatment leakage when text used for confounding adjustment also carries treatment signal, including leakage from pre-assignment future-referencing language; establishes the identification and estimation problem the agenda restates.. Cites arXiv:2601.02400: Provides formal statistical definitions of treatment leakage plus automatic and semi-automatic distillers and leakage sensitivity analysis so that text representations can be purged or stress-tested for treatment-predictive content before adjustment..
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / overstated.</strong> The claim correctly identifies the risk of post-treatment leakage in learned embeddings. However, the assertion that ‘no test distinguishes’ a representation encoding prognosis from one encoding treatment is an overstatement of impossibility when it means that no standard or easily applicable test exists. It is a claim about current practice wearing the language of impossibility.
 </dd>
 <dt>Decision path</dt>
 <dd>
-<code>R3:partially-solved(n=1/4) → R7:counter-and-support-both-present(support=1/counter=1)</code>
+<code>R3:partially-solved(n=1/4) → R8:overstated-majority(n=3/4)</code>
 </dd>
 </dl>
+</div>
+</section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>3 papers in the reviewed corpus bear on this problem, published 2017 to 2025. Every paper found here asserts the problem is open; none reports progress.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Does Fetal Growth Restriction Cause Later Obesity? Pitfalls in Analyzing Causal Mediators as Confounders.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Penalized regression for left-truncated and right-censored survival data.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>On the use of natural language processing to implement the target trial framework using unstructured data from the electronic health record.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.html">LRN-01 — Flexible estimation is presented as a remedy for identification failure</a></li>
-<li><a href="../problems/UCF-01-negative-controls-proxies-and-validation-data-are-not-integr.html">UCF-01 — Negative controls, proxies and validation data are not integrated into a standard emulation workflow</a></li>
+<li><a href="../problems/LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.html">LRN-01: Flexible estimation is presented as a remedy for identification failure</a></li>
+<li><a href="../problems/UCF-01-negative-controls-proxies-and-validation-data-are-not-integr.html">UCF-01: Negative controls, proxies and validation data are not integrated into a standard emulation workflow</a></li>
 </ul>
 </div>
 </section>

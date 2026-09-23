@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been developed to the point of pooled-equivalent estimation for time-to-event outcomes. The statistical machinery for combining site estimates is not the hard part. Sites differ in coding systems, treatment availability, confounding structure and time resolution, so one executable protocol can define materially different eligibility, exposure and outcome at each site, and pooling then averages several different questions. Aggregation cannot detect that: heterogeneity between site estimates is produced equally by real effect modification and by mapping failure. Local validation and aggregate diagnostics shared without patient records can flag some of it, and no current practice requires either, or requires the target population and pooling weights to be stated.">
+<meta name="description" content="Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been proposed and demonstrated for distributed effect estimation. The statistical machinery for combining site estimates is not the hard part. The hard part is that sites differ in coding systems, treatment availability, confounding structure and time resolution, so the same executable protocol can define materially different eligibility, exposure and outcome at each site. Averaging the resulting estimates produces a number whose estimand is the average of several different questions, and nothing in the aggregation step detects that.">
 
 <title>Averaging site estimates in a federated emulation can conceal that the sites emulated different trials – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -394,7 +394,9 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#why-it-is-open" id="toc-why-it-is-open" class="nav-link" data-scroll-target="#why-it-is-open">Why it is open</a></li>
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
+  <li><a href="#our-study" id="toc-our-study" class="nav-link" data-scroll-target="#our-study">Our study</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -411,12 +413,17 @@ ul.task-list li input[type="checkbox"] {
     <div class="quarto-category">Data sources, linkage &amp; federated infrastructure</div>
     <div class="quarto-category">High priority</div>
     <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Cross-cutting</div>
+    <div class="quarto-category">Protocol: Eligibility</div>
+    <div class="quarto-category">Protocol: Outcome</div>
+    <div class="quarto-category">Data: Federated</div>
+    <div class="quarto-category">Data: Multi-database</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been developed to the point of pooled-equivalent estimation for time-to-event outcomes. The statistical machinery for combining site estimates is not the hard part. Sites differ in coding systems, treatment availability, confounding structure and time resolution, so one executable protocol can define materially different eligibility, exposure and outcome at each site, and pooling then averages several different questions. Aggregation cannot detect that: heterogeneity between site estimates is produced equally by real effect modification and by mapping failure. Local validation and aggregate diagnostics shared without patient records can flag some of it, and no current practice requires either, or requires the target population and pooling weights to be stated.
+    Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been proposed and demonstrated for distributed effect estimation. The statistical machinery for combining site estimates is not the hard part. The hard part is that sites differ in coding systems, treatment availability, confounding structure and time resolution, so the same executable protocol can define materially different eligibility, exposure and outcome at each site. Averaging the resulting estimates produces a number whose estimand is the average of several different questions, and nothing in the aggregation step detects that.
   </div>
 </div>
 
@@ -436,13 +443,17 @@ ul.task-list li input[type="checkbox"] {
 <div class="problem-meta">
 <p><span class="problem-id">DTA-02</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 4/5</span></p>
 </div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Cross-cutting</span> <span class="chip chip-axis">Eligibility</span> <span class="chip chip-axis">Outcome</span><br>
+Seen in: <span class="chip chip-axis">Federated</span> <span class="chip chip-axis">Multi-database</span></p>
+</div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been developed to the point of pooled-equivalent estimation for time-to-event outcomes. The statistical machinery for combining site estimates is not the hard part. Sites differ in coding systems, treatment availability, confounding structure and time resolution, so one executable protocol can define materially different eligibility, exposure and outcome at each site, and pooling then averages several different questions. Aggregation cannot detect that: heterogeneity between site estimates is produced equally by real effect modification and by mapping failure. Local validation and aggregate diagnostics shared without patient records can flag some of it, and no current practice requires either, or requires the target population and pooling weights to be stated.</p>
+<p>Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been proposed and demonstrated for distributed effect estimation. The statistical machinery for combining site estimates is not the hard part. The hard part is that sites differ in coding systems, treatment availability, confounding structure and time resolution, so the same executable protocol can define materially different eligibility, exposure and outcome at each site. Averaging the resulting estimates produces a number whose estimand is the average of several different questions, and nothing in the aggregation step detects that.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>The incompatibility is semantic rather than statistical: two sites can both return well-estimated, internally valid effects for populations the protocol did not intend to distinguish, and no summary of the estimates reveals it. The diagnostics that would reveal it need either patient-level data, which federation exists to keep local, or agreement in advance on what to compute and share, which is a governance problem rather than a methods problem. Heterogeneity statistics cannot separate the two causes because both produce between-site variance.</p>
+<p>The incompatibility is semantic rather than statistical: two sites can both return well-estimated, internally valid effects for populations the protocol was not intended to distinguish, and no summary of the estimates reveals it. The diagnostics that would reveal it require the patient-level data that federation exists to keep local. Heterogeneity statistics cannot separate real effect modification from mapping failure, since both produce between-site variance.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -469,14 +480,29 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>State the target population and the pooling weights in the protocol so the pooled quantity is a transported effect for a named population rather than an unweighted average of whatever the sites produced. Share sufficient statistics, influence curves and aggregate balance measures, which is enough to diagnose incompatibility without moving patient records, and adopt the multi-site conduct principles now being codified for distributed analysis. Gate aggregation behind site-level component validation, so a site that fails contributes to the report and not to the estimate.</p>
+<p>Combine federated nuisance estimation with site-specific diagnostics and an explicit transport model, so the pooled quantity is a transported effect for a stated target population rather than an unweighted average. Share sufficient statistics, influence curves and aggregate balance measures, which is enough to diagnose incompatibility without moving patient records. Gate secure aggregation behind site-level trial-component validation: a site that fails the fitness check contributes to the report and not to the estimate.</p>
+</section>
+<section id="our-study" class="level2">
+<h2 class="anchored" data-anchor-id="our-study">Our study</h2>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A study is designed
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Question.</strong> Conditional on each site already having a locally adjudicated canonical reference definition, how do prespecified eligibility, exposure, and outcome mapping discrepancies affect a six-site federated five-year risk difference under null, weak, and strong links between the discrepancy and potential outcomes; which aggregate or sampled validation gates detect those discrepancies; and what safety, release, and interval performance do the resulting estimators achieve?</p>
+</div>
+</div>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
 <p><strong>Verdict.</strong> Partially addressed. Part of this problem is addressed by existing work; the entry names which part.</p>
-<p><strong>The source said.</strong> “Distributed health data improve power and support transportability, and patient-level sharing is often prohibited, which is why federated emulation has been proposed and demonstrated for distributed effect estimation. The statistical machinery for combining site estimates is not the hard part. The hard part is that sites differ in coding systems, treatment availability, confounding structure and time resolution, so the same executable protocol can define materially different eligibility, exposure and outcome at each site. Averaging the resulting estimates produces a number whose estimand is the average of several different questions, and nothing in the aggregation step detects that.”</p>
-<p><strong>What was wrong with it.</strong> Nothing in the aggregation step detects it, which the entry stated correctly, but local validation and privacy-preserving aggregate diagnostics can flag some incompatibilities without centralizing records, so the situation is not undiagnosable. Federated estimation for emulated trials has also advanced past the feasibility demonstration the entry cites.</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -490,7 +516,7 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>open / supported.</strong> The report’s own cited work, Li et al.&nbsp;(FL-TTE, 2025), demonstrates that distributed effect estimation for an emulated trial is feasible without pooling patient-level data. That is estimation machinery, not a solution to semantic incompatibility: sites can still implement different eligibility, exposure, or outcome mappings under the same executable protocol, and averaging site estimates does not detect that. Manke-Reimers et al.&nbsp;(2025) is a scoping review of transportability practice; it clarifies when a multi-site average needs an explicit transport model, but does not supply site-level diagnostics that separate mapping failure from true effect modification using only the aggregates federation is allowed to share. Recent federated causal-inference methods (for example Khellaf, Bellet, and Josse on propensity-score aggregation across sites; LATTE one-shot federated TTE showcased at OHDSI 2025) again address statistical pooling and privacy-preserving nuisance estimation, not semantic trial equivalence. Queries across AJE/Epidemiology/IJE/EJE/PDS/SiM, arXiv stat.ME, medRxiv, and package ecosystems (TrialEmulation, lmtp, ltmle, WeightIt, MatchIt, gfoRmula) did not surface a released method that gates secure aggregation behind site-level trial-component validation or that diagnoses coding-system and phenotype discordance from sufficient statistics and aggregate balance alone. Heterogeneity statistics remain confounded between real effect modification and mapping failure, exactly as the problem states. Status remains open as stated.
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The claim is coherent and pitched at the right level of generality. It accurately identifies that the core difficulty in federated emulation is semantic incompatibility rather than statistical combination. The reasons given for it being open (diagnostics require patient-level data that federation restricts, and heterogeneity statistics conflate mapping failure with effect modification) directly support the claim that the problem remains open.
 </dd>
@@ -501,12 +527,109 @@ ul.task-list li input[type="checkbox"] {
 </dl>
 </div>
 </section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>15 papers in the reviewed corpus bear on this problem, published 2021 to 2026. Partial progress is on the record, and later work still calls this open. Both belong in view.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>The importance of the design of observational studies in comparative effectiveness research: Lessons from the GARFIELD-AF and ORBIT-AF registries.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Modeling treatment effect modification in multidrug-resistant tuberculosis in an individual patient data meta-analysis.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Random effects modelling versus logistic regression for the inclusion of cluster-level covariates in propensity score estimation: A Monte Carlo simulation and registry cohort analysis.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Evaluation of national institute for health and care excellence guidance for ruptured abdominal aortic aneurysms by emulating a hypothetical target trial.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>High-throughput target trial emulation for Alzheimer’s disease drug repurposing with real-world data.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Target Trial Framework: A Solution for Limited Randomized Clinical Trials in Dialysis Vascular Access?</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>A Common Longitudinal Intensive Care Unit data Format (CLIF) to enable multi-institutional federated critical illness research.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Federated target trial emulation using distributed observational data for treatment effect estimation.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Causal inference in multi-cohort studies using the target trial framework to identify and minimize sources of bias.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Strengthening inferential studies in the FDA Sentinel initiative: results from a methodological demonstration project.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Analytic Considerations for the Evaluation of Tuberculosis Preventative Therapy Effectiveness Among People Living with HIV.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>A commentary on “Robotic versus laparoscopic surgery for middle and low rectal cancer: a retrospective cohort study emulating the target trial”.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Real-world comparative effectiveness of SARS-CoV-2 primary vaccination campaigns against SARS-CoV-2 infections: a federated observational study emulating a target trial in three nations.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Exposure definition sensitivity unmasks hidden confounding in crystalloid target trial emulation.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Trial emulation for validating the clinical efficacy of a foundational AI model in embryo selection.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/DTA-03-common-data-models-harmonize-structure-without-guaranteeing-.html">DTA-03 — Common data models harmonize structure without guaranteeing that the same variable means the same thing</a></li>
-<li><a href="../problems/EST-02-transporting-an-observational-estimate-compounds-sampling-as.html">EST-02 — Transporting an observational estimate compounds sampling assumptions on top of confounding assumptions with no accounting</a></li>
+<li><a href="../problems/DTA-03-common-data-models-harmonize-structure-without-guaranteeing-.html">DTA-03: Common data models harmonize structure without guaranteeing that the same variable means the same thing</a></li>
+<li><a href="../problems/EST-02-transporting-an-observational-estimate-compounds-sampling-as.html">EST-02: Transporting an observational estimate compounds sampling assumptions on top of confounding assumptions with no accounting</a></li>
 </ul>
 </div>
 </section>

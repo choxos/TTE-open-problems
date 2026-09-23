@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practice once nuisance models must be refitted per replicate.">
+<meta name="description" content="Sequential emulation and cloning expand a dataset by orders of magnitude: each person contributes a row per eligible decision point, and cloning multiplies that by the number of strategies with which the person is initially compatible. Two dependence structures result. Repeated eligibility means a person appears in many trials, and cloning means several rows are copies of the same person’s history. Naive standard errors ignore both. The bootstrap is correct in principle and often prohibitive at this scale, particularly with flexible nuisance models that must be refitted per replicate. The TrialEmulation package supports sequence expansion, censoring weights, outcome models and chunked processing, and general scalable variance estimation for this design remains unsettled.">
 
 <title>Variance estimation after cloning and sequence expansion has no scalable, correct default – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -395,6 +395,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -410,13 +411,17 @@ ul.task-list li input[type="checkbox"] {
   <div class="quarto-categories">
     <div class="quarto-category">Software, computation &amp; reproducibility</div>
     <div class="quarto-category">High priority</div>
-    <div class="quarto-category">Unverifiable</div>
+    <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Analysis plan</div>
+    <div class="quarto-category">Data: Claims</div>
+    <div class="quarto-category">Data: EHR</div>
+    <div class="quarto-category">Data: Any setting</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practice once nuisance models must be refitted per replicate.
+    Sequential emulation and cloning expand a dataset by orders of magnitude: each person contributes a row per eligible decision point, and cloning multiplies that by the number of strategies with which the person is initially compatible. Two dependence structures result. Repeated eligibility means a person appears in many trials, and cloning means several rows are copies of the same person’s history. Naive standard errors ignore both. The bootstrap is correct in principle and often prohibitive at this scale, particularly with flexible nuisance models that must be refitted per replicate. The <code>TrialEmulation</code> package supports sequence expansion, censoring weights, outcome models and chunked processing, and general scalable variance estimation for this design remains unsettled.
   </div>
 </div>
 
@@ -434,15 +439,19 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="problem-meta">
-<p><span class="problem-id">SFW-01</span> <span class="verdict verdict-unverifiable">Unverifiable</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-promising">Promising</span> <span class="chip">Tractability 4/5</span></p>
+<p><span class="problem-id">SFW-01</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-promising">Promising</span> <span class="chip">Tractability 4/5</span></p>
+</div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Analysis plan</span><br>
+Seen in: <span class="chip chip-axis">Claims</span> <span class="chip chip-axis">EHR</span> <span class="chip chip-axis">Any setting</span></p>
 </div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>Sequential emulation and cloning expand a dataset by orders of magnitude: a row per eligible decision point per person, multiplied by the strategies each person is initially compatible with. Two dependence structures result, repeated participation and clone-level copies of one history, and naive standard errors ignore both. Person-clustered sandwich inference handles both scalably when the weights are treated as fixed or the estimating-equation conditions hold, and for parametric marginal structural models with inverse probability weighting there are now evaluated alternatives with simulation guidance on coverage against cost. No default handles the harder case: clone-level dependence together with site clustering and the uncertainty from weights estimated by flexible nuisance models, at sequence-expansion scale. The bootstrap that would is correct in principle and prohibitive in practice once nuisance models must be refitted per replicate.</p>
+<p>Sequential emulation and cloning expand a dataset by orders of magnitude: each person contributes a row per eligible decision point, and cloning multiplies that by the number of strategies with which the person is initially compatible. Two dependence structures result. Repeated eligibility means a person appears in many trials, and cloning means several rows are copies of the same person’s history. Naive standard errors ignore both. The bootstrap is correct in principle and often prohibitive at this scale, particularly with flexible nuisance models that must be refitted per replicate. The <code>TrialEmulation</code> package supports sequence expansion, censoring weights, outcome models and chunked processing, and general scalable variance estimation for this design remains unsettled.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>The dependence is nested and partly induced by the analysis rather than present in the data, so the clustering variable that is correct for repeated participation is not obviously correct for clones. An influence-function variance estimator needs the influence function of the full estimator including the weight-estimation step, which is unavailable in closed form once the nuisance models are learned. Every workaround trades in the same currency: subsampling to make the bootstrap affordable reintroduces the finite-sample instability the bootstrap was there to characterize.</p>
+<p>The dependence is nested rather than simply clustered: clones within a person within a site, with the clone-level dependence induced by the analysis rather than present in the data. Influence-function variance estimators need the influence function of the full estimator including the weight-estimation step, which is not available in closed form once the nuisance models are learned. Every workaround trades in the same currency, since subsampling to make the bootstrap affordable reintroduces the finite-sample instability the bootstrap was there to characterize.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -469,16 +478,14 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Use person-clustered sandwich inference as the default where its conditions hold, and state that the weights were treated as fixed when they were. Derive a variance estimator that propagates estimated-weight and flexible-nuisance uncertainty and accommodates site-level sampling, which is the case no current option covers, and check its coverage against a person-level bootstrap on data small enough to run both. Support the scale with streaming risk-set construction, columnar back ends and case-control sampling with proven error control rather than heuristic subsampling.</p>
+<p>Derive influence-function and multiplier-bootstrap variance estimators clustered by original individual and by site, so that the clone-level dependence created by the analysis is handled where it is created. Support the scale with streaming risk-set construction, columnar back ends such as DuckDB or Arrow, sparse history representations, and case-control sampling with proven error control rather than heuristic subsampling. Report coverage under the actual dependence structure rather than under independence, because the failure this produces is anticonservative and therefore invisible in a point estimate.</p>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
-<p><strong>Verdict.</strong> Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.</p>
-<p><strong>The source said.</strong> “Sequential emulation and cloning expand a dataset by orders of magnitude: each person contributes a row per eligible decision point, and cloning multiplies that by the number of strategies with which the person is initially compatible. Two dependence structures result. Repeated eligibility means a person appears in many trials, and cloning means several rows are copies of the same person’s history. Naive standard errors ignore both. The bootstrap is correct in principle and often prohibitive at this scale, particularly with flexible nuisance models that must be refitted per replicate. The <code>TrialEmulation</code> package supports sequence expansion, censoring weights, outcome models and chunked processing, and general scalable variance estimation for this design remains unsettled.”</p>
-<p><strong>What was wrong with it.</strong> Person-clustered sandwich inference is a scalable answer to the dependence created by repeated eligibility and cloning when the weights are fixed or the estimating-equation conditions hold, and evaluated options now exist for the parametric case with inverse probability weighting. The entry treated the whole problem as unsettled. What remains unsettled is narrower and still real.</p>
-<p><strong>Dissent.</strong> literature dissented (supported-with-caveat): The variance problem for the sequence-expansion half of this entry has been addressed: a 2025 paper compares sandwich, nonparametric bootstrap, jackknife and linearized estimating function bootstrap confidence intervals for sequential trial emulation with survival outcomes and finds a computationally feasible option with better coverage in the motivating regime. The entry should not present that as open. The cloning half is not covered by that work, and a search for variance estimation under cloning specifically returned nothing, so the dependence induced by copies of the same person remains unaddressed. The computational directions the entry proposes, streaming risk sets and columnar back ends, appear nowhere in the corpus. codex dissented (overstated): The full-estimator variance problem remains real, but the stated rationale overreaches. Rows created by repeated eligibility or cloning remain within the original individual, so clustering on that individual handles arbitrary dependence among those rows; clone dependence is not a separate sampling level. The pinned TrialEmulation source automatically computes a person-clustered sandwich covariance for its fitted MSM, providing a scalable analytic default for the outcome-model estimating equation. It does not propagate uncertainty from estimated switching or censoring weights, flexible nuisance learning, or site-level sampling. If sites are the independent units, inference should generally cluster or resample sites rather than treat clones-within-person-within-site as an exotic multiway structure. Likewise, a bootstrap is valid only when it resamples the appropriate independent unit and refits the full pipeline. A learner-specific closed-form influence function is also not universally necessary for orthogonal, cross-fitted estimators under suitable rate conditions. grok dissented (supported-with-caveat): Inverted prior: assume scalable correct variance already exists. Highest-yield hit is Limozin, Seaman, and Su (SMMR 2025; arXiv 2407.08317), co-authored with the TrialEmulation lead: they compare sandwich, nonparametric bootstrap, jackknife, and a new LEF bootstrap for sequential trial emulation (STE) marginal risk differences under IPW. LEF is faster than full bootstrap and covers better under the sparse regimes that motivate STE; sandwich is fastest and covers well only with large n and medium/high event rates. They state explicitly that sandwich is the only CI method in TrialEmulation and that it ignores weight-estimation uncertainty. That is real progress on the sequential-eligibility half of the claim.</p>
-<p>It does not close the problem as stated. Coverage guidance is setting-specific, not a single default. LEF is research code (GitHub simulation repo), not a TrialEmulation default. The design is parametric MSM/IPW STE, not nested clone-within-person-within-site dependence from multi-strategy cloning, and not influence functions for flexible nuisance models. Clone-censor-weight primers (Gaber et al.&nbsp;2024; Webster-Clark et al.&nbsp;PDS 2025; survivalCCW) still recommend bootstrap or robust SE and ship bootstrap vignettes; they do not deliver streaming IF or Arrow/DuckDB risk-set variance. Queries run: sequential trial variance sandwich bootstrap jackknife; clone-censor-weight variance; TrialEmulation robust SE; arXiv 2407.08317; survivalCCW; Enders 2018 sandwich (still not off-the-shelf). No 2025–2026 package release supplies a general scalable correct default for both cloning and sequence expansion under flexible nuisances. Partial solve of STE inference guidance; core gap remains.</p>
+<p><strong>Verdict.</strong> Partially addressed. Part of this problem is addressed by existing work; the entry names which part.</p>
+<p><strong>Dissent.</strong> codex dissented (overstated): The full-estimator variance problem remains real, but the stated rationale overreaches. Rows created by repeated eligibility or cloning remain within the original individual, so clustering on that individual handles arbitrary dependence among those rows; clone dependence is not a separate sampling level. […]</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -495,23 +502,292 @@ ul.task-list li input[type="checkbox"] {
 </dl>
 <p>It does not close the problem as stated. Coverage guidance is setting-specific, not a single default. LEF is research code (GitHub simulation repo), not a TrialEmulation default. The design is parametric MSM/IPW STE, not nested clone-within-person-within-site dependence from multi-strategy cloning, and not influence functions for flexible nuisance models. Clone-censor-weight primers (Gaber et al.&nbsp;2024; Webster-Clark et al.&nbsp;PDS 2025; survivalCCW) still recommend bootstrap or robust SE and ship bootstrap vignettes; they do not deliver streaming IF or Arrow/DuckDB risk-set variance. Queries run: sequential trial variance sandwich bootstrap jackknife; clone-censor-weight variance; TrialEmulation robust SE; arXiv 2407.08317; survivalCCW; Enders 2018 sandwich (still not off-the-shelf). No 2025–2026 package release supplies a general scalable correct default for both cloning and sequence expansion under flexible nuisances. Partial solve of STE inference guidance; core gap remains. Cites 10.1177/09622802251356594: Provides a full simulation comparison of sandwich, nonparametric bootstrap, LEF bootstrap, and jackknife for STE marginal risk differences; adapts LEF bootstrap to STE; documents that TrialEmulation implements only sandwich and that sandwich ignores weight uncertainty; gives practical choice rules by sample size and event rate.. Cites arxiv:2407.08317: Open preprint of the same STE inference comparison; confirms dependence induced by patients entering multiple trials and the computational barrier of nonparametric bootstrap.. Cites 10.1007/s40471-024-00346-2: Does not solve scalable variance; documents current practice that CCW inference requires bootstrap or robust variance, reinforcing that a correct cloning-aware default is still an implementation gap rather than a solved product feature..</p>
 <dl>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The claim is internally consistent and proportionate. It does not assert impossibility; it says the problem ‘remains unsettled,’ which is a claim about the state of methodology and practice. The reason given for openness—nested dependence (clones within persons within sites) and the lack of closed-form influence functions once nuisance models are learned—is a genuine methodological gap that structurally supports the claim being open. The acknowledgment that the bootstrap is ‘correct in principle’ but ‘often prohibitive’ is a fair characterization of a practical tradeoff rather than an overstatement. I cannot verify what the TrialEmulation package does or does not implement, but the core methodological claim about the absence of a scalable, correct default variance estimator for this design is coherent and the stated reasons entail openness. The claim about software capabilities is not the load-bearing part of the argument; the load-bearing part is the identifiability/derivability of the influence function under learned nuisance models, which is a methodological claim I can assess for coherence.
 </dd>
 <dt>Decision path</dt>
 <dd>
-<code>R3:partially-solved(n=3/4) → R7:counter-and-support-both-present(support=1/counter=1)</code>
+<code>R3:partially-solved(n=3/4) → R9:substantiated-overstatement(n=1/4):codex</code>
 </dd>
 </dl>
+</div>
+</section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>49 papers in the reviewed corpus bear on this problem, published 2006 to 2026. Partial progress is on the record, and later work still calls this open. Both belong in view.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<p>It is also being <strong>closed in pieces</strong>: partial results come from more than one paper in more than one year, each covering a different part.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2006</td>
+<td>confirms it is open</td>
+<td>Causal analysis of case-control data.</td>
+</tr>
+<tr class="even">
+<td>2010</td>
+<td>confirms it is open</td>
+<td>Testing and estimating model-adjusted effect-measure modification using marginal structural models and complex survey data.</td>
+</tr>
+<tr class="odd">
+<td>2010</td>
+<td>confirms it is open</td>
+<td>Dynamic regime marginal structural mean models for estimation of optimal dynamic treatment regimes, Part II: proofs of results.</td>
+</tr>
+<tr class="even">
+<td>2010</td>
+<td>confirms it is open</td>
+<td>Targeted maximum likelihood based causal inference: Part I.</td>
+</tr>
+<tr class="odd">
+<td>2013</td>
+<td>confirms it is open</td>
+<td>Challenges of guarantee-time bias.</td>
+</tr>
+<tr class="even">
+<td>2015</td>
+<td>partly addresses it</td>
+<td>Identifying a set that contains the best dynamic treatment regimes.</td>
+</tr>
+<tr class="odd">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>Double robust and efficient estimation of a prognostic model for events in the presence of dependent censoring.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Using Big Data to Emulate a Target Trial When a Randomized Trial Is Not Available.</td>
+</tr>
+<tr class="odd">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Application of the Marginal Structural Model to Account for Suboptimal Adherence in a Randomized Controlled Trial.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Targeted maximum likelihood estimation for a binary treatment: A tutorial.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Electronic medical records can be used to emulate target trials of sustained treatment strategies.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Guidance for a causal comparative effectiveness analysis emulating a target trial based on big real world evidence: when to start statin treatment.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Joint and independent neurotoxic effects of early life exposures to a chemical mixture: A multi-pollutant approach combining ensemble learning and g-computation.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Reflection on modern methods: trial emulation in the presence of immortal-time bias. Assessing the benefit of major surgery for elderly lung cancer patients using observational data.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>The Impact of Delayed Switch to Second-Line Antiretroviral Therapy on Mortality, Depending on Definition of Failure Time and CD4 Count at Failure.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Educational note: causal decomposition of population health differences using Monte Carlo integration and the g-formula.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Risk of bias in observational studies using routinely collected data of comparative effectiveness research: a meta-research study.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Validation of Machine Learning-Based Individualized Treatment for Depressive Disorder Using Target Trial Emulation.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Common Methods for Handling Missing Data in Marginal Structural Models: What Works and Why.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>[Secondary Data for Pharmacoepidemiological Research - Making the Best of It!].</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Using generalized linear models to implement g-estimation for survival data with time-varying confounding.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation: A Framework for Causal Inference From Observational Data.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Target trial emulation: applying principles of randomised trials to observational studies.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Combining high quality data with rigorous methods: emulation of a target trial using electronic health records and a nested case-control design.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation and Bias Through Missing Eligibility Data: An Application to a Study of Palivizumab for the Prevention of Hospitalization Due to Infant Respiratory Illness.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Design considerations for observational studies of drugs for advanced cancer.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Longitudinal plasmode algorithms to evaluate statistical methods in realistic scenarios: an illustration applied to occupational epidemiology.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Comparative Effectiveness of Dynamic Treatment Strategies for Medication Use and Dosage: Emulating a Target Trial Using Observational Data.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Causal inference in survival analysis using longitudinal observational data: Sequential trials and marginal structural models.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>De-Mystifying the Clone-Censor-Weight Method for Causal Research Using Observational Data: A Primer for Cancer Researchers</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>How estimating nuisance parameters can reduce the variance (with consistent variance estimation).</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>History-restricted marginal structural model and latent class growth analysis of treatment trajectories for a time-dependent outcome.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Simulating Data From Marginal Structural Models for a Survival Time Outcome.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>The performance of marginal structural models for estimating risk differences and relative risks using weighted univariate generalized linear models.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Timing of follow-up visits after hospital discharge for COPD: Application of a new method.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Application of the estimand framework for an emulated trial using reference based multiple imputation to investigate informative censoring.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Designs for Vaccine Studies.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Can Observational Data and Target Trial Emulation Inform Cardiovascular Disease Prevention and Management Guidelines?</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>The Inflation Reduction Act: An Opportunity to Accelerate Confidence in Real-World Evidence in the United States.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>A marginal structural model for normal tissue complication probability.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Inference procedures in sequential trial emulation with survival outcomes: Comparing confidence intervals based on the sandwich variance estimator, bootstrap and jackknife.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Prompt versus Delayed Triple Therapy in COPD: Solutions to Time-Related Biases in Observational Studies.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Transparent reporting of observational studies emulating a target trial: the TARGET Statement.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Trastuzumab in early curative breast cancer: A target trial emulation benchmarked against two randomized clinical trials.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Analytic Considerations for the Evaluation of Tuberculosis Preventative Therapy Effectiveness Among People Living with HIV.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Starting right: aligning eligibility and treatment assignment at time zero when emulating a target trial.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Studying When to Add Biological Therapy to Cytotoxic Therapy in Advanced Cancer Care Using Real World Data: How to Avoid Design Choices That Generate Immortal Time.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>From study design to executable code: automating target trial emulation with large language models.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Missingness in Eligibility Criteria for Target Trial Emulation in EHR With Survival Outcomes.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/GMT-03-large-databases-yield-small-effective-samples-after-eligibil.html">GMT-03 — Large databases yield small effective samples after eligibility, comparator restriction and weighting</a></li>
-<li><a href="../problems/SEQ-01-sequential-emulation-creates-repeated-participation-and-cale.html">SEQ-01 — Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals</a></li>
+<li><a href="../problems/GMT-03-large-databases-yield-small-effective-samples-after-eligibil.html">GMT-03: Large databases yield small effective samples after eligibility, comparator restriction and weighting</a></li>
+<li><a href="../problems/SEQ-01-sequential-emulation-creates-repeated-participation-and-cale.html">SEQ-01: Sequential emulation creates repeated participation and calendar-time confounding that its efficiency gain conceals</a></li>
 </ul>
 </div>
 </section>

@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Identifying a sustained-strategy effect requires consistency, sequential exchangeability and positivity, and the estimator families differ in which nuisance components they need. When those components are fitted by machine learning, the model that predicts treatment best is not the model that minimizes the finite-sample error of the causal estimator: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Balance-calibrated weight fitting exists and has been applied, so the field is not selecting on prediction alone. What is missing is a criterion that combines predictive risk with the estimator-specific diagnostics that matter, longitudinal balance, weight tails and the remainder-rate condition, in one selection rule, and a default library tuned that way rather than for prediction.">
+<meta name="description" content="Marginal structural models, the parametric g-formula, g-estimation and longitudinal targeted learning all identify sustained-regime effects under sequential exchangeability and positivity, and all of them require nuisance models for treatment, censoring and outcome. When those nuisance models are fitted by machine learning, the model that predicts treatment best is not the model that produces the best causal estimate: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Standard cross-validation selects on prediction loss and is blind to all three. No selection criterion in routine use combines treatment prediction with longitudinal balance, weight dispersion and an estimate of the influence-function remainder, and no default library is tuned for the causal objective rather than the predictive one.">
 
 <title>Cross-validation for longitudinal nuisance models optimizes prediction, not causal performance – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -394,7 +394,9 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#why-it-is-open" id="toc-why-it-is-open" class="nav-link" data-scroll-target="#why-it-is-open">Why it is open</a></li>
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
+  <li><a href="#our-study" id="toc-our-study" class="nav-link" data-scroll-target="#our-study">Our study</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -411,12 +413,16 @@ ul.task-list li input[type="checkbox"] {
     <div class="quarto-category">G-methods: specification, estimation &amp; inference</div>
     <div class="quarto-category">Very high priority</div>
     <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Analysis plan</div>
+    <div class="quarto-category">Data: EHR</div>
+    <div class="quarto-category">Data: Claims</div>
+    <div class="quarto-category">Data: Any setting</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Identifying a sustained-strategy effect requires consistency, sequential exchangeability and positivity, and the estimator families differ in which nuisance components they need. When those components are fitted by machine learning, the model that predicts treatment best is not the model that minimizes the finite-sample error of the causal estimator: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Balance-calibrated weight fitting exists and has been applied, so the field is not selecting on prediction alone. What is missing is a criterion that combines predictive risk with the estimator-specific diagnostics that matter, longitudinal balance, weight tails and the remainder-rate condition, in one selection rule, and a default library tuned that way rather than for prediction.
+    Marginal structural models, the parametric g-formula, g-estimation and longitudinal targeted learning all identify sustained-regime effects under sequential exchangeability and positivity, and all of them require nuisance models for treatment, censoring and outcome. When those nuisance models are fitted by machine learning, the model that predicts treatment best is not the model that produces the best causal estimate: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Standard cross-validation selects on prediction loss and is blind to all three. No selection criterion in routine use combines treatment prediction with longitudinal balance, weight dispersion and an estimate of the influence-function remainder, and no default library is tuned for the causal objective rather than the predictive one.
   </div>
 </div>
 
@@ -436,13 +442,17 @@ ul.task-list li input[type="checkbox"] {
 <div class="problem-meta">
 <p><span class="problem-id">GMT-01</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-very-high">Very high priority</span> <span class="chip chip-maturity-promising">Promising</span> <span class="chip">Tractability 4/5</span></p>
 </div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Analysis plan</span><br>
+Seen in: <span class="chip chip-axis">EHR</span> <span class="chip chip-axis">Claims</span> <span class="chip chip-axis">Any setting</span></p>
+</div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>Identifying a sustained-strategy effect requires consistency, sequential exchangeability and positivity, and the estimator families differ in which nuisance components they need. When those components are fitted by machine learning, the model that predicts treatment best is not the model that minimizes the finite-sample error of the causal estimator: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Balance-calibrated weight fitting exists and has been applied, so the field is not selecting on prediction alone. What is missing is a criterion that combines predictive risk with the estimator-specific diagnostics that matter, longitudinal balance, weight tails and the remainder-rate condition, in one selection rule, and a default library tuned that way rather than for prediction.</p>
+<p>Marginal structural models, the parametric g-formula, g-estimation and longitudinal targeted learning all identify sustained-regime effects under sequential exchangeability and positivity, and all of them require nuisance models for treatment, censoring and outcome. When those nuisance models are fitted by machine learning, the model that predicts treatment best is not the model that produces the best causal estimate: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Standard cross-validation selects on prediction loss and is blind to all three. No selection criterion in routine use combines treatment prediction with longitudinal balance, weight dispersion and an estimate of the influence-function remainder, and no default library is tuned for the causal objective rather than the predictive one.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>The causal loss is not computable the way a predictive loss is, because the contrast being targeted is never observed, so the quantity one would cross-validate against does not exist as a label. Balance and weight-dispersion criteria are computable and are not losses in the decision-theoretic sense, and a learner can optimize them while fitting poorly. Which diagnostics apply depends on the estimator, so a single universal criterion is the wrong object and a family of estimator-specific ones has to be built and validated separately.</p>
+<p>The causal loss is not computable from the data the way a predictive loss is: the counterfactual contrast the estimator targets is never observed, so the quantity one would like to cross-validate against does not exist as a label. Balance and weight-dispersion criteria are computable but are not losses in the decision-theoretic sense and can be optimized by learners that fit poorly. Sequential double robustness is proved under conditions that do not obviously hold when the observation process in electronic health records is itself informative, so the theory that would justify a criterion is incomplete precisely where the data are hardest.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -473,14 +483,29 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Construct selection rules that combine predictive risk with longitudinal standardized differences, weight-tail behavior and an estimate of the influence-function remainder, specified per estimator rather than universally, and test whether they select models with lower causal bias than predictive cross-validation on the same data. Compare weighted marginal structural models, sequentially doubly robust estimators, longitudinal targeted learning and Bayesian g-computation under deliberate misspecification of each nuisance component in turn. Cross-fit at the patient level rather than the record level, and report the empirical standard-error ratio and convergence failures with the bias, since an estimator that fails to converge on a fifth of replicates is not competitive at any bias.</p>
+<p>Construct SuperLearner libraries whose loss combines treatment prediction with longitudinal standardized differences, weight dispersion and an estimate of the influence-function remainder, and evaluate whether that criterion selects models with lower causal bias than predictive cross-validation on the same data. Compare weighted marginal structural models, sequentially doubly robust estimators, longitudinal TMLE and Bayesian g-computation under deliberate misspecification of each nuisance component in turn. Cross-fit at the patient level rather than the record level, and report the empirical standard error ratio and convergence failures alongside bias, because an estimator that fails to converge on a fifth of replicates is not competitive at any bias.</p>
+</section>
+<section id="our-study" class="level2">
+<h2 class="anchored" data-anchor-id="our-study">Our study</h2>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A study is designed
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Question.</strong> Within 24 prespecified longitudinal scenarios and a finite GLM library, does an observable score combining predictive loss, longitudinal balance, weight dispersion, and held-out influence-function moment drift improve estimation of a 36-month sustained-strategy marginal mean difference relative to predictive cross-validation and a bespoke balance selector?</p>
+</div>
+</div>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
 <p><strong>Verdict.</strong> Partially addressed. Part of this problem is addressed by existing work; the entry names which part.</p>
-<p><strong>The source said.</strong> “Marginal structural models, the parametric g-formula, g-estimation and longitudinal targeted learning all identify sustained-regime effects under sequential exchangeability and positivity, and all of them require nuisance models for treatment, censoring and outcome. When those nuisance models are fitted by machine learning, the model that predicts treatment best is not the model that produces the best causal estimate: a highly adaptive learner can achieve excellent discrimination while returning near-zero treatment probabilities, poor longitudinal balance and invalid inference. Standard cross-validation selects on prediction loss and is blind to all three. No selection criterion in routine use combines treatment prediction with longitudinal balance, weight dispersion and an estimate of the influence-function remainder, and no default library is tuned for the causal objective rather than the predictive one.”</p>
-<p><strong>What was wrong with it.</strong> Balance-based criteria for the weight model are already in use: calibrated weights fitted with SuperLearner have been implemented and applied to longitudinal cohorts, so the claim that no selection criterion departs from prediction was too strong. The identification requirements also include consistency alongside sequential exchangeability and positivity, and different estimators require different nuisance components, which the entry flattened.</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -494,7 +519,7 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>open / supported.</strong> Inverted-prior search did not find a routine selection criterion that jointly optimizes treatment prediction, longitudinal balance, weight dispersion, and an influence-function remainder for longitudinal nuisance models. SuperLearner (as used by ltmle and related stacks) still cross-validates predictive risk; CV-TMLE and related work improve targeting of the final parameter after nuisance fitting but do not replace predictive CV for the treatment, censoring, and outcome libraries themselves. Collaborative TMLE (C-TMLE) is the closest prior art: it selects confounder models using a targeted, collaborative criterion rather than pure prediction, and longitudinal/scalable C-TMLE variants exist. That is covariate-and-collaborative selection for TMLE, not a multi-metric SuperLearner loss for sustained-regime MSM, g-formula, g-estimation, or LTMLE libraries. Point-treatment work on balance-versus-discrimination for propensity scores (for example Diaz on balancing criteria) does not cover sequential longitudinal nuisance selection. Package surfaces checked in search (ltmle SuperLearner interface, SuperLearner defaults, SAS SUPERLEARNER 2024/2025) still select on predictive CV. No 2024 to 2026 AJE/Epidemiology/SiM-style paper or CRAN default library was found that implements the combined causal objective the problem names. Searches included: causal cross-validation SuperLearner longitudinal TMLE balance weight dispersion; causal loss OR targeted cross-validation nuisance MSM; collaborative TMLE longitudinal SuperLearner; propensity SuperLearner balance loss 2023 to 2026.
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The claim is internally consistent and well-scoped. It asserts that no selection criterion in routine use combines treatment prediction with longitudinal balance, weight dispersion, and an influence-function remainder—this is a claim about current practice, not about impossibility. The reason given for openness is structural: the causal loss (counterfactual contrast) is never observed, so there is no label to cross-validate against, and computable surrogates like balance are not proper decision-theoretic losses. This genuinely supports the problem being open. The one sentence about no default library being tuned for the causal objective touches on software, but the core claim is methodological. The severity is proportionate: a wrong default selection criterion would propagate bias into every downstream causal estimate.
 </dd>
@@ -505,12 +530,217 @@ ul.task-list li input[type="checkbox"] {
 </dl>
 </div>
 </section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>36 papers in the reviewed corpus bear on this problem, published 2008 to 2026. Progress and a fresh assertion of openness land in the same year.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<p>It is also being <strong>closed in pieces</strong>: partial results come from more than one paper in more than one year, each covering a different part.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2008</td>
+<td>confirms it is open</td>
+<td>Evaluating dose response from flexible dose clinical trials.</td>
+</tr>
+<tr class="even">
+<td>2010</td>
+<td>partly addresses it</td>
+<td>Targeted maximum likelihood based causal inference: Part I.</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>confirms it is open</td>
+<td>Improved double-robust estimation in missing data and causal inference models.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Application of the Marginal Structural Model to Account for Suboptimal Adherence in a Randomized Controlled Trial.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>partly addresses it</td>
+<td>simcausal R Package: Conducting Transparent and Reproducible Simulation Studies of Causal Effect Estimation with Complex Longitudinal Data.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Targeted maximum likelihood estimation for a binary treatment: A tutorial.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Joint and independent neurotoxic effects of early life exposures to a chemical mixture: A multi-pollutant approach combining ensemble learning and g-computation.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Using longitudinal targeted maximum likelihood estimation in complex settings with dynamic interventions.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>partly addresses it</td>
+<td>Joint calibrated estimation of inverse probability of treatment and censoring weights for marginal structural models.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Description, prediction and causation: Methodological challenges of studying child and adolescent development.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>partly addresses it</td>
+<td>Variable selection for causal mediation analysis using LASSO-based methods.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Can Machine Learning from Real-World Data Support Drug Treatment Decisions? A Prediction Modeling Case for Direct Oral Anticoagulants.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Introduction to computational causal inference using reproducible Stata, R, and Python code: A tutorial.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Penalized regression for left-truncated and right-censored survival data.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Validation of Machine Learning-Based Individualized Treatment for Depressive Disorder Using Target Trial Emulation.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>A scoping review of causal methods enabling predictions under hypothetical interventions.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Revisiting the g-null Paradox.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Marginal structural models using calibrated weights with SuperLearner: application to longitudinal diabetes cohort.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Emulating a target trial of intensive nurse home visiting in the policy-relevant population using linked administrative data.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Intervention treatment distributions that depend on the observed treatment process and model double robustness in causal survival analysis.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>High-throughput target trial emulation for Alzheimer’s disease drug repurposing with real-world data.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Longitudinal plasmode algorithms to evaluate statistical methods in realistic scenarios: an illustration applied to occupational epidemiology.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>A Review of Causal Inference Methods for Estimating the Effects of Exposure Change</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Addressing treatment switching in the ALTA-1L trial with g-methods: exploring the impact of model specification</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>G-Formula for Observational Studies under Stratified Interference, with Application to Bed Net Use on Malaria</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Longitudinal mediation analysis with multilevel and latent growth models: a separable effects causal approach</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Flexible Approaches Based on Multistate Models and Microsimulation to Perform Real-World Cost-Effectiveness Analyses: An Application to Proprotein Convertase Subtilisin-Kexin Type 9 Inhibitors.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Change in employment status and its causal effect on suicidal ideation and depressive symptoms: A marginal structural model with machine learning algorithms.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Evaluating generalizability of oncology trial results to real-world patients using machine learning-based trial emulations.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Machine Learning Versus Logistic Regression for Propensity Score Estimation: A Benchmark Trial Emulation Against the PARADIGM-HF Randomized Trial.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>G-formula with multiple imputation for causal inference with incomplete data</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Estimating Heterogeneous Treatment Effects With Target Trial Emulation: A Checklist of Causal Machine Learning for Observational Data.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>A marginal structural model for normal tissue complication probability.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>partly addresses it</td>
+<td>Adaptive Sparsening and Smoothing of the Treatment Model for Longitudinal Causal Inference Using Outcome-Adaptive LASSO and Marginal Fused LASSO.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Caveats on Using Firth’s Penalization in the Model-Based Regression Standardization for Rare Diseases</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Estimate Time-Varying Exposure Effects via Ensemble Learning-Based Marginal Structural Model With Application to Adolescent Cognitive Development Study.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/GMT-04-no-estimator-is-defensible-as-a-default-and-no-study-is-requ.html">GMT-04 — No estimator is defensible as a default, and no study is required to show that its choice mattered</a></li>
-<li><a href="../problems/LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.html">LRN-01 — Flexible estimation is presented as a remedy for identification failure</a></li>
+<li><a href="../problems/GMT-04-no-estimator-is-defensible-as-a-default-and-no-study-is-requ.html">GMT-04: No estimator is defensible as a default, and no study is required to show that its choice mattered</a></li>
+<li><a href="../problems/LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.html">LRN-01: Flexible estimation is presented as a remedy for identification failure</a></li>
+<li><a href="../problems/LRN-05-a-counterfactual-prediction-is-validated-under-the-assumptio.html">LRN-05: A counterfactual prediction is validated under the assumptions that produced it, and nothing maps its output to a decision</a></li>
 </ul>
 </div>
 </section>

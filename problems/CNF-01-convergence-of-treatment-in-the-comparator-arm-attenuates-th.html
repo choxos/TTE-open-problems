@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="The observational analogue of an intention-to-treat effect contrasts assigning initiation now against not initiating now, and in that contrast the comparator group does not stay untreated: patients frequently initiate later. Reduced separation between the treatment histories can move the estimated effect at longer horizons, in a direction and by an amount that depend on the treatment-effect dynamics, the switching mechanism, the competing events and the effect scale. This is a feature of the estimand rather than a bias to be removed, and it occurs in randomized trials too. What emulations do not do is report it: the cumulative incidence of initiation in each arm over follow-up is rarely published, so a reader cannot judge how far the contrasted strategies stayed distinct, and a null result at a long horizon cannot be read against the convergence that actually occurred.">
+<meta name="description" content="The observational analogue of an intention-to-treat effect contrasts assigning initiation now against not initiating now. Two things then happen that do not happen in a randomized trial. Assignment is confounded, so the contrast requires baseline adjustment to mean anything. And the comparator group does not stay untreated: patients assigned to no initiation now frequently initiate later, so with longer follow-up the two strategies converge and the estimated effect attenuates toward the null for reasons that have nothing to do with the treatment’s efficacy. The attenuation is a function of the follow-up horizon and of local prescribing behavior, and it is rarely reported as such, so an emulation with long follow-up and a null result cannot be distinguished from one where the treatment does not work.">
 
 <title>Convergence of treatment in the comparator arm attenuates the observational intention-to-treat analogue with follow-up length – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -394,7 +394,9 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#why-it-is-open" id="toc-why-it-is-open" class="nav-link" data-scroll-target="#why-it-is-open">Why it is open</a></li>
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
+  <li><a href="#our-study" id="toc-our-study" class="nav-link" data-scroll-target="#our-study">Our study</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -411,12 +413,18 @@ ul.task-list li input[type="checkbox"] {
     <div class="quarto-category">Confounding control &amp; the assignment assumption</div>
     <div class="quarto-category">High priority</div>
     <div class="quarto-category">Overstated</div>
+    <div class="quarto-category">Protocol: Treatment strategies</div>
+    <div class="quarto-category">Protocol: Causal contrast</div>
+    <div class="quarto-category">Protocol: Follow-up</div>
+    <div class="quarto-category">Data: Claims</div>
+    <div class="quarto-category">Data: EHR</div>
+    <div class="quarto-category">Data: Registry</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    The observational analogue of an intention-to-treat effect contrasts assigning initiation now against not initiating now, and in that contrast the comparator group does not stay untreated: patients frequently initiate later. Reduced separation between the treatment histories can move the estimated effect at longer horizons, in a direction and by an amount that depend on the treatment-effect dynamics, the switching mechanism, the competing events and the effect scale. This is a feature of the estimand rather than a bias to be removed, and it occurs in randomized trials too. What emulations do not do is report it: the cumulative incidence of initiation in each arm over follow-up is rarely published, so a reader cannot judge how far the contrasted strategies stayed distinct, and a null result at a long horizon cannot be read against the convergence that actually occurred.
+    The observational analogue of an intention-to-treat effect contrasts assigning initiation now against not initiating now. Two things then happen that do not happen in a randomized trial. Assignment is confounded, so the contrast requires baseline adjustment to mean anything. And the comparator group does not stay untreated: patients assigned to no initiation now frequently initiate later, so with longer follow-up the two strategies converge and the estimated effect attenuates toward the null for reasons that have nothing to do with the treatment’s efficacy. The attenuation is a function of the follow-up horizon and of local prescribing behavior, and it is rarely reported as such, so an emulation with long follow-up and a null result cannot be distinguished from one where the treatment does not work.
   </div>
 </div>
 
@@ -436,13 +444,30 @@ ul.task-list li input[type="checkbox"] {
 <div class="problem-meta">
 <p><span class="problem-id">CNF-01</span> <span class="verdict verdict-overstated">Overstated</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-established">Established</span> <span class="chip">Tractability 4/5</span></p>
 </div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Treatment strategies</span> <span class="chip chip-axis">Causal contrast</span> <span class="chip chip-axis">Follow-up</span><br>
+Seen in: <span class="chip chip-axis">Claims</span> <span class="chip chip-axis">EHR</span> <span class="chip chip-axis">Registry</span></p>
+</div>
+<div class="callout callout-style-simple callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>A study has been run against this problem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>No.&nbsp;Within the simulated grid, comparator-arm cumulative initiation at 120 months does not uniquely determine attenuation: matched early and late initiation scenarios, whose reported diagnostic agrees to within 0.0005, differ in attenuation by 0.0528 to 0.2027. Nine of the twelve matched pairs exceed the 0.05 threshold declared before the run by at least three Monte Carlo standard errors, at 5 to 46 of them; the other three sit within 3 and are individually inconclusive, and all three are at the lowest convergence rate, where there is least attenuation to misattribute. A single cumulative-incidence value at the horizon is therefore insufficient for recovering attenuation in these scenarios. What the reported number cannot see is when the comparator arm initiated and who initiated. <a href="#our-study">Read the study below</a>.</p>
+</div>
+</div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>The observational analogue of an intention-to-treat effect contrasts assigning initiation now against not initiating now, and in that contrast the comparator group does not stay untreated: patients frequently initiate later. Reduced separation between the treatment histories can move the estimated effect at longer horizons, in a direction and by an amount that depend on the treatment-effect dynamics, the switching mechanism, the competing events and the effect scale. This is a feature of the estimand rather than a bias to be removed, and it occurs in randomized trials too. What emulations do not do is report it: the cumulative incidence of initiation in each arm over follow-up is rarely published, so a reader cannot judge how far the contrasted strategies stayed distinct, and a null result at a long horizon cannot be read against the convergence that actually occurred.</p>
+<p>The observational analogue of an intention-to-treat effect contrasts assigning initiation now against not initiating now. Two things then happen that do not happen in a randomized trial. Assignment is confounded, so the contrast requires baseline adjustment to mean anything. And the comparator group does not stay untreated: patients assigned to no initiation now frequently initiate later, so with longer follow-up the two strategies converge and the estimated effect attenuates toward the null for reasons that have nothing to do with the treatment’s efficacy. The attenuation is a function of the follow-up horizon and of local prescribing behavior, and it is rarely reported as such, so an emulation with long follow-up and a null result cannot be distinguished from one where the treatment does not work.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>The convergence is a property of the strategy contrast, so it cannot be adjusted away without changing to a per-protocol estimand that carries its own assumptions, and methods for that exist. The reporting gap is what remains, and it persists because the trajectories are an extra analysis that weakens no result and strengthens none. There is also no convention for choosing the horizon at which an open-ended no-initiation arm is still a meaningful comparator, and the rate of convergence depends on the health system and calendar period rather than on anything intrinsic to the treatment.</p>
+<p>The convergence is a real feature of the strategy contrast rather than a bias to be removed, so it cannot be adjusted away without changing to a per-protocol estimand that carries its own assumptions. Reporting it requires publishing the treatment trajectories in both arms over follow-up, which most papers do not, and the rate of convergence depends on the health system and calendar period rather than on anything intrinsic. There is also no convention for choosing the horizon at which the contrast is still meaningful.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -463,32 +488,56 @@ ul.task-list li input[type="checkbox"] {
 <td><a href="https://doi.org/10.1093/ije/dyv295">Cain LE, Robins JM, Lanoy E, Logan R, Costagliola D, Hernán MA. Using observational data to emulate a randomized trial of dynamic treatment-switching strategies. Int J Epidemiol 2016;45(6):2038-2049</a></td>
 <td>Handles later initiation and switching explicitly through dynamic strategies, which is the design response to convergence.</td>
 </tr>
-<tr class="odd">
-<td><a href="https://doi.org/10.1002/cpt.70013">Statistical methods to adjust for treatment switching in real-world clinical studies: a scoping review and decision framework. Clin Pharmacol Ther 2025</a></td>
-<td>Catalogs the available methods for treatment switching and supplies a framework for choosing among them, which is the body of work the entry originally overlooked.</td>
-</tr>
-<tr class="even">
-<td><a href="https://doi.org/10.1093/aje/kwaf044">Caution in handling switchers in pharmacoepidemiologic studies estimating treatment effects. Am J Epidemiol 2026</a></td>
-<td>Sets out the analytic hazards specific to switchers in effect estimation.</td>
-</tr>
-<tr class="odd">
-<td><a href="https://doi.org/10.1186/s12874-024-02437-6">Addressing treatment switching in the ALTA-1L trial with g-methods: exploring the impact of model specification. BMC Med Res Methodol 2024</a></td>
-<td>Applies g-methods to switching and examines how sensitive the result is to specification.</td>
-</tr>
 </tbody>
 </table>
 </div>
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Report the cumulative incidence of initiation in both arms over follow-up alongside the effect estimate, so the separation between strategies is visible rather than assumed. Prefer contrasts that name the later initiation explicitly, such as initiate now versus initiate on a stated clinical trigger, over an open-ended no-initiation arm the data will not sustain, and use the existing switching methods when the per-protocol question is the one being asked. Quantify by simulation how a given convergence rate moves the estimate at each horizon under different effect dynamics, so the reader has something to read a null against.</p>
+<p>Report the cumulative incidence of initiation in both arms over follow-up alongside the effect estimate, so a reader can see how far the strategies remained distinct. Prefer strategy contrasts that name the later initiation explicitly, such as initiate now versus initiate on a stated clinical trigger, over an open-ended no-initiation arm that the data will not sustain. Quantify by simulation how much attenuation a given convergence rate produces at each horizon, so that a null result can be read against the convergence that was observed rather than against an assumption of none.</p>
+</section>
+<section id="our-study" class="level2">
+<h2 class="anchored" data-anchor-id="our-study">Our study</h2>
+<div class="study-result">
+<p><strong>A single cumulative-initiation number at the horizon does not determine the attenuation it is asked to explain</strong></p>
+<p><strong>The question put to it.</strong> CNF-01 asks authors to publish the cumulative incidence of initiation in both arms so a reader can see how far the contrasted strategies stayed distinct, and to quantify by simulation how much attenuation a given convergence rate produces. Does that diagnostic actually recover the attenuation?</p>
+<p><strong>What it found.</strong> No.&nbsp;Within the simulated grid, comparator-arm cumulative initiation at 120 months does not uniquely determine attenuation: matched early and late initiation scenarios, whose reported diagnostic agrees to within 0.0005, differ in attenuation by 0.0528 to 0.2027. Nine of the twelve matched pairs exceed the 0.05 threshold declared before the run by at least three Monte Carlo standard errors, at 5 to 46 of them; the other three sit within 3 and are individually inconclusive, and all three are at the lowest convergence rate, where there is least attenuation to misattribute. A single cumulative-incidence value at the horizon is therefore insufficient for recovering attenuation in these scenarios. What the reported number cannot see is when the comparator arm initiated and who initiated.</p>
+<p><strong>Results.</strong></p>
+<ul>
+<li>The insufficiency scales with convergence, which is the opposite of reassuring. At 20 percent cumulative initiation the matched difference is 0.053 to 0.070 and only one of four pairs is established; at 45 percent it is 0.116 to 0.145 at 18 to 27 Monte Carlo standard errors; at 70 percent it is 0.181 to 0.203 at 39 to 46. The diagnostic is least informative exactly where attenuation is largest.</li>
+<li>Attenuation is large and grows with the horizon. Pooled across scenarios its median is 0.024 at one year and 0.245 at ten, with a maximum of 0.567. A treatment that genuinely works can lose more than half its sustained-strategy effect to convergence alone.</li>
+<li>Who initiates matters as much as when. Concentrating initiation in high-risk patients raises attenuation from 0.476 to 0.567 at the highest convergence rate while also inflating the reported diagnostic from 0.700 to 0.742, so the diagnostic moves in the right direction by the wrong amount.</li>
+<li>Effect persistence is the one factor that barely matters. Transient and legacy regimes differ by less than 0.01 in attenuation throughout.</li>
+<li>The estimators show small finite-sample bias rather than none. Coverage runs 0.934 to 0.970 against a nominal 0.95 and convergence is complete, but 14 of 288 cells carry bias beyond three Monte Carlo standard errors, to a maximum of 4.2. That does not touch the decisive comparison, which uses attenuation enumerated from the mechanism at two million individuals per scenario rather than estimated attenuation.</li>
+</ul>
+<p><strong>Design.</strong></p>
+<dl>
+<dt>Estimand</dt>
+<dd>
+Risk difference at horizons of 1 to 10 years for assignment to initiate at baseline versus not, with later initiation left to run, against the always-treated versus never-treated contrast the comparator arm would have supported had it stayed untreated
+</dd>
+<dt>Methods compared</dt>
+<dd>
+g-formula standardization, stabilized IPTW
+</dd>
+<dt>Data-generating mechanism</dt>
+<dd>
+Discrete monthly time to 10 years, 4000 individuals per replicate, confounded baseline initiation, later initiation in the comparator arm, and a treatment that works. 24 scenarios crossing three convergence rates, two timing shapes tuned to the same cumulative initiation at the horizon, initiation that does or does not concentrate in high-risk patients, and two effect-persistence regimes. 1000 replicates each, 24,000 replicates in all. Truth enumerated from the mechanism at two million individuals per scenario rather than estimated from the replicates.
+</dd>
+<dt>Replicates</dt>
+<dd>
+1000 per scenario, 24,000 replicates, 288,000 estimate rows
+</dd>
+</dl>
+<p><strong>What this does not answer.</strong> The comparison holds the diagnostic fixed only at 120 months. At earlier horizons the early and late scenarios differ in observed cumulative initiation by as much as 0.269, so those contrasts are not comparisons at equal C(h) and cannot independently establish insufficiency there. The study establishes that C(120) alone is insufficient within this grid. It does not establish that reporting C is necessary, that the full initiation curve would be sufficient, or that a universal conversion from convergence to attenuation exists. The comparator arm converges upward and the treated arm never discontinues, so this is one direction of convergence only. There is no loss to follow-up and no competing event, both excluded so the attenuation is not confounded with a second mechanism. The scale is the risk difference throughout; a hazard ratio would mix this mechanism with non-collapsibility.</p>
+<p>Code and data: <a href="https://github.com/choxos/TTE-open-problems/tree/main/undefined">undefined</a></p>
+</div>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
 <p><strong>Verdict.</strong> Overstated. 2 independent auditors judged the claim as stated too strong. Methods for handling treatment switching exist and have been reviewed; emulations do not conventionally report initiation trajectories in both arms, so a reader cannot judge how far the contrasted strategies remained distinct over follow-up.</p>
-<p><strong>The source said.</strong> “The observational analogue of an intention-to-treat effect contrasts assigning initiation now against not initiating now. Two things then happen that do not happen in a randomized trial. Assignment is confounded, so the contrast requires baseline adjustment to mean anything. And the comparator group does not stay untreated: patients assigned to no initiation now frequently initiate later, so with longer follow-up the two strategies converge and the estimated effect attenuates toward the null for reasons that have nothing to do with the treatment’s efficacy. The attenuation is a function of the follow-up horizon and of local prescribing behavior, and it is rarely reported as such, so an emulation with long follow-up and a null result cannot be distinguished from one where the treatment does not work.”</p>
-<p><strong>What was wrong with it.</strong> Two errors. Crossover into the comparator arm happens in randomized trials as well, so it is not something that happens only in an emulation. And attenuation toward the null is not guaranteed: the direction and size depend on the treatment-effect dynamics, the switching mechanism, competing events and the effect scale, so a convergence rate alone does not determine an attenuation factor. Methods for handling treatment switching also exist and have been reviewed, which the entry did not acknowledge.</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -502,7 +551,7 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>open / supported.</strong> Under an inverted prior, the open components of CNF-01 were treated as likely already closed by method, reporting guidance, or software; searches do not support that closure. The phenomenon itself is long recognized: observational assignment-to-initiate contrasts are confounded at baseline, and later initiation in the non-initiator arm dilutes the observational intention-to-treat (ITT) analogue as follow-up lengthens. Hernán and Hernández-Díaz (Clin Trials 2012; doi:10.1177/1740774511420743) document ITT dilution under nonadherence and argue for careful per-protocol (PP) work in comparative effectiveness. Hernán and Robins (Am J Epidemiol 2016; doi:10.1093/aje/kwv254), already cited, define observational ITT versus PP analogues and what each requires; they do not supply a reporting convention that forces cumulative initiation trajectories in both arms beside the effect estimate, nor a rule for a still-meaningful horizon. Cain et al.&nbsp;(Int J Epidemiol 2016; doi:10.1093/ije/dyv295), also already cited, is the main design response: name later initiation via dynamic strategies rather than an open-ended never-initiate arm. That changes the estimand; it does not identify or “debias” the attenuated ITT contrast under realistic crossover. Recent restatements keep the issue open rather than solved. Terman (Neurology 2025; doi:10.1212/WNL.0000000000214269) states that the ITT effect is typically attenuated to the degree patients switch after assignment, with a statin initiator versus noninitiator example where PP was stronger than ITT. Molero-Calafell et al.&nbsp;(J Clin Epidemiol 2024) restate that ITT can dilute effects when adherence differs. TARGET (Cashin et al., JAMA 2025; doi:10.1001/jama.2025.13350) is the strongest recent reporting push: it requires naming the causal contrast (assignment versus adherence), mapping strategies to data, and reporting sensitivity to design and analysis choices. From published summaries of the 21-item checklist, it does not mandate cumulative incidence of treatment initiation in both arms over follow-up as a standard diagnostic of strategy convergence, and it does not establish a horizon convention for when an initiate-now versus not-now contrast remains interpretable. STaRT-RWE, HARPER, NICE RWE framework, FDA RWE/data-source materials, ENCePP, and ICH E9(R1) improve estimand language and protocol structure generally; none close the specific CNF-01 gap that a long-horizon null observational ITT cannot be read against the convergence that produced it. Package checks (TrialEmulation, gfoRmula, lmtp, ltmle, WeightIt, MatchIt, cobalt, riskRegression, adjustedCurves, zEpid, causallib) show outcome cumulative-incidence tools and ITT/PP estimation, not a merged standard for dual-arm treatment-trajectory diagnostics or horizon-linked attenuation simulation. No 2024–2026 paper was found that (i) evaluates a field convention for publishing initiation trajectories beside the ITT estimate, (ii) defines a horizon rule for when the strategies remain distinct enough, or (iii) ships a validated simulation tool mapping observed convergence rates to expected attenuation at each horizon. Proposal and restatement are not resolution. Convergence remains a feature of the ITT strategy contrast under later initiation; PP or dynamic redesigns answer a different question. Status therefore remains open as stated. Queries run: observational ITT attenuation/dilution with later initiation and comparator crossover; target trial emulation treatment trajectories and cumulative initiation in both arms; TARGET/Cashin/Hansford reporting items on adherence and trajectories; Cain/Hernán prior art on dynamic strategies and ITT analogues; arXiv/medRxiv 2024–2026 TTE ITT crossover; CRAN/GitHub activity for TrialEmulation, gfoRmula, lmtp and related packages; FDA/EMA/NICE/ENCePP/STaRT-RWE/HARPER 2024–2026 guidance on adherence and ITT in observational emulations.
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The statement is internally consistent and correctly identifies a structural feature of the observational ITT analogue (convergence of strategies over time) rather than a removable bias. The reason given for the problem being open—that convergence is intrinsic to the strategy contrast, rarely reported, and lacks a convention for horizon selection—actually supports its open status. The scope is appropriate: it correctly limits the claim to the ITT analogue and acknowledges that dynamic strategies (per-protocol) are a design response, not a fix for the ITT contrast itself. The severity is proportionate because an unreported convergence can lead to a misinterpretation of a null result.
 </dd>
@@ -513,12 +562,215 @@ ul.task-list li input[type="checkbox"] {
 </dl>
 </div>
 </section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>36 papers in the reviewed corpus bear on this problem, published 2015 to 2026. Every paper found here asserts the problem is open; none reports progress.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>Severe COPD Exacerbation Risk and Long-Acting Bronchodilator Treatments: Comparison of Three Observational Data Analysis Methods.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>TREATMENT SWITCHING: STATISTICAL AND DECISION-MAKING CHALLENGES AND APPROACHES.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Methods for time-varying exposure related problems in pharmacoepidemiology: An overview.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Using marginal structural models to adjust for treatment drop-in when developing clinical prediction models.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Analysis of randomised trials with long-term follow-up.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Effect Estimates in Randomized Trials and Observational Studies: Comparing Apples With Apples.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Emulating Randomized Clinical Trials With Nonrandomized Real-World Evidence Studies: First Results From the RCT DUPLICATE Initiative.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Using the Causal Inference Framework to Support Individualized Drug Treatment Decisions Based on Observational Healthcare Data.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Immortal Time Bias in Comparing Late vs Early Intubation in Patients With Coronavirus Disease 2019.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>The importance of the design of observational studies in comparative effectiveness research: Lessons from the GARFIELD-AF and ORBIT-AF registries.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Comparing New-User Cohort Designs: The Example of Proton Pump Inhibitor Effectiveness in Idiopathic Pulmonary Fibrosis.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Medication-Wide Association Study Plus (MWAS+): A Proof of Concept Study on Drug Repurposing.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Matters Arising: Immortal time bias in the analysis of drug prescription trajectories.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Reducing the effect of immortal time bias affects the analysis of prevention of delirium by suvorexant in critically ill patients: A retrospective cohort study.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Reply to: Immortal time bias in the analysis of drug prescription trajectories.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Combining high quality data with rigorous methods: emulation of a target trial using electronic health records and a nested case-control design.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Analysis of immortal-time effect in post-infarction ventricular septal defect.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>A systematic review of methodological considerations in time to diagnosis and treatment in colorectal cancer research.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Prognostic impact of severe neutropenia in colorectal cancer patients treated with TAS-102 and bevacizumab, addressing immortal-time bias.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Insights adjusting for non-adherence in randomized clinical trials: a reanalysis of an adjuvant trial of tamoxifen duration in early breast cancer.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Comparison of oral anticoagulants for stroke prevention in atrial fibrillation using the UK clinical practice research Datalink Aurum: A reference trial (ARISTOTLE) emulation study.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>A target trial emulation comparing the antidepressant effectiveness of selective serotonin reuptake inhibitors (SSRIs) highlighting the importance of patent-related confounding by indication.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Obeticholic acid as second-line therapy for primary biliary cholangitis: Does target trial emulation solve the issue?</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Assessing Methods for Adjusting Estimates of Treatment Effectiveness for Patient Nonadherence in the Context of Time-to-Event Outcomes and Health Technology Assessment: A Simulation Study.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>A MARGINAL STRUCTURAL MODEL FOR PARTIAL COMPLIANCE IN SMARTS.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Association of Medication Use and 8-Year Mortality Risk in Patients With Parkinson Disease: Drug-Wide Trial Emulation.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Evaluating generalizability of oncology trial results to real-world patients using machine learning-based trial emulations.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Comparative Effectiveness Research Using Randomized Trials and Observational Studies: Validity and Feasibility Considerations.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Endocrine therapies and mortality risk in postmenopausal women with breast cancer: benchmarking an observational analysis against a randomized trial.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Trastuzumab in early curative breast cancer: A target trial emulation benchmarked against two randomized clinical trials.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statistical Methods to Adjust for Treatment Switching in Real-World Clinical Studies: A Scoping Review and Descriptive Comparison.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Caution in handling switchers in pharmacoepidemiologic studies estimating treatment effects: the example of dipeptidyl peptidase-4 inhibitors and inflammatory bowel disease.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Surgical Fixation Versus Cast Immobilization for Adults With Bicortical Scaphoid Fractures: A Target Trial Emulation of the SWIFFT Trial</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Target trial emulation to replicate randomised clinical trials using registry data in multiple sclerosis.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Identifying and avoiding design related biases in observational studies using the target trial framework.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Concordance between target trial emulation and randomised controlled trials: systematic review and meta-analysis.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/EST-03-a-hazard-ratio-is-reported-where-the-estimand-was-a-weighted.html">EST-03 — A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible</a></li>
-<li><a href="../problems/STR-01-no-procedure-defines-clinically-defensible-equivalence-class.html">STR-01 — No procedure defines clinically defensible equivalence classes of treatment versions</a></li>
+<li><a href="../problems/EST-03-a-hazard-ratio-is-reported-where-the-estimand-was-a-weighted.html">EST-03: A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible</a></li>
+<li><a href="../problems/STR-01-no-procedure-defines-clinically-defensible-equivalence-class.html">STR-01: No procedure defines clinically defensible equivalence classes of treatment versions</a></li>
 </ul>
 </div>
 </section>

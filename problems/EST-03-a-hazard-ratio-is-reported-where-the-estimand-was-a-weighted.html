@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.">
+<meta name="description" content="Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. The concrete failure is specific rather than general: a reader sees a hazard ratio and infers an intention-to-treat contrast, while the analysis in fact estimated a per-protocol effect, weighted for informative censoring, among the subset of patients whose observed treatment stayed compatible with a strategy during a grace period. Those are different quantities in different populations and nothing in the presentation distinguishes them.">
 
 <title>A hazard ratio is reported where the estimand was a weighted per-protocol effect among the grace-period compatible – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -395,6 +395,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -410,13 +411,16 @@ ul.task-list li input[type="checkbox"] {
   <div class="quarto-categories">
     <div class="quarto-category">Estimands, causal contrasts &amp; target populations</div>
     <div class="quarto-category">Very high priority</div>
-    <div class="quarto-category">Unverifiable</div>
+    <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Causal contrast</div>
+    <div class="quarto-category">Protocol: Outcome</div>
+    <div class="quarto-category">Data: Any setting</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.
+    Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. The concrete failure is specific rather than general: a reader sees a hazard ratio and infers an intention-to-treat contrast, while the analysis in fact estimated a per-protocol effect, weighted for informative censoring, among the subset of patients whose observed treatment stayed compatible with a strategy during a grace period. Those are different quantities in different populations and nothing in the presentation distinguishes them.
   </div>
 </div>
 
@@ -434,15 +438,19 @@ ul.task-list li input[type="checkbox"] {
 
 
 <div class="problem-meta">
-<p><span class="problem-id">EST-03</span> <span class="verdict verdict-unverifiable">Unverifiable</span> <span class="chip chip-priority-very-high">Very high priority</span> <span class="chip chip-maturity-established">Established</span> <span class="chip">Tractability 5/5</span></p>
+<p><span class="problem-id">EST-03</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-very-high">Very high priority</span> <span class="chip chip-maturity-established">Established</span> <span class="chip">Tractability 5/5</span></p>
+</div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Causal contrast</span> <span class="chip chip-axis">Outcome</span><br>
+Seen in: <span class="chip chip-axis">Any setting</span></p>
 </div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. A correctly executed clone-censor-weight analysis with a grace period estimates a marginal contrast between prespecified strategies in the baseline eligible population, and where the artificial censoring enforces adherence that contrast is per-protocol. A bare hazard ratio discloses none of this: not the intervention, not the strategies, not the population, not the horizon, not the handling of intercurrent events. It is therefore read as an intention-to-treat contrast by default, and nothing in the presentation contradicts that reading.</p>
+<p>Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. The concrete failure is specific rather than general: a reader sees a hazard ratio and infers an intention-to-treat contrast, while the analysis in fact estimated a per-protocol effect, weighted for informative censoring, among the subset of patients whose observed treatment stayed compatible with a strategy during a grace period. Those are different quantities in different populations and nothing in the presentation distinguishes them.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>The hazard ratio survives every methodological improvement beneath it, so better estimation does not change what gets read. Stating the estimand precisely requires naming the strategies and the horizon, and the horizon is a commitment most analyses would rather not defend. The estimand vocabulary and the absolute-risk alternatives both exist and are used in methodological work; what does not exist is a requirement that an applied emulation use them, so the practice is a reporting convention rather than a capability gap.</p>
+<p>The hazard ratio is a familiar output that survives every methodological upgrade beneath it, so improvements in the estimator do not change what gets read. Stating the estimand precisely requires naming the population induced by cloning and censoring, which has no simple clinical description. Absolute risks and restricted mean survival differences communicate better and require the analyst to commit to a time horizon, which is an additional decision most would rather not defend.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -473,15 +481,14 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Require a one-sentence estimand statement naming the intervention, the strategies, the population, the horizon and the intercurrent-event handling, positioned before any effect measure. Report absolute risks, risk differences and restricted mean outcomes at clinically meaningful horizons, with the hazard ratio as a supplement rather than the headline. Include a timeline diagram showing treatment paths and censoring rules, since a cloning-and-censoring design is easier to draw than to describe.</p>
+<p>Require a one-sentence estimand statement naming the intervention, the population, the horizon and the intercurrent-event strategy, positioned before any effect measure. Report absolute risks, risk differences and restricted mean outcomes at clinically meaningful horizons, with the hazard ratio as a supplement rather than the headline. Include a timeline diagram showing treatment paths and censoring rules, since the population induced by cloning is easier to draw than to describe.</p>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
-<p><strong>Verdict.</strong> Unverifiable. Auditors disagreed and the disagreement was evidence-bearing on both sides.</p>
-<p><strong>The source said.</strong> “Hazard ratios, odds ratios and model coefficients are routinely presented without naming the intervention, the population, the time horizon or the strategy for each intercurrent event. ICH E9(R1) and the TARGET statement both require that objectives, estimands and sensitivity analyses be aligned, and applied reporting has not caught up. The concrete failure is specific rather than general: a reader sees a hazard ratio and infers an intention-to-treat contrast, while the analysis in fact estimated a per-protocol effect, weighted for informative censoring, among the subset of patients whose observed treatment stayed compatible with a strategy during a grace period. Those are different quantities in different populations and nothing in the presentation distinguishes them.”</p>
-<p><strong>What was wrong with it.</strong> The population named in the original was wrong, and the error matters because it is the error the entry accuses others of. Correct clone-censor weighting does not target the subset whose treatment stayed compatible: the weights reweight uncensored clone-time observations to stand for the artificially censored ones, so the contrast is in the baseline eligible population under the specified strategies. Where censoring enforces adherence the contrast is per-protocol, and the population is still the eligible one.</p>
-<p><strong>Dissent.</strong> literature dissented (open): The estimand vocabulary is arriving in the emulation literature: a 2026 Trials paper applies a hypothetical strategy to the intercurrent event of non-adherence using the parametric g-formula, which is the ICH E9(R1) discipline executed inside a longitudinal analysis, and a 2026 Journal of Epidemiology paper argues explicitly for going beyond the hazard ratio when censoring, confounding and competing events are present. The entry’s claim is about what published reports lead with rather than what is possible, and no reporting requirement in the corpus mandates a one-sentence estimand statement or absolute-risk reporting. The presence of these papers means the entry should not imply the vocabulary is missing. codex dissented (overstated): The reporting concern is valid, but the stated population is wrong. Correct clone-censor weighting does not target only patients whose observed treatment remained compatible. It reweights uncensored clone-time observations to represent artificially censored observations, thereby targeting the baseline eligible population under the specified strategies, subject to exchangeability and positivity. A bare hazard ratio identifies neither an intention-to-treat nor a per-protocol strategy and may lack a causal interpretation altogether. TARGET supplies much of the reporting solution; the residual issue is adoption rather than an unresolved estimand method.</p>
+<p><strong>Verdict.</strong> Partially addressed. Part of this problem is addressed by existing work; the entry names which part.</p>
+<p><strong>Dissent.</strong> literature dissented (open): The estimand vocabulary is arriving in the emulation literature: a 2026 Trials paper applies a hypothetical strategy to the intercurrent event of non-adherence using the parametric g-formula, which is the ICH E9(R1) discipline executed inside a longitudinal analysis, and a 2026 Journal of Epidemiology paper argues explicitly for going beyond the hazard ratio when censo […]</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -495,24 +502,439 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>open / supported-with-caveat.</strong> The problem is framed as a presentation/practice failure after standards already exist: a reader sees a bare hazard ratio and infers an intention-to-treat contrast, while the analysis estimated a censoring-weighted per-protocol effect among grace-period–compatible (often cloned) patients. Maringe et al.&nbsp;(IJE 2020; 10.1093/ije/dyaa057), already cited, already makes the CCW estimand type explicit; that formalizes the distinction and does not change what applied papers headline. ICH E9(R1) and the TARGET statement (JAMA 2025; 10.1001/jama.2025.13350) require aligned objectives, estimands, and sensitivity analyses; TARGET item structure places target-trial protocol/estimand items (6a–g) beside emulation mapping (7a–g), and item 13 asks for effect estimates with precision including both absolute and relative measures when applicable. Official TARGET resources confirm that scope and provide protocol table and flow-diagram templates. That is real progress on the reporting-standard side and is the caveat on support: the claim is still true about practice, but “standards are missing” would be overstated after TARGET 2025. What remains open is exactly what the report names: applied reporting has not caught up; the HR remains a familiar default that survives estimator upgrades; and nothing forces a one-sentence estimand that names intervention, population induced by cloning/censoring, horizon, and intercurrent-event strategy before the first effect measure. Fourati et al.&nbsp;(Eur J Prev Cardiol 2026 advance article) still notes that relative measures such as hazard ratios are frequently reported and that absolute risks and risk differences at meaningful times communicate better, which is consistent with ongoing practice lag months after TARGET. No package release (TrialEmulation, gfoRmula, gfoRmulaICE, lmtp, ltmle, survtmle, concrete, riskRegression, adjustedCurves) was found that auto-emits an ICH/TARGET-style estimand sentence or demotes the HR to a supplement. Vote open: standards partially codify the proposed direction; the concrete misread of weighted grace-period PP as ITT HR remains an open practice and communication problem.
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The statement is well-scoped and proportionate. It accurately describes the specific mismatch between the reported effect measure (a hazard ratio) and the actual estimand (a per-protocol effect among the grace-period compatible) in clone-censor-weight analyses. The reasons for it being open (cultural inertia of the hazard ratio, difficulty of clinically describing the cloned population, and reluctance to commit to a time horizon for absolute measures) are practical and structural barriers that genuinely support the problem being open.
 </dd>
 <dt>Decision path</dt>
 <dd>
-<code>R3:partially-solved(n=1/4) → R7:counter-and-support-both-present(support=1/counter=1)</code>
+<code>R3:partially-solved(n=1/4) → R9:substantiated-overstatement(n=1/4):codex</code>
 </dd>
 </dl>
+</div>
+</section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>78 papers in the reviewed corpus bear on this problem, published 2007 to 2026. Progress and a fresh assertion of openness land in the same year.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<p>It is also being <strong>closed in pieces</strong>: partial results come from more than one paper in more than one year, each covering a different part.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2007</td>
+<td>confirms it is open</td>
+<td>Causal inference in longitudinal studies with history-restricted marginal structural models.</td>
+</tr>
+<tr class="even">
+<td>2010</td>
+<td>confirms it is open</td>
+<td>Time scale and adjusted survival curves for marginal structural cox models.</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>confirms it is open</td>
+<td>Comparing marginal structural models to standard methods for estimating treatment effects of antihypertensive combination therapy.</td>
+</tr>
+<tr class="even">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>Severe COPD Exacerbation Risk and Long-Acting Bronchodilator Treatments: Comparison of Three Observational Data Analysis Methods.</td>
+</tr>
+<tr class="odd">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Using Big Data to Emulate a Target Trial When a Randomized Trial Is Not Available.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Invited Commentary: Influenza, Influenza Immunization, and Pregnancy-It’s About Time.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>partly addresses it</td>
+<td>G-computation of average treatment effects on the treated and the untreated.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Conditioning on future exposure to define study cohorts can induce bias: the case of low-dose acetylsalicylic acid and risk of major bleeding.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Evaluating beneficial drug effects in a non-interventional setting: a review of effectiveness studies based on Swedish Prescribed Drug Register data.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Metformin and cancer in type 2 diabetes: a systematic review and comprehensive bias evaluation.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>The alarming problems of confounding equivalence using logistic regression models in the perspective of causal diagrams.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Performance of the marginal structural cox model for estimating individual and joined effects of treatments given in combination.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>partly addresses it</td>
+<td>Estimating Counterfactual Risk Under Hypothetical Interventions in the Presence of Competing Events: Crystalline Silica Exposure and Mortality From 2 Causes of Death.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>partly addresses it</td>
+<td>Refining the Association Between Body Mass Index and Atrial Fibrillation: G-Formula and Restricted Mean Survival Times.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>partly addresses it</td>
+<td>The additive hazard estimator is consistent for continuous-time marginal structural models.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Rivaroxaban was found to be noninferior to warfarin in routine clinical care: A retrospective noninferiority cohort replication study.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>A causal framework for classical statistical estimands in failure-time settings with competing events.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Analysis of time-to-event for observational studies: Guidance to the use of intensity models.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Reflection on modern methods: trial emulation in the presence of immortal-time bias. Assessing the benefit of major surgery for elderly lung cancer patients using observational data.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Improving rheumatoid arthritis comparative effectiveness research through causal inference principles: systematic review using a target trial emulation framework.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>The Impact of Delayed Switch to Second-Line Antiretroviral Therapy on Mortality, Depending on Definition of Failure Time and CD4 Count at Failure.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>partly addresses it</td>
+<td>Using generalized linear models to implement g-estimation for survival data with time-varying confounding.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>A generalized theory of separable effects in competing event settings.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>New-user and prevalent-user designs and the definition of study time origin in pharmacoepidemiology: A review of reporting practices.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Educational note: addressing special cases of bias that frequently occur in perinatal epidemiology.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Multidisciplinary tumor boards and their analyses: the yin and yang of outcome measures.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Comparing New-User Cohort Designs: The Example of Proton Pump Inhibitor Effectiveness in Idiopathic Pulmonary Fibrosis.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>partly addresses it</td>
+<td>Using marginal structural joint models to estimate the effect of a time-varying treatment on recurrent events and survival: An application on arrhythmogenic cardiomyopathy.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Mediterranean Diet and Cardiovascular Prevention: Why Analytical Observational Designs Do Support Causality and Not Only Associations.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Medication-Wide Association Study Plus (MWAS+): A Proof of Concept Study on Drug Repurposing.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>The Timing, the Treatment, the Question: Comparison of Epidemiologic Approaches to Minimize Immortal Time Bias in Real-World Data Using a Surgical Oncology Example</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Trial emulation and survival analysis for disease incidence registers: A case study on the causal effect of pre-emptive kidney transplantation.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Invited Commentary: Conducting and Emulating Trials to Study Effects of Social Interventions.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>partly addresses it</td>
+<td>Design considerations for observational studies of drugs for advanced cancer.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Re. Emulating a Target Trial of Interventions Initiated During Pregnancy With Healthcare Databases: The Example of COVID-19 Vaccination.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation Using Hospital-Based Observational Data: Demonstration and Application in COVID-19</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Target trial emulation with multi-state model analysis to assess treatment effectiveness using clinical COVID-19 data</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Immortal Time Bias With Time-Varying Exposures in Environmental Epidemiology: A Case Study in Lung Cancer Survival.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Immortal-time bias in older vs younger age groups: a simulation study with application to a population-based cohort of patients with colon cancer.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Preventing immortal time bias in observational studies: a matter of design.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>The population-attributable fraction for time-to-event data.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Reporting of Observational Studies Explicitly Aiming to Emulate Randomized Trials: A Systematic Review.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation to Improve Causal Inference from Observational Data: What, Why, and How?</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Insights adjusting for non-adherence in randomized clinical trials: a reanalysis of an adjuvant trial of tamoxifen duration in early breast cancer.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Causal inference in survival analysis using longitudinal observational data: Sequential trials and marginal structural models.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Estimating the causal effects of multiple intermittent treatments with application to COVID-19.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Assessing Methods for Adjusting Estimates of Treatment Effectiveness for Patient Nonadherence in the Context of Time-to-Event Outcomes and Health Technology Assessment: A Simulation Study.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Methodological biases in observational hospital studies of COVID-19 treatment effectiveness: pitfalls and potential</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Estimating Subgroup Effects in Generalizability and Transportability Analyses</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Using Parametric g-Computation for Time-to-Event Data and Distributed Lag Models to Identify Critical Exposure Windows for Preterm Birth: An Illustrative Example Using PM2.5 in a Retrospective Birth Cohort Based in Eastern Massachusetts (2011-2016).</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Application of the estimand framework for an emulated trial using reference based multiple imputation to investigate informative censoring.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Target trial emulation for comparative effectiveness research with observational data: Promise and challenges for studying medications for opioid use disorder.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Can Observational Data and Target Trial Emulation Inform Cardiovascular Disease Prevention and Management Guidelines?</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Applying the estimand and target trial frameworks to external control analyses using observational data: a case study in the solid tumor setting.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>External comparator studies and the joint application of the estimand and target trial emulation frameworks.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Inference procedures in sequential trial emulation with survival outcomes: Comparing confidence intervals based on the sandwich variance estimator, bootstrap and jackknife.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>From ‘Negative’ Trial to Positive Clinical Impact: Emulating WARCEF While Accounting for Selection Bias in Trial Timing.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Hepatic real-world outcomes with obeticholic acid in primary biliary cholangitis (HEROES): A trial emulation study design.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Prompt versus Delayed Triple Therapy in COPD: Solutions to Time-Related Biases in Observational Studies.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Strengthening inferential studies in the FDA Sentinel initiative: results from a methodological demonstration project.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Demystifying Clone-Censor-Weighting to Studying Treatment Initiation Windows: An Example Using Publicly Available Synthetic Medicare Claims Data.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Immortal time bias from selection: a principal stratification perspective.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statin use and breast cancer-specific mortality and recurrence: a systematic review and meta-analysis including the role of immortal time bias and tumour characteristics.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Comparative Effectiveness Research Using Randomized Trials and Observational Studies: Validity and Feasibility Considerations.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Conducting descriptive epidemiology and causal inference studies using observational data: A 10-point primer for stroke researchers.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Missing the target in target trial emulation.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Site-specific complications of central venous catheterization under systematic ultrasound guidance: a target trial emulation revisiting the 3SITES study.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Type 2 diabetes, sodium-glucose cotransporter-2 inhibitors and cardiovascular outcomes: real world evidence versus a randomised clinical trial.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Target trial emulation on dexmedetomidine for critically ill patients: all that glitters is not gold.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Continuous-Time Causal Inference With Marked Point Process Weights: An Example on Sodium-Glucose Co-Transporters 2 Inhibitor Medications and Urinary Tract Infection.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>partly addresses it</td>
+<td>Applying a hypothetical strategy to the intercurrent event of non-adherence with the parametric g-formula: a post hoc secondary analysis of the MET-PREVENT trial</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>partly addresses it</td>
+<td>Causal estimands and identification of time-varying effects in nonstationary time series from N-of-1 mobile device studies</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>partly addresses it</td>
+<td>Target Trial Emulation Without Matching: A More Efficient Approach for Evaluating Vaccine Effectiveness Using Observational Data.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Starting right: aligning eligibility and treatment assignment at time zero when emulating a target trial.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Evaluation of Time-related Bias With Non-user Control.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Causal language jumps and non-alignments between clinical practice guidelines and original studies: a systematic evaluation of diabetes guidelines and their cited evidence.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation to Incorporate Real-World Data in the Estimation of the Clinical and Cost-Effectiveness of Biologic Treatment.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>The heterogeneous treatment effects of statins on dementia: a target trial emulation with causal machine learning using integrated genetic and real-world data.</td>
+</tr>
+</tbody>
+</table>
 </div>
 </section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/CNF-01-convergence-of-treatment-in-the-comparator-arm-attenuates-th.html">CNF-01 — Convergence of treatment in the comparator arm attenuates the observational intention-to-treat analogue with follow-up length</a></li>
-<li><a href="../problems/OUT-01-censoring-at-death-is-applied-as-data-cleaning-rather-than-a.html">OUT-01 — Censoring at death is applied as data cleaning rather than as an identifying assumption</a></li>
-<li><a href="../problems/REG-03-calling-an-analysis-a-target-trial-emulation-is-treated-as-e.html">REG-03 — Calling an analysis a target trial emulation is treated as evidence about its assumption burden</a></li>
+<li><a href="../problems/CNF-01-convergence-of-treatment-in-the-comparator-arm-attenuates-th.html">CNF-01: Convergence of treatment in the comparator arm attenuates the observational intention-to-treat analogue with follow-up length</a></li>
+<li><a href="../problems/EST-04-no-mediated-effect-is-defined-for-a-sustained-treatment-stra.html">EST-04: No mediated effect is defined for a sustained treatment strategy, and emulations report a proportion mediated anyway</a></li>
+<li><a href="../problems/OUT-01-censoring-at-death-is-applied-as-data-cleaning-rather-than-a.html">OUT-01: Censoring at death is applied as data cleaning rather than as an identifying assumption</a></li>
+<li><a href="../problems/REG-03-calling-an-analysis-a-target-trial-emulation-is-treated-as-e.html">REG-03: Calling an analysis a target trial emulation is treated as evidence about its assumption burden</a></li>
 </ul>
 </div>
 </section>

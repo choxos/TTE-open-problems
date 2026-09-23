@@ -42,9 +42,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -71,6 +71,9 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 </head>
@@ -384,8 +387,18 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#choosing-a-method" id="toc-choosing-a-method" class="nav-link active" data-scroll-target="#choosing-a-method">Choosing a method</a></li>
+  <li><a href="#where-the-bias-enters" id="toc-where-the-bias-enters" class="nav-link" data-scroll-target="#where-the-bias-enters">Where the bias enters</a></li>
+  <li><a href="#what-each-method-identifies" id="toc-what-each-method-identifies" class="nav-link" data-scroll-target="#what-each-method-identifies">What each method identifies</a></li>
+  <li><a href="#software" id="toc-software" class="nav-link" data-scroll-target="#software">Software</a></li>
+  <li><a href="#how-to-evaluate-a-method" id="toc-how-to-evaluate-a-method" class="nav-link" data-scroll-target="#how-to-evaluate-a-method">How to evaluate a method</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -411,23 +424,336 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<div class="callout callout-style-simple callout-note callout-titled">
+<p>The catalog is organized by problem. This page is organized by method: which estimator answers which question, what each one assumes, and where each one fails. It exists so that an entry in the catalog can be read against the method it constrains.</p>
+<div class="callout callout-style-simple callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Not yet written
+<span class="screen-reader-only">Important</span>The distinction that organizes everything
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>This page organizes the same material by method rather than by problem: what inverse probability weighting, the parametric g-formula, marginal structural models, g-estimation, cloning with censoring and weighting, sequential nested trials and longitudinal targeted learning each identify, what each assumes, and where each breaks.</p>
-<p>It is written once the entries it summarizes have been audited, so that a claim about where a method breaks carries the same verdict as the entry it came from.</p>
-<p>Browse <a href="./catalog.html">the catalog</a> in the meantime, or read <a href="./methods.html">how this was verified</a>.</p>
+<p>The decisive division is <strong>point treatment versus sustained strategy</strong>, not weighting versus regression versus machine learning.</p>
+<p>A point treatment is assigned once. One exchangeability condition, one propensity model and a standard estimator suffice, and the classical toolkit transfers with little modification.</p>
+<p>A sustained strategy is a rule applied over time, and treatment at each visit is chosen partly on the basis of variables that treatment itself has already affected. That single fact, treatment-confounder feedback, breaks conditional adjustment: a covariate that must be adjusted for as a confounder of later treatment is simultaneously a mediator of earlier treatment, and no regression can condition on it and not condition on it at once. G-methods exist for exactly this and for nothing else.</p>
+<p>A more flexible estimator does not move a problem across that line. See <a href="./problems/LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.html">LRN-01</a>.</p>
 </div>
 </div>
+<section id="choosing-a-method" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-a-method">Choosing a method</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+    A[Protocol: seven components stated] --&gt; B{Assigned once, or sustained over time?}
+    B -- Once --&gt; C[Point-treatment estimator: IPTW, matching, standardization, AIPW, TMLE]
+    B -- Sustained --&gt; D{Is the strategy achievable at time zero?}
+    D -- Yes, and eligibility is unambiguous --&gt; E[Marginal structural model by IPTW]
+    D -- Only within a window --&gt; F[Clone, censor, weight]
+    D -- The rule depends on evolving covariates --&gt; G[Parametric g-formula, or ICE]
+    D -- The rule shifts a continuous or natural value --&gt; H[Modified treatment policy]
+    E --&gt; I{Does one person become eligible more than once?}
+    F --&gt; I
+    G --&gt; I
+    H --&gt; I
+    I -- Yes --&gt; J[Sequential nested trials, pooled with person-clustered inference]
+    I -- No --&gt; K[Single emulated trial]
+    J --&gt; L{Competing events present?}
+    K --&gt; L
+    L -- Yes --&gt; M[State the estimand first: total, controlled direct, or separable effect]
+    L -- No --&gt; N[Counterfactual risk at a stated horizon]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>The branch worth noticing is the one at the bottom. A competing event is not a nuisance to be censored away; censoring at death is itself an identifying assumption, and applying it silently picks an estimand nobody stated. See <a href="./problems/OUT-01-censoring-at-death-is-applied-as-data-cleaning-rather-than-a.html">OUT-01</a>.</p>
+</section>
+<section id="where-the-bias-enters" class="level2">
+<h2 class="anchored" data-anchor-id="where-the-bias-enters">Where the bias enters</h2>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TB
+    L0[Baseline covariates] --&gt; A0[Treatment at time 0]
+    L0 --&gt; Y[Outcome]
+    A0 --&gt; L1[Covariates at time 1]
+    L1 --&gt; A1[Treatment at time 1]
+    L1 --&gt; Y
+    A0 --&gt; Y
+    A1 --&gt; Y
+    U[Unmeasured confounders] --&gt; A0
+    U --&gt; A1
+    U --&gt; Y
+    V[Visit process] --&gt; L1
+    V --&gt; Y
+    M[Phenotype algorithms] --&gt; L0
+    M --&gt; Y
+    P[Histories with no support] --&gt; W[Weight instability and extrapolation]
+    W --&gt; Y
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Read this for what it says about the three inputs no g-method touches.</p>
+<p><code>L1</code> is the feedback loop the g-methods were built for, and they handle it. <code>U</code> is exchangeability, which nothing in the data can check, and which is why <a href="./categories/unmeasured-confounding.html">unmeasured confounding</a> carries the largest evidence base in this catalog. <code>V</code> is the visit process: in routine records a covariate is measured when a patient attends care, so <code>L1</code> is observed selectively, and the standard treatment of that is imputation rather than modeling. See <a href="./problems/MIS-01-the-visit-process-is-treated-as-a-nuisance-to-be-imputed-rat.html">MIS-01</a>. <code>M</code> is that every variable in the diagram is an algorithm over billing codes and clinical text, and enters the analysis as though it were the thing it names. See <a href="./problems/MER-01-phenotypes-enter-emulations-as-error-free-binary-variables.html">MER-01</a>.</p>
+</section>
+<section id="what-each-method-identifies" class="level2">
+<h2 class="anchored" data-anchor-id="what-each-method-identifies">What each method identifies</h2>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Setting it is stated for</th>
+<th>Nominal estimand</th>
+<th>Main identifying assumptions</th>
+<th>Principal unresolved weakness</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Propensity-score weighting or matching</td>
+<td>Point treatment, new-user active comparator</td>
+<td>Marginal contrast in the weighted or matched population</td>
+<td>Baseline exchangeability; positivity; correct propensity model; consistency</td>
+<td>The target population is whatever weighting produced, and is rarely stated; no protection against unmeasured confounding</td>
+</tr>
+<tr class="even">
+<td>Marginal structural model by IPTW</td>
+<td>Sustained strategy with treatment-confounder feedback</td>
+<td>Marginal contrast under each strategy</td>
+<td>Sequential exchangeability; sequential positivity; correct treatment and censoring models; no interference</td>
+<td>Weight instability over long follow-up; positivity failures surface as heavy weights rather than as a named unsupported region</td>
+</tr>
+<tr class="odd">
+<td>Parametric g-formula</td>
+<td>Sustained or dynamic strategy, discrete visits</td>
+<td>Counterfactual risk under each strategy</td>
+<td>Sequential exchangeability and positivity; correct models for every time-varying covariate</td>
+<td>The null paradox: with a correctly specified but non-saturated model the sharp null can be rejected when it holds; misspecification compounds across time points</td>
+</tr>
+<tr class="even">
+<td>Iterated conditional expectation</td>
+<td>The g-formula setting, long follow-up</td>
+<td>Same</td>
+<td>Same, except only the outcome regression at each step must be right</td>
+<td>Fewer models than the g-formula, and no easier to check any of them</td>
+</tr>
+<tr class="odd">
+<td>G-estimation of structural nested models</td>
+<td>Sustained strategy, continuous or dose exposure</td>
+<td>Effect of one additional unit or period of treatment</td>
+<td>Sequential exchangeability; a correct model for the effect rather than for the covariates</td>
+<td>Little software; unfamiliar output; rare in applied emulations</td>
+</tr>
+<tr class="even">
+<td>Clone, censor, weight</td>
+<td>Strategies distinguishable only after time zero, grace periods</td>
+<td>Per-protocol contrast under each strategy</td>
+<td>Sequential exchangeability given the censoring covariates; positivity among those still uncensored</td>
+<td>The grace period is a modeling choice that silently changes the estimand; variance after cloning has no scalable correct default</td>
+</tr>
+<tr class="odd">
+<td>Sequential nested trials</td>
+<td>Repeated eligibility, staggered entry</td>
+<td>Pooled contrast across trials opened at successive times</td>
+<td>Everything above, plus that pooling across calendar time is meaningful</td>
+<td>One person appears in many trials; naive standard errors are wrong, and calendar-time confounding is usually unaddressed</td>
+</tr>
+<tr class="even">
+<td>Longitudinal targeted learning</td>
+<td>Sustained strategy with machine-learned nuisances</td>
+<td>The g-formula estimand</td>
+<td>Sequential exchangeability and positivity; nuisance convergence rates; correct cross-fitting</td>
+<td>Cross-validation optimizes prediction, not causal error; flexibility is routinely offered as a substitute for identification</td>
+</tr>
+<tr class="odd">
+<td>Modified treatment policies</td>
+<td>Continuous, dose or natural-value interventions</td>
+<td>Contrast under a shift of the observed treatment</td>
+<td>Sequential exchangeability; the shifted value stays inside the support</td>
+<td>Support for the shifted value is exactly the positivity condition, and it is checked far less often than the shift is applied</td>
+</tr>
+<tr class="even">
+<td>Doubly robust AIPW and one-step estimators</td>
+<td>Any of the above</td>
+<td>The estimand of the estimator being augmented</td>
+<td>Either the treatment model or the outcome model correct, plus the identification conditions</td>
+<td>Double robustness protects against misspecification, never against unmeasured confounding or positivity failure</td>
+</tr>
+<tr class="odd">
+<td>Negative controls, proxies, E-values</td>
+<td>Any of the above, as a companion</td>
+<td>A bound, a bias parameter, or a falsification test</td>
+<td>An assumed structure relating the control to the exposure and the outcome</td>
+<td>Each answers a different threat, none is integrated with the others, and a passing negative control is not evidence of exchangeability</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This table is not a ladder. A doubly robust estimator does not cure positivity failure, a targeted estimator does not cure unmeasured confounding, cross-fitting does not cure a misspecified estimand, and a narrow confidence interval does not establish that the protocol described the trial anyone wanted. Each of those is an entry in this catalog rather than a rhetorical flourish; the summary is <a href="./problems/GMT-04-no-estimator-is-defensible-as-a-default-and-no-study-is-requ.html">GMT-04</a>, which records that no estimator is defensible as a default and that no study is required to show its choice mattered.</p>
+</section>
+<section id="software" class="level2">
+<h2 class="anchored" data-anchor-id="software">Software</h2>
+<p>Every claim below is read from a version-pinned copy of the source under <code>documentation/refs/packages/</code>, not from documentation and not from memory. The versions are those pinned in <code>documentation/audit/calibration.json</code>, which is the standard the technical auditor is held to.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Package</th>
+<th>Pinned</th>
+<th>What its exports actually provide</th>
+<th>Where it stops</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://cran.r-project.org/package=TrialEmulation"><code>TrialEmulation</code></a></td>
+<td>CRAN 0.0.4.11</td>
+<td>Sequential nested trials end to end: <code>trial_sequence</code>, <code>expand_trials</code>, <code>set_switch_weight_model</code>, <code>set_censor_weight_model</code>, <code>calculate_weights</code>, <code>fit_msm</code>, and <code>case_control_sampling_trials</code> for expansions too large to hold in memory</td>
+<td>Robust and sandwich variance are both present, and the correct default after cloning and sequence expansion is still open (<a href="./problems/SFW-01-variance-estimation-after-cloning-and-sequence-expansion-has.html">SFW-01</a>)</td>
+</tr>
+<tr class="even">
+<td><a href="https://cran.r-project.org/package=gfoRmula"><code>gfoRmula</code></a></td>
+<td>CRAN 1.1.1</td>
+<td>The parametric g-formula for survival, binary and continuous end-of-follow-up outcomes, with <code>static</code>, <code>threshold</code> and <code>simple_restriction</code> interventions</td>
+<td>No grace-period strategy among its exported interventions</td>
+</tr>
+<tr class="odd">
+<td><a href="https://cran.r-project.org/package=gfoRmulaICE"><code>gfoRmulaICE</code></a></td>
+<td>CRAN 1.1.1</td>
+<td>Iterated conditional expectation, and the one pinned package exporting <code>grace_period</code> directly, with <code>"uniform"</code> and <code>"natural"</code> types, alongside <code>static</code>, <code>dynamic</code>, <code>pool</code> and <code>strat</code></td>
+<td>Nothing in it selects the grace-period length (<a href="./problems/TZO-01-no-outcome-blind-procedure-selects-the-time-grid-or-the-grac.html">TZO-01</a>)</td>
+</tr>
+<tr class="even">
+<td><a href="https://cran.r-project.org/package=lmtp"><code>lmtp</code></a></td>
+<td>CRAN 1.5.4</td>
+<td>Modified treatment policies through <code>lmtp_tmle</code>, <code>lmtp_sdr</code>, <code>lmtp_ipw</code> and <code>lmtp_sub</code>, with <code>lmtp_survival</code>, competing-risk indicators and incremental propensity shifts</td>
+<td>The estimator is agnostic about whether the shifted treatment value has support</td>
+</tr>
+<tr class="odd">
+<td><a href="https://cran.r-project.org/package=ltmle"><code>ltmle</code></a></td>
+<td>CRAN 1.3-0, 2023</td>
+<td>Longitudinal TMLE and <code>ltmleMSM</code>, with deterministic Q and g function templates</td>
+<td>The oldest pin in the set by two years</td>
+</tr>
+<tr class="even">
+<td><a href="https://cran.r-project.org/package=concrete"><code>concrete</code></a></td>
+<td>CRAN 1.0.5</td>
+<td>Continuous-time competing-risks TMLE</td>
+<td>It makes the competing-event estimand estimable; it does not make the choice</td>
+</tr>
+<tr class="odd">
+<td><a href="https://cran.r-project.org/package=CICI"><code>CICI</code></a></td>
+<td>CRAN 1.0</td>
+<td>Continuous multiple-time-point interventions, and notably a <code>feasible</code> function alongside <code>gformula</code> and <code>msm</code></td>
+<td>One of the few places positivity is a first-class object rather than a diagnostic afterthought (<a href="./problems/OVL-01-positivity-diagnostics-describe-weights-instead-of-naming-wh.html">OVL-01</a>)</td>
+</tr>
+<tr class="even">
+<td><a href="https://cran.r-project.org/package=adjustedCurves"><code>adjustedCurves</code></a></td>
+<td>CRAN 0.11.4</td>
+<td>Adjusted survival and cumulative incidence by AIPW, IPTW, direct standardization, matching and pseudo-values, with <code>adjusted_rmst</code> and formal curve comparison</td>
+<td>Point-treatment adjustment; not a longitudinal platform</td>
+</tr>
+<tr class="odd">
+<td><a href="https://cran.r-project.org/package=WeightIt"><code>WeightIt</code></a>, <a href="https://cran.r-project.org/package=MatchIt"><code>MatchIt</code></a>, <a href="https://cran.r-project.org/package=cobalt"><code>cobalt</code></a>, <a href="https://cran.r-project.org/package=ipw"><code>ipw</code></a></td>
+<td>CRAN 1.7.0, 4.7.2, 4.6.3, 1.3.0</td>
+<td>The weighting, matching and balance-diagnostic layer everything above sits on</td>
+<td>Balance is checked on measured covariates, which is not the assumption anyone is worried about</td>
+</tr>
+<tr class="even">
+<td><a href="https://pypi.org/project/zepid/"><code>zEpid</code></a>, <a href="https://pypi.org/project/causallib/"><code>causallib</code></a>, <a href="https://pypi.org/project/lifelines/"><code>lifelines</code></a>, <a href="https://pypi.org/project/scikit-survival/"><code>scikit-survival</code></a></td>
+<td>PyPI 0.9.1, 0.10.0, 0.30.3, 0.28.0</td>
+<td>The Python side: time-varying g-methods, an estimator API, and survival modeling</td>
+<td>No Python package covers sequential nested trials the way <code>TrialEmulation</code> does</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>No package spans protocol specification, eligibility ascertainment, time-zero alignment, weight estimation, positivity accounting, competing events, measurement error and the reporting a regulator asks for. That gap is itself catalogued, under <a href="./categories/software.html">software, computation and reproducibility</a>.</p>
+</section>
+<section id="how-to-evaluate-a-method" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-evaluate-a-method">How to evaluate a method</h2>
+<p>A simulation study reporting bias without naming the estimand the bias is relative to has reported nothing. In an emulation the estimand is a function of the protocol, so the protocol has to be part of the data-generating mechanism rather than of the analysis.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Metric family</th>
+<th>Minimum metrics</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Estimand recovery</strong></td>
+<td>Bias and relative bias against a stated counterfactual risk at a stated horizon, RMSE, sign error, and the same quantities under the sharp null</td>
+</tr>
+<tr class="even">
+<td><strong>Uncertainty calibration</strong></td>
+<td>95% coverage, empirical to nominal standard-error ratio, type I error under the null, and coverage after cloning specifically</td>
+</tr>
+<tr class="odd">
+<td><strong>Positivity and support</strong></td>
+<td>Fraction of person-time with no support for the assigned strategy, the weight distribution, the maximum stabilized weight, and the estimate with and without truncation</td>
+</tr>
+<tr class="even">
+<td><strong>Time-related bias</strong></td>
+<td>Sensitivity to the grace period, to the time grid, and to the alignment of eligibility, assignment and follow-up start</td>
+</tr>
+<tr class="odd">
+<td><strong>Structural robustness</strong></td>
+<td>Behavior under unmeasured confounding, under an informative visit process, and under phenotype misclassification, varied jointly rather than one at a time</td>
+</tr>
+<tr class="even">
+<td><strong>Computation and reproducibility</strong></td>
+<td>Runtime at national-registry scale, failure rate, seed sensitivity, and whether the analysis reruns from a container</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The two rows most often omitted are positivity and structural robustness, and they are the two that decide whether the estimate means anything. Varying one violated assumption at a time is its own catalogued problem (<a href="./problems/UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.html">UCF-02</a>): biases can cancel, and a one-at-a-time analysis makes that accident look like robustness.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    A[State the seven protocol components] --&gt; B[Data-generating mechanism includes the protocol]
+    B --&gt; C[Manipulate: feedback, positivity, visit process, misclassification]
+    C --&gt; D[Fit competing estimators]
+    D --&gt; E[Evaluate against the declared counterfactual risk]
+    E --&gt; F[Publish code, seeds, phenotype logic, rejected protocol versions]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>The last box is the one nobody does. See <a href="./problems/SFW-03-code-phenotype-logic-weight-diagnostics-and-rejected-protoco.html">SFW-03</a>.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -856,7 +1182,7 @@ ul.task-list li input[type="checkbox"] {
 </div>   
     <div class="nav-footer-center">
 <p>Every entry carries a verification verdict. See <a href="./methods.html">How this was verified</a>.</p>
-<div class="toc-actions"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
+<div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/choxos/TTE-open-problems/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div>
     <div class="nav-footer-right">
 <p><a href="https://github.com/choxos/TTE-open-problems">Source</a></p>
 </div>

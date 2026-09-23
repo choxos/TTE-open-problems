@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software for stochastic and modified treatment policies covers part of the continuous longitudinal case; partial-identification bounds for arbitrary sustained strategies do not exist.">
+<meta name="description" content="A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail, which reduces variance, changes the implicit estimand and can leave substantial bias in place. What the diagnostic does not report is the quantity a reader needs: what fraction of the target population has no support for the strategy under study, which histories are the unsupported ones, and what estimand remains identified once they are set aside. A 2026 study of non-mutually exclusive assignment found that poor overlap defeated adjustment methods that were otherwise well specified, which is the failure mode a weight histogram is least able to show.">
 
 <title>Positivity diagnostics describe weights instead of naming which patient histories are unsupported – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -395,6 +395,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -411,12 +412,15 @@ ul.task-list li input[type="checkbox"] {
     <div class="quarto-category">Positivity, structural violations &amp; extrapolation</div>
     <div class="quarto-category">Very high priority</div>
     <div class="quarto-category">Partially addressed</div>
+    <div class="quarto-category">Protocol: Treatment strategies</div>
+    <div class="quarto-category">Protocol: Causal contrast</div>
+    <div class="quarto-category">Data: Any setting</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software for stochastic and modified treatment policies covers part of the continuous longitudinal case; partial-identification bounds for arbitrary sustained strategies do not exist.
+    A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail, which reduces variance, changes the implicit estimand and can leave substantial bias in place. What the diagnostic does not report is the quantity a reader needs: what fraction of the target population has no support for the strategy under study, which histories are the unsupported ones, and what estimand remains identified once they are set aside. A 2026 study of non-mutually exclusive assignment found that poor overlap defeated adjustment methods that were otherwise well specified, which is the failure mode a weight histogram is least able to show.
   </div>
 </div>
 
@@ -436,13 +440,17 @@ ul.task-list li input[type="checkbox"] {
 <div class="problem-meta">
 <p><span class="problem-id">OVL-01</span> <span class="verdict verdict-partially-addressed">Partially addressed</span> <span class="chip chip-priority-very-high">Very high priority</span> <span class="chip chip-maturity-promising">Promising</span> <span class="chip">Tractability 4/5</span></p>
 </div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Treatment strategies</span> <span class="chip chip-axis">Causal contrast</span><br>
+Seen in: <span class="chip chip-axis">Any setting</span></p>
+</div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail. Truncation is bias-variance regularization: it cannot identify an effect where the treatment density is structurally zero, and a marginal weight summary does not say which intervention-relevant histories carry small or zero density. What a reader needs and does not get is a policy-specific support criterion fixed in advance, diagnostics localized by time and by history, the fraction of the target population that fails the criterion, and the estimand that survives once those strata are set aside. Empirically, poor overlap has been shown to defeat adjustment methods that were otherwise well specified, which is the failure a weight histogram is least able to show. Software for stochastic and modified treatment policies covers part of the continuous longitudinal case; partial-identification bounds for arbitrary sustained strategies do not exist.</p>
+<p>A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail, which reduces variance, changes the implicit estimand and can leave substantial bias in place. What the diagnostic does not report is the quantity a reader needs: what fraction of the target population has no support for the strategy under study, which histories are the unsupported ones, and what estimand remains identified once they are set aside. A 2026 study of non-mutually exclusive assignment found that poor overlap defeated adjustment methods that were otherwise well specified, which is the failure mode a weight histogram is least able to show.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>Practical positivity is a property of a conditional density over a growing history, so beyond a few time points the object to be diagnosed is high-dimensional and cannot be plotted. Truncation is attractive precisely because it converts an identification failure into a variance reduction, which reads as a modeling improvement rather than as a change of question. Reporting an unsupported fraction also requires deciding what counts as support, and any such criterion is a decision about the estimand that nobody is currently required to state.</p>
+<p>Practical positivity is a property of a conditional density over a growing history, so with more than a handful of time points the object to be diagnosed is high-dimensional and cannot be plotted. Truncation is attractive precisely because it converts an identification failure into a variance reduction, which reads as a modelling improvement rather than as a change of question. There is also no agreed target: reporting the unsupported fraction requires deciding what counts as support, and any threshold is a decision about the estimand that nobody currently has to state.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -469,15 +477,14 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Prespecify a policy-specific support criterion, report time- and history-localized support diagnostics against it, and report the sensitivity of the conclusion to the criterion, so the definition is visible rather than implicit. Replace or restrict deterministic regimes the data cannot support with modified treatment policies, incremental propensity-score interventions or stochastic initiation rules where that is scientifically acceptable, and say so in the paper rather than in the truncation. Derive partial-identification bounds for the unsupported strata under sustained strategies, which is the piece no current software supplies.</p>
+<p>Replace deterministic interventions that the data cannot support with modified treatment policies, incremental propensity-score interventions or stochastic initiation rules, and state the trade in the paper rather than in the weight truncation. Report a causal support map over patient histories: the fraction of the target population with adequate support, which histories fail, and the estimand that survives. Derive partial-identification bounds for the unsupported strata, and set overlap-aware eligibility criteria before any outcome analysis so that restricting the population is a design decision with a date rather than a result.</p>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
 <p><strong>Verdict.</strong> Partially addressed. Part of this problem is addressed by existing work; the entry names which part.</p>
-<p><strong>The source said.</strong> “A deterministic treatment strategy can assign a treatment that clinicians almost never give to patients with certain covariate histories. The standard response is to inspect the weight distribution and truncate the tail, which reduces variance, changes the implicit estimand and can leave substantial bias in place. What the diagnostic does not report is the quantity a reader needs: what fraction of the target population has no support for the strategy under study, which histories are the unsupported ones, and what estimand remains identified once they are set aside. A 2026 study of non-mutually exclusive assignment found that poor overlap defeated adjustment methods that were otherwise well specified, which is the failure mode a weight histogram is least able to show.”</p>
-<p><strong>What was wrong with it.</strong> Truncation is bias-variance regularization and does not change the estimand in the way the entry implied; what it cannot do is identify an effect under structural nonpositivity. Software for stochastic and modified treatment policies also partly addresses the continuous longitudinal case, so the alternatives the entry proposes are not entirely unavailable.</p>
-<p><strong>Dissent.</strong> literature dissented (open): The entry’s core claim, that diagnostics describe weights rather than naming which histories are unsupported, holds against the corpus. Two pieces of work sharpen rather than resolve it. A 2025 study measures the impact of near-positivity violations on IPTW-estimated marginal structural survival models with time-dependent covariates, which supplies the consequence the entry asserts. A 2026 American Journal of Epidemiology paper on target trial emulation under non-mutually exclusive assignment sets out structural pitfalls and remedies for exactly the overlap failure the entry cites. Neither produces a causal support map over histories, an unsupported-fraction statistic, or partial-identification bounds for the unsupported strata, so the specific artifacts the entry says are missing are still missing. codex dissented (overstated): A marginal weight histogram cannot localize poor support to particular histories, and structural nonpositivity is a decision-grade identification failure. However, the report conflates structural nonpositivity, practical near-nonpositivity, and finite-sample instability. Weight truncation does not convert an identification failure into variance reduction or necessarily define a coherent alternative causal estimand. It changes the estimating functional and usually biases estimation of the stated target, while structural nonpositivity remains unidentified. The claim that the high-dimensional object cannot be plotted is also too absolute because reduced history-specific diagnostics are possible. Pinned CICI 1.0 is a direct partial counterexample: its NAMESPACE exports feasible, plot.feasible, and summary.feasible; feasible() estimates conditional treatment densities, returns per-observation feasible intervention values and low_matrix objects, and reports the proportion below its threshold by strategy and time. Its gformula accepts the resulting individual intervention matrices. This implementation is limited to continuous interventions and an analyst-chosen alpha threshold, does not provide general partial-identification bounds, and does not cover arbitrary binary or categorical sustained strategies. Its threshold implementation also normalizes densities using bin widths but calculates cumsum(sort(row)) without bin-width weighting, so the advertised probability-mass threshold is miscalibrated whenever bin widths differ from one. Later-time diagnostics are evaluated over observed histories, which need not equal the history distribution induced by the intervention. Pinned lmtp 1.5.4 implements longitudinal modified treatment policies and an ipsi policy factory, but such intervention classes do not automatically restore positivity; policy-specific absolute continuity remains necessary, and lmtp trims estimated density ratios by default. Very-high severity is warranted when the prespecified strategy materially lacks support, but a universal support map and bounds are roadmap extensions rather than requirements for every adequately supported analysis.</p>
+<p><strong>Dissent.</strong> literature dissented (open): The entry’s core claim, that diagnostics describe weights rather than naming which histories are unsupported, holds against the corpus. Two pieces of work sharpen rather than resolve it. […]</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -495,7 +502,7 @@ ul.task-list li input[type="checkbox"] {
 <p>What does close most of the stated gap is recent prior art the agenda does not cite. Danelian et al.&nbsp;(Journal of Causal Inference 2023; 10.1515/jci-2022-0032) introduced PoRT, a regression-tree diagnostic that flags in-sample positivity violations as interpretable covariate-defined subgroups, with implementation in the CRAN package RISCA (<code>port</code>). Chatton et al.&nbsp;(Epidemiology 2025; 10.1097/EDE.0000000000001902) extend this to longitudinal static and dynamic strategies as sPoRT, explicitly motivated by the inadequacy of inspecting cumulative inverse-probability weights: weight products can flag sparsity under correctly specified propensity models but do not name the problematic subgroups. In their HIV ART reanalysis, sPoRT returns time-updated subgroups with size as a share of those who should follow the rule (e.g., a CD4/WAZ-defined cell of n*=43, 5.4% of those assigned to initiate at 6 months) and recommended responses include redesign of the rule, exclusion of structurally unsupported baseline strata as a design decision, and switch to alternative estimands. Ring and Schomaker (Journal of Causal Inference 2026; 10.1515/jci-2025-0007; arXiv:2502.11820) add a kernel-based, estimand-specific sparsity diagnostic for continuous treatments and MTPs that reports effective data points per intervened observation, supports comparing alternative estimands before estimation, and is tied to the CICI / lmtp ecosystem. Moodie and Schulz (Statistics in Medicine 2025; 10.1002/sim.70194) give a hat-value style diagnostic for continuous exposures. Together these tools deliver the three quantities the problem says weight histograms do not: unsupported fraction (via subgroup size or near-zero EDP mass), which histories fail (tree leaves or low-EDP units), and guidance on the estimand that remains identifiable (rule redesign, population restriction, or MTP choice).</p>
 <p>What remains open, so a full “solved” vote would be wrong: (1) no agreed support threshold (α, β in PoRT/sPoRT; kernel bandwidth in Ring) is still a free estimand decision; (2) partial-identification bounds for the unsupported strata are not a packaged, routine output of these diagnostics; (3) the methods are not first-class diagnostics inside the main TTE stacks the agenda names (TrialEmulation, gfoRmula, lmtp, WeightIt/cobalt still center weight and balance summaries rather than history-level support maps); (4) very high-dimensional continuous longitudinal histories remain hard to plot as a single “causal support map,” which is a packaging and reporting problem more than an identification one. Searches that returned no stronger closer: TTE-package release notes / PRs for TrialEmulation, gfoRmula, gfoRmulaICE, lmtp, WeightIt, MatchIt, cobalt, CICI for a history-level support map; TARGET / HARPER / STaRT-RWE / ENCePP / FDA-RWE 2025–2026 guidance mandating unsupported-fraction reporting; arXiv/medRxiv 2024–2026 for partial-ID bounds specifically for positivity-unsupported TTE strata as standard practice. Bottom line: the claim that standard weight diagnostics hide the real object is still right for modal practice, but the claim that the field has no method that names unsupported histories is no longer true after PoRT (2023), sPoRT (2025), and Ring–Schomaker (2026). Cites 10.1097/EDE.0000000000001902: Longitudinal sequential positivity diagnostic that returns interpretable, time-updated covariate-defined subgroups lacking support under static or dynamic treatment strategies, with subgroup size as a share of those assigned by the rule; explicitly contrasts this with weight-product diagnostics that do not name histories.. Cites 10.1515/jci-2022-0032: Point-treatment precursor: nonparametric regression-tree search for sparse propensity cells defined by covariate values, without requiring a correctly specified parametric propensity model; shipped as <code>port</code> in CRAN RISCA.. Cites 10.1515/jci-2025-0007: Estimand-specific kernel sparsity diagnostic that scores effective data support for each intervened observation, compares static, dynamic, and MTP estimands before outcome analysis, and guides population restriction or estimand redesign; continuous-treatment case the report’s weight-histogram complaint does not cover.. Cites arxiv:2502.11820: Open preprint of the Ring–Schomaker diagnostic (same content as 10.1515/jci-2025-0007), with simulation and CHAPAS-3 pharmacoepidemiology illustration and public code for the EDP diagnostic.. Cites 10.1002/sim.70194: Lightweight hat-value style positivity diagnostic for continuous exposures in Statistics in Medicine; complements tree and kernel approaches for the continuous case where weight histograms are least informative.. Cites https://cran.r-project.org/package=RISCA: Released software that turns PoRT into a callable diagnostic returning character summaries of positivity-violating subgroups rather than a weight distribution alone..</p>
 <dl>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The problem statement accurately identifies a gap in current positivity diagnostics: they focus on weight distributions rather than identifying unsupported patient histories and the resulting estimand. The reasons given for it being open (high-dimensionality of histories, lack of agreed thresholds for support) are valid and support the claim that this is an open methodological challenge. The claim is proportionate and does not overstate the issue as an impossibility where it is merely a current practice gap, though it correctly notes the structural difficulty of plotting high-dimensional objects.
 </dd>
@@ -506,14 +513,714 @@ ul.task-list li input[type="checkbox"] {
 </dl>
 </div>
 </section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>135 papers in the reviewed corpus bear on this problem, published 2006 to 2026. Progress and a fresh assertion of openness land in the same year.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<p>It is also being <strong>closed in pieces</strong>: partial results come from more than one paper in more than one year, each covering a different part.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2006</td>
+<td>confirms it is open</td>
+<td>Causal analysis of case-control data.</td>
+</tr>
+<tr class="even">
+<td>2008</td>
+<td>partly addresses it</td>
+<td>Evaluating dose response from flexible dose clinical trials.</td>
+</tr>
+<tr class="odd">
+<td>2010</td>
+<td>confirms it is open</td>
+<td>Testing and estimating model-adjusted effect-measure modification using marginal structural models and complex survey data.</td>
+</tr>
+<tr class="even">
+<td>2010</td>
+<td>confirms it is open</td>
+<td>Dynamic regime marginal structural mean models for estimation of optimal dynamic treatment regimes, Part II: proofs of results.</td>
+</tr>
+<tr class="odd">
+<td>2010</td>
+<td>confirms it is open</td>
+<td>Marginal structural models for sufficient cause interactions.</td>
+</tr>
+<tr class="even">
+<td>2011</td>
+<td>confirms it is open</td>
+<td>Quantification of the healthy worker effect: a nationwide cohort study among electricians in Denmark.</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>confirms it is open</td>
+<td>Improved double-robust estimation in missing data and causal inference models.</td>
+</tr>
+<tr class="even">
+<td>2013</td>
+<td>partly addresses it</td>
+<td>Challenges of guarantee-time bias.</td>
+</tr>
+<tr class="odd">
+<td>2013</td>
+<td>partly addresses it</td>
+<td>Work related asthma. A causal analysis controlling the healthy worker effect.</td>
+</tr>
+<tr class="even">
+<td>2014</td>
+<td>partly addresses it</td>
+<td>Assessment of patient-specific surgery effect based on weighted estimation and propensity scoring in the re-analysis of the sciatica trial.</td>
+</tr>
+<tr class="odd">
+<td>2014</td>
+<td>confirms it is open</td>
+<td>Optimal CD4 count for initiating HIV treatment: impact of CD4 observation frequency and grace periods, and performance of dynamic marginal structural models.</td>
+</tr>
+<tr class="even">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>The Impact of Different CD4 Cell-Count Monitoring and Switching Strategies on Mortality in HIV-Infected African Adults on Antiretroviral Therapy: An Application of Dynamic Marginal Structural Models.</td>
+</tr>
+<tr class="odd">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>Severe COPD Exacerbation Risk and Long-Acting Bronchodilator Treatments: Comparison of Three Observational Data Analysis Methods.</td>
+</tr>
+<tr class="even">
+<td>2015</td>
+<td>confirms it is open</td>
+<td>Controlling Time-Dependent Confounding by Health Status and Frailty: Restriction Versus Statistical Adjustment.</td>
+</tr>
+<tr class="odd">
+<td>2016</td>
+<td>partly addresses it</td>
+<td>TREATMENT SWITCHING: STATISTICAL AND DECISION-MAKING CHALLENGES AND APPROACHES.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Comparative Effectiveness Research Using Observational Data: Active Comparators to Emulate Target Trials with Inactive Comparators.</td>
+</tr>
+<tr class="odd">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Application of the Marginal Structural Model to Account for Suboptimal Adherence in a Randomized Controlled Trial.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Performance of the marginal structural cox model for estimating individual and joined effects of treatments given in combination.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Intensive care unit (ICU)-acquired bacteraemia and ICU mortality and discharge: addressing time-varying confounding using appropriate methodology.</td>
+</tr>
+<tr class="even">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Making fair comparisons in pregnancy medication safety studies: An overview of advanced methods for confounding control.</td>
+</tr>
+<tr class="odd">
+<td>2017</td>
+<td>confirms it is open</td>
+<td>Statistical Methods for Modeling Time-Updated Exposures in Cohort Studies of Chronic Kidney Disease.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>partly addresses it</td>
+<td>The roll-out of a health insurance program and its impact on the supply of healthcare services: a new method to evaluate time-varying continuous interventions.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Targeted maximum likelihood estimation for a binary treatment: A tutorial.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Marginal structural models with dose-delay joint-exposure for assessing variations to chemotherapy intensity.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Estimating long-term treatment effects in observational data: A comparison of the performance of different methods under real-world uncertainty.</td>
+</tr>
+<tr class="even">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Application of causal inference methods in the analyses of randomised controlled trials: a systematic review.</td>
+</tr>
+<tr class="odd">
+<td>2018</td>
+<td>confirms it is open</td>
+<td>Analysis of Longitudinal Studies With Repeated Outcome Measures: Adjusting for Time-Dependent Confounding Using Conventional Methods.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>partly addresses it</td>
+<td>Using longitudinal targeted maximum likelihood estimation in complex settings with dynamic interventions.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Guidance for a causal comparative effectiveness analysis emulating a target trial based on big real world evidence: when to start statin treatment.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Refining the Association Between Body Mass Index and Atrial Fibrillation: G-Formula and Restricted Mean Survival Times.</td>
+</tr>
+<tr class="odd">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>Adjusting for time-varying confounders in survival analysis using structural nested cumulative survival time models.</td>
+</tr>
+<tr class="even">
+<td>2019</td>
+<td>confirms it is open</td>
+<td>The additive hazard estimator is consistent for continuous-time marginal structural models.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>A trial emulation approach for policy evaluations with group-level longitudinal data.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Long-term effects of asthma medication on asthma symptoms: an application of the targeted maximum likelihood estimation.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Joint calibrated estimation of inverse probability of treatment and censoring weights for marginal structural models.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Marginal structural models for repeated measures where intercept and slope are correlated: An application exploring the benefit of nutritional supplements on weight gain in HIV-infected children initiating antiretroviral therapy.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>The Impact of Delayed Switch to Second-Line Antiretroviral Therapy on Mortality, Depending on Definition of Failure Time and CD4 Count at Failure.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>partly addresses it</td>
+<td>The importance of the design of observational studies in comparative effectiveness research: Lessons from the GARFIELD-AF and ORBIT-AF registries.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>partly addresses it</td>
+<td>Using generalized linear models to implement g-estimation for survival data with time-varying confounding.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Invited Commentary: The Promise and Pitfalls of Causal Inference With Multivariate Environmental Exposures.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Contextualizing single-arm trials with real-world data: An emulated target trial comparing therapies for neovascular age-related macular degeneration.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Avoiding Time-Related Biases: A Feasibility Study on Antidiabetic Drugs and Pancreatic Cancer Applying the Parametric g-Formula to a Large German Healthcare Database.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>A scoping review of studies using observational data to optimise dynamic treatment regimens.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Introduction to computational causal inference using reproducible Stata, R, and Python code: A tutorial.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Validation of Machine Learning-Based Individualized Treatment for Depressive Disorder Using Target Trial Emulation.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Accounting for selection bias due to death in estimating the effect of wealth shock on cognition for the Health and Retirement Study.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>[Secondary Data for Pharmacoepidemiological Research - Making the Best of It!].</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Modeling treatment effect modification in multidrug-resistant tuberculosis in an individual patient data meta-analysis.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Comparing New-User Cohort Designs: The Example of Proton Pump Inhibitor Effectiveness in Idiopathic Pulmonary Fibrosis.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>partly addresses it</td>
+<td>Ranking tailoring variables for constructing individualized treatment rules: an application to schizophrenia.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Spillover benefit of pre-exposure prophylaxis for HIV prevention: evaluating the importance of effect modification using an agent-based model.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Oncology Drug Effectiveness from Electronic Health Record Data Calibrated Against RCT Evidence: The PARSIFAL Trial Emulation.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Approaches to Selecting “Time Zero” in External Control Arms with Multiple Potential Entry Points: A Simulation Study of 8 Approaches.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Estimating the effect of donor sex on red blood cell transfused patient mortality: A retrospective cohort study using a targeted learning and emulated trials-based approach.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Systematically exploring repurposing effects of antihypertensives.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Statistical methods for assessing drug interactions using observational data.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Marginal structural models for multilevel clustered data.</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Marginal structural models using calibrated weights with SuperLearner: application to longitudinal diabetes cohort.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>partly addresses it</td>
+<td>Target trial emulation to assess real-world efficacy in the Epidemiological Strategy and Medical Economics metastatic breast cancer cohort.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Trial emulation with observational data in cystic fibrosis.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Random effects modelling versus logistic regression for the inclusion of cluster-level covariates in propensity score estimation: A Monte Carlo simulation and registry cohort analysis.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Data Imputation for Clinical Trial Emulation: A Case Study on Impact of Intracranial Pressure Monitoring for Traumatic Brain Injury.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Trial Emulation Methods.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Combining high quality data with rigorous methods: emulation of a target trial using electronic health records and a nested case-control design.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Emulating Target Trials With Real-World Data to Inform Health Technology Assessment: Findings and Lessons From an Application to Emergency Surgery.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Evaluation of national institute for health and care excellence guidance for ruptured abdominal aortic aneurysms by emulating a hypothetical target trial.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Start with the Target Trial Protocol, Then Follow the Roadmap for Causal Inference.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>High-throughput target trial emulation for Alzheimer’s disease drug repurposing with real-world data.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Causal inference using observational intensive care unit data: a scoping review and recommendations for future practice.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Reporting of Observational Studies Explicitly Aiming to Emulate Randomized Trials: A Systematic Review.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>What should be done and what should be avoided when comparing two treatments?</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Transparency and Rigor: Target Trial Emulation Aims to Achieve Both.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Marginal structural models with latent class growth analysis of treatment trajectories: Statins for primary prevention among older adults.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Comparative Effectiveness of Dynamic Treatment Strategies for Medication Use and Dosage: Emulating a Target Trial Using Observational Data.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Observational studies of treatment effectiveness in neurology.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Causal inference in survival analysis using longitudinal observational data: Sequential trials and marginal structural models.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Estimating the causal effects of multiple intermittent treatments with application to COVID-19.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Estimation of marginal structural models under irregular visits and unmeasured confounder: calibrated inverse probability weights.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>partly addresses it</td>
+<td>Target Trial Emulation Using Cohort Studies: Estimating the Effect of Antihypertensive Medication Initiation on Incident Dementia.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Effectiveness and risk of ARB and ACEi among different ethnic groups in England: A reference trial (ONTARGET) emulation analysis using UK Clinical Practice Research Datalink Aurum-linked data.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Assessing Wolbachia-mediated sterility for dengue control: emulation of a cluster-randomized target trial in Singapore.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Enhancing inferences and conclusions in body image focused non-experimental research via a causal modelling approach: A tutorial.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Estimating the Effect of Bariatric Surgery on Cardiovascular Events Using Observational Data?</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Emulating Hypothetical Target Trials of the Broad-Spectrum T2 Biologic Dupilumab.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Prospective benchmarking of an observational analysis in the SWEDEHEART registry against the REDUCE-AMI randomized trial.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Comparing PCSK9 Monoclonal Antibody Treatment Strategies Following Myocardial Infarction Using Negative Control Outcomes: A Target Trial Emulation Study</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>De-Mystifying the Clone-Censor-Weight Method for Causal Research Using Observational Data: A Primer for Cancer Researchers</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Addressing treatment switching in the ALTA-1L trial with g-methods: exploring the impact of model specification</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Causal Effects of Stochastic PrEP Interventions on HIV Incidence Among Men Who Have Sex With Men</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Application of the target trial emulation framework to external comparator studies.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Designing observational studies for credible causal inference in addiction research-Directed acyclic graphs, modified disjunctive cause criterion and target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Applying the estimand and target trial frameworks to external control analyses using observational data: a case study in the solid tumor setting.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>External comparator studies and the joint application of the estimand and target trial emulation frameworks.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Going beyond randomised controlled trials to assess treatment effect heterogeneity across target populations.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>The Inflation Reduction Act: An Opportunity to Accelerate Confidence in Real-World Evidence in the United States.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Flexible Approaches Based on Multistate Models and Microsimulation to Perform Real-World Cost-Effectiveness Analyses: An Application to Proprotein Convertase Subtilisin-Kexin Type 9 Inhibitors.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Observational methods for COVID-19 vaccine effectiveness research: an empirical evaluation and target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>An introduction to inverse probability weighting and marginal structural models: The case of environmental tobacco exposure and attention deficit/hyperactivity disorder behaviors.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Change in employment status and its causal effect on suicidal ideation and depressive symptoms: A marginal structural model with machine learning algorithms.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>The performance of marginal structural models for estimating risk differences and relative risks using weighted univariate generalized linear models.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Moving beyond the prevalent exposure design for causal inference in dementia research.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Conducting descriptive epidemiology and causal inference studies using observational data: A 10-point primer for stroke researchers.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>partly addresses it</td>
+<td>Illustrating an Adaptive Prespecification Framework for Observational Research: Target Trial Emulations Comparing Immunomodulator Treatments for COVID-19.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Machine Learning Versus Logistic Regression for Propensity Score Estimation: A Benchmark Trial Emulation Against the PARADIGM-HF Randomized Trial.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Estimating the Effects of Lifestyle Interventions on Mortality Among Cancer Survivors: A Methodologic Framework.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Strengthening inferential studies in the FDA Sentinel initiative: results from a methodological demonstration project.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Transparent reporting of observational studies emulating a target trial: the TARGET Statement.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Trial emulation to assess the effect of surgery on survival when there are competing risks, with application to patients with thoracic aortic aneurysms</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>A flexible Bayesian g-formula for causal survival analyses with time-dependent confounding</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Causal inference from observational data in neurosurgical studies: a mini-review and tutorial.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Federated target trial emulation using distributed observational data for treatment effect estimation.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Letter to the editor regarding ‘Liberal or restrictive transfusion for veno-arterial extracorporeal membrane oxygenation patients: a target trial emulation using the OBLEX study data’.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Site-specific complications of central venous catheterization under systematic ultrasound guidance: a target trial emulation revisiting the 3SITES study.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Type 2 diabetes, sodium-glucose cotransporter-2 inhibitors and cardiovascular outcomes: real world evidence versus a randomised clinical trial.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Impact of Near-Positivity Violations on IPTW-Estimated Marginal Structural Survival Models With Time-Dependent Confounding.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Continuous-Time Causal Inference With Marked Point Process Weights: An Example on Sodium-Glucose Co-Transporters 2 Inhibitor Medications and Urinary Tract Infection.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>A marginal structural model for normal tissue complication probability.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Estimating marginal structural model parameters for time-fixed, binary actions with g-computation and estimating equations.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statistical Methods for Baseline Adjustment and Cohort Analysis in Korean National Health Insurance Claims Data: A Review of PSM, IPTW, and Survival Analysis With Future Directions.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Inference procedures in sequential trial emulation with survival outcomes: Comparing confidence intervals based on the sandwich variance estimator, bootstrap and jackknife.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Research Advance of Causal Inference in Clinical Medicine: A Bibliometrics Analysis via Citespace.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>partly addresses it</td>
+<td>Causal estimands and identification of time-varying effects in nonstationary time series from N-of-1 mobile device studies</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>partly addresses it</td>
+<td>An operational target trial emulation framework for causal inference using electronic health record data.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>partly addresses it</td>
+<td>Target trial emulation: bridging observational studies and randomized trials for health decision-making.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Caution in handling switchers in pharmacoepidemiologic studies estimating treatment effects: the example of dipeptidyl peptidase-4 inhibitors and inflammatory bowel disease.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Methodological Challenges of Emulating a Target Trial to Assess Effectiveness of Timing of PCSK9 Inhibitor Treatment Initiation Post Myocardial Infarction</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>A Path-Specific Effect Approach to Mediation Analysis With Time-Varying Mediators and Time-to-Event Outcomes Accounting for Competing Risks</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Studying When to Add Biological Therapy to Cytotoxic Therapy in Advanced Cancer Care Using Real World Data: How to Avoid Design Choices That Generate Immortal Time.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Exposure definition sensitivity unmasks hidden confounding in crystalloid target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Frameworks and methods for estimating the causal effect of clinical treatment in orthopaedics: a scoping review.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation Without Matching: A More Efficient Approach for Evaluating Vaccine Effectiveness Using Observational Data.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Estimate Time-Varying Exposure Effects via Ensemble Learning-Based Marginal Structural Model With Application to Adolescent Cognitive Development Study.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Estimating conditional survival benefit for the allocation of scarce resources.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Nonparametric Causal Inference for Optogenetics: Sequential Excursion Effects for Dynamic Regimes.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Adaptive Sparsening and Smoothing of the Treatment Model for Longitudinal Causal Inference Using Outcome-Adaptive LASSO and Marginal Fused LASSO.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/GMT-03-large-databases-yield-small-effective-samples-after-eligibil.html">GMT-03 — Large databases yield small effective samples after eligibility, comparator restriction and weighting</a></li>
-<li><a href="../problems/LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.html">LRN-01 — Flexible estimation is presented as a remedy for identification failure</a></li>
-<li><a href="../problems/LRN-04-subgroup-effects-are-estimated-where-overlap-is-worst-and-th.html">LRN-04 — Subgroup effects are estimated where overlap is worst, and the groups with worst overlap are often the protected ones</a></li>
-<li><a href="../problems/UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.html">UCF-02 — Sensitivity analyses vary one violated assumption at a time when several are violated together</a></li>
+<li><a href="../problems/ELG-03-no-procedure-bounds-the-bias-a-comparator-sampling-scheme-in.html">ELG-03: No procedure bounds the bias a comparator sampling scheme introduces before the study is run</a></li>
+<li><a href="../problems/GMT-03-large-databases-yield-small-effective-samples-after-eligibil.html">GMT-03: Large databases yield small effective samples after eligibility, comparator restriction and weighting</a></li>
+<li><a href="../problems/LRN-01-flexible-estimation-is-presented-as-a-remedy-for-identificat.html">LRN-01: Flexible estimation is presented as a remedy for identification failure</a></li>
+<li><a href="../problems/LRN-04-subgroup-effects-are-estimated-where-overlap-is-worst-and-th.html">LRN-04: Subgroup effects are estimated where overlap is worst, and the groups with worst overlap are often the protected ones</a></li>
+<li><a href="../problems/UCF-02-sensitivity-analyses-vary-one-violated-assumption-at-a-time-.html">UCF-02: Sensitivity analyses vary one violated assumption at a time when several are violated together</a></li>
 </ul>
 </div>
 </section>

@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Systems now translate trial descriptions into cohort definitions or analysis code, and natural language processing extracts eligibility information from unstructured notes. The failure mode is not that they crash. It is that validly executing code implements a different estimand: a mistranslated temporal condition, an ambiguous eligibility phrase resolved to the wrong operationalization, a join that reads treatment before eligibility as treatment after it. None of that is visible in the output, which is a working pipeline returning a plausible number, and downstream numerical plausibility does not validate the translation. Semantic fidelity is testable, against independently specified protocols, expert annotations, reference implementations and synthetic patients built so each temporal condition has a case that distinguishes the correct reading from the plausible wrong one. No such regime is required or routine, and the artifact under review remains the number rather than the specification.">
+<meta name="description" content="Systems now translate trial descriptions into cohort definitions or analysis code, and natural language processing extracts eligibility information from unstructured notes. The failure mode of these systems is not that they crash. It is that they silently substitute a different estimand: mistranslating a temporal condition, resolving an ambiguous eligibility phrase to the wrong operationalization, or emitting code that is syntactically valid and causally invalid. None of these failures is visible in the output, which is a working pipeline returning a plausible number. What is missing is a validation regime that treats generated code as an untrusted artifact rather than as a productivity gain.">
 
 <title>Automated protocol translation can change the estimand while producing valid code – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -395,6 +395,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -411,12 +412,16 @@ ul.task-list li input[type="checkbox"] {
     <div class="quarto-category">Machine learning, high-dimensional adjustment &amp; automated emulation</div>
     <div class="quarto-category">High priority</div>
     <div class="quarto-category">Confirmed open</div>
+    <div class="quarto-category">Protocol: Cross-cutting</div>
+    <div class="quarto-category">Protocol: Eligibility</div>
+    <div class="quarto-category">Data: EHR</div>
+    <div class="quarto-category">Data: Claims</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    Systems now translate trial descriptions into cohort definitions or analysis code, and natural language processing extracts eligibility information from unstructured notes. The failure mode is not that they crash. It is that validly executing code implements a different estimand: a mistranslated temporal condition, an ambiguous eligibility phrase resolved to the wrong operationalization, a join that reads treatment before eligibility as treatment after it. None of that is visible in the output, which is a working pipeline returning a plausible number, and downstream numerical plausibility does not validate the translation. Semantic fidelity is testable, against independently specified protocols, expert annotations, reference implementations and synthetic patients built so each temporal condition has a case that distinguishes the correct reading from the plausible wrong one. No such regime is required or routine, and the artifact under review remains the number rather than the specification.
+    Systems now translate trial descriptions into cohort definitions or analysis code, and natural language processing extracts eligibility information from unstructured notes. The failure mode of these systems is not that they crash. It is that they silently substitute a different estimand: mistranslating a temporal condition, resolving an ambiguous eligibility phrase to the wrong operationalization, or emitting code that is syntactically valid and causally invalid. None of these failures is visible in the output, which is a working pipeline returning a plausible number. What is missing is a validation regime that treats generated code as an untrusted artifact rather than as a productivity gain.
   </div>
 </div>
 
@@ -436,13 +441,17 @@ ul.task-list li input[type="checkbox"] {
 <div class="problem-meta">
 <p><span class="problem-id">LRN-02</span> <span class="verdict verdict-confirmed-open">Confirmed open</span> <span class="chip chip-priority-high">High priority</span> <span class="chip chip-maturity-emerging">Emerging</span> <span class="chip">Tractability 4/5</span></p>
 </div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Cross-cutting</span> <span class="chip chip-axis">Eligibility</span><br>
+Seen in: <span class="chip chip-axis">EHR</span> <span class="chip chip-axis">Claims</span></p>
+</div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>Systems now translate trial descriptions into cohort definitions or analysis code, and natural language processing extracts eligibility information from unstructured notes. The failure mode is not that they crash. It is that validly executing code implements a different estimand: a mistranslated temporal condition, an ambiguous eligibility phrase resolved to the wrong operationalization, a join that reads treatment before eligibility as treatment after it. None of that is visible in the output, which is a working pipeline returning a plausible number, and downstream numerical plausibility does not validate the translation. Semantic fidelity is testable, against independently specified protocols, expert annotations, reference implementations and synthetic patients built so each temporal condition has a case that distinguishes the correct reading from the plausible wrong one. No such regime is required or routine, and the artifact under review remains the number rather than the specification.</p>
+<p>Systems now translate trial descriptions into cohort definitions or analysis code, and natural language processing extracts eligibility information from unstructured notes. The failure mode of these systems is not that they crash. It is that they silently substitute a different estimand: mistranslating a temporal condition, resolving an ambiguous eligibility phrase to the wrong operationalization, or emitting code that is syntactically valid and causally invalid. None of these failures is visible in the output, which is a working pipeline returning a plausible number. What is missing is a validation regime that treats generated code as an untrusted artifact rather than as a productivity gain.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>Temporal logic is where these systems fail and where testing is hardest: the difference between treatment before eligibility assessment and treatment after it is one word in the specification and one join condition in the code, and both execute. A gold-standard cohort for a real dataset is often unavailable, which removes the most direct test and leaves the indirect ones, each of which costs the effort the automation was adopted to save. The systems are also spreading faster than any validation convention, now reaching concept-set authoring as well as protocol translation.</p>
+<p>Temporal logic is where these systems fail and where testing is hardest: the difference between treatment before eligibility assessment and treatment after it is one word in the specification and one join condition in the code, and both readings execute. There is no reference answer to test against, because the correct cohort is precisely what the pipeline was built to produce. Evaluating on downstream effect estimates is circular, since a wrong cohort with a plausible effect passes.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -469,15 +478,14 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Treat automation as a constrained compiler: a human-authored causal specification, a typed intermediate representation, and data-source-specific code generated from it, with temporal-logic validation applied to the intermediate representation rather than to the output. Require unit tests over synthetic patients constructed so that each temporal condition has a case distinguishing the correct reading from the plausible wrong one, and test semantic fidelity against independently specified protocols and reference implementations where they exist. Require dual human sign-off on the specification and the generated cohort counts, and publish both, so what is reviewed is the specification and not the estimate.</p>
+<p>Treat automation as a constrained compiler with three stages: a human-authored causal specification, a typed intermediate representation, and data-source-specific code generated from it. Require unit tests over synthetic test patients constructed so that each temporal condition has a patient that distinguishes the correct reading from the plausible wrong one, plus temporal-logic validation of the intermediate representation. Require dual human sign-off on the specification and on the generated cohort counts, and publish both, so the artifact under review is the specification rather than the number.</p>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
-<p><strong>Verdict.</strong> Confirmed open. Auditors agreed the problem is open and no counterevidence surfaced.</p>
-<p><strong>The source said.</strong> “Systems now translate trial descriptions into cohort definitions or analysis code, and natural language processing extracts eligibility information from unstructured notes. The failure mode of these systems is not that they crash. It is that they silently substitute a different estimand: mistranslating a temporal condition, resolving an ambiguous eligibility phrase to the wrong operationalization, or emitting code that is syntactically valid and causally invalid. None of these failures is visible in the output, which is a working pipeline returning a plausible number. What is missing is a validation regime that treats generated code as an untrusted artifact rather than as a productivity gain.”</p>
-<p><strong>What was wrong with it.</strong> The entry argued that validation is impossible because the correct cohort is what the pipeline was built to produce. That is too strong: semantic fidelity can be tested against independently specified protocols, expert annotations, reference implementations and synthetic temporal boundary cases even when a gold-standard cohort for the real dataset is unavailable.</p>
-<p><strong>Dissent.</strong> literature dissented (supported): Automated translation from study design to executable emulation code exists, and agentic authoring of OMOP concept sets from natural language is now being attempted, so the systems the entry describes are real and multiplying. Nothing in the corpus supplies the validation regime the entry asks for: no typed intermediate representation, no temporal-logic validation, no synthetic test patients constructed to distinguish the correct reading of a temporal condition from the plausible wrong one, and no dual sign-off requirement. The gap between capability and validation is the claim, and the corpus shows only the capability half.</p>
+<p><strong>Verdict.</strong> Confirmed open. Auditors found the problem open. At least one qualified how it is stated; the qualification and who made it are in the trail below.</p>
+<p><strong>Dissent.</strong> literature dissented (supported): Automated translation from study design to executable emulation code exists, and agentic authoring of OMOP concept sets from natural language is now being attempted, so the systems the entry describes are real and multiplying. […]</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -491,7 +499,7 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>open / supported.</strong> Kim et al.&nbsp;(JAMIA Open 2026; THESEUS) and Wang et al.&nbsp;(npj Digit Med 2026) build or specify automated protocol-to-code and operational EHR mappings; they are the systems whose silent estimand-shift risk the problem names, not fixes of that risk. Lee et al.&nbsp;(JMIR Med Inform 2025) validate LLM-generated trial-criteria queries for functional correctness, which is partial operational testing but not temporal-logic unit tests that distinguish treatment-before versus treatment-after eligibility. Girshovitz, Zeltzer, and Gilad-Bachrach (arXiv:2607.21173, 2026) propose ARA: structured protocol intermediate form, SCM synthetic failure scenarios, and adversarial validation so that silent success is replaced by visible protocol or diagnostic failure. That is closely aligned with the report direction, yet it is a proposal with a small econometric-style benchmark; it does not establish a standard validation regime for TTE automation, dual human sign-off on specification and cohort counts, or synthetic patients that isolate each temporal join. Guidance (TARGET 2025 reporting; FDA/EMA RWE documents) addresses transparency of human-designed emulations, not untrusted machine-generated code. No CRAN or GitHub merge was found that ships a constrained TTE compiler with temporal unit tests. Silent estimand substitution under syntactically valid pipelines remains open.
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The claim is internally consistent and correctly identifies the silent estimand substitution as a structural risk in automated translation. The reasons given for it being open (lack of reference answers, circularity of downstream evaluation) strongly support the claim. The scope is appropriate and the severity is proportionate to the cost of a wrong estimand.
 </dd>
@@ -502,12 +510,44 @@ ul.task-list li input[type="checkbox"] {
 </dl>
 </div>
 </section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>2 papers in the reviewed corpus bear on this problem, published 2026. Every paper found here asserts the problem is open; none reports progress.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Agentic Authoring of OMOP Concept Sets from Natural Language.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>From study design to executable code: automating target trial emulation with large language models.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/ELG-01-an-unrecorded-eligibility-criterion-is-indistinguishable-fro.html">ELG-01 — An unrecorded eligibility criterion is indistinguishable from a criterion that was met</a></li>
-<li><a href="../problems/SFW-03-code-phenotype-logic-weight-diagnostics-and-rejected-protoco.html">SFW-03 — Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations</a></li>
+<li><a href="../problems/ELG-01-an-unrecorded-eligibility-criterion-is-indistinguishable-fro.html">ELG-01: An unrecorded eligibility criterion is indistinguishable from a criterion that was met</a></li>
+<li><a href="../problems/SFW-03-code-phenotype-logic-weight-diagnostics-and-rejected-protoco.html">SFW-03: Code, phenotype logic, weight diagnostics and rejected protocol versions are not available for emulations</a></li>
 </ul>
 </div>
 </section>

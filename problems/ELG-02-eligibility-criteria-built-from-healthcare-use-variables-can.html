@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="An eligibility criterion is a conditioning statement, and conditioning on a variable that is a collider, or a relevant descendant of one, in the graph relating determinants of treatment and outcome opens a noncausal path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables: a required prior visit, a recorded baseline laboratory value, a minimum enrollment period. Being a healthcare-use variable is not sufficient for the bias, and these variables are the ones most likely to sit at the junction, because pre-baseline treatment decisions, incipient disease and the common causes of care-seeking and outcome all feed them. Nothing in the current workflow checks an eligibility definition for that structure before the analysis runs, and the reporting checklist asks what the criteria were rather than what conditioning on them does.">
+<meta name="description" content="An eligibility criterion is a conditioning statement, and conditioning on a variable that is a common effect of treatment and outcome opens a path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables such as a required prior visit, a recorded baseline laboratory value or a minimum enrollment period, all of which can be descendants of the treatment decision or of early disease. Nothing in the current workflow checks an eligibility definition for this property, and the reporting checklist asks what the criteria were rather than what conditioning on them does.">
 
 <title>Eligibility criteria built from healthcare-use variables can induce selection through colliders – Open Problems in Target Trial Emulation</title>
 <style>
@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-ea0713af19bdf5f6adc2ec466a14144b.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-3929247d43a275c44ef0022ded45a8ce.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -394,7 +394,9 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#why-it-is-open" id="toc-why-it-is-open" class="nav-link" data-scroll-target="#why-it-is-open">Why it is open</a></li>
   <li><a href="#what-has-been-tried" id="toc-what-has-been-tried" class="nav-link" data-scroll-target="#what-has-been-tried">What has been tried</a></li>
   <li><a href="#probable-solution-or-research-direction" id="toc-probable-solution-or-research-direction" class="nav-link" data-scroll-target="#probable-solution-or-research-direction">Probable solution or research direction</a></li>
+  <li><a href="#our-study" id="toc-our-study" class="nav-link" data-scroll-target="#our-study">Our study</a></li>
   <li><a href="#verification" id="toc-verification" class="nav-link" data-scroll-target="#verification">Verification</a></li>
+  <li><a href="#how-the-evidence-falls-in-time" id="toc-how-the-evidence-falls-in-time" class="nav-link" data-scroll-target="#how-the-evidence-falls-in-time">How the evidence falls in time</a></li>
   <li><a href="#related-problems" id="toc-related-problems" class="nav-link" data-scroll-target="#related-problems">Related problems</a></li>
   <li><a href="#source" id="toc-source" class="nav-link" data-scroll-target="#source">Source</a></li>
   </ul>
@@ -411,12 +413,16 @@ ul.task-list li input[type="checkbox"] {
     <div class="quarto-category">Eligibility, cohort entry &amp; the new-user question</div>
     <div class="quarto-category">Medium-high priority</div>
     <div class="quarto-category">Confirmed open</div>
+    <div class="quarto-category">Protocol: Eligibility</div>
+    <div class="quarto-category">Data: EHR</div>
+    <div class="quarto-category">Data: Claims</div>
+    <div class="quarto-category">Data: Linked records</div>
   </div>
   </div>
 
 <div>
   <div class="description">
-    An eligibility criterion is a conditioning statement, and conditioning on a variable that is a collider, or a relevant descendant of one, in the graph relating determinants of treatment and outcome opens a noncausal path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables: a required prior visit, a recorded baseline laboratory value, a minimum enrollment period. Being a healthcare-use variable is not sufficient for the bias, and these variables are the ones most likely to sit at the junction, because pre-baseline treatment decisions, incipient disease and the common causes of care-seeking and outcome all feed them. Nothing in the current workflow checks an eligibility definition for that structure before the analysis runs, and the reporting checklist asks what the criteria were rather than what conditioning on them does.
+    An eligibility criterion is a conditioning statement, and conditioning on a variable that is a common effect of treatment and outcome opens a path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables such as a required prior visit, a recorded baseline laboratory value or a minimum enrollment period, all of which can be descendants of the treatment decision or of early disease. Nothing in the current workflow checks an eligibility definition for this property, and the reporting checklist asks what the criteria were rather than what conditioning on them does.
   </div>
 </div>
 
@@ -436,13 +442,17 @@ ul.task-list li input[type="checkbox"] {
 <div class="problem-meta">
 <p><span class="problem-id">ELG-02</span> <span class="verdict verdict-confirmed-open">Confirmed open</span> <span class="chip chip-priority-medium-high">Medium-high priority</span> <span class="chip chip-maturity-speculative">Speculative</span> <span class="chip">Tractability 3/5</span></p>
 </div>
+<div class="problem-axes">
+<p>Bites on: <span class="chip chip-axis">Eligibility</span><br>
+Seen in: <span class="chip chip-axis">EHR</span> <span class="chip chip-axis">Claims</span> <span class="chip chip-axis">Linked records</span></p>
+</div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
-<p>An eligibility criterion is a conditioning statement, and conditioning on a variable that is a collider, or a relevant descendant of one, in the graph relating determinants of treatment and outcome opens a noncausal path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables: a required prior visit, a recorded baseline laboratory value, a minimum enrollment period. Being a healthcare-use variable is not sufficient for the bias, and these variables are the ones most likely to sit at the junction, because pre-baseline treatment decisions, incipient disease and the common causes of care-seeking and outcome all feed them. Nothing in the current workflow checks an eligibility definition for that structure before the analysis runs, and the reporting checklist asks what the criteria were rather than what conditioning on them does.</p>
+<p>An eligibility criterion is a conditioning statement, and conditioning on a variable that is a common effect of treatment and outcome opens a path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables such as a required prior visit, a recorded baseline laboratory value or a minimum enrollment period, all of which can be descendants of the treatment decision or of early disease. Nothing in the current workflow checks an eligibility definition for this property, and the reporting checklist asks what the criteria were rather than what conditioning on them does.</p>
 </section>
 <section id="why-it-is-open" class="level2">
 <h2 class="anchored" data-anchor-id="why-it-is-open">Why it is open</h2>
-<p>Whether a criterion is a collider depends on the causal structure, which is what the study is trying to learn, so the check cannot be purely empirical. Observational data alone cannot certify the required structure: graph-learning algorithms recover a Markov equivalence class at best and are further limited by latent confounding, so they can flag candidates and never license removal. Removing a criterion also changes the target population, so the correction carries a cost that has to be argued clinically rather than statistically, and domain-grounded causal review therefore remains necessary rather than replaceable.</p>
+<p>Whether a criterion is a collider depends on the causal structure, which is what the study is trying to learn, so the check cannot be purely empirical. Graph-learning algorithms recover only a Markov equivalence class and are further limited by latent confounding, so they can flag candidates and cannot certify. Removing a criterion also changes the target population, which means the correction has a cost that must be argued clinically rather than statistically.</p>
 </section>
 <section id="what-has-been-tried" class="level2">
 <h2 class="anchored" data-anchor-id="what-has-been-tried">What has been tried</h2>
@@ -469,14 +479,29 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="probable-solution-or-research-direction" class="level2">
 <h2 class="anchored" data-anchor-id="probable-solution-or-research-direction">Probable solution or research direction</h2>
-<p>Build a causal-discovery eligibility auditor that combines temporal checks with graph learning under explicit assumptions, flagging criteria that are post-baseline, that are colliders, or that encode healthcare use, and treat its output as advisory input to a domain review rather than as an automatic exclusion. Evaluate it on generated graphs with known structure, scoring collider-warning sensitivity, false-positive rate, expert agreement and, decisively, whether acting on the warnings reduces bias. Never let an algorithm define eligibility by maximizing the apparent treatment effect, which is a search over estimands dressed as a design step.</p>
+<p>Build a causal-discovery eligibility auditor that uses graph learning and temporal rules to flag proposed criteria that are post-treatment, that are colliders, or that encode healthcare use, and treat its output as advisory input to a domain review rather than as an automatic exclusion. Evaluate it on generated graphs with known structure, scoring collider-warning sensitivity, false-positive rate, expert agreement and, most importantly, whether acting on the warnings reduces bias. Never allow an algorithm to define eligibility by maximizing the apparent treatment effect, since that is a search over estimands dressed as a design step.</p>
+</section>
+<section id="our-study" class="level2">
+<h2 class="anchored" data-anchor-id="our-study">Our study</h2>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A study is designed
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Question.</strong> Across 18 unique generated distributions and two analyst-information views, how large are bias and coverage distortions from conditioning on a prior healthcare-use variable under prespecified noncollider and collider DAGs; how much of the restricted-versus-broad contrast is target-population change; and does a complete, prespecified screen-and-response policy improve estimation of the restricted-population 60-month marginal risk difference relative to screen-free alternatives? This study answers only the conditional mechanism and policy-performance part of ELG-02. It does not determine whether an unknown real-world eligibility criterion is a collider.</p>
+</div>
+</div>
 </section>
 <section id="verification" class="level2">
 <h2 class="anchored" data-anchor-id="verification">Verification</h2>
 <div class="verification-trail">
-<p><strong>Verdict.</strong> Confirmed open. Auditors agreed the problem is open and no counterevidence surfaced.</p>
-<p><strong>The source said.</strong> “An eligibility criterion is a conditioning statement, and conditioning on a variable that is a common effect of treatment and outcome opens a path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables such as a required prior visit, a recorded baseline laboratory value or a minimum enrollment period, all of which can be descendants of the treatment decision or of early disease. Nothing in the current workflow checks an eligibility definition for this property, and the reporting checklist asks what the criteria were rather than what conditioning on them does.”</p>
-<p><strong>What was wrong with it.</strong> The timing in the original was wrong. Eligibility is fixed before the time-zero treatment, so it cannot be a descendant of the treatment under study. The mechanism that does operate runs through pre-baseline treatment decisions, incipient disease and common causes of care-seeking and outcome, and it produces selection bias when the criterion is a collider or a descendant of one in the assumed graph. Being a healthcare-use variable is not by itself sufficient.</p>
+<p><strong>Verdict.</strong> Confirmed open. Auditors found the problem open. At least one qualified how it is stated; the qualification and who made it are in the trail below.</p>
+<p>4 of the 4 independent auditors returned an opinion on this entry.</p>
 <dl>
 <dt>Literature and prior-art check</dt>
 <dd>
@@ -490,7 +515,7 @@ ul.task-list li input[type="checkbox"] {
 <dd>
 <strong>open / supported.</strong> Inverted prior: treat collider-inducing eligibility as already audited in routine TTE workflows, then search for a method or tool that does so. Found conceptual and design literature, not a solution. Hernán and Robins (2016) already require that eligibility not use postbaseline events; that is design discipline, not an automated check of whether a healthcare-use criterion is a collider. Weiskopf et al.&nbsp;(2023, JAMIA) explicitly frame healthcare utilization as a common collider in EHR reuse and warn that conditioning on utilization (by selection or adjustment) opens non-causal paths; Digitale et al.&nbsp;(2023, J Clin Epidemiol) likewise describe collider-conditioning bias when restricting to people in care or with a disease history. Wang et al.&nbsp;(2026) restate that conditioning eligibility on utilization induces collider bias at cohort entry. These works strengthen that the mechanism is real; they do not supply a certified check. TARGET (Hansford et al., 2025) requires reporting of eligibility criteria and their emulation, not assessment of the selection graph those criteria induce; the entry’s reading of TARGET is accurate. Practical reviews (e.g., Tran et al., 2026) continue to document post-treatment eligibility as a frequent high-risk design error, which is evidence the gap is still live in applications. No retrieved paper or package implements a causal-discovery or temporal-rule eligibility auditor for proposed TTE criteria with evaluation on known graphs (sensitivity, false-positive rate, expert agreement, bias reduction when acting on warnings). Federated causal discovery and general DAG tools exist in adjacent literature but are not integrated into TTE protocol design or reporting checklists. Graph learning recovering only a Markov equivalence class under latent confounding remains a structural limit, as the entry states; formalizations of that limit do not close the problem. Queries run: collider + eligibility + target trial (2024–2026); healthcare utilization collider + eligibility; TARGET checklist collider/selection; causal discovery eligibility auditor TTE; CRAN/GitHub TrialEmulation, WeightIt, MatchIt, cobalt for eligibility-collider features (none found). Open as a workflow and tooling problem; prior art names the bias and forbids postbaseline criteria but does not solve systematic detection of healthcare-use colliders in eligibility definitions.
 </dd>
-<dt>glm</dt>
+<dt>GLM-5.2, third independent lens</dt>
 <dd>
 <strong>open / supported.</strong> The claim is coherent and proportionate. It accurately describes how conditioning on healthcare-use variables for eligibility can induce collider bias. The reasons given for the problem being open are structurally sound: the causal structure is the target of inference, graph-learning algorithms can only flag candidates and cannot certify due to latent confounding, and removing a criterion changes the estimand. This is a claim about a real structural difficulty and current practice limitations, not an overstatement of impossibility.
 </dd>
@@ -501,12 +526,306 @@ ul.task-list li input[type="checkbox"] {
 </dl>
 </div>
 </section>
+<section id="how-the-evidence-falls-in-time" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-evidence-falls-in-time">How the evidence falls in time</h2>
+<p>54 papers in the reviewed corpus bear on this problem, published 2011 to 2026. Every paper found here asserts the problem is open; none reports progress.</p>
+<p>This problem is <strong>recurrent</strong>: three or more papers spanning at least eight years assert it independently. Sustained restatement by authors who mostly do not cite each other is the strongest evidence this reading can offer that a gap is real rather than one group’s framing.</p>
+<div class="table-scroll">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Year</th>
+<th>Says</th>
+<th>Paper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2011</td>
+<td>confirms it is open</td>
+<td>Quantification of the healthy worker effect: a nationwide cohort study among electricians in Denmark.</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>confirms it is open</td>
+<td>Metformin and the risk of cancer: time-related biases in observational studies.</td>
+</tr>
+<tr class="odd">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Using Big Data to Emulate a Target Trial When a Randomized Trial Is Not Available.</td>
+</tr>
+<tr class="even">
+<td>2016</td>
+<td>confirms it is open</td>
+<td>Risk of Preterm or Small-for-Gestational-Age Birth After Influenza Vaccination During Pregnancy: Caveats When Conducting Retrospective Observational Studies.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Framework for identifying drug repurposing candidates from observational healthcare data.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Improving rheumatoid arthritis comparative effectiveness research through causal inference principles: systematic review using a target trial emulation framework.</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>Marginal structural models for repeated measures where intercept and slope are correlated: An application exploring the benefit of nutritional supplements on weight gain in HIV-infected children initiating antiretroviral therapy.</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>confirms it is open</td>
+<td>The Impact of Delayed Switch to Second-Line Antiretroviral Therapy on Mortality, Depending on Definition of Failure Time and CD4 Count at Failure.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Can Machine Learning from Real-World Data Support Drug Treatment Decisions? A Prediction Modeling Case for Direct Oral Anticoagulants.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Statins as Potential Chemoprevention or Therapeutic Agents in Cancer: a Model for Evaluating Repurposed Drugs.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Immortal Time-Bias-Corrected Survival of Highly Sensitized Patients and HLA-desensitized Kidney Transplant Recipients.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Educational note: addressing special cases of bias that frequently occur in perinatal epidemiology.</td>
+</tr>
+<tr class="odd">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>The Need for a Practical Approach to Evaluate the Effectiveness of COVID-19 Vaccines for Low- and Middle-Income Countries.</td>
+</tr>
+<tr class="even">
+<td>2021</td>
+<td>confirms it is open</td>
+<td>Comparing New-User Cohort Designs: The Example of Proton Pump Inhibitor Effectiveness in Idiopathic Pulmonary Fibrosis.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>When emulating a trial, do as the trialists do: Missteps in estimating relative effectiveness of a SARS-CoV-2 vaccine booster dose</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Trial emulation and survival analysis for disease incidence registers: A case study on the causal effect of pre-emptive kidney transplantation.</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Emulating the MERINO randomised control trial using data from an observational cohort and trial of rapid diagnostic (BSI-FOO).</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>confirms it is open</td>
+<td>Comparison of a Target Trial Emulation Framework vs Cox Regression to Estimate the Association of Corticosteroids With COVID-19 Mortality.</td>
+</tr>
+<tr class="odd">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Comparison of the Test-negative Design and Cohort Design With Explicit Target Trial Emulation for Evaluating COVID-19 Vaccine Effectiveness.</td>
+</tr>
+<tr class="even">
+<td>2023</td>
+<td>confirms it is open</td>
+<td>Observational studies of treatment effectiveness in neurology.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Timing of follow-up visits after hospital discharge for COPD: Application of a new method.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Core Concepts in Pharmacoepidemiology: New-User Designs.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Estimating the Effect of Bariatric Surgery on Cardiovascular Events Using Observational Data?</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Representation of Real-World Adults With Chronic Kidney Disease in Clinical Trials Supporting Blood Pressure Treatment Targets.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Making causal inferences from transactional data: A narrative review of opportunities and challenges when implementing the target trial framework.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Emulating target trials of postexposure vaccines using observational data.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>A Common Longitudinal Intensive Care Unit data Format (CLIF) to enable multi-institutional federated critical illness research.</td>
+</tr>
+<tr class="even">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation for Evaluating Health Policy.</td>
+</tr>
+<tr class="odd">
+<td>2024</td>
+<td>confirms it is open</td>
+<td>Observational methods for COVID-19 vaccine effectiveness research: an empirical evaluation and target trial emulation.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Beyond Accuracy: Methodological Advances for Assessing the Clinical Impact of Infectious Disease Diagnostics.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Methods and reporting of studies assessing the impact of adherence to clinical practice guidelines: a scoping review.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Causal inference in multi-cohort studies using the target trial framework to identify and minimize sources of bias.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>On the current and future potential of simulations based on directed acyclic graphs.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Addressing Selection and Confounding Biases in Dental Claims Data: A Causal Inference Perspective</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Immortal Time Bias in Cohort Studies: A Concept Simply Explained.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Requiring continuous enrollment during follow-up? A call for robust research methods.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Effects of azithromycin in young adults with cystic fibrosis: a protocol for emulating a published randomised controlled trial using registry data.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Bringing credibility to observational research in critical care: the case of target trial emulation designs.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Comparative Effectiveness Research Using Randomized Trials and Observational Studies: Validity and Feasibility Considerations.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Comment on “Associations of semaglutide with first-time diagnosis of Alzheimer’s disease in patients with type 2 diabetes: Target trial emulation using nationwide real-world data in the US”.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>A Post-Authorisation Safety Study of a Respiratory Syncytial Virus Vaccine in Pregnant Women and Their Offspring in a Real-World Setting: Generic Protocol for a Target Trial Emulation.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Comparative effectiveness of extended-release naltrexone versus buprenorphine-naloxone on treatment interruption: Comparing findings from a reanalysis of the X:BOT RCT and harmonized target trial emulation using population-based observational data.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Cancer publications using real-world data from the Taiwan National Health Insurance Research Database: Conceptual framework and bibliometric analysis.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Investigating Primary Care Indications to Improve the Quality of Electronic Health Record Data in Target Trial Emulation for Dementia.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Generating real-world evidence in early Alzheimer’s disease: Considerations for applying the target trial emulation framework to study the safety of anti-amyloid therapies.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Need for Real-World Evaluation of Malaria Vaccines and Reliable Vaccination Records in Africa.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Letter to the editor regarding ‘Liberal or restrictive transfusion for veno-arterial extracorporeal membrane oxygenation patients: a target trial emulation using the OBLEX study data’.</td>
+</tr>
+<tr class="even">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Target trial emulation: harnessing real-world data to evaluate surgery and perioperative care interventions.</td>
+</tr>
+<tr class="odd">
+<td>2025</td>
+<td>confirms it is open</td>
+<td>Statistical Methods for Baseline Adjustment and Cohort Analysis in Korean National Health Insurance Claims Data: A Review of PSM, IPTW, and Survival Analysis With Future Directions.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>From “negative” trial to positive clinical impact: mitigating eligibility criteria-induced temporal selection bias in emulated clinical trials.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Applying a hypothetical strategy to the intercurrent event of non-adherence with the parametric g-formula: a post hoc secondary analysis of the MET-PREVENT trial</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Harnessing Administrative Data for Real-World Evidence in Psoriatic Disease: Opportunities, Challenges, and Methodological Considerations.</td>
+</tr>
+<tr class="odd">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>R WE ready for reimbursement? A round-up of developments in real-world evidence relating to health technology assessment: part 25.</td>
+</tr>
+<tr class="even">
+<td>2026</td>
+<td>confirms it is open</td>
+<td>Target Trial Emulation to Incorporate Real-World Data in the Estimation of the Clinical and Cost-Effectiveness of Biologic Treatment.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
 <section id="related-problems" class="level2">
 <h2 class="anchored" data-anchor-id="related-problems">Related problems</h2>
 <div class="related-links">
 <ul>
-<li><a href="../problems/ELG-01-an-unrecorded-eligibility-criterion-is-indistinguishable-fro.html">ELG-01 — An unrecorded eligibility criterion is indistinguishable from a criterion that was met</a></li>
-<li><a href="../problems/PRO-04-an-unobservable-protocol-component-produces-a-different-data.html">PRO-04 — An unobservable protocol component produces a different, data-defined estimand rather than a noisy version of the intended one</a></li>
+<li><a href="../problems/ELG-01-an-unrecorded-eligibility-criterion-is-indistinguishable-fro.html">ELG-01: An unrecorded eligibility criterion is indistinguishable from a criterion that was met</a></li>
+<li><a href="../problems/ELG-03-no-procedure-bounds-the-bias-a-comparator-sampling-scheme-in.html">ELG-03: No procedure bounds the bias a comparator sampling scheme introduces before the study is run</a></li>
+<li><a href="../problems/PRO-04-an-unobservable-protocol-component-produces-a-different-data.html">PRO-04: An unobservable protocol component produces a different, data-defined estimand rather than a noisy version of the intended one</a></li>
 </ul>
 </div>
 </section>
