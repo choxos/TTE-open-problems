@@ -1,5 +1,9 @@
 # PRO-02 ran cleanly and cannot be classified
 
+> **Resolved 2026-09-23.** The replication registered in `REPLICATION-PROTOCOL.md` ran from a new seed,
+> passed its calibration gate on all 360 evaluations, and reached the registered branch "not materially
+> real". This file records why the first run could not be classified.
+
 The study is complete. 36 scenarios, 1,728,000 rows, zero replicate errors,
 truth enumerated to a maximum Monte Carlo standard error of 0.0000166. Two
 rounds of results review. It does not go on the site as an answer to PRO-02,
