@@ -145,6 +145,14 @@ gate. Keep writing those, and when one fires, believe it before believing the st
   `pmin(hi, pmax(lo, x))` returns a clipped matrix as a bare vector. LRN-01's `clip`
   was written that way and every cross-fit and sandwich then failed on `apply` or
   `colMeans`; its first 100-replicate scenario estimated nothing. Put `x` first.
+- **`rep(x, n)` written for a scalar recycles a vector silently.** OUT-01's
+  `rep(treatment, nrow(x))` was meant for a counterfactual 0 or 1; given the
+  observed treatment it produced n² values and every replicate became a
+  16-million-row data frame. Assert the length you expect.
+- **An iteration that stops at a cap has not converged.** TZO-01's population
+  model counted as valid if its coefficients were finite; it had diverged to 1e11
+  and the truth built on it was off by 0.3. Validity must require the stopping
+  criterion to have been met.
 
 ## Available auditors
 
