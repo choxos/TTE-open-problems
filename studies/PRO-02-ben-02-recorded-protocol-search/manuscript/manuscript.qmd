@@ -1,0 +1,253 @@
+---
+title: "Naive intervals after a recorded, effect-blind search over emulated protocols"
+subtitle: "A simulation study answering the recorded-search component of catalog problem PRO-02"
+author: "Ahmad Sofi-Mahmudi"
+date: 2026-09-23
+bibliography: references.bib
+csl: ../../../vancouver.csl
+link-citations: true
+number-sections: true
+execute:
+  echo: false
+  warning: false
+  message: false
+format:
+  gfm:
+    toc: false
+  pdf:
+    documentclass: article
+    geometry: margin=1in
+    fig-pos: "H"
+  odt: default
+---
+
+```{r setup}
+R <- "../results/replication"
+f <- function(x, d = 3) formatC(x, format = "f", digits = d)
+gd <- read.csv(file.path(R, "global-deficits.csv"))
+cal <- read.csv(file.path(R, "calibration.csv"))
+perf <- read.csv(file.path(R, "performance.csv"))
+rem <- read.csv(file.path(R, "remedy-performance.csv"))
+els <- read.csv(file.path(R, "effective-library-size.csv"))
+mvr <- read.csv(file.path(R, "multiverse-risk.csv"))
+auc <- read.csv(file.path(R, "multiverse-auc.csv"))
+wid <- read.csv(file.path(R, "width-comparisons.csv"))
+first <- read.csv("../results/global-deficits.csv")
+first_cal <- read.csv("../results/calibration.csv")
+g <- function(e, col) gd[[col]][gd$estimand == e]
+nv <- perf[perf$method == "naive", ]
+blind <- nv[nv$selector %in% c("workability", "prognostic_high", "prognostic_low", "outcome_blinded"), ]
+seek <- nv[nv$selector == "effect_seeking", ]
+cov_by <- aggregate(coverage ~ selector, nv, mean)
+rk <- function(cat) range(mvr$noncoverage_risk[mvr$category == cat])
+rm <- function(p, col) rem[[col]][rem$policy == p]
+```
+
+# Abstract {.unnumbered}
+
+**Background.** Emulation protocols are often revised after investigators see
+the data, and the reported interval ignores that search. Catalog entry PRO-02
+states that this invalidates coverage. We measured how much coverage a naive
+interval loses when the search is recorded and the selector never sees the
+treatment effect.
+
+**Methods.** Thirty-six generated-data cells crossed cohort size, expected event
+count, library size (4 or 16 candidate protocols over age thresholds and outcome
+horizons) and treatment effect, with 2,000 replicates each. Effect-blind
+selectors chose a protocol by arm sizes and pooled events, by prognostic
+associations, or by covariate balance; an effect-seeking selector was the
+positive control. Estimands were the global coverage deficits D_all and
+D_nonboundary against a registered materiality threshold of 0.02. This is a
+registered replication: the first run failed its calibration gate by chance.
+
+**Results.** All 360 fixed-candidate evaluations passed the calibration gate.
+D_all was `r f(g("D_all", "deficit"), 4)` (simultaneous 95% interval
+`r f(g("D_all", "lower"), 4)` to `r f(g("D_all", "upper"), 4)`) and
+D_nonboundary `r f(g("D_nonboundary", "deficit"), 4)`
+(`r f(g("D_nonboundary", "lower"), 4)` to `r f(g("D_nonboundary", "upper"), 4)`).
+The effective library size was at most `r f(max(els$effective_library_size), 2)`.
+Noncoverage rose to `r f(max(rk("above_2")))` when candidate estimates spanned
+more than two standard errors. The effect-seeking control lowered coverage to
+`r f(min(seek$coverage))` in the worst cell.
+
+**Conclusions.** In this design a recorded, effect-blind search costs naive
+intervals almost nothing on average, because the candidates barely differ. When
+they do differ, the selected interval undercovers.
+
+# Introduction
+
+Target trial emulations specify eligibility, treatment strategies, follow-up and
+outcomes before analysis, and reporting guidance asks that the specification and
+its revisions be recorded [@cashin2025target]. In practice thresholds and
+horizons are revised after inspecting the data. Even a selector that never sees
+the effect estimate can use outcome frequency or covariate-outcome associations,
+and those are correlated with the estimate. The interval reported for the chosen
+protocol conditions on a choice that was itself data dependent.
+
+PRO-02 treats this as a coverage problem. This study measures its size for the
+part that can be simulated: a finite, recorded search whose selector is blind to
+the treatment effect. Undocumented, sequential development by an analyst who has
+seen results is outside its scope.
+
+# Methods
+
+The study follows the ADEMP structure [@morris2019simulation]. The design was
+reviewed and revised before any code was written.
+
+## Data-generating mechanism
+
+Age is 55 + 10Z with Z a standard normal truncated at ±2; S and C are binary
+covariates and B continuous. Baseline initiation depends on Z, S, C and B, and
+time to event follows a constant-hazard model with the same covariates. The
+treatment effect is null, a hazard ratio of 0.75, or a hazard ratio
+exp(−0.288 + 0.25Z) that changes with age, so candidate protocols with different
+age thresholds target different effects. The baseline hazard was solved, before
+the study and from event counts only, so that the anchor protocol (age at least
+55, 36 months) has 35, 70 or 140 expected pooled events. There is no loss to
+follow-up. The four-candidate library crosses age thresholds of 50 and 55 with
+horizons of 36 and 60 months; the sixteen-candidate library crosses thresholds
+of 45 to 60 with horizons of 24 to 60 months.
+
+## Estimands and selectors
+
+For each candidate the estimand is the risk difference at its horizon among
+people meeting its age threshold. Each protocol's effect was estimated by Hajek
+inverse probability weighting with a correctly specified propensity model and a
+Wald interval. Selectors: a workability rule (the first candidate with at least
+100 per arm and 70 pooled events); two prognostic-association rules, whose fixed
+score tracks the outcome more or less closely; an outcome-blinded rule that
+picks the eligibility threshold with the best covariate balance; and, as a
+positive control, the candidate with the most beneficial standardized estimate.
+Two remedies were evaluated: Bonferroni over the declared library and a
+fifty-fifty split between a design half that selects and an analysis half that
+estimates.
+
+## Decision rule
+
+A calibration gate comes first: every declared candidate in every cell must
+have fixed-candidate coverage compatible with [0.93, 0.97], judged by a Wilson
+interval at familywise confidence 1 − 0.05/360, and failure probability
+compatible with at most 0.05. If it passes, the problem is materially real if
+both simultaneous 95% lower limits of D_all and D_nonboundary exceed 0.02, not
+materially real if both upper limits are below 0.02, and mixed otherwise.
+
+## Why this is a replication
+
+The first run used the same design with a gate that required all 360 coverage
+estimates to lie inside [0.93, 0.97]. One came in at
+`r f(min(first_cal$coverage), 4)`, 0.26 Monte Carlo standard errors outside, and
+the registered classification was held at uninformative. A gate applied without
+allowance for Monte Carlo error to 360 estimates fails almost surely even when
+every candidate is calibrated. The replication protocol, committed before any
+of its replicates were drawn, changed only the seed and the gate. The first
+run's deficits, `r f(first$deficit[first$estimand == "D_all"], 4)` and
+`r f(first$deficit[first$estimand == "D_nonboundary"], 4)`, were also far below
+the threshold.
+
+# Results
+
+## Calibration and the primary comparison
+
+All `r nrow(cal)` fixed-candidate evaluations passed the gate; fixed-candidate
+coverage ran from `r f(min(cal$coverage), 4)` to `r f(max(cal$coverage), 4)`
+and no candidate failed to estimate. D_all was `r f(g("D_all", "deficit"), 4)`
+(`r f(g("D_all", "lower"), 4)` to `r f(g("D_all", "upper"), 4)`) and
+D_nonboundary `r f(g("D_nonboundary", "deficit"), 4)`
+(`r f(g("D_nonboundary", "lower"), 4)` to
+`r f(g("D_nonboundary", "upper"), 4)`). Both upper limits lie more than 0.015
+below the threshold. The registered branch is that the recorded-search problem
+is not materially real in this design. The nonboundary deficit is detectably
+above zero but equals about a fifth of a percentage point.
+
+## Why the average deficit is small
+
+Nested age thresholds and horizons produce highly correlated candidates. The
+effective library size (the squared sum of the eigenvalues of the candidates'
+correlation matrix divided by the sum of their squares) was
+`r f(min(els$effective_library_size[els$K == 4]), 2)` to
+`r f(max(els$effective_library_size[els$K == 4]), 2)` with 4 candidates and
+`r f(min(els$effective_library_size[els$K == 16]), 2)` to
+`r f(max(els$effective_library_size[els$K == 16]), 2)` with 16. Choosing among
+them is close to not choosing.
+
+## The design can detect a loss
+
+The effect-seeking selector lowered naive coverage to
+`r f(mean(seek$coverage), 3)` on average and to `r f(min(seek$coverage))` to
+`r f(max(seek$coverage[seek$K == 16]))` across the 16-candidate cells, against
+`r f(min(cov_by$coverage[cov_by$selector != "effect_seeking"]))` to
+`r f(max(cov_by$coverage[cov_by$selector != "effect_seeking"]))` for the
+effect-blind selectors (@tbl-coverage).
+
+```{r}
+#| label: tbl-coverage
+#| tbl-cap: "Mean naive coverage of the selected protocol's interval, by selector and treatment effect."
+w <- aggregate(coverage ~ selector + effect, nv, mean)
+w <- reshape(w, idvar = "selector", timevar = "effect", direction = "wide")
+names(w) <- sub("coverage.", "", names(w), fixed = TRUE)
+knitr::kable(w, digits = 3, row.names = FALSE)
+```
+
+## The average hides a conditional failure
+
+Naive noncoverage depended on how far the candidates' estimates spread
+(@tbl-multiverse). When the range across candidates was below one median
+standard error, noncoverage was `r f(min(rk("below_1")))` to
+`r f(max(rk("below_1")))`; between one and two, `r f(min(rk("1_through_2")))`
+to `r f(max(rk("1_through_2")))`; above two, `r f(min(rk("above_2")))` to
+`r f(max(rk("above_2")))`. The standardized range predicted noncoverage with an
+AUC of `r f(min(auc$auc), 2)` to `r f(max(auc$auc), 2)`.
+
+```{r}
+#| label: tbl-multiverse
+#| tbl-cap: "Naive noncoverage by the standardized range of the candidate estimates (range divided by the median candidate standard error)."
+m <- reshape(mvr[, c("selector", "category", "noncoverage_risk")],
+             idvar = "selector", timevar = "category", direction = "wide")
+names(m) <- c("selector", "1 to 2", "above 2", "below 1")
+knitr::kable(m[, c("selector", "below 1", "1 to 2", "above 2")], digits = 3,
+             row.names = FALSE)
+```
+
+## Remedies
+
+Bonferroni intervals for the selected protocol covered
+`r f(rm("selected_bonferroni", "coverage"), 4)`, above nominal. Sample splitting
+covered `r f(rm("sample_split", "coverage"), 4)`, with intervals a median
+`r f(median(wid$median_within_candidate_width_ratio), 2)` times as wide as the
+full-sample interval for the same candidate, close to the square root of two.
+
+# Discussion
+
+A recorded search whose selector cannot see the effect does little damage to
+average coverage when the candidates are variations on one protocol. The damage
+concentrates in the replicates where the candidates disagree, which is also
+where the choice matters. Reporting every candidate's estimate, as a multiverse
+display, therefore carries information about the reliability of the selected
+interval that the interval itself does not.
+
+Bonferroni and sample splitting both restore coverage. Bonferroni overshoots;
+splitting pays in width about what halving the data predicts.
+
+## What this study does not establish
+
+The result covers deterministic recorded searches over nested age thresholds and
+horizons, libraries of 4 or 16 highly correlated candidates, effect-blind
+selectors and correctly specified weights. It does not cover sequential protocol
+development by an analyst who has seen results, other protocol components such
+as grace periods or treatment definitions, libraries of weakly correlated
+protocols, or misspecified weights. The replication's gate controls false
+failure across 360 comparisons and would pass a candidate miscalibrated by less
+than about two percentage points.
+
+## Review
+
+The design was reviewed and revised before any code was written. The first run
+was reviewed twice; the reviewer held its classification at uninformative and
+recommended a separately registered replication, which is this study. The
+replication's results have not yet been reviewed.
+
+# Data and code availability {.unnumbered}
+
+Code, both protocols and result files: <https://github.com/choxos/TTE-open-problems/tree/main/studies/PRO-02-ben-02-recorded-protocol-search>.
+
+# References {.unnumbered}
