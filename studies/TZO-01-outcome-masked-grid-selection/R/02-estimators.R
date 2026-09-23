@@ -747,7 +747,10 @@ truth_for_process <- function(scen, batch_cache = NULL) {
     }
     if (batch < 2L) next
     matrix <- do.call(rbind, batches)
-    decisive <- grepl('^(rd-full|approx-panel|approx-oracle|delta-g)', colnames(matrix))
+    ## Columns are named with '|' separators, so 'approx-panel' never matched and
+    ## the approximation-error columns were left out of the precision check.
+    decisive <- grepl('^(rd-full|approx[|]panel|approx[|]oracle|delta-g)[|]',
+                      colnames(matrix))
     mcse <- apply(matrix[, decisive, drop = FALSE], 2, stats::sd) / sqrt(batch)
     precision_met <- all(is.finite(mcse) & mcse <= TRUTH_MCSE_TARGET)
     if (precision_met) break
