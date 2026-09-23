@@ -1,0 +1,258 @@
+---
+title: "A binary replication label changes with precision alone, and interval overlap carries most of the change"
+subtitle: "A simulation study answering the pair-level component of catalog problem BEN-02"
+author: "Ahmad Sofi-Mahmudi"
+date: 2026-08-01
+bibliography: references.bib
+csl: ../../../vancouver.csl
+link-citations: true
+number-sections: true
+execute:
+  echo: false
+  warning: false
+  message: false
+format:
+  gfm:
+    toc: false
+  pdf:
+    documentclass: article
+    geometry: margin=1in
+    fig-pos: "H"
+  odt: default
+---
+
+```{r setup}
+R <- "../results"
+ps <- read.csv(file.path(R, "primary-statistic.csv"))
+sens <- read.csv(file.path(R, "precision-sensitivity.csv"))
+perf <- read.csv(file.path(R, "performance.csv"))
+nc <- read.csv(file.path(R, "nonconvergence.csv"))
+tr <- read.csv(file.path(R, "truth-discrepancies.csv"))
+pa <- read.csv(file.path(R, "paired-agreement-probabilities.csv"))
+lc <- read.csv(file.path(R, "label-changes.csv"))
+tp <- read.csv(file.path(R, "tolerance-performance.csv"))
+f <- function(x, d = 3) formatC(x, format = "f", digits = d)
+mcse_s <- (ps$mc_interval_upper - ps$mc_interval_lower) / (2 * 1.959964)
+agg <- aggregate(agreement_probability ~ operator + mismatch + precision, pa, mean)
+g <- function(op, mm, pr) agg$agreement_probability[agg$operator == op &
+  agg$mismatch == mm & agg$precision == pr]
+lcx <- lc[lc$from_precision == "small" & lc$to_precision == "large", ]
+flips <- aggregate(flip_probability ~ operator + mismatch, lcx, mean)
+fl <- function(op, mm) flips$flip_probability[flips$operator == op & flips$mismatch == mm]
+tpx <- tp[tp$method %in% c("forced-plugin", "joint-uncertainty"), ]
+tol <- aggregate(cbind(wrong_definitive, indeterminate) ~ method + precision, tpx, mean)
+tv <- function(m, pr, col) tol[[col]][tol$method == m & tol$precision == pr]
+```
+
+# Abstract {.unnumbered}
+
+**Background.** Agreement between an emulated and a randomized trial is often
+reported as a binary label, such as whether the confidence intervals overlap or
+whether the estimates share a sign. Catalog entry BEN-02 states that such a
+label mixes estimand mismatch with random error. We tested the pair-level part
+of that claim: whether the label changes when the estimands are held fixed and
+only precision changes.
+
+**Methods.** Sixteen structural scenarios crossed outcome family (logit,
+probit), baseline risk (two levels) and four mismatch mechanisms (aligned,
+observable effect-modifier shift, unavailable effect-modifier shift, outcome
+misclassification). Each was run at three nested precision levels (trial n of
+500, 2,500 and 25,000; emulation n ten times larger) with 10,000 replicates,
+480,000 benchmark pairs in all. True trial and emulation risk differences were
+computed by exact finite-cell summation. The primary statistic S was the larger
+of two operator-specific sensitivities, each the average over scenarios of the
+range in agreement probability across precision levels. The registered rule
+called the problem real if the lower 95% Monte Carlo limit of S exceeded 0.10.
+
+**Results.** S was `r f(ps$s, 4)` (95% Monte Carlo interval
+`r f(ps$mc_interval_lower, 4)` to `r f(ps$mc_interval_upper, 4)`), supplied by
+the interval-overlap operator; direction agreement varied by
+`r f(ps$v_direction, 4)`. Under an observable effect-modifier shift, overlap
+agreement fell from `r f(g("overlap", "observed_z_shift", "small"))` at the
+smallest samples to `r f(g("overlap", "observed_z_shift", "large"))` at the
+largest, with the true discrepancy unchanged. The underlying estimators had
+coverage `r f(min(perf$coverage))` to `r f(max(perf$coverage))` and no failures.
+
+**Conclusions.** A binary agreement label, and the interval-overlap label in
+particular, is largely determined by precision when the estimands are fixed.
+
+# Introduction
+
+Benchmarking programs compare target trial emulations with the randomized
+trials they emulate and summarize each pair by whether the two "agree"
+[@wang2023duplicate]. A systematic review and meta-analysis related concordance to design
+features using effect correlation and standardized differences rather than a
+pass or fail label [@bmj2025concordance]. BEN-02 argues that a binary label
+conflates two things: whether the trial and emulation target the same estimand,
+and how precisely each was estimated. Two pairs that estimate the same pair of
+quantities can be labeled differently because one was estimated more
+precisely.
+
+That claim has a testable core. If estimands are held fixed and only sample
+size changes, a label that measured estimand agreement would not move. This
+study measures how far it moves. It addresses only this pair-level component;
+heterogeneity across a benchmarking portfolio, the choice of tolerance, and the
+calibration of graded metrics are outside its scope.
+
+# Methods
+
+The study follows the ADEMP structure [@morris2019simulation]; the design was
+reviewed and revised before any code was written.
+
+## Data-generating mechanism
+
+Each replicate contains an independent trial cohort and emulation cohort with a
+binary outcome at one year. Covariates L1 ~ Bernoulli(0.5) and L2 ~
+Bernoulli(0.4) are shared; Z is an observed and U an unavailable effect
+modifier. Trial treatment is randomized; emulation treatment follows
+logit P(A = 1) = −0.40 + 0.80L1 − 0.60L2 + 0.70Z. The outcome index is
+$\eta = \alpha + 0.45L_1 - 0.35L_2 + 0.20L_1L_2 + 0.55Z + 0.30U + A(-0.85 + 0.65Z + 0.45U)$,
+with a logit or probit link and two intercepts per link. The four mismatch
+mechanisms are: aligned populations and measurement; an observable shift in the
+prevalence of Z (0.35 in the trial, 0.65 in the emulation); the same shift in
+the unavailable U; and emulation outcome misclassification with sensitivity 0.85
+and specificity 0.98. No parameter was solved to produce a chosen discrepancy.
+Counts at the three precision levels are nested multinomial increments, so the
+mechanism and estimands are identical across levels and only sampling error
+changes.
+
+## Estimands and truth
+
+The trial and emulation marginal risk differences, their raw discrepancy, and
+the discrepancy after standardizing the emulation to the trial distribution of
+observed covariates. Truth was computed by exact summation over the 16
+covariate cells; the largest summation error was
+`r formatC(max(abs(tr$summation_error)), format = "e", digits = 1)`. True raw
+discrepancies ranged from 0 in the aligned scenarios to
+`r f(max(tr$delta_raw_true))` (@tbl-truth).
+
+## Methods evaluated
+
+Trial effects were estimated by the difference in arm risks and emulation
+effects by augmented inverse probability weighting. Two illustrative binary
+operators were applied to each pair: direction agreement (same sign) and
+interval overlap (the two 95% Wald intervals intersect). As secondary methods
+that answer a stated tolerance question, |discrepancy| below 0.02, a forced
+plug-in classifier and a three-way procedure (aligned, mismatched or
+indeterminate from the 90% interval of the discrepancy) were also evaluated.
+
+## Primary statistic and decision rule
+
+For each operator, V is the average over the 16 scenarios of the range of its
+agreement probability across the three precision levels; S = max(V_direction,
+V_overlap). Its 95% Monte Carlo interval came from 20,000 stratified paired
+bootstrap resamples. The problem is real for this component if the lower limit
+exceeds 0.10, not real if the upper limit is below 0.10, and inconclusive
+otherwise. The result is uninformative if truth checks fail or estimator
+nonconvergence exceeds 1% in any scenario.
+
+# Results
+
+## The estimators are sound
+
+Across all scenarios, precision levels and estimands, coverage ran from
+`r f(min(perf$coverage), 4)` to `r f(max(perf$coverage), 4)` and absolute bias
+was at most `r f(max(abs(perf$bias)), 5)`. The nonconvergence rate was
+`r f(max(nc$failure_rate), 0)` in every scenario. Label changes below are
+therefore not an estimation artifact.
+
+## The primary statistic
+
+S = `r f(ps$s, 4)`, 95% Monte Carlo interval `r f(ps$mc_interval_lower, 4)` to
+`r f(ps$mc_interval_upper, 4)`. The lower limit exceeds 0.10 by about
+`r f((ps$mc_interval_lower - 0.10) / mcse_s, 0)` Monte Carlo standard errors.
+The registered branch is that the problem is real for the pair-level component.
+Interval overlap supplies S; direction agreement varies by
+`r f(ps$v_direction, 4)`, a quarter as much.
+
+## Where the change occurs
+
+@tbl-agree gives agreement probabilities averaged within mismatch mechanism.
+When the true discrepancy is zero (aligned), overlap agreement is near 0.99 at
+every precision and direction agreement rises from
+`r f(g("direction", "aligned", "small"))` to 1 as the effects become
+distinguishable from zero. When the estimands differ, overlap agreement
+collapses as precision grows: under the observable Z shift from
+`r f(g("overlap", "observed_z_shift", "small"))` to
+`r f(g("overlap", "observed_z_shift", "large"))`, under the unavailable U shift
+from `r f(g("overlap", "hidden_u_shift", "small"))` to
+`r f(g("overlap", "hidden_u_shift", "large"))`. Pairwise, the overlap label of
+the same replicate changed between the smallest and largest samples in
+`r f(fl("overlap", "observed_z_shift"))` of pairs under the Z shift and
+`r f(fl("overlap", "hidden_u_shift"))` under the U shift (@fig-agree).
+
+```{r}
+#| label: tbl-truth
+#| tbl-cap: "True trial risk difference and raw discrepancy (emulation minus trial) by scenario."
+t1 <- tr[, c("family", "baseline_risk", "mismatch", "psi_t_true", "delta_raw_true",
+             "delta_observed_align_true")]
+names(t1) <- c("family", "baseline", "mismatch", "trial RD", "raw discrepancy",
+               "after Z standardization")
+knitr::kable(t1, digits = 4, row.names = FALSE)
+```
+
+```{r}
+#| label: tbl-agree
+#| tbl-cap: "Agreement probability averaged over the four scenarios in each mismatch mechanism, by precision (trial n 500, 2500, 25000)."
+w <- reshape(agg, idvar = c("operator", "mismatch"), timevar = "precision",
+             direction = "wide")
+w <- w[, c("operator", "mismatch", "agreement_probability.small",
+           "agreement_probability.medium", "agreement_probability.large")]
+names(w) <- c("operator", "mismatch", "small", "medium", "large")
+knitr::kable(w[order(w$operator, w$mismatch), ], digits = 3, row.names = FALSE)
+```
+
+![Agreement probability by trial sample size. Each line is one structural scenario; the truth is fixed along each line.](../out/fig1-agreement-by-precision.png){#fig-agree width=95%}
+
+## Procedures that answer a tolerance question
+
+Treating |discrepancy| < 0.02 as the question, the forced plug-in classifier
+made a wrong definitive call in `r f(tv("forced-plugin", "small", "wrong_definitive"))`
+of pairs at the smallest samples and `r f(tv("forced-plugin", "large", "wrong_definitive"))`
+at the largest. The three-way procedure kept wrong calls at
+`r f(tv("joint-uncertainty", "small", "wrong_definitive"))` and
+`r f(tv("joint-uncertainty", "large", "wrong_definitive"))` by declining to
+decide in `r f(tv("joint-uncertainty", "small", "indeterminate"))` and
+`r f(tv("joint-uncertainty", "large", "indeterminate"))` of pairs. A procedure
+that reports indeterminacy separates precision from discrepancy; a binary label
+cannot.
+
+# Discussion
+
+Holding the estimands fixed and changing only precision moved the probability
+of an interval-overlap "agreement" by about half on average. The direction of
+the movement depends on the truth: with no discrepancy, overlap is stable; with
+any discrepancy, more precision produces "disagreement". A binary overlap label
+therefore reports, in large part, how large the two studies were. Direction
+agreement is less exposed but moves the other way, towards agreement, as
+precision grows, including when the estimands differ.
+
+For benchmarking, this supports reporting the discrepancy on the effect scale
+with its uncertainty, and, where a decision is needed, a tolerance procedure
+that can return "indeterminate", as the catalog entry proposes.
+
+## What this study does not establish
+
+S is a maximum over two illustrative operators, so the result is an
+at-least-one-operator claim: it shows that interval overlap is materially
+precision-sensitive, not that every binary label is. It holds for these 16
+scenarios and three nested precision levels, on the risk-difference scale at a
+single horizon. It says nothing about heterogeneity across a benchmarking
+portfolio, about how a tolerance should be chosen, or about graded measures
+already in use.
+
+## Review
+
+The design review returned unsound with three fatal findings, all resolved
+before any code was written: it answered a neighboring question, its mechanism
+solved a parameter to produce the discrepancies it then measured, and its
+decision rule had an unreachable negative branch. The results were reviewed in
+a fresh context that did not see this summary and returned supported, with one
+minor finding on scope.
+
+# Data and code availability {.unnumbered}
+
+Code, protocol and result files: <https://github.com/choxos/TTE-open-problems/tree/main/studies/BEN-02-pair-level-precision-sensitivity>.
+The registered design is `documentation/studies/designs/BEN-02-*-revised.json`.
+
+# References {.unnumbered}

@@ -136,7 +136,7 @@ const REPO = 'https://github.com/choxos/TTE-open-problems'
 
 // The catalog says a problem is open. A study on this page says what happened
 // when someone tried to settle it. The two must not blur together: the study is
-// our own work and carries our own uncertainty, so it is labelled as such and
+// our own work and carries our own uncertainty, so it is labeled as such and
 // kept structurally separate from the audited catalog entry above it, and it
 // always states what it did not answer.
 // A study that is not complete is in one of these states. Blocked and inconclusive
@@ -177,7 +177,7 @@ function studySection(s) {
     '## Our study', '',
     '::: {.study-result}',
     `**${s.title}**`, '',
-    // A study aimed at a neighbouring entry may still be the best evidence on
+    // A study aimed at a neighboring entry may still be the best evidence on
     // this one, but a reader must not mistake it for a study of this problem.
     s.secondary
       ? `*This study was designed against [${s.primary_problem}](${REPO}/tree/main/${s.code}) ` +
@@ -707,7 +707,7 @@ catalog is about.
     '## The queue', '',
     `${queue.queue?.length || 0} problems, in order. This is an ordering, not a schedule:`,
     'a study that turns out to answer two entries closes both, and a study whose design',
-    'review finds it would answer a neighbouring question rather than the stated one gets',
+    'review finds it would answer a neighboring question rather than the stated one gets',
     'sent back before it is run.',
     '',
     '::: {.table-scroll}', '',
