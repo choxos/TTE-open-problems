@@ -23,6 +23,12 @@ Bites on: [Eligibility]{.chip .chip-axis}
 Seen in: [EHR]{.chip .chip-axis} [Claims]{.chip .chip-axis} [Linked records]{.chip .chip-axis}
 :::
 
+::: {.callout-important appearance="simple"}
+## A study has been run against this problem
+
+Materially consequential, within this benchmark. The minimal restricted estimator's absolute bias reached 0.036 with coverage 0.728 when the criterion was a strong collider, and five of the twelve collider cells had a lower 95% Monte Carlo bound of at least the registered 0.010, spanning both orientations, both retention levels and two edge strengths. The two-strength condition rests on one cell at strength 0.45 whose lower bound is 0.0112; without it the classification would be mixed. The screen-and-respond policy is conditionally beneficial by the registered rule when the collider parents are measured (7 of 12 collider cells) and not beneficial when they are not, but the benefit is not the screen's: adjusting for every measured variable without screening does as well, and pooling the audit sample into the analysis does better in every cell. [Read the study below](#our-study).
+:::
+
 ## Statement
 
 An eligibility criterion is a conditioning statement, and conditioning on a variable that is a common effect of treatment and outcome opens a path rather than closing one. Emulation protocols routinely build eligibility from healthcare-use variables such as a required prior visit, a recorded baseline laboratory value or a minimum enrollment period, all of which can be descendants of the treatment decision or of early disease. Nothing in the current workflow checks an eligibility definition for this property, and the reporting checklist asks what the criteria were rather than what conditioning on them does.
@@ -48,12 +54,37 @@ Build a causal-discovery eligibility auditor that uses graph learning and tempor
 
 ## Our study
 
-::: {.callout-note}
-## A study is running
+::: {.study-result}
+**Restriction on a healthcare-use collider biases an emulation materially, and a measured-variable screen adds nothing that adjusting for the measured variables does not**
 
-**Question.** Across 18 unique generated distributions and two analyst-information views, how large are bias and coverage distortions from conditioning on a prior healthcare-use variable under prespecified noncollider and collider DAGs; how much of the restricted-versus-broad contrast is target-population change; and does a complete, prespecified screen-and-response policy improve estimation of the restricted-population 60-month marginal risk difference relative to screen-free alternatives? This study answers only the conditional mechanism and policy-performance part of ELG-02. It does not determine whether an unknown real-world eligibility criterion is a collider.
+**The question put to it.** ELG-02 says eligibility criteria built from prior healthcare use are applied without checking whether they are colliders. Under known graphs, how much bias does restriction on such a criterion produce, how much of the restricted-versus-broad contrast is a legitimate change of target, and does screening an external sample for a collider signal and responding to the result estimate the restricted effect better than analyses that do not screen?
 
+**What it found.** Materially consequential, within this benchmark. The minimal restricted estimator's absolute bias reached 0.036 with coverage 0.728 when the criterion was a strong collider, and five of the twelve collider cells had a lower 95% Monte Carlo bound of at least the registered 0.010, spanning both orientations, both retention levels and two edge strengths. The two-strength condition rests on one cell at strength 0.45 whose lower bound is 0.0112; without it the classification would be mixed. The screen-and-respond policy is conditionally beneficial by the registered rule when the collider parents are measured (7 of 12 collider cells) and not beneficial when they are not, but the benefit is not the screen's: adjusting for every measured variable without screening does as well, and pooling the audit sample into the analysis does better in every cell.
 
+**Results.**
+
+- Bias grows with the strength of the edges into the criterion and takes the sign of the association selection induces: at most 0.001 at the near-null strength, 0.006 to 0.012 at the moderate strength and 0.015 to 0.036 at the strong strength, negative in concordant cells and positive in discordant ones. Where the criterion selects on outcome risk alone the upper bound never exceeds 0.0024.
+- The screen finds the collider when its parents are recorded and cannot when they are not. With both parents measured it warned in 75% to 78% of replicates at the near-null strength and in every replicate otherwise, with false alarms in at most 0.05% of noncollider replicates. With neither measured it never warned, so every collider replicate in that view was a silent error and the policy used the biased minimal estimator.
+- The policy's gain over the minimal estimator is available without the screen. In the full-view collider cells the policy and the screen-free all-measured estimator differed in mean squared error by at most 2.4e-05, and the policy was never the worse of the two. The pooled 8000-person all-measured estimator beat the policy in all 36 cell-views by more than three Monte Carlo standard errors, so by the registered standard the audit sample is better spent on the analysis.
+- Restriction moves the estimand as much as it biases the estimator. The target shift ran from -0.019 to 0.013 and was carried almost entirely by the outcome-risk variable D; noncollider cells shift as much as collider cells. A difference between restricted and unrestricted estimates is therefore not evidence of collider bias.
+
+**Design.**
+
+Estimand
+:   The 60-month risk difference among people meeting the healthcare-use criterion (RD_H); the unrestricted risk difference (RD_all) for the criterion-removed analysis; and the target shift RD_H minus RD_all with its decomposition across B, X and D
+
+Methods compared
+:   minimal restricted AIPW (treatment and outcome models on B and X), role-based AIPW (adds the collider parents by known role), all-measured AIPW (every measured baseline variable), oracle AIPW (collider parents even when unmeasured), criterion-removed broad AIPW (targets RD_all), pooled all-measured AIPW on audit and analysis samples together, screen-and-respond policy (Holm-corrected association screen on the audit sample, then all-measured on a warning and minimal otherwise)
+
+Data-generating mechanism
+:   18 generated cells crossing eligibility topology (noncollider, concordant collider, discordant collider), edge strength (0.10, 0.45, 1.10) and retention under the criterion (0.30, 0.70), 2000 replicates each. Every replicate draws a 4000-person audit sample and a 4000-person analysis sample. Probit models for healthcare use, treatment and the 60-month outcome; truth by Gauss-Hermite quadrature checked at 30, 40 and 50 nodes. Each cell is analyzed in a full view, where both parents of the criterion are measured, and a reduced view, where neither is.
+
+Replicates
+:   2000 per cell, 18 cells, 504,000 estimate rows, 0 replicate errors
+
+**What this does not answer.** The study is a mechanism benchmark under correctly specified probit models and a known four-node graph. It does not discover or certify collider status for an unknown eligibility criterion, identify an unnamed latent cause, or estimate how often real criteria are colliders. The screen's operating characteristics do not transfer to indirect paths, association-mimicking noncolliders, nonlinear mechanisms, noisy proxies, partial measurement or audit samples of other sizes, and the two analyst views are the extremes of every parent measured perfectly and neither measured at all.
+
+Read it: [PDF](/studies/ELG-02-baseline-healthcare-use-selection/out/ELG-02.pdf) · [Markdown](/studies/ELG-02-baseline-healthcare-use-selection/out/ELG-02.md) · [OpenDocument](/studies/ELG-02-baseline-healthcare-use-selection/out/ELG-02.odt) · Code and data: [undefined](https://github.com/choxos/TTE-open-problems/tree/main/undefined)
 
 :::
 
