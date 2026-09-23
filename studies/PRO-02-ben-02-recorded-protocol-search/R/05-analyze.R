@@ -11,12 +11,13 @@ here <- function(...) file.path(STUDY, ...)
 source(here("R", "00-config.R"))
 source(here("..", "_shared", "R", "performance.R"))
 
-OUT <- here("results")
+INDIR <- here("results")
+OUT <- if (REPLICATION) file.path(INDIR, "replication") else INDIR
 raw_files <- sort(list.files(file.path(OUT, "raw"),
                              "^scenario-.*\\.rds$", full.names = TRUE))
 stopifnot(length(raw_files) > 0L)
 res <- do.call(rbind, lapply(raw_files, readRDS))
-truth <- readRDS(file.path(OUT, "truth.rds"))
+truth <- readRDS(file.path(INDIR, "truth.rds"))
 
 truth_keep <- truth[, c("n", "event_target", "effect", "candidate", "c", "h",
                          "truth", "truth_mcse", "truth_draws",
@@ -135,6 +136,33 @@ calibration <- do.call(rbind, lapply(calibration_parts, function(d) {
     stringsAsFactors = FALSE)
 }))
 rownames(calibration) <- NULL
+
+## The replication's gate (REPLICATION-PROTOCOL.md). A hard window applied to
+## 360 point estimates fails by chance almost surely, so an evaluation fails
+## only when its Wilson interval at familywise confidence lies wholly outside
+## the window, or wholly above the failure limit. The first run keeps its
+## registered gate; this one is never applied to its data.
+wilson <- function(x, n, z) {
+  p <- x / n
+  centre <- (p + z^2 / (2 * n)) / (1 + z^2 / n)
+  half <- z * sqrt(p * (1 - p) / n + z^2 / (4 * n^2)) / (1 + z^2 / n)
+  cbind(lower = centre - half, upper = centre + half)
+}
+if (REPLICATION) {
+  gate_z <- stats::qnorm(1 - GATE_FAMILYWISE_ALPHA / (2 * nrow(calibration)))
+  n_att <- calibration$n_attempted
+  cov_ci <- wilson(round(calibration$coverage * n_att), n_att, gate_z)
+  fail_ci <- wilson(round(calibration$failure_probability * n_att), n_att, gate_z)
+  calibration$gate_z <- gate_z
+  calibration$coverage_lower_fw <- cov_ci[, "lower"]
+  calibration$coverage_upper_fw <- cov_ci[, "upper"]
+  calibration$failure_lower_fw <- fail_ci[, "lower"]
+  calibration$pass_replication_gate <- n_att == N_REP &
+    calibration$coverage_upper_fw >= CALIBRATION_RANGE[1] &
+    calibration$coverage_lower_fw <= CALIBRATION_RANGE[2] &
+    calibration$failure_lower_fw <= MAX_FAILURE &
+    calibration$truth_mcse <= TRUTH_MCSE_MAX
+}
 utils::write.csv(calibration, file.path(OUT, "calibration.csv"), row.names = FALSE)
 
 stratified_mean <- function(d, value) {
@@ -394,7 +422,8 @@ complete_run <- length(unique(res$scenario)) == nrow(build_scenarios()) &&
              function(x) length(unique(x)) == N_REP, logical(1)))
 calibration_complete <- nrow(calibration) == expected_calibration_rows &&
   all(calibration$n_attempted == N_REP)
-calibration_pass <- calibration_complete && all(calibration$pass)
+calibration_pass <- calibration_complete &&
+  all(if (REPLICATION) calibration$pass_replication_gate else calibration$pass)
 
 all_row <- global_deficits[global_deficits$estimand == "D_all", ]
 nonboundary_row <- global_deficits[global_deficits$estimand == "D_nonboundary", ]
@@ -417,8 +446,11 @@ if (!complete_run || !calibration_pass ||
 
 cat("\n== fixed-candidate calibration gate ==\n")
 cat(sprintf("  complete run: %s\n", complete_run))
+cat(sprintf("  gate: %s\n", if (REPLICATION)
+  sprintf("replication, familywise Wilson at z = %.3f", gate_z) else "registered hard window"))
 cat(sprintf("  candidates passing all thresholds: %d/%d\n",
-            sum(calibration$pass), nrow(calibration)))
+            sum(if (REPLICATION) calibration$pass_replication_gate else calibration$pass),
+            nrow(calibration)))
 cat(sprintf("  coverage range: %.3f to %.3f\n",
             min(calibration$coverage), max(calibration$coverage)))
 cat(sprintf("  maximum failure probability: %.3f\n",

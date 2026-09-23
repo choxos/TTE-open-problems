@@ -4,6 +4,13 @@
 ## undocumented or sequential human protocol development.
 
 MASTER_SEED     <- 20260801L
+
+## The separately registered replication (REPLICATION-PROTOCOL.md) draws every
+## replicate from a new seed and writes under results/replication, so the first
+## run's data are neither reused nor overwritten. Truth, lambda and the design
+## diagnostics are deterministic given their own seeds and are shared.
+REPLICATION <- identical(Sys.getenv("PRO02_REPLICATION"), "1")
+if (REPLICATION) MASTER_SEED <- 20260922L
 LAMBDA_SEED     <- 20260802L
 DIAGNOSTIC_SEED <- 20260803L
 TRUTH_SEED      <- 20261000L
@@ -39,6 +46,8 @@ GLOBAL_Z <- stats::qnorm(0.9875)
 MATERIAL_DEFICIT <- 0.02
 CALIBRATION_RANGE <- c(0.93, 0.97)
 MAX_FAILURE <- 0.05
+## Replication gate: familywise error over every fixed-candidate evaluation.
+GATE_FAMILYWISE_ALPHA <- 0.05
 
 HORIZONS_ALL <- c(24L, 36L, 48L, 60L)
 CUTS_ALL <- c(45L, 50L, 55L, 60L)

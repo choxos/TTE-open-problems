@@ -18,11 +18,12 @@ source(here("R", "01-dgm.R"))
 source(here("R", "02-estimators.R"))
 source(here("..", "_shared", "R", "harness.R"))
 
-OUTDIR <- here("results")
+INDIR <- here("results")
+OUTDIR <- if (REPLICATION) file.path(INDIR, "replication") else INDIR
 dir.create(OUTDIR, recursive = TRUE, showWarnings = FALSE)
-stopifnot(file.exists(file.path(OUTDIR, "truth.rds")))
-stopifnot(file.exists(file.path(OUTDIR, "design-diagnostics.rds")))
-lambda_table <- readRDS(file.path(OUTDIR, "lambda.rds"))
+stopifnot(file.exists(file.path(INDIR, "truth.rds")))
+stopifnot(file.exists(file.path(INDIR, "design-diagnostics.rds")))
+lambda_table <- readRDS(file.path(INDIR, "lambda.rds"))
 
 fixed_rows <- function(family, candidates) {
   do.call(rbind, lapply(candidates$candidate, function(id) {

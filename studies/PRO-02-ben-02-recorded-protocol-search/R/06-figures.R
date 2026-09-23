@@ -11,7 +11,7 @@ here <- function(...) file.path(STUDY, ...)
 suppressPackageStartupMessages(library(ggplot2))
 source(here("R", "00-config.R"))
 
-OUT <- here("results")
+OUT <- if (REPLICATION) here("results", "replication") else here("results")
 FIG <- here("out")
 dir.create(FIG, recursive = TRUE, showWarnings = FALSE)
 
