@@ -445,6 +445,19 @@ ul.task-list li input[type="checkbox"] {
 <p>Bites on: <span class="chip chip-axis">Cross-cutting</span> <span class="chip chip-axis">Analysis plan</span><br>
 Seen in: <span class="chip chip-axis">Any setting</span></p>
 </div>
+<div class="callout callout-style-simple callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>A study has been run against this problem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Not materially, within this design. The global deficit D_all was 0.0015 (simultaneous 95% Monte Carlo interval -0.0001 to 0.0030) and D_nonboundary 0.0023 (0.0004 to 0.0042), both upper limits far below the registered 0.02 threshold; all 360 fixed-candidate evaluations passed the calibration gate. The nonboundary deficit is detectably above zero, but it is about a fifth of a percentage point. Averaged over replicates, a recorded, effect-blind choice among these protocols costs naive intervals almost nothing. <a href="#our-study">Read the study below</a>.</p>
+</div>
+</div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
 <p>Eligibility thresholds, comparators, grace periods, washout windows and outcome definitions are routinely revised after investigators inspect the data. Even an investigator who never looks at a treatment effect can be influenced by outcome prevalence, by covariate-outcome associations or by which specification yields a workable sample size. Standard inferential theory conditions on a fixed target trial and takes no account of the search over candidate emulations that produced it, so the reported confidence interval has the wrong coverage for the procedure actually run. A protocol chosen by an algorithm is an estimated object with its own sampling variability, and nothing in current practice treats it as one.</p>
@@ -482,19 +495,39 @@ Seen in: <span class="chip chip-axis">Any setting</span></p>
 </section>
 <section id="our-study" class="level2">
 <h2 class="anchored" data-anchor-id="our-study">Our study</h2>
-<div class="callout callout-style-simple callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>A study is running
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Question.</strong> For the explicitly recorded finite-search part of PRO-02, what unconditional marginal coverage deficits arise when deterministic, treatment-effect-blind selectors use pooled outcome counts or covariate-outcome associations to choose among 4 or 16 target trial protocols, and what finite-sample tail behavior, failure rates, and precision costs arise when Bonferroni simultaneous inference or a separate sample-splitting policy is implemented?</p>
-<p><strong>Status.</strong> first run inconclusive (INCONCLUSIVE.md); the registered replication (REPLICATION-PROTOCOL.md) is running</p>
-</div>
+<div class="study-result">
+<p><strong>A recorded, effect-blind search over highly correlated protocols leaves naive intervals close to nominal on average, and undercovering when the candidates disagree</strong></p>
+<p><strong>The question put to it.</strong> PRO-02 says inference conditions on a fixed target trial that was in fact selected after seeing the data. When the search is recorded and the selector is blind to the treatment effect, choosing among 4 or 16 candidate protocols by outcome counts or covariate-outcome associations, how much coverage do naive 95% intervals for the selected protocol lose, and what do Bonferroni correction and sample splitting cost?</p>
+<p><strong>What it found.</strong> Not materially, within this design. The global deficit D_all was 0.0015 (simultaneous 95% Monte Carlo interval -0.0001 to 0.0030) and D_nonboundary 0.0023 (0.0004 to 0.0042), both upper limits far below the registered 0.02 threshold; all 360 fixed-candidate evaluations passed the calibration gate. The nonboundary deficit is detectably above zero, but it is about a fifth of a percentage point. Averaged over replicates, a recorded, effect-blind choice among these protocols costs naive intervals almost nothing.</p>
+<p><strong>Results.</strong></p>
+<ul>
+<li>The average hides a conditional failure. Naive noncoverage was 0.022 to 0.025 when the candidates’ estimates spanned less than one standard error, 0.041 to 0.044 when they spanned one to two, and 0.082 to 0.083 when they spanned more than two. The spread of the candidate estimates predicts noncoverage with an AUC of 0.66 to 0.68, so a reader who sees a wide multiverse has reason to distrust the selected interval even though coverage is nominal on average.</li>
+<li>The design can see a coverage loss when there is one. Selecting the protocol with the largest effect estimate, the registered positive control, lowered naive coverage to 0.922 on average under the null and to 0.895 to 0.928 across the 16-candidate cells, against 0.946 to 0.951 for the effect-blind selectors. Even deliberate effect seeking loses only two to five percentage points here, because the candidates are so highly correlated.</li>
+<li>The libraries were nearly one protocol. Nested age thresholds and outcome horizons produce highly correlated candidates: the effective library size was 1.37 to 1.39 for 4 candidates and 1.76 to 1.85 for 16. Little is being searched over, which is why the average deficit is small. Libraries of less correlated protocols are untested.</li>
+<li>Both remedies worked and both cost precision. Selected-protocol Bonferroni intervals covered 0.9915, overshooting nominal; sample splitting covered 0.947 and gave intervals a median 1.42 times as wide as the full-sample interval for the same candidate, close to the square root of two expected from halving the data.</li>
+<li>The first run’s gate failure was chance. It required every one of 360 coverage estimates to lie in [0.93, 0.97] and one came in at 0.9285, 0.26 Monte Carlo standard errors outside. The replication, drawn from a new seed under a gate registered before it ran, passed all 360, with coverage 0.929 to 0.961.</li>
+</ul>
+<p><strong>Design.</strong></p>
+<dl>
+<dt>Estimand</dt>
+<dd>
+Unconditional coverage of the naive 95% interval for the selected protocol’s risk difference, as the deficit D = 0.95 minus coverage, globally (D_all) and outside the near-boundary event-count regime (D_nonboundary)
+</dd>
+<dt>Methods compared</dt>
+<dd>
+naive interval for the selected protocol, Bonferroni over the declared library, sample splitting, effect-seeking selection as a positive control
+</dd>
+<dt>Data-generating mechanism</dt>
+<dd>
+36 generated-data cells crossing sample size (4000, 8000), expected event count at the reference protocol (35, 70, 140), library size (4 or 16 candidates over nested age thresholds and outcome horizons) and treatment effect (null, homogeneous, heterogeneous), 2000 replicates each. Three deterministic selectors that never see the treatment effect: a workability rule on event and arm counts and two prognostic-score rules. Inverse probability weighted risk differences with correctly specified weights. Truth by numerical integration to a Monte Carlo standard error of at most 0.0000166. A first run with the same design failed its registered calibration gate by chance and was recorded as inconclusive; this is the separately registered replication with a new seed and a gate that allows for Monte Carlo error across the 360 fixed-candidate evaluations.
+</dd>
+<dt>Replicates</dt>
+<dd>
+2000 per cell, 36 cells, 1,728,000 rows, 0 replicate errors
+</dd>
+</dl>
+<p><strong>What this does not answer.</strong> The conclusion covers deterministic recorded searches over nested age thresholds and outcome horizons, libraries of 4 or 16 highly correlated candidates, treatment-effect-blind selectors, and correctly specified inverse probability weighting. It does not cover undocumented or sequential protocol development by an analyst who has seen results, other protocol components such as grace periods or treatment definitions, libraries of weakly correlated protocols, or misspecified weights. The replication’s calibration gate controls false failure across 360 comparisons and in exchange would pass a candidate miscalibrated by less than about two percentage points.</p>
+<p>Code and data: <a href="https://github.com/choxos/TTE-open-problems/tree/main/undefined">undefined</a></p>
 </div>
 </section>
 <section id="verification" class="level2">
