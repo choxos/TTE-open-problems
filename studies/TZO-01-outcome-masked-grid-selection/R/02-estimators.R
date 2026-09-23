@@ -522,7 +522,8 @@ fit_population_models <- function(scen) {
   models <- vector('list', nrow(definitions))
   names(models) <- definitions$key
   for (i in seq_len(nrow(definitions))) {
-    K <- length(panel_boundaries(definitions$delta[i], definitions$G[i]))
+    ## Decision boundaries only; the terminal boundary carries no intercept.
+    K <- length(panel_boundaries(definitions$delta[i], definitions$G[i])) - 1L
     models[[i]] <- list(
       coefficient = c(rep(-3, K), rep(0, length(INIT_FEATURES))),
       n_period = K,

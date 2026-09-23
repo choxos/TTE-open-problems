@@ -352,6 +352,13 @@ make_panel <- function(proc, delta, G) {
   if (nb > 1L) transition[, 2:nb] <- status[, 2:nb] & !status[, 1:(nb - 1L)]
   eligible <- matrix(TRUE, n, nb)
   if (nb > 1L) eligible[, 2:nb] <- !status[, 1:(nb - 1L)]
+  ## The last boundary is the end of follow-up, not a decision: no outcome
+  ## interval follows it, so no weight uses it (protocol: status at t_j defines
+  ## the risk set for (t_j, t_j+1]). On the weekly grid nobody can initiate
+  ## there, its period intercept diverged, and the initiation model failed in
+  ## every replicate, taking the full-history, one-week and selected methods
+  ## with it.
+  eligible[, nb] <- FALSE
 
   oracle_p <- matrix(NA_real_, n, nb)
   oracle_p[, 1L] <- proc$p_start[, 1L]
@@ -431,7 +438,8 @@ init_data <- function(panel) {
     oracle_p = panel$oracle_p[index],
     width = widths[period],
     n = n,
-    n_period = nb,
+    ## One intercept per decision boundary; the terminal boundary has none.
+    n_period = nb - 1L,
     row_index = row_index
   )
 }
