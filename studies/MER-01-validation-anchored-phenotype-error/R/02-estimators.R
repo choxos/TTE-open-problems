@@ -1,7 +1,13 @@
 ## Study 2 (MER-01): truth, filtering, estimators, and latent-state correction.
 
 `%||%` <- function(x, y) if (is.null(x)) y else x
-bern <- function(x, p) ifelse(x == 1L, p, 1 - p)
+## Probability of x under Bernoulli(p). The filter calls this with a scalar
+## latent state and a per-person vector p; ifelse() took its length from x and
+## returned the first person's probability for everyone.
+bern <- function(x, p) {
+  one <- x == 1L
+  one * p + (!one) * (1 - p)
+}
 log1pexp <- function(x) pmax(x, 0) + log1p(exp(-abs(x)))
 
 ## Truth is generated under interventions, never from finite-sample replicates.
@@ -553,7 +559,9 @@ measurement_counts <- function(E, strata, idx) {
     take <- s == g
     init1[g] <- sum(Ei[take, 1L] == 1L)
     init0[g] <- sum(Ei[take, 1L] == 0L)
-    if (any(take)) {
+    ## The outcome is measured once, so its matrix has one column and no
+    ## transitions; only its initial counts are drawn from.
+    if (any(take) && ncol(Ei) > 1L) {
       prev <- Ei[take, 1L:(N_MONTHS - 1L), drop = FALSE]
       now <- Ei[take, 2L:N_MONTHS, drop = FALSE]
       for (ep in 0:1) {
