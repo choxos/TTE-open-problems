@@ -424,6 +424,21 @@ if (any(required_performance$failure_rate > MAX_FAILURE_RATE, na.rm = TRUE)) {
 if (any(primary$n_paired < MIN_PAIRED, na.rm = TRUE)) {
   technical_reasons <- c(technical_reasons, "fewer than 1900 paired policy outputs")
 }
+## The screen is a required component of the policy. A screen that errors takes
+## the unresolved-audit fallback, which looks like a policy decision rather than
+## a failure; the first complete run failed its screen in every replicate and
+## this check did not exist. Timestamp unavailability is a registered state, not
+## a failure, and is excluded.
+screen_rows <- res[res$method == "policy" & res$view %in% VIEWS, , drop = FALSE]
+screen_failed <- !is.na(screen_rows$screen_fail) &
+  screen_rows$screen_fail != "timestamps-unavailable"
+screen_fail_rate <- tapply(screen_failed,
+                           paste(screen_rows$scenario, screen_rows$view), mean)
+if (any(screen_fail_rate > 0.10)) {
+  technical_reasons <- c(technical_reasons, sprintf(
+    "audit screen failed in more than 10%% of replicates in %d cell-views",
+    sum(screen_fail_rate > 0.10)))
+}
 if (any(!truth$quadrature_ok) || any(!truth$identity_ok)) {
   technical_reasons <- c(technical_reasons, "quadrature or probit identity failure")
 }
