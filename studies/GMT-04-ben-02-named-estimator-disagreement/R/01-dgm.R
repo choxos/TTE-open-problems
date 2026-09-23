@@ -2,7 +2,9 @@
 
 expit <- function(x) 1 / (1 + exp(-x))
 bound_probability <- function(x, bounds = PROB_BOUNDS) {
-  pmin(bounds[2], pmax(bounds[1], x))
+  ## x first, so a matrix keeps its dimensions (pmin and pmax copy attributes
+  ## from their first argument).
+  pmin(pmax(x, bounds[1]), bounds[2])
 }
 
 is_control <- function(scen, label) {

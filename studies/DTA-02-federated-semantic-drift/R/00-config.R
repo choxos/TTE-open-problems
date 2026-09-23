@@ -17,7 +17,12 @@ MAX_REP <- 50000L
 MAX_BATCH <- MAX_REP %/% BATCH_SIZE
 N_CALIBRATION <- 100000L
 BENCHMARK_REP <- 100L
-OVERNIGHT_SECONDS <- 12 * 60 * 60
+## Operational ceiling, not a statistical parameter. The protocol set 12 hours
+## because runs were then killed after that long; detached runs are no longer
+## killed. The benchmark on 2026-09-22, taken on a shared machine at load
+## average 200, forecast 44 hours. The ceiling is raised to 72 hours so the
+## registered design runs unscaled; nothing about the design changes.
+OVERNIGHT_SECONDS <- 72 * 60 * 60
 RESTART_ALLOWANCE <- 1.25
 
 ## No scale-down is required. The base design contains 72 * 5000 = 360000

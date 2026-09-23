@@ -308,7 +308,10 @@ estimate_ipw <- function(dat, g) {
     w0 <- ipw_weight_quantities(dat, xg, th, idx, 0L, th[mu_idx[1]])
     w1 <- ipw_weight_quantities(dat, xg, th, idx, 1L, th[mu_idx[2]])
     blocks <- c(blocks, list(w0$score, w1$score))
-    if (individual) do.call(cbind, blocks) else unlist(lapply(blocks, colMeans))
+    ## The Hajek scores are vectors; colMeans refuses a vector, so without
+    ## as.matrix every IPW and main-effect sandwich failed.
+    if (individual) do.call(cbind, blocks) else
+      unlist(lapply(blocks, function(b) colMeans(as.matrix(b))))
   }
   sw <- tryCatch(stacked_covariance(theta, equations), error = function(e)
     list(fail = paste0("sandwich-error: ", conditionMessage(e))))
@@ -389,7 +392,10 @@ estimate_main_aipw <- function(dat, g) {
     p0 <- main_phi_theta(dat, xg, xq_set, th, idx_g, idx_q, 0L)
     p1 <- main_phi_theta(dat, xg, xq_set, th, idx_g, idx_q, 1L)
     blocks <- c(blocks, list(p0 - th[mu_idx[1]], p1 - th[mu_idx[2]]))
-    if (individual) do.call(cbind, blocks) else unlist(lapply(blocks, colMeans))
+    ## The Hajek scores are vectors; colMeans refuses a vector, so without
+    ## as.matrix every IPW and main-effect sandwich failed.
+    if (individual) do.call(cbind, blocks) else
+      unlist(lapply(blocks, function(b) colMeans(as.matrix(b))))
   }
   sw <- tryCatch(stacked_covariance(theta, equations), error = function(e)
     list(fail = paste0("sandwich-error: ", conditionMessage(e))))

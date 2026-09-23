@@ -141,6 +141,10 @@ gate. Keep writing those, and when one fires, believe it before believing the st
   harness. `TTE_SMOKE=k Rscript R/04-run.R i:j` runs k replicates per scenario
   through the registered streams, writes only `results/smoke.rds`, and is the check to run before
   launching a study.
+- **`pmin` and `pmax` copy attributes from their first argument.** So
+  `pmin(hi, pmax(lo, x))` returns a clipped matrix as a bare vector. LRN-01's `clip`
+  was written that way and every cross-fit and sandwich then failed on `apply` or
+  `colMeans`; its first 100-replicate scenario estimated nothing. Put `x` first.
 
 ## Available auditors
 

@@ -17,7 +17,9 @@ set -u
 STUDY="${1:?study directory}"
 WANT="${2:?expected scenario count}"
 MAX_ATTEMPTS="${3:-200}"
-RAW="$STUDY/results/raw"
+# TTE_RAW points the completion count at a run that writes elsewhere, such as a
+# registered replication under results/replication/raw.
+RAW="${TTE_RAW:-$STUDY/results/raw}"
 
 # One driver per study. Two drivers on the same study each begin an attempt by
 # killing the study's R processes, so each kills the other's run and neither

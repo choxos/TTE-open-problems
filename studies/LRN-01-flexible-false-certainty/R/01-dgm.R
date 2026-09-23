@@ -1,7 +1,10 @@
 ## LRN-01 support stress study: data-generating mechanism and truth engine.
 
 expit <- stats::plogis
-clip <- function(x, lo, hi) pmin(hi, pmax(lo, x))
+## x goes first: pmin and pmax copy attributes from their first argument, so
+## pmax(lo, x) returned a clipped matrix as a bare vector and every cross-fit
+## and sandwich that applied over its rows failed.
+clip <- function(x, lo, hi) pmin(pmax(x, lo), hi)
 mean_columns <- function(dat, prefix, idx) {
   rowMeans(as.matrix(dat[paste0(prefix, idx)]))
 }

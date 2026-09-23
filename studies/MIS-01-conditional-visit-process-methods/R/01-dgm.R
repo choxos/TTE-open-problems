@@ -10,7 +10,9 @@ expit <- function(x) {
 }
 
 cloglog_inv <- function(x) 1 - exp(-exp(pmin(x, 35)))
-clamp_probability <- function(x, eps = 1e-10) pmin(1 - eps, pmax(eps, x))
+## x first, so a matrix keeps its dimensions (pmin and pmax copy attributes
+## from their first argument).
+clamp_probability <- function(x, eps = 1e-10) pmin(pmax(x, eps), 1 - eps)
 
 baseline_cells <- function() {
   g <- expand.grid(L0 = 0:1, C = 0:1, F = 0:1, B = 0:1)
