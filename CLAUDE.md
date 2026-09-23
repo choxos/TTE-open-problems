@@ -143,7 +143,8 @@ gate. Keep writing those, and when one fires, believe it before believing the st
   scalar test with vector branches an error in every study that sources the
   harness. `TTE_SMOKE=k Rscript R/04-run.R i:j` runs k replicates per scenario
   through the registered streams, writes only `results/smoke.rds`, and is the check to run before
-  launching a study.
+  launching a study. MER-01's `bern(x, p)` was the same defect inside an imputation
+  filter; the guard stopped it on the first call.
 - **`pmin` and `pmax` copy attributes from their first argument.** So
   `pmin(hi, pmax(lo, x))` returns a clipped matrix as a bare vector. LRN-01's `clip`
   was written that way and every cross-fit and sandwich then failed on `apply` or
@@ -156,6 +157,11 @@ gate. Keep writing those, and when one fires, believe it before believing the st
   model counted as valid if its coefficients were finite; it had diverged to 1e11
   and the truth built on it was off by 0.3. Validity must require the stopping
   criterion to have been met.
+- **A registered gate can be unpassable by design.** MER-01 requires a median
+  oracle effective sample size above 200; under its registered treatment law only
+  0.7% of a cohort follows the dynamic strategy for twelve months, and the median
+  is 6. Twenty generated cohorts through the oracle showed it in a minute. Before
+  launching, compute each validity gate's quantity on a few generated datasets.
 
 ## Available auditors
 
