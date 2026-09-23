@@ -16,6 +16,15 @@ true |Delta| of 0.005 inside a 0.01 margin with 80% probability, after the
 which gives N = 948,000 (`results/sample-size.csv`: preservation power 0.800, change power
 1.000, interval width 0.009).
 
+## Correction
+
+The cost below is wrong. The 87 s is wall time on a machine at load average
+200; a full replicate at N = 948,000 uses 4.8 to 7.1 CPU-seconds, so the
+implemented design costs about 41 CPU-hours and the registered one about 103.
+Cost does not block the study. `AMENDMENT-DESIGN.md` records what does: the
+48-way coverage gate passes with probability 3.5e-9 at 1000 replicates, and
+the primary branch is fixed at "mixed" by the mechanism distribution.
+
 ## Cost
 
 One replicate at N = 948,000 takes 87 seconds and 565 MB on this machine,
