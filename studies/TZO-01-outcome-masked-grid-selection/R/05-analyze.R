@@ -172,8 +172,16 @@ for (cell in sort(unique(fixed$cell))) {
     z <- d[d$grid == grid, ]
     mean(!is.na(z$fail) | !is.finite(z$est))
   }, numeric(1))
-  ess <- c(d$ess_early, d$ess_delay)
-  median_ess <- stats::median(ess[is.finite(ess)], na.rm = TRUE)
+  ## The registered gate is arm-specific. Pooling both arms put the median
+  ## near the delay arm's ESS of about 3000, so an early arm of 80 could never
+  ## trip it.
+  arm_median <- function(x) {
+    x <- x[is.finite(x)]
+    if (length(x)) stats::median(x) else NA_real_
+  }
+  median_ess_early <- arm_median(d$ess_early)
+  median_ess_delay <- arm_median(d$ess_delay)
+  median_ess <- min(median_ess_early, median_ess_delay)
   truth_bad <- any(!truth_cell$precision_met) ||
     any(truth_cell$rd_full_mcse > TRUTH_MCSE_TARGET) ||
     any(truth_cell$approximation_error_mcse > TRUTH_MCSE_TARGET)
@@ -200,7 +208,8 @@ for (cell in sort(unique(fixed$cell))) {
     opposite_utility_decisions = opposite_decisions,
     all_pairs_equivalent = equivalent,
     maximum_failure_rate = max(failures),
-    median_arm_ess = median_ess,
+    median_ess_early = median_ess_early,
+    median_ess_delay = median_ess_delay,
     truth_precision_failure = truth_bad,
     utility_boundary_ambiguous = utility_near,
     branch = base_branch,
