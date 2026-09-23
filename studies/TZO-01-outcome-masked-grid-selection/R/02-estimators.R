@@ -532,6 +532,31 @@ fit_population_models <- function(scen) {
     )
   }
   chunks <- ceiling(TRUTH_FIT_N / TRUTH_CHUNK)
+
+  ## Start from the per-period complementary log-log of the mean initiation
+  ## probability, as fit_compact_cloglog does. Plain Newton from a flat -3 on
+  ## every period diverged on the 8-week grid: the coefficients reached 1e11
+  ## and were still marked valid, because nothing required convergence. The
+  ## fitted-model truth then read -0.32 where the oracle read 0.002.
+  period_sum <- lapply(models, function(m) numeric(m$n_period))
+  period_n <- lapply(models, function(m) numeric(m$n_period))
+  for (chunk in seq_len(chunks)) {
+    n <- min(TRUTH_CHUNK, TRUTH_FIT_N - (chunk - 1L) * TRUTH_CHUNK)
+    proc <- truth_seeded_process(
+      scen, MASTER_SEED + 1000000L + 10000L * scen$scenario + chunk, n
+    )
+    for (i in seq_len(nrow(definitions))) {
+      d <- init_data(make_panel(proc, definitions$delta[i], definitions$G[i]))
+      K <- models[[i]]$n_period
+      period_sum[[i]] <- period_sum[[i]] + tabulate_sum(d$period, d$oracle_p, K)
+      period_n[[i]] <- period_n[[i]] + tabulate(d$period, nbins = K)
+    }
+  }
+  for (i in seq_along(models)) {
+    means <- pmin(pmax(period_sum[[i]] / pmax(period_n[[i]], 1), 1e-5), 1 - 1e-5)
+    models[[i]]$coefficient[seq_len(models[[i]]$n_period)] <- log(-log1p(-means))
+  }
+
   for (iteration in seq_len(20L)) {
     accum <- lapply(models, function(m) list(
       matrix = matrix(0, length(m$coefficient), length(m$coefficient)),
@@ -571,11 +596,19 @@ fit_population_models <- function(scen) {
     condition <- tryCatch(kappa(models[[i]]$information, exact = FALSE),
                           error = function(e) Inf)
     models[[i]]$condition <- condition
-    models[[i]]$converged <- isTRUE(models[[i]]$valid) && condition <= 1e12
+    models[[i]]$converged <- isTRUE(models[[i]]$valid) && condition <= 1e12 &&
+      is.finite(change[i]) && change[i] < 1e-8
     models[[i]]$valid <- models[[i]]$converged
   }
   attr(models, 'definitions') <- definitions
   models
+}
+
+tabulate_sum <- function(index, value, nbins) {
+  out <- numeric(nbins)
+  z <- rowsum(value, index)
+  out[as.integer(rownames(z))] <- z[, 1]
+  out
 }
 
 population_probability <- function(model, d) {
