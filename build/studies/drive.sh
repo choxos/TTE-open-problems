@@ -19,6 +19,17 @@ WANT="${2:?expected scenario count}"
 MAX_ATTEMPTS="${3:-200}"
 RAW="$STUDY/results/raw"
 
+# One driver per study. Two drivers on the same study each begin an attempt by
+# killing the study's R processes, so each kills the other's run and neither
+# finishes: a second launch looked like progress and was a treadmill.
+LOCK="$STUDY/results/drive.pid"
+mkdir -p "$STUDY/results"
+if [ -f "$LOCK" ] && kill -0 "$(cat "$LOCK")" 2>/dev/null; then
+  echo "[drive] already running as pid $(cat "$LOCK"); not starting a second driver"
+  exit 3
+fi
+echo $$ > "$LOCK"
+
 # Kill R processes left behind by an earlier run of this study, and nothing else.
 #
 # This used to be `pkill -9 -f "R.framework/Resources/bin/exec/R"`, which kills every
