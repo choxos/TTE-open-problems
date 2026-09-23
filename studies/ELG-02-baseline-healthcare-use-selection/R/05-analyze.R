@@ -429,11 +429,11 @@ if (any(primary$n_paired < MIN_PAIRED, na.rm = TRUE)) {
 ## a failure; the first complete run failed its screen in every replicate and
 ## this check did not exist. Timestamp unavailability is a registered state, not
 ## a failure, and is excluded.
-screen_rows <- res[res$method == "policy" & res$view %in% VIEWS, , drop = FALSE]
-screen_failed <- !is.na(screen_rows$screen_fail) &
-  screen_rows$screen_fail != "timestamps-unavailable"
+policy_screen_rows <- res[res$method == "policy" & res$view %in% VIEWS, , drop = FALSE]
+screen_failed <- !is.na(policy_screen_rows$screen_fail) &
+  policy_screen_rows$screen_fail != "timestamps-unavailable"
 screen_fail_rate <- tapply(screen_failed,
-                           paste(screen_rows$scenario, screen_rows$view), mean)
+                           paste(policy_screen_rows$scenario, policy_screen_rows$view), mean)
 if (any(screen_fail_rate > 0.10)) {
   technical_reasons <- c(technical_reasons, sprintf(
     "audit screen failed in more than 10%% of replicates in %d cell-views",
