@@ -24,7 +24,13 @@ fit_probit_matrix <- function(x, y) {
       any(!is.finite(fit$coefficients))) {
     return(list(ok = FALSE, reason = "nonfinite-coefficient"))
   }
-  list(ok = TRUE, fit = fit, coef = fit$coefficients)
+  ## glm.fit returns a bare list, so summary() gives no coefficient table and
+  ## every screen failed as "audit-inference-failed". The model-based covariance
+  ## of a binomial GLM is the inverse of X'WX at the converged working weights.
+  info <- crossprod(x, x * fit$weights)
+  cov <- tryCatch(solve(info), error = function(e) NULL)
+  if (!is.null(cov)) dimnames(cov) <- list(colnames(x), colnames(x))
+  list(ok = TRUE, fit = fit, coef = fit$coefficients, cov = cov)
 }
 
 unresolved_screen <- function(reason) {
@@ -35,10 +41,9 @@ unresolved_screen <- function(reason) {
 }
 
 screen_pvalues <- function(fit, candidates) {
-  sm <- tryCatch(summary(fit$fit)$coefficients, error = function(e) NULL)
-  if (is.null(sm) || !all(candidates %in% rownames(sm))) return(NULL)
-  se <- sm[candidates, "Std. Error"]
-  est <- sm[candidates, "Estimate"]
+  if (is.null(fit$cov) || !all(candidates %in% rownames(fit$cov))) return(NULL)
+  se <- sqrt(diag(fit$cov)[candidates])
+  est <- fit$coef[match(candidates, rownames(fit$cov))]
   if (any(!is.finite(se)) || any(se <= 0) || any(!is.finite(est))) return(NULL)
   2 * stats::pnorm(-abs(est / se))
 }
