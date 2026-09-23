@@ -196,24 +196,6 @@ run_ate <- function(object, dat, cause = NULL) {
   do.call(riskRegression::ate, args)
 }
 
-collect_result_tables <- function(x, path = "root", depth = 0L) {
-  if (depth > 4L) return(list())
-  if (is.data.frame(x) || (is.matrix(x) && !is.null(colnames(x)))) {
-    out <- list(x)
-    names(out) <- path
-    return(out)
-  }
-  if (!is.list(x)) return(list())
-  out <- list()
-  nm <- names(x)
-  if (is.null(nm)) nm <- as.character(seq_along(x))
-  for (i in seq_along(x)) {
-    out <- c(out, collect_result_tables(x[[i]], paste(path, nm[i], sep = "$"),
-                                        depth + 1L))
-  }
-  out
-}
-
 ## Read the standardized risk difference and its standard error from ate's own
 ## difference table. This used to scrape every table in the ate object and keep
 ## the row whose estimate was closest to the target. Another table carries the
