@@ -1,0 +1,253 @@
+---
+title: "Cumulative comparator-arm initiation at the horizon does not determine the attenuation of the observational intention-to-treat analogue"
+subtitle: "A simulation study answering catalog problem CNF-01"
+author: "Ahmad Sofi-Mahmudi"
+date: 2026-07-31
+bibliography: references.bib
+csl: ../../../vancouver.csl
+link-citations: true
+number-sections: true
+execute:
+  echo: false
+  warning: false
+  message: false
+format:
+  gfm:
+    toc: false
+  pdf:
+    documentclass: article
+    geometry: margin=1in
+    fig-pos: "H"
+  odt: default
+---
+
+```{r setup}
+R <- "../results"
+a <- read.csv(file.path(R, "attenuation.csv"))
+p <- read.csv(file.path(R, "performance.csv"))
+m <- read.csv(file.path(R, "matched-pairs.csv"))
+f <- function(x, d = 3) formatC(x, format = "f", digits = d)
+THR <- 0.05
+m$z <- (m$d_att - THR) / m$d_att_mcse
+m120 <- m[m$horizon == 120, ]
+n_pairs <- nrow(m120)
+n_est <- sum(m120$z >= 3)
+inconc <- m120[m120$z < 3, ]
+a120 <- a[a$horizon == 120, ]
+med_h <- aggregate(attenuation ~ horizon, a, median)
+bias_flag <- p[abs(p$bias) > 3 * p$bias_mcse, ]
+off_h <- m[m$horizon < 120, ]
+```
+
+# Abstract {.unnumbered}
+
+**Background.** In an emulated trial of initiating treatment now versus not now,
+patients assigned to "not now" often initiate later, so the observational
+intention-to-treat analogue attenuates with follow-up. Catalog entry CNF-01
+proposes that authors report the cumulative incidence of initiation in the
+comparator arm so readers can judge the attenuation. Whether that number
+determines the attenuation has not been tested.
+
+**Methods.** Discrete-time simulation over 120 months, n = 4000 per replicate,
+confounded baseline initiation and a treatment that works. A 24-scenario
+factorial crossed three convergence levels, two initiation timings tuned to the
+same cumulative initiation at 120 months, prognosis-dependent or independent
+initiation, and two effect-persistence regimes; 1000 replicates each. Truth was
+enumerated at two million individuals per scenario. The registered decision rule
+called the diagnostic insufficient if matched early and late scenarios differed
+in attenuation by at least `r THR`.
+
+**Results.** Standardization and stabilized inverse probability weighting
+estimated the intention-to-treat analogue with absolute bias at most
+`r f(max(abs(p$bias)), 4)` and coverage `r f(min(p$coverage))` to
+`r f(max(p$coverage))`. Median attenuation rose from `r f(med_h$attenuation[1])`
+at one year to `r f(med_h$attenuation[nrow(med_h)])` at ten years, to a maximum
+of `r f(max(a$attenuation))`. At 120 months, matched pairs whose reported
+diagnostic agreed within `r f(max(abs(m120$d_c_obs)), 4)` differed in
+attenuation by `r f(min(m120$d_att))` to `r f(max(m120$d_att))`; `r n_est` of
+`r n_pairs` pairs exceeded the threshold by at least three Monte Carlo standard
+errors.
+
+**Conclusions.** Within this grid, a single cumulative-initiation value at the
+horizon does not determine the attenuation. Timing of initiation and who
+initiates both move it, and the ambiguity is largest where convergence is
+largest.
+
+# Introduction
+
+A target trial emulation of "initiate now" against "do not initiate now"
+contrasts assignment strategies, not sustained treatment
+[@hernan2016bigdata]. Because the comparator arm is not required to stay
+untreated, its members initiate over follow-up and the two strategies converge.
+The resulting risk difference attenuates towards the null with the horizon for
+reasons unrelated to efficacy. Designs that name the later initiation
+explicitly, as dynamic strategies, avoid the open-ended comparator
+[@cain2016switching].
+
+CNF-01 recommends two things: report the cumulative incidence of initiation in
+both arms, and quantify by simulation how much attenuation a given convergence
+produces at each horizon. The second presupposes that the first carries the
+information needed. This study tests that premise. If attenuation at a horizon
+is a function of cumulative comparator-arm initiation at that horizon, a
+conversion table suffices. If two emulations reporting the same value can carry
+materially different attenuation, the reported number is insufficient and more
+must be reported.
+
+# Methods
+
+The study follows the ADEMP structure [@morris2019simulation]. The protocol was
+committed before the run (`studies/CNF-01-convergence-attenuation/protocol.md`).
+
+## Data-generating mechanism
+
+Monthly time to 120 months. Baseline covariates L ~ N(0, 1) and Z ~ Bernoulli(0.4).
+Baseline initiation A0 follows logit P(A0 = 1) = −0.4 + 0.6L + 0.4Z, so
+assignment is confounded. Individuals with A0 = 0 initiate in later months with
+hazard $\operatorname{expit}(\alpha_0 + \alpha_t g(t) + \alpha_L L)$, where $g(t)$ is an early or late timing shape
+and $\alpha_0$ is tuned so that cumulative initiation at 120 months among observed
+non-initiators equals 0.20, 0.45 or 0.70 under both shapes. $\alpha_L$ is 0
+(initiation independent of prognosis) or 0.6 (higher-risk patients initiate
+first). Treated individuals do not discontinue. The monthly event hazard is
+expit(−5.4 + 0.45L + 0.35Z − 0.90E(t)), where exposure E(t) is either current
+treatment (transient) or a 12-month ramp after initiation (legacy). There is no
+loss to follow-up and no competing event.
+
+## Estimands
+
+At horizons of 12, 24, 36, 60, 84 and 120 months: the intention-to-treat
+analogue RD_ITT(h), the risk difference for assignment to initiate at baseline
+against not, with later initiation left to run; the sustained-strategy contrast
+RD_PP(h), always against never treated; the attenuation A(h) = 1 − RD_ITT(h) /
+RD_PP(h); and the diagnostic C(h), cumulative initiation among observed
+comparator-arm patients by h. Truth was enumerated from the mechanism at two
+million individuals per scenario.
+
+## Methods evaluated
+
+Two estimators of RD_ITT(h), to confirm that attenuation is a property of the
+estimand and not of estimation: g-formula standardization over (L, Z) and
+stabilized inverse probability of treatment weighting. The method under test is
+the diagnostic C(120) as a predictor of A(120).
+
+## Design and performance measures
+
+Full factorial, 3 × 2 × 2 × 2 = 24 scenarios, 1000 replicates each. Estimators
+were assessed by bias, empirical and model standard errors and 95% coverage,
+each with a Monte Carlo standard error (MCSE). The decisive quantity is the
+difference in attenuation between the early and late member of each of the 12
+pairs matched on C(120), with its MCSE.
+
+## Registered decision rule
+
+The diagnostic is sufficient if matched pairs differ in attenuation by less
+than `r THR` at every horizon; necessary but not sufficient if they differ by
+`r THR` or more; and the premise fails if the estimators are biased for RD_ITT.
+After the first results review, a pair was counted as exceeding the threshold
+only if its difference exceeded `r THR` by at least three MCSE.
+
+# Results
+
+## Estimation
+
+Both estimators converged in every replicate. Across 288 scenario, horizon and
+method cells, absolute bias was at most `r f(max(abs(p$bias)), 4)` and coverage
+ran from `r f(min(p$coverage))` to `r f(max(p$coverage))`. `r nrow(bias_flag)`
+cells showed bias beyond three MCSE, to a maximum of
+`r f(max(abs(bias_flag$bias) / bias_flag$bias_mcse), 1)` MCSE; the largest such
+bias was `r f(max(abs(bias_flag$bias)), 4)` on a true risk difference of
+`r f(bias_flag$truth_rd_itt[which.max(abs(bias_flag$bias))], 3)`. This does not
+affect the decisive comparison, which uses enumerated truth rather than
+estimates. The premise holds: attenuation here is a property of the estimand.
+
+## Attenuation grows with the horizon
+
+Pooled across scenarios, median attenuation was `r f(med_h$attenuation[1])` at
+12 months, `r f(med_h$attenuation[med_h$horizon == 60])` at 60 months and
+`r f(med_h$attenuation[med_h$horizon == 120])` at 120 months
+(@fig-attenuation). The largest value, `r f(max(a$attenuation))`, arose with
+70% convergence, early timing and prognosis-dependent initiation: more than half
+of the sustained-strategy effect was absent from the intention-to-treat
+analogue. Effect persistence mattered least: transient and legacy regimes
+differed by at most 0.034, at 24 months while the 12-month ramp was under way,
+and by at most 0.014 at 120 months.
+
+![Attenuation of the intention-to-treat analogue by horizon.](../out/fig1-attenuation.png){#fig-attenuation width=95%}
+
+## The decisive comparison
+
+@tbl-pairs shows the 12 matched pairs at 120 months. Their reported diagnostic
+agreed to within `r f(max(abs(m120$d_c_obs)), 4)`, yet attenuation differed by
+`r f(min(m120$d_att))` to `r f(max(m120$d_att))`. `r n_est` of `r n_pairs`
+pairs exceeded `r THR` by at least three MCSE, at
+`r f(min(m120$z[m120$z >= 3]), 0)` to `r f(max(m120$z), 0)` MCSE. The remaining
+`r nrow(inconc)` sat within three MCSE of the threshold and are individually
+inconclusive; all are at 20% convergence, where there is least attenuation to
+misattribute. The difference grew with convergence: 0.053 to 0.070 at 20%,
+0.116 to 0.145 at 45%, and 0.181 to 0.203 at 70% (@fig-diagnostic).
+
+```{r}
+#| label: tbl-pairs
+#| tbl-cap: "Matched early and late scenarios at 120 months. d_att is early minus late attenuation; z is its distance above 0.05 in Monte Carlo standard errors."
+t <- m120[, c("target_c120", "alpha_l_key", "persistence", "c_obs_early",
+              "c_obs_late", "attenuation_early", "attenuation_late", "d_att",
+              "d_att_mcse", "z")]
+names(t) <- c("C(120)", "initiation", "persistence", "C early", "C late",
+              "A early", "A late", "d_att", "MCSE", "z")
+knitr::kable(t, digits = c(2, 0, 0, 4, 4, 3, 3, 3, 4, 1), row.names = FALSE)
+```
+
+![Attenuation against the reported diagnostic. If the diagnostic determined attenuation, the early and late curves would coincide.](../out/fig2-diagnostic.png){#fig-diagnostic width=95%}
+
+## Who initiates
+
+Prognosis-dependent initiation raised attenuation at 70% convergence from
+`r f(max(a120$attenuation[a120$alpha_l_key == "neutral"]))` to
+`r f(max(a120$attenuation[a120$alpha_l_key == "prognostic"]))`. It also
+separated the reported diagnostic from initiation under assignment: among
+observed non-initiators C(120) was 0.700, while cumulative initiation in the
+whole population under assignment to "not now" was
+`r f(mean(a120$c_true[a120$alpha_l_key == "prognostic" & a120$target_c120 == 0.7]))`.
+Baseline confounding leaves lower-risk patients in the observed comparator arm,
+so the arm-level number understates the convergence of the assigned strategy.
+
+# Discussion
+
+Reporting cumulative comparator-arm initiation at the horizon is not enough to
+recover the attenuation it is meant to explain. Two emulations that report the
+same value can differ in attenuation by up to 0.20 on a scale where the whole
+effect is 1, because the value is blind to when the comparator arm initiated and
+to who initiated. The ambiguity is largest exactly where attenuation is largest.
+
+A report that lets a reader interpret a null or small intention-to-treat
+estimate therefore needs the initiation curve over follow-up, not its endpoint,
+and some statement of how initiation relates to prognosis. Where the question
+is about sustained treatment, a per-protocol or dynamic-strategy estimand
+answers it directly [@hernan2016bigdata; @cain2016switching].
+
+## What this study does not establish
+
+The diagnostic was held fixed only at 120 months. At earlier horizons the early
+and late scenarios differ in C(h) by up to `r f(max(abs(off_h$d_c_obs)))`, so
+those contrasts are not comparisons at equal C(h). The study shows that C(120)
+alone is insufficient in this grid. It does not show that reporting C is
+necessary, that the full curve is sufficient, or that a general conversion from
+convergence to attenuation exists. Convergence runs in one direction only: the
+comparator initiates and the treated arm never discontinues. There is no loss to
+follow-up or competing event. Results are on the risk-difference scale; a
+hazard ratio would add non-collapsibility to the mechanism under study.
+
+## Review
+
+The design was reviewed before the run. The results were reviewed in three
+rounds, each in a fresh context that saw the catalog entry, the protocol and the
+result files but not this summary. Round 1 required Monte Carlo uncertainty on
+the decisive quantity, which reduced the pairs clearing the threshold from 12 to
+9. Round 2 found an arithmetic error in how the study reported bias: it was described as a share of the attenuation but computed against the risk difference. Round 3
+returned supported with three minor findings on claim strength.
+
+# Data and code availability {.unnumbered}
+
+Code, protocol and result files: <https://github.com/choxos/TTE-open-problems/tree/main/studies/CNF-01-convergence-attenuation>.
+Raw replicate files regenerate from the recorded seed.
+
+# References {.unnumbered}
