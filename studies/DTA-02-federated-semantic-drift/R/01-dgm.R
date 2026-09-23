@@ -232,10 +232,13 @@ component_summaries <- function(tab) {
 basic_contingencies <- function(tab, mapping, pair_id) {
   affected <- affected_sites(mapping, pair_id)
 
+  ## aggregate() needs every grouping vector at the data's length; a scalar
+  ## pred stopped it on every call and every method was written as
+  ## validation-failed.
   e1 <- aggregate(tab$n_elig,
-                  list(site = tab$site, pred = 1L, true = tab$e_ref), sum)
+                  list(site = tab$site, pred = rep(1L, nrow(tab)), true = tab$e_ref), sum)
   e0 <- aggregate(tab$n - tab$n_elig,
-                  list(site = tab$site, pred = 0L, true = tab$e_ref), sum)
+                  list(site = tab$site, pred = rep(0L, nrow(tab)), true = tab$e_ref), sum)
   names(e1)[4] <- names(e0)[4] <- 'n'
   eligibility <- rbind(e0, e1)
   eligibility$component <- 'eligibility'
