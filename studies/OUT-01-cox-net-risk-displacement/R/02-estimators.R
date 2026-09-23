@@ -169,7 +169,16 @@ cox_failure_reasons <- function(fit, label) {
       reasons <- c(reasons, paste0(label, " information condition number"))
     }
   }
-  base <- try(survival::basehaz(fit, centered = FALSE), silent = TRUE)
+  ## basehaz() warns that a default curve is not useful for a model with
+  ## interactions. This check only asks whether the baseline hazard is finite,
+  ## and the warning would otherwise be recorded in every replicate and count
+  ## toward the registered warning frequency.
+  base <- try(withCallingHandlers(
+    survival::basehaz(fit, centered = FALSE),
+    warning = function(w) {
+      if (grepl("contains interactions", conditionMessage(w), fixed = TRUE))
+        invokeRestart("muffleWarning")
+    }), silent = TRUE)
   if (inherits(base, "try-error") || !nrow(base) ||
       any(!is.finite(base$hazard))) {
     reasons <- c(reasons, paste0(label, " cumulative baseline hazard"))
