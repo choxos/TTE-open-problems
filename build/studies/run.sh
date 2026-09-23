@@ -14,15 +14,27 @@
 
 set -uo pipefail
 
-# Kill orphaned R workers before starting. Every killed run leaves its
-# multisession workers behind, and they never exit. Sixteen scenarios into the
-# first study the load average was 125 and a scenario that takes 50 seconds was
-# taking more than ten minutes, which looked like a slow simulation and was
-# actually a treadmill of my own making.
-pkill -9 -f "R.framework/Resources/bin/exec/R --no-echo" 2>/dev/null || true
+# Kill R processes left behind by an earlier run of this study, and nothing else.
+#
+# This used to be `pkill -9 -f "R.framework/Resources/bin/exec/R"`, which kills every
+# R process on the machine: other projects' test suites, other simulation studies, an
+# interactive session. Multisession workers inherit the working directory of the run
+# that spawned them, so the study directory identifies them exactly.
+kill_study_r() {
+  local dir; dir="$(cd "$1" && pwd -P)"
+  for p in $(pgrep -f "R.framework/Resources/bin/exec/R" 2>/dev/null); do
+    [ "$(lsof -a -p "$p" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p')" = "$dir" ] \
+      && kill -9 "$p" 2>/dev/null
+  done
+  return 0
+}
 
 D="${1:?pass a study directory}"
 SLICE="${2:-}"
+# Orphaned workers from an earlier killed run never exit. Sixteen scenarios into the
+# first study the load average was 125 and a scenario that takes 50 seconds was
+# taking more than ten minutes.
+kill_study_r "$D"
 cd "$D" || exit 1
 NAME="$(basename "$D")"
 

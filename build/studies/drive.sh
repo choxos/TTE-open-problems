@@ -19,6 +19,21 @@ WANT="${2:?expected scenario count}"
 MAX_ATTEMPTS="${3:-200}"
 RAW="$STUDY/results/raw"
 
+# Kill R processes left behind by an earlier run of this study, and nothing else.
+#
+# This used to be `pkill -9 -f "R.framework/Resources/bin/exec/R"`, which kills every
+# R process on the machine: other projects' test suites, other simulation studies, an
+# interactive session. Multisession workers inherit the working directory of the run
+# that spawned them, so the study directory identifies them exactly.
+kill_study_r() {
+  local dir; dir="$(cd "$1" && pwd -P)"
+  for p in $(pgrep -f "R.framework/Resources/bin/exec/R" 2>/dev/null); do
+    [ "$(lsof -a -p "$p" -d cwd -Fn 2>/dev/null | sed -n 's/^n//p')" = "$dir" ] \
+      && kill -9 "$p" 2>/dev/null
+  done
+  return 0
+}
+
 count() { ls "$RAW"/scenario-*.rds 2>/dev/null | wc -l | tr -d ' '; }
 
 stalled=0
@@ -29,7 +44,7 @@ for attempt in $(seq 1 "$MAX_ATTEMPTS"); do
     exit 0
   fi
   echo "[drive] attempt $attempt, $have of $WANT scenarios, $(date '+%H:%M:%S')"
-  pkill -9 -f "R.framework/Resources/bin/exec/R" 2>/dev/null
+  kill_study_r "$STUDY"
   sleep 2
   ( cd "$STUDY" && Rscript R/04-run.R ) 2>&1 | tail -n 40
 

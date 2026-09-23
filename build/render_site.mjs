@@ -139,6 +139,15 @@ const REPO = 'https://github.com/choxos/TTE-open-problems'
 // our own work and carries our own uncertainty, so it is labelled as such and
 // kept structurally separate from the audited catalog entry above it, and it
 // always states what it did not answer.
+// A study that is not complete is in one of these states. Blocked and inconclusive
+// are results in their own right and are named as such rather than folded into
+// "designed", which would read as work not yet attempted.
+const STUDY_HEADINGS = {
+  running: 'A study is running',
+  blocked: 'A study is blocked',
+  inconclusive: 'A study ran and was inconclusive',
+}
+
 function studySection(s) {
   if (!s) return []
   // Keys match FORMATS in build/studies/publish.py, where Markdown is 'gfm'.
@@ -151,9 +160,11 @@ function studySection(s) {
     return [
       '## Our study', '',
       '::: {.callout-note}',
-      `## ${s.status === 'running' ? 'A study is running' : 'A study is designed'}`,
+      `## ${STUDY_HEADINGS[s.status] || 'A study is designed'}`,
       '',
       `**Question.** ${s.question}`,
+      '',
+      s.status_note ? `**Status.** ${s.status_note}` : null,
       '',
       s.design ? `**Design.** ${s.design}` : null,
       '',
@@ -670,7 +681,7 @@ catalog is about.
     out.push('## Under way', '')
     out.push('::: {.table-scroll}', '', '| Problem | Study | Status |', '|---|---|---|')
     for (const [pid, s] of active) {
-      out.push(`| ${link(pid)} | ${s.title} | ${s.status} |`)
+      out.push(`| ${link(pid)} | ${s.title} | ${s.status}${s.status_note ? `: ${s.status_note}` : ''} |`)
     }
     out.push('', ':::', '')
   }
