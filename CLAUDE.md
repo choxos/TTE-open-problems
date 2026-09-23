@@ -128,6 +128,9 @@ gate. Keep writing those, and when one fires, believe it before believing the st
   bound as the estimate, OUT-01 dispatched on the name of the first formal, and SEQ-01 tried
   three orders and returned whichever failed to raise an error, which turns a guard in the
   callee into a selector and puts the wrong order first. Call the function.
+  The same goes for results: OUT-01 scraped every table in an `ate` object for the
+  row nearest its point estimate and took a standard error 30% too small from the
+  wrong one. Read the documented field.
 - **`sample(x)` permutes `seq_len(x)` when `x` has length one.** So `sample(ids)` with a
   single index of 37 returns a 37-element permutation rather than `37`, and a bootstrap
   stratum or cross-fitting fold of size one silently writes to rows that were never in it.

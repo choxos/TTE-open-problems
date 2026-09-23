@@ -593,8 +593,11 @@ ltmle_regime <- function(wide, observed_u, regime) {
     error = function(e) e
   )
   if (inherits(fit, 'error')) return(list(error = conditionMessage(fit)))
-  estimate <- find_named_numeric(fit$estimates, 'tmle')
-  if (is.null(estimate)) estimate <- find_named_numeric(fit, 'tmle')
+  ## ltmle returns a named estimates vector. Read it by name; the recursive
+  ## search that used to back this up could return any number named "tmle"
+  ## anywhere in the fit.
+  estimate <- if (is.numeric(fit$estimates) && "tmle" %in% names(fit$estimates))
+    unname(fit$estimates[["tmle"]]) else NULL
   if (is.null(estimate) || length(estimate) != 1L)
     return(list(error = 'ltmle TMLE estimate was not found'))
   ic <- extract_ltmle_ic(fit, nrow(wide))

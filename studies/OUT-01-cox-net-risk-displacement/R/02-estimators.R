@@ -214,42 +214,24 @@ collect_result_tables <- function(x, path = "root", depth = 0L) {
   out
 }
 
+## Read the standardized risk difference and its standard error from ate's own
+## difference table. This used to scrape every table in the ate object and keep
+## the row whose estimate was closest to the target. Another table carries the
+## same point estimates with smaller standard errors, so the scraper returned
+## those: 0.0067 and 0.0092 at 36 and 60 months where the difference table,
+## the bootstrap and the replicate spread all give about 0.009 and 0.014. Every
+## interval was 30% too narrow, and the registered bootstrap check caught it.
 extract_ate_se <- function(ate_object, target_estimates) {
-  tables <- collect_result_tables(ate_object)
-  candidates <- list()
-  for (tab in tables) {
-    tab <- as.data.frame(tab)
-    if (is.null(names(tab))) next
-    normalized <- tolower(gsub("[^a-z0-9]", "", names(tab)))
-    time_col <- which(normalized %in% c("time", "times"))[1]
-    se_col <- which(normalized %in% c("se", "stderr", "standarderror") |
-                      grepl("^seestimate$", normalized))[1]
-    est_col <- which(normalized %in% c("estimate", "est", "riskdifference",
-                                       "riskdiff", "difference", "risk"))[1]
-    if (any(is.na(c(time_col, se_col, est_col)))) next
-    tt <- suppressWarnings(as.numeric(as.character(tab[[time_col]])))
-    ee <- suppressWarnings(as.numeric(as.character(tab[[est_col]])))
-    ss <- suppressWarnings(as.numeric(as.character(tab[[se_col]])))
-    chosen_se <- numeric(length(HORIZONS))
-    score <- 0
-    valid <- TRUE
-    for (j in seq_along(HORIZONS)) {
-      rows <- which(abs(tt - HORIZONS[j]) < 1e-8 & is.finite(ee) & is.finite(ss))
-      if (!length(rows)) {
-        valid <- FALSE
-        break
-      }
-      distance <- pmin(abs(ee[rows] - target_estimates[j]),
-                       abs(-ee[rows] - target_estimates[j]))
-      k <- rows[which.min(distance)]
-      chosen_se[j] <- abs(ss[k])
-      score <- score + min(distance)
-    }
-    if (valid) candidates[[length(candidates) + 1L]] <-
-      list(score = score, se = chosen_se)
-  }
-  if (!length(candidates)) stop("could not extract standardized contrast SE")
-  candidates[[which.min(vapply(candidates, `[[`, numeric(1), "score"))]]$se
+  d <- as.data.frame(ate_object$diffRisk)
+  if (!all(c("time", "A", "B", "estimate", "se") %in% names(d)))
+    stop("ate diffRisk table has an unexpected layout")
+  if ("estimator" %in% names(d)) d <- d[d$estimator == "GFORMULA", , drop = FALSE]
+  d <- d[as.character(d$A) == "0" & as.character(d$B) == "1", , drop = FALSE]
+  k <- match(HORIZONS, d$time)
+  if (anyNA(k)) stop("ate diffRisk lacks a registered horizon")
+  if (max(abs(d$estimate[k] - target_estimates)) > 1e-8)
+    stop("ate difference does not match the point estimate")
+  d$se[k]
 }
 
 extract_iid_payload <- function(x) {
