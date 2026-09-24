@@ -1,0 +1,225 @@
+---
+title: "Unrecorded eligibility changes who is eligible more than it changes the effect among them"
+subtitle: "A simulation study answering the structural part of catalog problem ELG-01"
+author: "Ahmad Sofi-Mahmudi"
+date: 2026-09-24
+bibliography: references.bib
+csl: ../../../vancouver.csl
+link-citations: true
+number-sections: true
+execute:
+  echo: false
+  warning: false
+  message: false
+format:
+  gfm:
+    toc: false
+  pdf:
+    documentclass: article
+    geometry: margin=1in
+    pdf-engine: xelatex
+    mainfont: "STIX Two Text"
+    fig-pos: "H"
+  odt: default
+---
+
+```{r setup}
+R <- "../results"
+f <- function(x, d = 3) formatC(x, format = "f", digits = d)
+dec <- read.csv(file.path(R, "decision.csv"))
+perf <- read.csv(file.path(R, "performance.csv"))
+prev <- read.csv(file.path(R, "prevalence-performance.csv"))
+td <- read.csv(file.path(R, "target-discrepancy.csv"))
+perf$mv <- paste(perf$method, perf$variant)
+prev$mv <- paste(prev$method, prev$variant)
+full <- perf[!grepl("_m50$", perf$method), ]
+pair <- prev[prev$effect == "heterogeneous" & prev$kappa == 1.1 &
+             prev$validation_n == 100 & prev$m == 0.5, ]
+pe <- tapply(pair$truth_pe, pair$lambda_key, mean)
+mar <- pair[pair$mv %in% c("mar_ipaw primary", "mi_continuous m20",
+                           "mi_indicator m20") & pair$lambda_key == "lambda_log4", ]
+val <- pair[pair$information_set == "validation", ]
+het <- td[td$effect == "heterogeneous" & td$m == 0.5 & td$kappa == 1.1 &
+          td$validation_n == 100, ]
+```
+
+# Abstract {.unnumbered}
+
+**Background.** When the measurement that defines eligibility is missing for
+some patients, an emulation cannot tell from its records who was eligible.
+Catalog entry ELG-01 states that latent eligibility makes the target population
+unidentified without validation data. We asked whether that ambiguity changes
+the treatment effect materially, and how estimators with and without internal
+validation perform.
+
+**Methods.** Paired full-data laws with identical observed records but
+different eligibility among people with unrecorded measurements (a shift of
+log odds λ of 0, log 2 or log 4) were crossed with the share unrecorded (0.20,
+0.50), the expected validation sample (100, 400), a homogeneous or
+heterogeneous treatment effect, and whether comorbidity, the effect modifier,
+enters eligibility directly: 48 scenarios, 4000 replicates each, 4000 people
+per replicate. The registered structural contrast Δ~ID~ compares the true
+risk difference among the eligible at λ = log 4 and λ = 0 in the pair most
+likely to show a difference.
+
+**Results.** Δ~ID~ was `r f(dec$delta_id, 5)` (90% interval
+`r f(dec$ci90_lo, 6)` to `r f(dec$ci90_hi, 6)`), inside the registered
+equivalence band of ±0.005: not materially different. The same shift moved the
+true prevalence of eligibility from `r f(pe[["lambda_0"]])` to
+`r f(pe[["lambda_log4"]])`, which estimators assuming eligibility is missing at
+random missed by up to `r f(max(abs(mar$bias)))`. Every estimator's risk
+difference was unbiased within ±0.005 in every scenario.
+
+**Conclusions.** In this design, unrecorded eligibility changes how many people
+are eligible far more than the effect among them. Validation data are needed to
+count the eligible; the effect estimate is robust unless the hidden eligibility
+shifts the share of an effect modifier substantially.
+
+# Introduction
+
+Eligibility criteria defined by a laboratory value or a clinical assessment are
+often unrecorded for part of the cohort. Restricting to recorded eligibles, or
+imputing eligibility under a missing-at-random assumption, then targets a
+population that may differ from the truly eligible one
+[@tompsett2023missing; @benz2025missing]. Catalog entry ELG-01 states that
+without validation data the eligible population is not identified. That is true
+by construction: two data-generating laws can produce identical records and
+different eligibility among the unrecorded. Whether the difference matters for
+the effect estimate is a separate question, and it is the one this study asks.
+
+# Methods
+
+The study follows the ADEMP structure [@morris2019simulation]; the protocol and
+decision rule were registered before any replicate was drawn.
+
+## Data-generating mechanism
+
+Each replicate has 4000 people with baseline covariates age, sex, specialist
+access H, comorbidity C and recorded treatment intent, and a single baseline
+treatment decision. A clinical recording indicator R is drawn with P(R = 0)
+calibrated to m (0.20 or 0.50). A latent laboratory value G = 45 + 5T defines
+eligibility E = 1 when G is at least 45, where T is logistic with linear predictor
+0.85 − 0.65Z − κC + 0.25S + 0.50H + λ(1 − R); κ is 0 or 1.10. Changing λ
+changes eligibility only among people whose value is unrecorded, and leaves
+every observed variable bitwise identical, so paired λ arms are observationally
+equivalent. The 60-month outcome has baseline risk depending on covariates and
+a treatment effect of −0.06 for everyone (homogeneous) or −0.04 without and
+−0.12 with comorbidity (heterogeneous). A Bernoulli validation sample with known
+inclusion probability reveals G for some unrecorded people.
+
+## Estimands and methods
+
+The primary estimand is the 60-month risk difference among the truly eligible,
+RD~E~; the complete-case analysis is evaluated against the risk difference
+among recorded eligibles, and the difference between the two is reported as a
+target discrepancy. Truth was computed from ten million simulated people per
+law. Methods without validation: complete case; multiple imputation of G or of
+E under missing at random (M = 20, with an M = 50 check); inverse probability
+of ascertainment weighting; and a pattern-mixture sensitivity analysis at
+assumed λ\* of 0, log 2 and log 4. Methods with validation: known-design
+two-phase weighting, validation-anchored fractional imputation and an augmented
+two-phase estimator. An oracle with full eligibility is the benchmark.
+
+## Decision rule
+
+The structural result uses one prespecified pair: heterogeneous effect,
+m = 0.50, κ = 1.10, λ = log 4 against λ = 0. It is material if the 95% paired
+Monte Carlo interval for Δ~ID~ lies wholly outside ±0.010, and not materially
+different if the 90% interval lies wholly within ±0.005, provided the observed
+records and the no-validation method outputs are identical across the pair. An
+estimator's bias is material if its 95% interval lies wholly outside ±0.010 and
+equivalent if its 90% interval lies wholly within ±0.005.
+
+# Results
+
+## Structural contrast
+
+The observed records and every no-validation method's output were identical
+across the pair. Δ~ID~ was `r f(dec$delta_id, 5)`, with Monte Carlo standard
+error `r formatC(dec$mcse, format = "e", digits = 1)` and a 90% interval of
+`r f(dec$ci90_lo, 6)` to `r f(dec$ci90_hi, 6)`, wholly inside ±0.005. The
+registered classification is not materially different.
+
+Latent eligibility did change the population. In the decisive pair, the true
+prevalence of eligibility was `r f(pe[["lambda_0"]])` at λ = 0,
+`r f(pe[["lambda_log2"]])` at log 2 and `r f(pe[["lambda_log4"]])` at log 4.
+The effect among the eligible hardly moved because the share of comorbid
+patients among them changed by less than one percentage point: with effects of
+−0.04 and −0.12, a Δ~ID~ of −0.0007 corresponds to a shift of about 0.008 in
+that share.
+
+## Estimators
+
+Every estimator's bias for its declared risk difference was classed equivalent
+in all 48 scenarios (@tbl-methods). The largest absolute bias at M = 20 or
+without imputation was `r f(max(abs(full$bias)), 4)`, and coverage ran from
+`r f(min(full$coverage))` to `r f(max(full$coverage))`. The complete-case
+analysis estimates the effect among recorded eligibles, which differed from the
+effect among all eligibles by at most `r f(max(abs(td$target_discrepancy)), 4)`.
+
+```{r}
+#| label: tbl-methods
+#| tbl-cap: "Risk-difference performance across the 48 scenarios: largest absolute bias and the range of coverage of the nominal 95% interval. The M = 50 imputation check ran on 80 replicates per scenario and is not shown."
+t <- do.call(rbind, lapply(split(full, full$mv), function(d) data.frame(
+  method = d$mv[1], information = d$information_set[1],
+  max_abs_bias = f(max(abs(d$bias)), 4),
+  coverage = paste(f(min(d$coverage)), "to", f(max(d$coverage))))))
+knitr::kable(t[order(t$information, t$method), ], row.names = FALSE)
+```
+
+Prevalence tells the other half (@tbl-prevalence). Without validation, the
+missing-at-random estimators and the sensitivity analysis at λ\* = 0 recovered
+prevalence at λ = 0 but underestimated it by up to
+`r f(max(abs(mar$bias)))` at λ = log 4. The sensitivity analysis recovered it
+only when its assumed λ\* equaled the true λ. The three validation-based
+estimators were within `r f(max(abs(val$bias)), 4)` at every λ.
+
+```{r}
+#| label: tbl-prevalence
+#| tbl-cap: "Bias in the prevalence of eligibility by the true λ, in the decisive setting (heterogeneous effect, m = 0.50, κ = 1.10, expected validation sample 100). The complete-case row is the recorded yield, which is not a prevalence estimator."
+w <- tapply(pair$bias, list(pair$mv, pair$lambda_key), mean)
+w <- w[!grepl("_m50", rownames(w)), c("lambda_0", "lambda_log2", "lambda_log4")]
+colnames(w) <- c("λ = 0", "λ = log 2", "λ = log 4")
+knitr::kable(round(w, 4))
+```
+
+# Discussion
+
+The structural claim of ELG-01 holds: records alone cannot tell which of two
+eligibility laws produced them. Whether that matters depends on the quantity.
+The number of eligible people is not identified, and estimators that assume
+eligibility is missing at random miss it by as much as the hidden shift moves
+it. The risk difference among the eligible differs by less than 0.001 between
+laws that produce the same records, because the effect differs across patients only through comorbidity and hidden
+eligibility barely changes comorbidity's share. For the effect to change by
+0.010 with these effect sizes, the share would have to move by about 12
+percentage points.
+
+A validation sample with known inclusion probabilities repairs both quantities.
+Without one, an emulation can report the effect among the eligible with some
+confidence and the size of the eligible population with none, unless the
+missing measurement is itself strongly tied to who benefits.
+
+## What this study does not establish
+
+The result is conditional on one baseline threshold criterion, a binary
+60-month outcome, correctly specified models and a single effect modifier. It
+cannot estimate a real-world λ or establish empirical materiality. It does not
+cover external, nonprobability or unknown-probability validation, validation
+measured with error, time-varying eligibility, treatment switching, censoring
+or unmeasured treatment confounding. A hidden eligibility mechanism tied more
+strongly to the effect modifier than this one could change the effect
+materially.
+
+## Review
+
+The design was reviewed and revised before any code was written. An earlier
+version of the analysis called the bias-eliminated coverage function with its
+arguments in the wrong order; that was fixed across all studies before this
+run. The results have not yet been reviewed.
+
+# Data and code availability {.unnumbered}
+
+Code, protocol and result files: <https://github.com/choxos/TTE-open-problems/tree/main/studies/ELG-01-latent-eligibility-validation>.
+
+# References {.unnumbered}

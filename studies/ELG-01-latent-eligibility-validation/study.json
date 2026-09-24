@@ -1,0 +1,38 @@
+{
+ "problem_id": "ELG-01",
+ "also_bears_on": [],
+ "slug": "ELG-01-latent-eligibility-validation",
+ "title": "Unrecorded eligibility changes who is eligible more than it changes the effect among them",
+ "status": "complete",
+ "week": 7,
+ "question": "ELG-01 says that when the measurement defining eligibility is missing for some patients, the eligible population is not identified without validation data. When two data-generating laws produce identical records but differ in eligibility among the unrecorded, can they imply materially different 60-month risk differences among the truly eligible? And how do estimators with and without an internal validation sample perform?",
+ "design": "Paired full-data laws whose observed records are bitwise identical but whose eligibility among people with unrecorded measurements differs by a log-odds shift of 0, log 2 or log 4, crossed with the share unrecorded (0.20, 0.50), the expected validation sample (100, 400), a homogeneous or heterogeneous treatment effect, and whether the effect modifier enters eligibility directly: 48 scenarios, 4000 replicates each, 4000 people per replicate. Truth from ten million simulated people per law.",
+ "estimand": "The 60-month risk difference among the truly eligible; the prespecified structural contrast Delta_ID between the log 4 and 0 arms of the most sensitive pair; the prevalence of eligibility; and, for the complete-case analysis, the risk difference among recorded eligibles",
+ "methods_compared": [
+  "complete case",
+  "missing-at-random multiple imputation of the laboratory value or the eligibility indicator",
+  "inverse probability of ascertainment weighting",
+  "pattern-mixture sensitivity analysis at assumed shifts of 0, log 2 and log 4",
+  "known-design two-phase weighting with a validation sample",
+  "validation-anchored fractional imputation",
+  "augmented two-phase estimator",
+  "no-validation partial-identification bounds",
+  "oracle with full eligibility"
+ ],
+ "n_sim": "4000 per scenario, 48 scenarios in 8 run cells, 3,264,000 rows, 0 replicate errors",
+ "date_completed": "2026-09-24",
+ "answer": "Not materially different, within this design. The registered structural contrast Delta_ID was -0.00066 (90% interval -0.000661 to -0.000660), inside the equivalence band of plus or minus 0.005, and the observed records and every no-validation method output were identical across the pair as required. Latent eligibility changed who was eligible, not the effect among them: the same shift raised the true prevalence of eligibility from 0.705 to 0.787, which estimators assuming eligibility is missing at random missed by up to 0.082, while every estimator's risk difference was unbiased within plus or minus 0.005 in all 48 scenarios.",
+ "findings": [
+  "The effect barely moves because the effect modifier's share barely moves. With effects of -0.04 and -0.12 by comorbidity, a Delta_ID of -0.0007 corresponds to a shift of about 0.008 in the comorbid share among the eligible; changing the effect by 0.010 would need a shift of about 12 percentage points.",
+  "The size of the eligible population is not recoverable without validation. Missing-at-random imputation, ascertainment weighting and the sensitivity analysis at an assumed shift of 0 underestimated prevalence by up to 0.082 at the largest true shift; the sensitivity analysis was right only when its assumed shift equaled the truth.",
+  "An internal validation sample with known inclusion probabilities repairs both quantities: the two-phase, fractional-imputation and augmented estimators were within 0.0015 of the true prevalence at every shift and unbiased for the risk difference.",
+  "The complete-case analysis estimates the effect among recorded eligibles, which differed from the effect among all eligibles by at most 0.009 across the grid."
+ ],
+ "not_answered": "The result is conditional on one baseline threshold criterion, a binary 60-month outcome, correctly specified models and a single effect modifier whose link to hidden eligibility is moderate. It cannot estimate a real-world shift or establish empirical materiality, and a hidden eligibility mechanism tied more strongly to the effect modifier could change the effect materially. It does not cover external, nonprobability or unknown-probability validation, validation measured with error, time-varying eligibility, treatment switching, censoring or unmeasured treatment confounding.",
+ "peer_review": "The design was reviewed and revised before any code was written. An earlier version of the analysis passed interval bounds to the bias-eliminated coverage function in the wrong order; that was fixed across all studies before this run. Results review is pending.",
+ "downloads": {
+  "gfm": "studies/ELG-01-latent-eligibility-validation/out/ELG-01.md",
+  "pdf": "studies/ELG-01-latent-eligibility-validation/out/ELG-01.pdf",
+  "odt": "studies/ELG-01-latent-eligibility-validation/out/ELG-01.odt"
+ }
+}
