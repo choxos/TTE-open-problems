@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-8544745414cade1a69674f78a9fe5522.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-5cc4517f93efc704f9e8f922f0fd1f56.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-1861f82967d66f654154b492be169a53.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-d72254f1cca27c889edf43d9473ffb8d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-1861f82967d66f654154b492be169a53.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": true,
@@ -446,6 +446,19 @@ ul.task-list li input[type="checkbox"] {
 <p>Bites on: <span class="chip chip-axis">Eligibility</span><br>
 Seen in: <span class="chip chip-axis">EHR</span> <span class="chip chip-axis">Linked records</span> <span class="chip chip-axis">Claims</span></p>
 </div>
+<div class="callout callout-style-simple callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>A study has been run against this problem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Not materially different, within this design. The registered structural contrast Delta_ID was -0.00066 (90% interval -0.000661 to -0.000660), inside the equivalence band of plus or minus 0.005, and the observed records and every no-validation method output were identical across the pair as required. Latent eligibility changed who was eligible, not the effect among them: the same shift raised the true prevalence of eligibility from 0.705 to 0.787, which estimators assuming eligibility is missing at random missed by up to 0.082, while every estimator’s risk difference was unbiased within plus or minus 0.005 in all 48 scenarios. <a href="#our-study">Read the study below</a>.</p>
+</div>
+</div>
 <section id="statement" class="level2">
 <h2 class="anchored" data-anchor-id="statement">Statement</h2>
 <p>Trial eligibility is assessed at a screening visit; a database records what a clinician happened to order. Restricting an emulation to patients with complete eligibility information therefore selects on laboratory testing, clinical documentation and specialist access, which differ systematically from the excluded patients. Weighting methods for missing eligibility have recently been developed and the literature remains small. The harder version of the problem is that eligibility is latent rather than merely missing: an absent creatinine value is consistent both with a patient who would have failed the criterion and with one who was never tested, and the missingness itself may depend on treatment anticipation or on the impending outcome.</p>
@@ -483,19 +496,38 @@ Seen in: <span class="chip chip-axis">EHR</span> <span class="chip chip-axis">Li
 </section>
 <section id="our-study" class="level2">
 <h2 class="anchored" data-anchor-id="our-study">Our study</h2>
-<div class="callout callout-style-simple callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>A study is running
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Question.</strong> When two full-data laws have exactly the same no-validation observed-data distribution but different eligibility among people with unrecorded measurements, can they imply materially different 60-month marginal risk differences among truly eligible people? Conditional on internal Bernoulli validation with known inclusion probabilities, what are the operating characteristics of model-based, design-based, augmented, sensitivity-analysis, and partial-identification methods?</p>
-<p><strong>Status.</strong> its structural verdict is fixed by the enumerated truth: the latent-eligibility contrast is -0.0007, inside the registered equivalence band; 4000 replicates in each of 8 cells (about 13 CPU-hours) now evaluate the individual methods</p>
-</div>
+<div class="study-result">
+<p><strong>Unrecorded eligibility changes who is eligible more than it changes the effect among them</strong></p>
+<p><strong>The question put to it.</strong> ELG-01 says that when the measurement defining eligibility is missing for some patients, the eligible population is not identified without validation data. When two data-generating laws produce identical records but differ in eligibility among the unrecorded, can they imply materially different 60-month risk differences among the truly eligible? And how do estimators with and without an internal validation sample perform?</p>
+<p><strong>What it found.</strong> Not materially different, within this design. The registered structural contrast Delta_ID was -0.00066 (90% interval -0.000661 to -0.000660), inside the equivalence band of plus or minus 0.005, and the observed records and every no-validation method output were identical across the pair as required. Latent eligibility changed who was eligible, not the effect among them: the same shift raised the true prevalence of eligibility from 0.705 to 0.787, which estimators assuming eligibility is missing at random missed by up to 0.082, while every estimator’s risk difference was unbiased within plus or minus 0.005 in all 48 scenarios.</p>
+<p><strong>Results.</strong></p>
+<ul>
+<li>The effect barely moves because the effect modifier’s share barely moves. With effects of -0.04 and -0.12 by comorbidity, a Delta_ID of -0.0007 corresponds to a shift of about 0.008 in the comorbid share among the eligible; changing the effect by 0.010 would need a shift of about 12 percentage points.</li>
+<li>The size of the eligible population is not recoverable without validation. Missing-at-random imputation, ascertainment weighting and the sensitivity analysis at an assumed shift of 0 underestimated prevalence by up to 0.082 at the largest true shift; the sensitivity analysis was right only when its assumed shift equaled the truth.</li>
+<li>An internal validation sample with known inclusion probabilities repairs both quantities: the two-phase, fractional-imputation and augmented estimators were within 0.0015 of the true prevalence at every shift and unbiased for the risk difference.</li>
+<li>The complete-case analysis estimates the effect among recorded eligibles, which differed from the effect among all eligibles by at most 0.009 across the grid.</li>
+</ul>
+<p><strong>Design.</strong></p>
+<dl>
+<dt>Estimand</dt>
+<dd>
+The 60-month risk difference among the truly eligible; the prespecified structural contrast Delta_ID between the log 4 and 0 arms of the most sensitive pair; the prevalence of eligibility; and, for the complete-case analysis, the risk difference among recorded eligibles
+</dd>
+<dt>Methods compared</dt>
+<dd>
+complete case, missing-at-random multiple imputation of the laboratory value or the eligibility indicator, inverse probability of ascertainment weighting, pattern-mixture sensitivity analysis at assumed shifts of 0, log 2 and log 4, known-design two-phase weighting with a validation sample, validation-anchored fractional imputation, augmented two-phase estimator, no-validation partial-identification bounds, oracle with full eligibility
+</dd>
+<dt>Data-generating mechanism</dt>
+<dd>
+Paired full-data laws whose observed records are bitwise identical but whose eligibility among people with unrecorded measurements differs by a log-odds shift of 0, log 2 or log 4, crossed with the share unrecorded (0.20, 0.50), the expected validation sample (100, 400), a homogeneous or heterogeneous treatment effect, and whether the effect modifier enters eligibility directly: 48 scenarios, 4000 replicates each, 4000 people per replicate. Truth from ten million simulated people per law.
+</dd>
+<dt>Replicates</dt>
+<dd>
+4000 per scenario, 48 scenarios in 8 run cells, 3,264,000 rows, 0 replicate errors
+</dd>
+</dl>
+<p><strong>What this does not answer.</strong> The result is conditional on one baseline threshold criterion, a binary 60-month outcome, correctly specified models and a single effect modifier whose link to hidden eligibility is moderate. It cannot estimate a real-world shift or establish empirical materiality, and a hidden eligibility mechanism tied more strongly to the effect modifier could change the effect materially. It does not cover external, nonprobability or unknown-probability validation, validation measured with error, time-varying eligibility, treatment switching, censoring or unmeasured treatment confounding.</p>
+<p>Read it: <a href="../studies/ELG-01-latent-eligibility-validation/out/ELG-01.pdf">PDF</a> · <a href="../studies/ELG-01-latent-eligibility-validation/out/ELG-01.md">Markdown</a> · <a href="../studies/ELG-01-latent-eligibility-validation/out/ELG-01.odt">OpenDocument</a> · Code and data: <a href="https://github.com/choxos/TTE-open-problems/tree/main/undefined">undefined</a></p>
 </div>
 </section>
 <section id="verification" class="level2">
