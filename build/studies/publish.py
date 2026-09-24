@@ -78,6 +78,16 @@ def verify(d, out):
     pdf = os.path.join(out, d["problem_id"] + ".pdf")
     if os.path.exists(pdf) and os.path.getsize(pdf) < 20000:
         bad.append(f"pdf is only {os.path.getsize(pdf)} bytes")
+    # The default LaTeX font has no Greek, so a PDF can render with every α and
+    # λ silently missing. Any non-ASCII character in the Markdown must survive.
+    if os.path.exists(pdf) and os.path.exists(md_path):
+        p = subprocess.run(["pdftotext", pdf, "-"], capture_output=True, text=True)
+        if p.returncode == 0:
+            md_chars = {c for c in open(md_path, encoding="utf8").read()
+                        if ord(c) > 127 and not c.isspace()}
+            lost = sorted(md_chars - set(p.stdout) - set("‘’“”…"))
+            if lost:
+                bad.append(f"pdf is missing characters: {''.join(lost)}")
     odt = os.path.join(out, d["problem_id"] + ".odt")
     if os.path.exists(odt):
         try:
